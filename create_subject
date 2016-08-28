@@ -55,13 +55,15 @@ cat << EOF > "$abbr.tex"
 % --------------------
 
 \begin{document}
+\frontmatter
 \pagestyle{plain}
 \maketitle
 
 \tableofcontents
-\newpage
+\mainmatter
 % Content
 
+\backmatter
 \appendix
 $extra_tex_files_input
 \printindex
