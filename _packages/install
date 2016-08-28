@@ -38,6 +38,16 @@ else
 	echo "Classes copied"
 fi
 
+echo "Copying images..."
+
+if ! cp -v *.eps $latex_dir ; then
+	echo "${tred}Error copying images! Did you run with sudo?${treset}"
+	exit
+else
+	echo "Images copied"
+fi
+
+
 echo "Updating package cache..."
 
 if ! texhash ; then

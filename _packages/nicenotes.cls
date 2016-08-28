@@ -213,7 +213,7 @@
 \definecolor{titlepagecolor}{HTML}{800007}
 
 % Configurations for including the abstract in the title page
-\def\@abstracttitle{Resumen}
+\def\@abstracttitle{Abstract}
 
 \let\abstract\@undefined
 \let\endabstract\@undefined
