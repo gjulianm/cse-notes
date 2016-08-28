@@ -49,7 +49,6 @@
 \convx{arg0}#m
 \afin{arg0}#m
 \Hf{arg0}#m
-\epigraph{arg0}#m
 \gvx#m
 \app#m
 \obs#m
@@ -175,8 +174,6 @@
 \begin{problem}[N. ejercicio]#
 \begin{problemS}#
 \begin{problemS}[N. ejercicio]#
-\listtheoremname#m
-\ithm{arg0}#m
 \set@labelname{arg0}#m
 \label@hook#m
 \labelenumi#m
