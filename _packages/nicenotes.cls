@@ -80,9 +80,15 @@
 \RequirePackage{environ}
 \RequirePackage{pgfkeys}
 \RequirePackage{natbib}
+\RequirePackage{enumitem}
 \RequirePackage[some]{background}
+\let\fref\relax
+\RequirePackage[plain]{fancyref}
+\RequirePackage{booktabs}
 
 %% Some configurations and adjustements
+
+\setlist{noitemsep}
 
 % Fix links to the index
 \let\oldindex\printindex
