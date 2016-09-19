@@ -1,5 +1,9 @@
+% Document class for class notes, includes a nice style and
+% several useful packages.
+%
+% Guillermo Julián, EPFL
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{nicenotes}[2013/04/20 Note taking class]
+\ProvidesClass{nicenotes}[2016/09/19 Note taking class]
 
 \def\titlepagebuilddate{\tiny Last update: \today\, \currenttime}
 
