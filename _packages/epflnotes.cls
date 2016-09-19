@@ -3,7 +3,6 @@
 
 \def\titlepagebuilddate{\tiny Last update: \today\, \currenttime}
 
-\newif\if@apuntestitlepage
 \newif\if@shortheader
 \@shortheaderfalse
 \newcommand{\organization}{EPFL}
@@ -18,16 +17,6 @@
 %%%% Class options
 \DeclareOption{nobuilddate}{%
 	\def\titlepagebuilddate{}%
-}
-
-\DeclareOption{titlepage}{
-	\@apuntestitlepagetrue
-	\PassOptionsToClass{\CurrentOption}{custombase}
-}
-
-\DeclareOption{notitlepage}{
-	\@apuntestitlepagefalse
-	\PassOptionsToClass{\CurrentOption}{custombase}
 }
 
 \DeclareOption{shortheader}{
@@ -310,9 +299,7 @@
 	\end{titlingpage}
 }
 
-\if@apuntestitlepage % Full page title
 \let\maketitle\fullpagetitle
-\fi
 
 \setlength{\parskip}{2mm}
 \setlength{\headheight}{15pt}
