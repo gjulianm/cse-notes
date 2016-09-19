@@ -255,11 +255,15 @@
 	\BgThispage
 	\newgeometry{right=1.5cm,bottom=1.5cm}
 
+	% Control the margin for both the abstract and the build date
+	\def\@titlepage@innerleftmargin{\hspace{40pt}}
+
 	% The title
 	\hfill
 	\begin{minipage}[b][0.25\paperheight][b]{0.5\textwidth}
 		\textcolor{titlepagecolor}{%
 			\begin{hyphenrules}{nohyphenation}%
+				\raggedleft
 				\huge{\textbf{\fontfamily{fla}\selectfont\thetitle}}
 			\end{hyphenrules}%
 		}
@@ -267,16 +271,19 @@
 
 	% Horizontal space for abstract (left) and author/title
 	\vspace{50pt}
-	\hspace{0.1\linewidth}
+	\@titlepage@innerleftmargin
 	\begin{minipage}[t]{0.4\linewidth}
 		\if@abstractset % Write the abstract only if configured
-				\setlength{\parskip}{5pt}
-				\setlength{\parindent}{0pt}
-				\sffamily\textbf{\@abstracttitle}\par
-				\small\normalfont\@abstractbody
+			\setlength{\parskip}{5pt}
+			\setlength{\parindent}{0pt}
+			\sffamily\textbf{\@abstracttitle}\par
+			\small\normalfont\@abstractbody
+		\else
+			\hfill
 		\fi
 	\end{minipage}
-	\begin{minipage}[t]{0.5\linewidth}
+	\hfill
+	\begin{minipage}[t]{0.4\linewidth}
 		\begin{flushright}
 			\vspace{1ex}
 			\sffamily
@@ -291,7 +298,7 @@
 	\end{minipage}
 
 	\vfill
-	\hspace{40pt}
+	\@titlepage@innerleftmargin
 	\begin{minipage}[b]{0.2\textwidth}
 		\titlepagebuilddate % Include the build date. Disabled via class option
 	\end{minipage}
