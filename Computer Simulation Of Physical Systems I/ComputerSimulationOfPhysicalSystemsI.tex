@@ -33,7 +33,7 @@ The second point is a \textbf{recursion formula}: that is, how to get the $n$-th
 
 The simplest formula is called the Euler method.
 
-\begin{prop}[Euler method] \label{prop:EulerMethod} Let $y(x)$ be a ¿? function with the differential equation $\od{y}{x} = f(x,y)$ with $f$ being another ¿? function. Let $y(x_n) = y_n$ be a value of the equation. Then we can obtain the next value by the given formula: \( y_{n+1} = y_n + h · f(x_n, y_n) + \mathcal{O}(h^2) \)
+\begin{prop}[Euler method] \label{prop:EulerMethod} Let $y(x)$ be a ¿? function with the differential equation $\iod{y}{x} = f(x,y)$ with $f$ being another ¿? function. Let $y(x_n) = y_n$ be a value of the equation. Then we can obtain the next value by the given formula: \( y_{n+1} = y_n + h · f(x_n, y_n) + \mathcal{O}(h^2) \)
 \end{prop}
 
 However, this is a simple method and not very accurate, as it has a low convergence rate. Another method is based on Taylor expansion of again functions in some absolute random space
