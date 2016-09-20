@@ -1,7 +1,7 @@
-\documentclass[palatino]{nicenotes}
+\documentclass[palatino]{epflnotes}
 
-\title{Computer Simulation Of Physical Systems I}
-\author{}
+\title{Computer simulation of physical systems}
+\author{Guillermo Julián Moreno}
 \date{16/17 - Fall semester}
 
 % Additional packages
@@ -17,10 +17,73 @@
 \mainmatter
 % Content
 
-\backmatter
+\chapter{Preliminaries}
+
+\textit{Trigger warning: Mathematics explained by a physics professor.}
+
+\section{Differential equations}
+
+We are interested in a general differential equation of the form \[ \od{y}{x} = f(x,y) \], that is, first order equations. We are not interested in second order problems, although we can always downgrade. For example, given a momentum equation such as \[ m \od[2]{z}{t} = F(z) \], we can simplify to two first-order equation such as \[ \od{z}{t} = \frac{p(t)}{m} \qquad \od{p}{t} = F(z) \]
+
+All this boils down that we're are going to have initial value problems for $\vy(0) = y_0$, and then we will want to get how does $\vy$ evolve with time.
+
+In order to solve these kinds of equations numerically, we will have several points? steps?. The first one is \textbf{discretization}, introducing evaluations at a finite number of points with step $h$\footnote{That is, points given as $x_n = x_0 + n·h$.}. The issue is the size of the step, which depends on the application being done.
+
+The second point is a \textbf{recursion formula}: that is, how to get the $n$-th value $y_n$ as a function of the previous values $y_{n-1}, y_{n-2}, \dotsc$.
+
+The simplest formula is called the Euler method.
+
+\begin{prop}[Euler method] \label{prop:EulerMethod} Let $y(x)$ be a ¿? function with the differential equation $\od{y}{x} = f(x,y)$ with $f$ being another ¿? function. Let $y(x_n) = y_n$ be a value of the equation. Then we can obtain the next value by the given formula: \( y_{n+1} = y_n + h · f(x_n, y_n) + \mathcal{O}(h^2) \)
+\end{prop}
+
+However, this is a simple method and not very accurate, as it has a low convergence rate. Another method is based on Taylor expansion of again functions in some absolute random space
+
+\begin{prop}[Taylor expansion method] In the same conditions (that is, no conditions) of \fref{prop:EulerMethod}, we can use a method of higher-order accuracy: \( y_{n+1} = y_n + hf + \frac{1}{2}h^2 \left(\dpd{f}{x} + f \dpd{f}{y}\right) + \mathcal{O}(h^3) \label{eq:TaylorExpansion} \)
+\end{prop}
+
+\chapter{Molecular dynamics}
+
+\chapter{Monte Carlo simulations}
+
 \appendix
 
-\chapter{---}
-\input{tex/ComputerSimulationOfPhysicalSystemsI_Exerc.tex}
+\chapter{Evaluation methods}
+
+There are two ways to get to the exam.
+
+\paragraph{Choose a simulation project (Recommended)} Choose a project from the web (password \textit{simphys}). Follow two hours per week of the course for a general background. We get to the exam by handing in at the end of the semester (21\textsuperscript{st} December). Ten minutes of presentation of the project at the exam plus questions. Deadline for project approval is in two weeks (aka first week of October).
+
+The project must be done with a person of the Faculty of Basic Sciences, in C/Fortran. It should be original research. The description must be one A4 page with the proposant (professor proposing, with name and address), the motivation behind the project, the methods envisioned/considered for the project, and the student's email and name. This has to be submitted through the webpage.
+
+Two hard copies of the report, handed in in the professor's office or in the letterbox. It also has to be uploaded to Moodle, along with the code.
+
+The report must have the following structure:
+
+\begin{enumerate}
+\item Introduction \& motivation. Why is the simulation is necessary and ffs it's like every other introduction.
+\item Description of the model.
+\item Implementation of the computer code.
+\item Benchmarks.
+\item Results + discussions.
+\item Conclusions.
+\end{enumerate}
+
+The evaluation criteria is the following:
+
+\begin{enumerate}
+\item Choice of topic and level of challenge.
+\item Achieved results: quality of the computational work and physical understanding of the problem.
+\item Quality of the reports.
+\item Quality of the oral presentation.
+\item Answers to the questions (depth of understanding).
+\item Expert present at the exam gives a feeling of the work.
+\end{enumerate}
+
+\paragraph{Exercise sessions} They give code, we do magic with the code. Then we have a report and then an exam with questions on the course.
+
+%\chapter{---}
+%\input{tex/ComputerSimulationOfPhysicalSystemsI_Exerc.tex}
+
+\backmatter
 \printindex
 \end{document}
