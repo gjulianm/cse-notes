@@ -44,7 +44,7 @@ fi
 
 
 cat << EOF > "$abbr.tex"
-\documentclass[palatino]{nicenotes}
+\documentclass[palatino]{epflnotes}
 
 \title{$name}
 \author{}
@@ -63,9 +63,9 @@ cat << EOF > "$abbr.tex"
 \mainmatter
 % Content
 
-\backmatter
 \appendix
 $extra_tex_files_input
+\backmatter
 \printindex
 \end{document}
 EOF
