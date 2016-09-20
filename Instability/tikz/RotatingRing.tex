@@ -1,0 +1,40 @@
+
+\begin{tikzpicture}
+\pgfmathsetmacro{\tangentlength}{1.5}
+\draw[palette1, dashed] (0, 2.3) -- (0, -2.3);
+\draw (0,0) circle[radius=2cm];
+
+\coordinate (TStart) at ({2*cos(30)- \tangentlength * sin(30)}, {-2*sin(30) - \tangentlength * cos(30)});
+\coordinate (TEnd) at ({2*cos(30) + \tangentlength * sin(30)}, {-2*sin(30) + \tangentlength * cos(30)});
+
+\draw[palette3] (TStart) -- (TEnd);
+
+\begin{scope}[canvas is xz plane at y = -1]
+\draw[->, palette2, dotted, thick] ({2*cos(30)}, 0) arc (360:30:{2*cos(30)}) node[above] {$\omega$};
+\end{scope}
+
+\node[draw, palette2, fill=palette2, circle, inner sep = 2pt] (B) at ({2*cos(30)}, {-2*sin(30)}) {};
+\draw[palette1] (0,0) -- node[above, midway, sloped] {$R$} (B);
+
+\coordinate[yshift=-1.5cm] (BSouth) at (B);
+\coordinate[xshift=2cm] (BEast) at (B);
+
+\tikzangle[name = {$\theta$}, palette1]{0,0}{0,-2}{B}
+
+\draw[->, palette2, thick] (B) -- (BSouth) node[below, align = center] {Gravity \\ $-mg$};
+\draw[->, palette2, thick] (B) -- (BEast) node[right, align = left] {Centrifugal force \\ $m(R\sin ω )\omega^2$};
+
+\draw[palette2, dotted] (BSouth) -- ($(TStart)!(BSouth)!(TEnd)$);
+\draw[palette2, dotted] (BEast) -- ($(TStart)!(BEast)!(TEnd)$);
+
+\tikzangle[name = {$\theta$}, palette2]{B}{TEnd}{BEast}
+
+\draw[->, palette3, thick] (B) -- ($(TStart)!(BSouth)!(TEnd)$);
+\draw[->, palette3, thick] (B) -- ($(TStart)!(BEast)!(TEnd)$);
+
+\begin{scope}[canvas is xz plane at y = 2.3]
+\draw[->, palette1] (0.5, 0) arc (360:30:0.5) node[below] {$\omega$};
+\end{scope}
+
+
+\end{tikzpicture}

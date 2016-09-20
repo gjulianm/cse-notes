@@ -1,0 +1,81 @@
+\documentclass[palatino]{epflnotes}
+
+\title{Instability}
+\author{Guillermo Julián Moreno}
+\date{16/17 - Fall semester}
+
+% Additional packages
+\usepackage{tikztools}
+% --------------------
+
+\begin{document}
+\frontmatter
+\pagestyle{plain}
+\maketitle
+
+\tableofcontents
+\mainmatter
+% Content
+
+\chapter{Introduction and basic definitions}
+
+\section{Stability}
+
+\begin{defn}[Monotonous stability][Stability!monotonous] A system where, given an initial disturbance of the energy $E$, it tends to the stable state with monotonically decreasing energy function.
+\end{defn}
+
+\begin{defn}[Asymptotic stability][Stability!asymptotic] A system where, given an initial energy disturbance, it tends to the stable state with no restrictions on the shape of the function.
+\end{defn}
+
+\begin{defn}[Conditional stability][Stability!conditional] A system where the stable state depends of the quantity of the initial disturbance.
+\end{defn}
+
+\begin{defn}[Inconditional instability][Instability!inconditional] I don't think this deserves a definition. In some instances we will be interested in small increments of time in order to be able to linearize the equation.
+\end{defn}
+
+\section{Case study: dynamical system of a rotating ring}
+
+\begin{figure}[hbtp]
+\centering
+\inputtikz{RotatingRing}
+\caption{A ball in a rotating ring has two different forces: centrifugal and gravity. When the projection of these two are equal, the ball will not move and will thus reach an equilibrum (stable state).}
+\label{fig:Introduction:RotatingRing}
+\end{figure}
+
+We will study an example of conditional stability: a ball of mass $m$ in a ring of radius $R$ as in \fref{fig:Introduction:RotatingRing}. We want to find the stable state, in which the projections of the centrifugal and gravity forces over the tangent line to the ring cancel themselves.
+
+The gravity force is easy enough: $-mg$ being $g$ the acceleration of gravity. Centrifugal force is easy too: we only have to take into account that the radius at which the ball is rotating (dotted orange path on the figure) depends on the angle θ, simply by $r = R \sin θ$. Thus, the centrifugal force is $mRω^2\cos ω $.
+
+Adding these two forces projected accordingly over the tangent line to the circle (purple line i \fref{fig:Introduction:RotatingRing}) we have the resultant force $F$ exerted over the ball: \( F = -mg\sin θ + mRω^2 \sin θ \cos θ\)
+
+We can substitute the force by the expression $mR\ddot{θ}$ where $\ddot{θ}$ is the angular acceleration of the ball. This gives us the final differential equation for the ball in a rotating ring movement: \( mR\ddot{θ} = -m g \sin θ + m R ω^2 \sin θ \cos θ \label{eq:Introduction:RotatingRingEquationComplete} \)
+
+We can simplify this equation by defining $ω_0^2 = \frac{g}{R}$ as the pendulum frequency, which we will see later why it is interesting. A straightforward substitution yields a simpler equation: \( \ddot{θ} = -ω_0^2 \sin θ + ω^2 \sin θ \cos θ \label{eq:Introduction:RotatingRingEquation} \)
+
+This is not a differential equation that can be solved in a straightforward way. However, we can study what happens when we add a small perturbation.
+
+Our base, stable case is $θ = 0$, which is obviously a solution of \eqref{eq:Introduction:RotatingRingEquation}. What happens when we start with $θ(0) = ε$, with $ε > 0$ as small as required?
+
+Given that ε is small, we can approximate $\sin ε \approx ε$ and $\cos ε \approx 1$ so that our equation becomes \( \ddot{θ} = -ω_0^2 θ + ω^2 θ = (ω^2 - ω_0^2) θ \label{eq:Introduction:RotatingRingSimple} \)
+
+The solution to this simplified differential equation is \( θ = c_1 e^{\sqrt{ω^2 - ω_0^2} t} + c_2 e^{-\sqrt{ω^2 - ω_0^2} t} \label{eq:Introduction:PendulumSolution} \) with $c_1, c_2$ constants depending on the initial conditions. Let's calculate them, as we will need them later to describe the equations. For simplicity, we can suppose that the initial velocity is null ($\dot{θ}(0) = 0$) and thus what we end up with is that $c_1 = c_2 = \sfrac{ε}{2}$
+
+Now on to the actual interesting part: study the behaviour of the solution depending on the value of $ω^2 - ω_0^2$. If $ω^2 < ω_0^2$, the square root is imaginary and our solution will be a cosine: $θ(t) = ε \cos \left[(ω_0^2 - ω^2) t\right]$\footnote{Notice the sign change on $ω_0^2 - ω^2$, important because we want to get the imaginary value out of the square root.}. Thus, in this case the ball will only oscillate between the angles $θ = \pm ε$.
+
+However, if $ω^2 > ω_0^2$, things change. In this case the square root is real, and thus the solution grows exponentially to infinity (first exponential grows, second one quickly decreases to 0 as it has a negative sign). This would be the \textbf{unstable} situation.
+
+An interesting phenomenon is that when we are in the stable zone ($ω^2 < ω_0^2$) but with both quantities very similar, the relaxation time (that is, the time it takes to the system to go back to the stable state) starts to grow up to infinity.
+
+To find the stable states, we should solve the second order equation and things happens.
+
+Something something potential flow $\curl \vu = 0$ then we can introduce a potential, with some otherconditions like inviscid and incompressible then we can use 2D. Simple expression of Bernoulli?. We have to define dynamic and kinematic boundary conditions. Dynamic is force, kinematic is velocity. Something Navier-Stokes we can let the fluids slip and something more.
+
+Something more boundary conditions I'll just check the slide. The interface is $z = η(x,t)$. The kinematic condition is impermeability, thus locally on each point of the interface the velocities must be the same on both fluids.
+
+\appendix
+
+% \chapter{---}
+% \input{tex/Instability_Exerc.tex}
+\backmatter
+\printindex
+\end{document}
