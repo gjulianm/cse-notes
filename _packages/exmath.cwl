@@ -174,6 +174,7 @@
 \begin{problem}[N. ejercicio]#
 \begin{problemS}#
 \begin{problemS}[N. ejercicio]#
+\ithm{arg0}#m
 \set@labelname{arg0}#m
 \label@hook#m
 \labelenumi#m

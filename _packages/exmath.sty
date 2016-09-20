@@ -44,6 +44,7 @@
 \RequirePackage{nameref}
 \RequirePackage{scalerel,stackengine} % Para los sombreros grandes (widehat)
 \RequirePackage{footnotefix}
+\RequirePackage{fancyrefsimproved}
 
 % Para evitar que el \md de nuestro paquete tenga conflictos con el de commath
 \let\mder\md
@@ -275,7 +276,7 @@
 \newcommand{\real}{\mathbb{R}}
 \newcommand{\cplex}{\mathbb{C}}
 
-\renewcommand{\vec}[1]{\bold{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
 
 % Vectores
 \newcommand{\pesc}[1]{\langle #1 \rangle} % Producto escalar
@@ -412,6 +413,13 @@
 }{\end{innerproblem}}
 
 % Teoremas y otros entornos. IGN
+
+\newcounter{ithm}[section]
+
+\newcommand{\ithm}[1]{%IGN
+	\refstepcounter{ithm}
+	\addcontentsline{ithmc}{ithm}{\protect\numberline{\theithm}#1}\par
+}
 
 % Esta cosa permite el uso de referencias con nombre 			IGN
 % con comandos como \nref{ref}, que escribira en el 			IGN
