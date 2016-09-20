@@ -267,8 +267,9 @@
 	\begin{minipage}[b][0.25\paperheight][b]{0.5\textwidth}
 		\textcolor{titlepagecolor}{%
 			\begin{hyphenrules}{nohyphenation}%
-				\raggedleft
-				\huge{\textbf{\fontfamily{fla}\selectfont\thetitle}}
+				\begin{flushright}
+					\huge{\textbf{\fontfamily{fla}\selectfont\thetitle}}
+				\end{flushright}
 			\end{hyphenrules}%
 		}
 	\end{minipage}
