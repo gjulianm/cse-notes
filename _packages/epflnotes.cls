@@ -81,6 +81,12 @@
 
 %% Some configurations and adjustements
 
+% Caption setups
+\captionsetup[figure]{font = {small, sf}, labelfont = {bf}}
+\captionsetup[table]{font = {small, sf}, labelfont = {bf}}
+\captionsetup[algorithm]{font = {small, sf}, labelfont = {bf}}
+
+% List adjustments
 \setlist{noitemsep}
 
 % Fix links to the index

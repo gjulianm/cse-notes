@@ -119,7 +119,7 @@
 % BEGIN CMDDEF
 
 \newcommand{\triple}{\tikz[scale = 0.6] { \draw[black, fill = orange] (0,0) circle (1em); \draw (0, 1em) -- (0, -1em); \draw (1em, 0) -- (-1em, 0); \draw (0.69em, 0.69em) to [bend right = 60] (0.69em, -0.69em);\draw (-0.69em, 0.69em) to [bend left = 60] (-0.69em, -0.69em);  }} % Ejem.
-\newcommand{\hint}[1]{{\textup{\textbf{Sugerencia}: #1}}} % 1: Sugerencia; Sugerencias para ejercicios
+\newcommand{\hint}[1]{{\textup{\textbf{Suggestion}: #1}}} % 1: Sugerencia; Sugerencias para ejercicios
 
 \newcommand{\mop}[1]{\mathrm{#1}\xspace} % 1: operacion;
 \newcommand{\imgref}[1]{(figura \ref{#1})} % 1: referencia; Referencia a imagen.
@@ -130,9 +130,7 @@
 \newcommand{\Or}{\vee}
 \newcommand{\y}{\wedge}
 \newcommand{\tq}{\;\diagup\;}
-\newcommand{\tlq}{\text{ tal que }}
 \newcommand{\wtf}{(?)}
-\newcommand{\MT}{ M\'aquina de Turing }
 
 % Calculo
 \newcommand{\deriv}[2]{\frac{\dif #1}{\dif #2}} % 1: f; 2: var
@@ -140,6 +138,7 @@
 \let\od\dod
 \newcommand{\dpa}[2]{\frac{\partial\,#1}{\partial\, #2}}
 \DeclareMathOperator{\rot}{rot} % Rotacional
+\DeclareMathOperator{\curl}{curl} % Rotacional
 \DeclareMathOperator{\dv}{div}  % Divergencia
 \newcommand{\grad}{\nabla}
 \DeclareMathOperator{\img}{img} % Imagen
@@ -214,7 +213,7 @@
 \newcommand*{\eq}{=}
 \DeclareMathOperator{\rango}{rango}
 \DeclareMathOperator{\rg}{Rg}
-\DeclareMathOperator{\tr}{traza}
+\DeclareMathOperator{\tr}{trace}
 \DeclareMathOperator{\dist}{d}
 \DeclareMathOperator{\inter}{int}
 \newcommand{\eqexpl}[2][=]{\overset{\raisebox{1pt}{\scriptsize #2}}{#1}}
@@ -314,14 +313,14 @@
 	\message{Using section numbering for theorems and definitions}
 \fi
 
-\newtheorem{ilemma}[thm]{Lema}
-\newtheorem{itheorem}[thm]{Teorema}
-\newtheorem{corol}[thm]{Corolario}
-\newtheorem{iprop}[thm]{Proposici\'{o}n}
-\newtheorem{axiom}[thm]{Axioma}
+\newtheorem{ilemma}[thm]{Lemma}
+\newtheorem{itheorem}[thm]{Theorem}
+\newtheorem{corol}[thm]{Corollary}
+\newtheorem{iprop}[thm]{Proposition}
+\newtheorem{axiom}[thm]{Axiom}
 
-\newenvironment{remark}{\vspace{10pt}\par \noindent \textbf{Observaci\'{o}n}: }{}
-\newtheorem*{props}{Propiedades}
+\newenvironment{remark}{\vspace{10pt}\par \noindent \textbf{Observation}: }{}
+\newtheorem*{props}{Properties}
 
 \newcommand{\IS}{} % IGN
 \def\toggle@IS@print{\renewcommand{\IS}{ }}
@@ -338,7 +337,7 @@
   innerrightmargin=10pt, skipabove=0pt, skipbelow=0pt]}{\end{mdframed}}
 
 \newenvironmentx{example}[1][1=] % 1O: titulo;
-{\paragraph{Ejemplo: #1} \itshape}
+{\paragraph{Example: #1} \itshape}
 {}
 
 % Entornos y código para problemas. IGN
@@ -362,7 +361,7 @@
 \newcommandx{\spart}[1][1=\alph{apr}]{ % IGN 1O: apartado; | Marca de apartado para la solución
 	\iPartSpaceSkip
 	\renewcommand{\iPartSpaceSkip}{\vspace{10pt}}
-	\indent \refstepcounter{apr}\textsc{Apartado #1)} \par
+	\indent \refstepcounter{apr}\textsc{Part #1)} \par
 }
 
 \newcommand{\solution}{  %IGN
@@ -390,7 +389,7 @@
 	\refstepcounter{ejr}
 	\renewcommand{\iPartSpaceSkip}{}
 	\if@useprobframes\begin{framed}\fi
-	\textbf{Ejercicio \ejrheader}:
+	\textbf{Exercise \ejrheader}:
 	\if@useprobframes\itshape\fi
 	\setcounter{apr}{0}
 }{\vspace{10 pt}}
@@ -442,7 +441,7 @@
 	\set@labelname{#1}
 	\renewcommand{\labelenumi}{\alph{enumi}. }
 	\renewcommand{\theenumi}{\thedef\ - (\alph{enumi})}
-	\noindent \refstepcounter{def} \textit{Definici\'{o}n \thedef}
+	\noindent \refstepcounter{def} \textit{Definition \thedef}
 	\concept[#2]{#1}.\itshape}
 	{\vspace{2 pt}\@restore@itemlabels}
 
@@ -507,9 +506,7 @@
 
 \newcommand{\printtheorems}{\listofithm} %IGN
 
-\renewenvironment{proof}{\begin{leftbar}\noindent \textit{Demostraci\'{o}n.} }{\qed\end{leftbar}}
-\newenvironment{expla}{\begin{leftbar}\noindent \textit{Explicaci\'{o}n:} }{\end{leftbar}} %explicación de un ejercicio o ejemplo, previo a la solución.
-\newenvironment{defToUse}{\begin{leftbar}\noindent \textit{Definiciones que usaremos:} }{\end{leftbar}} %Para decir que definiciones de teoría usamos en una definicion
+\renewenvironment{proof}{\begin{leftbar}\noindent \textit{Proof.} }{\qed\end{leftbar}}
 
 % Complejos
 \newcommand{\ctrig}[1]{\cos \left(#1\right) + i \sin \left(#1\right)} % 1: angulo;

@@ -17,12 +17,11 @@
 \Or#m
 \y#m
 \tq#m
-\tlq#m
 \wtf#m
-\MT#m
 \deriv{f}{arg1}#m
 \dpa{arg0}{arg1}#m
 \rot#m
+\curl#m
 \dv#m
 \grad#m
 \img#m
@@ -194,8 +193,6 @@
 \concept{arg0}{arg1}#m
 \printtheorems#m
 \begin{proof}#
-\begin{expla}#
-\begin{defToUse}#
 \ctrig{angulo}#m
 \ceul{mod}{angulo}#m
 \i#m
