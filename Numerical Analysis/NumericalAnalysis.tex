@@ -1,7 +1,7 @@
 \documentclass[palatino]{epflnotes}
 
-\title{Numerical Analysis}
-\author{}
+\title{Numerical Analysis and Computational Mathematics}
+\author{Guillermo Julián Moreno}
 \date{16/17 - Fall semester}
 
 % Additional packages
@@ -17,10 +17,57 @@
 \mainmatter
 % Content
 
-\backmatter
+\chapter{Introduction}
+
+For starters, we will define what we understand as a mathematical problem and when it is well-posed.
+
+\begin{defn}[Mathematical problem] \label{def:MathProblem} A mathematical problem is the problem of finding solutions $x$ to the equation \[ F(x,d) = 0 \] for $x ∈ \mathcal{X}$ a solution, $d ∈ \mathcal{D}$ the given data; both in appropriate spaces $\mathcal{X}, \mathcal{D}$, and with $F$ some function.
+\end{defn}
+
+What we will want to find in these problems are continuous dependence on the data: we want small perturbations in the data to cause only small changes in the solution. Formally:
+
+\begin{defn}[Continous dependence on the data] Given a \nref{def:MathProblem}, we say that a solution $x ∈ \mathcal{X}$ is continously dependent on the data $d ∈ \mathcal{D}$ if and only if for all $δd$ such that $d + δd ∈ \mathcal{D}$ something something.
+\end{defn}
+
+One example of ill-posed (not well-posed) problem is finding the number of real roots of a polynomial. For example, given the problem $F(x,d) = x^4 - x^2(2d-1)+d(d-1)$, the number of real roots (4 if $d ≥ 1$, 2 if $d ∈ (0,1)$, 0 if $d < 0$) is not a continuous function.
+
+However, well-posed mathematical problems may exhibit large variations. We will introduce the condition number in order to measure these changes.
+
+\begin{defn}[Conditioning number] Given a problem $F(x,d) = 0$ for data $d ∈ \mathcal{D}$, we define the conditioning number as \( K(d) ≝ \sup \set{ \frac{\sfrac{\norm{δx}}{\norm{x}}}{\sfrac{\norm{δd}}{\norm{d}}} ∀δd \tq d + δd ∈ \mathcal{D} } \)
+\end{defn}
+
+Copy from the slides here.
+
+Analogous things for numerical problems.
+
+\chapter{Numerical approximation of nonlinear equations}
+
+\chapter{Interpolation, approximation of functions and data}
+
+\chapter{Numerical integration and derivation}
+
+\chapter{Numerical linear algebra}
+
+\chapter{Numerical approximation of eigenvalue problems}
+
+\chapter{Numerical methods for ordinary differential equations}
+
 \appendix
 
-\chapter{---}
-\input{tex/NumericalAnalysis_Exerc.tex}
+\chapter{Evaluation method}
+
+Exam is written, and in the computer room. It covers all theoretical and practical arguments (3h/3.5h of duration). Examn is either free-form or multiple choice questions. Part of the questions should be solved numerically with MATLAB, as the exam includes the implementation and use of numerical methods.
+
+In the exam, we can use the MATLAB tutorial, functions implemented in the exercise sessions and one page paper with formulae, definitions and theorems (only front face).
+
+% \chapter{---}
+% \input{tex/NumericalAnalysis_Exerc.tex}
+
+
+\backmatter
+
+\nocite{scientificComputingMatlab}
+\bibliography{../EPFLNotes.bib}
+
 \printindex
 \end{document}
