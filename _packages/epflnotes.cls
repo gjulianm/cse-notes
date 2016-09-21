@@ -78,8 +78,12 @@
 \let\fref\relax
 \RequirePackage[plain]{fancyref}
 \RequirePackage{booktabs}
+\RequirePackage{natbib}
 
 %% Some configurations and adjustements
+
+% Bibliography style
+\bibliographystyle{alpha}
 
 % Caption setups
 \captionsetup[figure]{font = {small, sf}, labelfont = {bf}}
