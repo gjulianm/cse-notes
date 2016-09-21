@@ -270,7 +270,7 @@
 
 	% The title
 	\hfill
-	\begin{minipage}[b][0.25\paperheight][b]{0.5\textwidth}
+	\begin{minipage}[b][0.25\paperheight][b]{0.6\textwidth}
 		\textcolor{titlepagecolor}{%
 			\begin{hyphenrules}{nohyphenation}%
 				\begin{flushright}
