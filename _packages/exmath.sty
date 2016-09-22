@@ -362,7 +362,7 @@
 \newcommandx{\spart}[1][1=\alph{apr}]{ % IGN 1O: apartado; | Marca de apartado para la solución
 	\iPartSpaceSkip
 	\renewcommand{\iPartSpaceSkip}{\vspace{10pt}}
-	\indent \refstepcounter{apr}\textsc{Part #1)} \par
+	\hspace{0pt}\vspace{-15pt}\par\refstepcounter{apr}\textsc{Part #1)} \par
 }
 
 \newcommand{\solution}{  %IGN
@@ -651,6 +651,7 @@
 }
 
 % Análisis funcional
+\newcommand{\lapp}{\ensuremath{\mathcal{L}}}
 \newcommandx{\linapp}[2][1=X, 2=Y]{\ensuremath{\mathcal{L} (#1, #2)}}
 \newcommandx{\linend}[1][1=H]{\ensuremath{\mathcal{L} (#1)}}
 \newcommandx{\hconvs}[3][1=,2=n,3=\infty]{\xrightharpoonup[\ifthenelse{\equal{#2}{}}{}{#2\to #3}]{#1}} % 1O: txt. arriba; 2O:

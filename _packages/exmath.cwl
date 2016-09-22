@@ -311,6 +311,7 @@
 \spn#m
 \densein#m
 \fourier#m
+\lapp#m
 \linapp#m
 \linapp[X]#m
 \linapp[X][Y]#m
