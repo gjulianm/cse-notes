@@ -50,6 +50,7 @@
 \LoadClass[11pt]{memoir}
 
 %%%% Required packages
+\renewcommand{\mathbf}{\mathbold}
 
 \RequirePackage[usenames,dvipsnames]{xcolor}
 \RequirePackage[includemp, left=3cm,right=1cm,top=3cm,bottom=2cm, marginparwidth=1.6cm, marginparsep=0.7cm]{geometry}

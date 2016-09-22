@@ -138,6 +138,7 @@
 \vf#m
 \vg#m
 \va#m
+\vA#m
 \vb#m
 \vc#m
 \vu#m
@@ -329,3 +330,4 @@
 \dual[X]#m
 \ddual#m
 \ddual[X]#m
+\dstr#m
