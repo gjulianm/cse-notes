@@ -1,1 +1,59 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
+\section{Functional Analysis}
+
+\begin{problem} \textbf{Norms and Banach spaces} Consider the space $V = C([-1, 1])$, consisting of functions that are continuous on the interval $[-1, 1]$.
+
+\ppart Show that the following object defines a norm for $V$: \[ \norm{f}_V = \int_{-1}^1 \abs{f(x)} \dif x \]
+
+\ppart Show that $V$ is not Banach with respect to this norm.
+
+\solution
+
+\spart
+
+It is obviously always positive, zero only when $f \equiv 0$, homogeneous and with the triangular identity because the integral is linear and absolute value has the triangular identity.
+
+\spart
+
+Let $f_n$ be a sequence of continuous functions defined in the following way: \[ f_n(x) = \begin{cases}
+0 & \abs{x} > \frac{1}{n} \\
+n^2 x + n & - \frac{1}{n} ≥ x > 0 \\
+-n^2 x + n & 0 > x > \frac{1}{n}
+\end{cases}
+\]
+
+This is a triangle, always continuous, always with the same integral ($2 · \sfrac{1}{n} · n = 2$) so it obviously converges in the given norm. However, the limit function is the Dirac delta which is not even a function.
+
+\end{problem}
+
+
+\begin{problem} \textbf{Linear operators} Consider the space $V = C([-1, 1])$ endowed with the supremum norm. Let $\linapp[V][ℝ]$ be defined as \[ \mathcal{L}(f) = \int_{-1}^1 f(x) \dif x \]
+
+Show that $\mathcal{L}$ is a linear, bounded and Lipschitz continuous operator.
+
+\solution
+
+Obviously linear and bounded (functions are continuous, thus bounded, therefore integral is bounded on a finite interval). For Lipschitz continuity, we want to show that, given $f,g ∈ V$, then \[ \frac{\abs{\mathcal{L}(f) - \mathcal{L}(g)}}{\norm{f - g}} ≤ K \] for some $K ∈ ℝ^+$.
+
+In this case we can do straightforward calculations to do it\[  \frac{\abs{\mathcal{L}(f) - \mathcal{L}(g)}}{\norm{f - g}} = \frac{\abs{\int_{-1}^1 (f - g) \dif x}}{\abs{\sup f - g}} ≤ \frac{\int_{-1}^1 \sup \abs{f - g} \dif x}{\sup \abs{f - g}} ≤ 2\]
+
+\end{problem}
+
+\begin{problem}[4] \textbf{Distributional derivative} Show that the distributional derivative of the signum function \[ \sign (x) = \begin{cases} 1 & x > 0 \\ 0 & x = 0 \\ -1 & x < 0 \end{cases} \] is given by $\sign'(x) = 2 δ_0$ where $δ_0$ is the Dirac delta located at $x = 0$.
+
+\solution
+
+Taking the definition of the distributional derivative, we know that $\sign'$ is a distributional derivative of $\sign$ if, for every test function φ in some test space\footnote{I don't really know which space to use but whatever.} we have that \[ \int_{ℝ} \sign' φ = - \int_{ℝ} \sign φ' \]
+
+In this case, we can operate and \[ - \int_{ℝ} \sign φ' = - \int_{ℝ^+} φ' + \int_{ℝ^-} φ' = - \left(\lim_{x \to ∞} φ(x) - φ(0)\right) + \left(φ(0) - \lim_{x \to -∞} φ(0)\right) = 2φ(0) \] using the Fundamental Theorem of Calculus and the fact that test functions have compact support and thus are 0 at $\pm ∞$. This is exactly the same value we would obtain with $\int_ℝ 2δ_0 φ$.
+
+\end{problem}
+
+
+\begin{problem}[7] \textbf{A simplified Poincaré inequality}. let $Ω = (0,1) × (0,1)$ and $Γ = [0,1] × \set{0}$. Determine a constant $C_Ω^* > 0 $ such that \[ \norm{v}_{L^2(Ω)} ≤ C_Ω^*\abs{v}_{H^1(Ω)}\qquad ∀v ∈ C_Γ^∞(Ω) \], where $\abs{v}_{H^1(Ω)} = \norm{\nabla v}_{L^2(Ω)}$ and $C_Γ^∞ (Ω) = \set {v ∈ C^∞(Ω) \tq \restr{v}{Γ} = 0}$.
+
+\solution
+
+Following the hint, we can use the fundamental theorem of calculus on the second coordinate of $v$ to obtain \[ v(x,y) = \int_0^y \pd{v}{s}(x,s) \dif s + c \], where the constant $c$ must be 0 to verify the boundary condition.
+
+\end{problem}

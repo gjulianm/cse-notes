@@ -1,7 +1,7 @@
 \documentclass[palatino]{epflnotes}
 
 \title{Numerical Approximation of PDEs}
-\author{}
+\author{Guillermo Julián Moreno}
 \date{16/17 - Fall semester}
 
 % Additional packages
@@ -17,10 +17,160 @@
 \mainmatter
 % Content
 
-\backmatter
+\chapter{Functional analysis fundamentals}
+
+\section{Banach and Hilbert spaces}
+
+The first fundamental of functional analysis is, as usual, to define the basic spaces in which we are going to work. These are going to be, obviously, spaces of functions. The next step is what do we want to study in these spaces. The first notion is that of convergence: knowing when a sequence of functions converges to another and in which sense. Instead of going like in other courses defining special types of convergence, we are actually going to rely on topology. We will treat functions like points in a topological space, and saying that they converge to something if they start getting closer to that something.
+
+So, what we need is a distance or, actually, a norm\footnote{A norm $\norm{·}$ induces a distance directly by $\dst(x,y) = \norm{x-y}$.}. Let's go with the definition:
+
+\begin{defn}[Norm] Given a space $V$ over a field $K$, we say that an application $\appl{\norm{·}}{V}{ℝ}$ is a norm if and only if
+\begin{enumerate}
+	\item Given $λ ∈ K$ and $x ∈ V$, then $\norm{λx} = \abs{λ}\norm{x}$.
+	\item Verifies the triangle equality: given $x,y ∈ V$, then $\norm{x + y} ≤ \norm{x} + \norm{y}$.
+	\item It separates points, that is, $\norm{x} = 0 \iff x = 0$.
+\end{enumerate}
+
+If the last property is not verified, we say we only have a \concept{Seminorm}.
+\end{defn}
+
+We will then work in spaces equipped with a norm. We will ask that these spaces have a nice property with respect to this norm: completeness. We say that a space $V$ is \concept[Completeness]{complete} if and only if for every Cauchy sequence $(x_n) ⊂ V$, we have convergence in the space $x_n \to x ∈ V$. In other words, we don't want to worry whether we are going to be out of the space when working with convergent sequences.
+
+With this, we can go on to the notion of a Banach space:
+
+\begin{defn}[Banach space][Space!Banach] A vector space $V$ is called Banach if it has a norm and is complete with respect to that norm. Formally, the Banach space is the space with the norm, that is, $X = (V, \norm{·}_V)$.
+\end{defn}
+
+Banach spaces are the ones we do topology in. Notions of compactness and convergence\footnote{Mainly the two topological aspects we will be interested in: compactness gives us finiteness and convergence, duh, is convergence.} will be studied on these spaces.
+
+The next step is to be able to do geometry, measuring angles and specially talking about ortogonality. This is accomplished with the scalar product:
+
+\begin{defn}[Scalar product][Product!scalar] Given a vector space $V$, we say that an application $\appl{\pesc{·,·}}{V×V}{ℝ}$ is a scalar product if and only if it is antilinear\footnote{Beware with complex numbers: $\pesc{λx,y} = λ\pesc{x,y}$ but $\pesc{x,λy} = \conj{λ}\pesc{x,y}$.} , positive definite and symmetric\footnote{Again, take into account that with complex numbers we have $\pesc{x,y} = \conj{\pesc{y,x}}$.}.
+\end{defn}
+
+Again, we have a name for spaces with a scalar product:
+
+\begin{defn}[Hilbert space][Space!Hilbert] We say that a vector space with a scalar product $(V, \pesc{·,·}_V)$ if and only if it is Banach with respect to the induced norm $\norm{x}_V = \sqrt{\pesc{x,x}_V}$.
+
+As it was the case with Banach space, the subjacent space and the tuple space-scalar product is often used interchangeably, but the good mathematician should know what is what.
+\end{defn}
+
+\subsection{$L^p$ spaces}
+
+Now on to a specific example of Banach and Hilbert spaces: $L^p$ spaces. These will be our basic workbench, so it pays off to define them carefully.
+
+The first question we have to make is which kind of functions do we want to study. One could think that, given that this is a subject on differential equations, we should be studying $C^k$ spaces for some $k ∈ ℕ$. However, this turns out to be too restrictive, and the reason is one of completeness: these spaces are too small. One can see that we can approximate absolute monster functions (and even things that are not even functions) with infinitely smooth functions. It would be certainly difficult to work in these kind of spaces where one can step out of them at the slightest oversight.
+
+So, if we are dropping smoothness assumptions, we can work with the related operation: integration. Despite this horribly weak argument, this is the best choice although it requires a little bit of care and measure theory. Using integration yields nice complete spaces, a direct definition of a norm and a very good tolerance for monsters.
+
+The first base is then to define the basic space. Given $Ω ∈ ℝ^n$ and a measure $μ$ on $ℝ$, we define the $\mathcal{L}^p$ space as \( \mathcal{L}^p(Ω, μ) ≝ \set{\appl{f}{Ω}{ℝ} \tq \int_Ω\abs{f}^p \dif μ < ∞ } \label{eq:Fundamentals:LCalSpace} \) with the corresponding norm \( \norm{f}_{\mathcal{L}^p(Ω,μ)} = \left(\int_Ω \abs{f}^p \dif μ \right)^{\sfrac{1}{p}} \label{eq:Fundamentals:LpNorm} \)
+
+As the measure used is usually the Lebesgue measure, the `μ' is usually dropped off the notation.
+
+What is important --- and the reason why we need measure theory --- is that the norm defined in \eqref{eq:Fundamentals:LpNorm} is not actually a norm for the space $\mathcal{L}^p$: it does not separate points. The function $f \equiv 0$ has obviously norm 0, but a function that doesn't vanish on a set of measure zero has norm 0 too.
+
+The solution is a little bit `stupid', but it works: we define those two functions as to be the same one, and in fact we will do that with every two functions that are different only on a set of measure zero. With a little bit more formality, we define the following equivalence relation\footnote{Checking the properties is left as an exercise to the distrustful reader.}:
+\( ∀f,g ∈ \mathcal{L}^p(Ω), \quad f \sim g \iff \int_Ω \abs{f-g} \dif μ = 0 \label{eq:Fundamentals:EquivRel} \)
+
+With this we can define what is a $L^p$ space:
+
+\begin{defn}[{$L^p$} space][Space!{$L^p$}] Let $Ω ⊂ ℝ^n$ be a domain, and $μ$ a measure on $ℝ$. Then, we define the $L^p(Ω,μ)$ space as the quotient $\quot{\mathcal{L}^p(Ω,μ)}{\sim}$, with the space defined as in \eqref{eq:Fundamentals:LCalSpace} and the equivalence relation of \eqref{eq:Fundamentals:EquivRel}.
+
+In other words, $L^p$ space is the space of functions $p$-integrable on $Ω$, identifying those which only differ on a set of measure zero.
+
+One special case: when $p = ∞$, the norm is given as \[ \norm{f}_{∞} = \sup_{x ∈ Ω} \abs{f(x)} \] and thus the $L^{∞}(Ω)$ space is the one of bounded functions in Ω.
+\end{defn}
+
+The $L^p$ spaces are always Banach for $0 < p ≤ ∞$. In the case $p = 2$, it is a Hilbert space with the scalar product being \[ \pesc{f,g}_{L^2(Ω)} = \int_Ω f g \dif μ \]
+
+Proofs of these facts are left to the reader.
+
+\section{Distributions}
+
+In the previous section we explained how our space is going to be the one of integrable functions. However, we have not acknowledged something that is really important for PDEs: how can we differentiate general integrable functions?
+
+This requires us to bring in the theory of distributions, which are actually useful not only because they will allow us to define ``derivatives'' of general functions, but also because they are a useful tool when solving PDEs.
+
+A good motivation for distributions is given in \cite{DistributionsFourierTransform}, questioning how do we actually measure things. For example, when we have a thermometer, we don't measure the temperature in just one point in space: we do some kind of ``average'' between all the points of the mercury. An interesting thought experiment is to see what would happen if we measured the temperature of a zone in which there is one single point with infinite temperature. Could we measure that infinite? Or maybe we wouldn't see it because the other points would smooth it out?
+
+Distributions can be seen as a model of these kind of things. We couldn't model a point with infinite value with a function, but maybe we could think of that as some kind of generalized function.
+
+On to the mathematics, we will first define what our ``thermometers'' are going to be. The space of test functions will usually be defined as $\mathcal{D}(Ω) = C_0^∞(Ω)$; infinitely smooth functions with compact support on some open set $Ω ∈ ℝ^n$. This is one example of tradeoffs in functional analysis: by requiring the test functions to be infinitely smooth, we will be able to work with distributions without any kind of regularity property. If we relaxed the requirements on test functions, we would have a smaller class of distributions.
+
+Now, what is a distribution? We will first have the formal definition.
+
+\begin{defn}[Distribution] Let $Ω ⊂ ℝ^n$ be a domain, and $\mathcal{D}(Ω) = C_0^∞(Ω)$ our space of test functions. A distribution is then a continuous linear operator $\appl{T}{\mathcal{D}(Ω)}{ℝ}$.
+
+The space of distributions on $\mathcal{D}(Ω)$ is denoted by $\mathcal{D}'(Ω)$.
+\end{defn}
+
+This is actually a direct translation of the motivation we were talking of before. A distribution is just something that, when measured with a test functions, gives us a number. This is usually denoted by $T(φ)$ or $\pesc{T, φ}$.
+
+We require it to be linear because non-linear things are just awful. Continuity is also very important: if we are using a sequence of test functions converging to some other function, we want the result to be the same for the two possible paths of first measuring, then doing the limit and viceversa. Formally:
+
+\begin{defn}[Continous operator][Continuity!of an operator] Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $(φ_n)_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \pesc{T,φ_n} = \pesc{T, φ_n}\]
+\end{defn}
+
+In the specific case of test functions $\dstr(Ω)$ with $Ω ∈ ℝ^d$, we have to be careful with the definition of convergence: given a sequence $(φ_n)_{n≥1} ⊂ \dstr(Ω)$, we say that it converges to $φ ∈ \dstr(Ω)$ if and only if $\sop φ_n ⊂ K$ for some compact set $K ⊂ Ω$, and if $∂^\vA φ_n \to ∂^\vA φ$ with respect to the supremum norm for every multiindex\footnote{Reminder: a multiindex $\vA = (α_1, α_2, \dotsc, α_d)$ is a notation for the mixed partial derivatives $\frac{∂^{\abs{\vA}}}{∂x_1^{α_1}∂x_2^{α_2} \dotsb ∂x_d^{α_d}}$.} $\vA ∈ ℕ^d$.
+
+We have to see two examples of distributions. One will convince us that distributions are really generalized functions by seeing that functions are always distributions. Indeed, given $f ∈ \espLloc[1][Ω]$\footnote{Locally integrable functions, that is, funcitons integrable over every compact subset of Ω. This is a bigger class than $L^p$ (trivially, every integrable function in Ω is also integrable on any subset of it).}, we can assign it a distribution $T_f$ by means of \[ T_f(φ) = \int_Ω f φ \]
+
+The second example convinces us that this space is actually bigger and possibly useful: we can define the \concept{Dirac's delta} centered in $x ∈ Ω$ as a distribution \[ \pesc{δ_x, φ} = φ(x)\] that gives us the value of the test function at $x$. It is easy to check that it is a distribution, but we couldn't define it as a function\footnote{We could, however, define it as a measure: given a set $E$, $δ_x(E) = 1$ if $x ∈ E$, and 0 if $x ∉ E$.} (it is zero everywhere but with an ``infinite impulse'' at $x$).
+
+\subsection{Distributional derivatives}
+
+After studying distributions, we can define derivatives on them. The motivation is to make this derivative coincide with the usual derivative when the distribution is associated to a function. So, let $f ∈ C^1(Ω)$, $T_f ∈ \dstr'(Ω)$ the associated distribution and $\dstr(Ω)$ our space of test functions. We would like that $T_f'(φ) = T_{f'}(φ)$ for all $φ ∈ \dstr(Ω)$. Writing it down and integrating by parts: \[ T_{f'}(φ) = \int_Ω f' φ \dif μ = \underbracket{\restr{f φ}{∂Ω}}_{=0} - \int_Ω fφ' \dif μ = - \int_Ω fφ' \dif μ \] where φ vanishes on the border of Ω as it must have compact support. This is enough to define the distributional derivative.
+
+\begin{defn}[Distributional derivative][Derivative!distributional] Let $Ω ⊂ ℝ^d$ be an open set and $T ∈ \dstr'(Ω)$ a distribution. Then, we define the partial distributional derivative (with multiindex) $∂^\vA T$ as \[ \pesc{∂^\vA T, φ} = (-1)^{\abs{\vA}} \pesc{T, ∂^\vA φ} \]
+\end{defn}
+
+\section{Sobolev spaces}
+
+\[ W^{h,p} (Ω) ≝ \set{ u ∈ L^p(Ω) \tq ∂^αu ∈ L^p(Ω) \; ∀\abs{α} ≤ k} \] allowing distributional derivatives. This is Banach with the norm \[\norm{f}_{W^{h,p}} = \left(\sum_{\abs{α} ≤ h} \norm{∂^αu}_{L^p}^p\right)^{\sfrac{1}{p}} \] with the special case for $p = ∞$ \[ \norm{f}_{W^{h,∞}} = \sup_{\abs{α} ≤ h} \norm{∂^α u}_{L^∞} \]
+
+The special case is with $p = 2$, named as $H^k(Ω) = W^{k,2}(Ω)$, is a Hilbert space with the inner product given by \[ \pesc{f,g}_{H^k(Ω)} ≝ \sum_{\abs{α} ≤ k} \int_Ω ∂^α f · ∂^α g \dif x \], which clearly induces the norm defined previously.
+
+Nice property: embeddings: $H^{k+1} ⊂ H^k(Ω)$ and $H^0 (Ω) = L^2(Ω)$. For notational convenience, we can define the $H^k$ seminorm as simply by \[ \abs{f}_{H^k(Ω)}^2 = \sum_{\abs{α} = h} \norm{∂^αf}_{L^2(Ω)}\], and thus \[ \norm{f}_{H^k(Ω)}^2 = \sum_{m=0}^k \abs{f}^2_{H^m(Ω)} \]
+
+Regularity of the functions depend on the dimension. Question for us, if we take $Ω = \bola_r(0) ⊂ ℝ^2$, show that $f(x,y) = \abs{\ln \left(\frac{1}{\sqrt{x^2 + y^2}}\right)^a}$ is in $H^1$ for $0 < a < \frac{1}{2}$ but is not continous.
+
+\begin{theorem}[Sobolev embedding theorem] Let $Ω ⊂ ℝ^d$ be a open set with Lipschitz continous boundary, and verifying the three following conditions, then the theorem is completed later by me.
+\end{theorem}
+
+Fractional sobolev spaces.
+
+Trace allows us to enunciate boundary conditions on functions and, importantly, generalized functions. Existence of a linear operator from $H^1$ to $L^2$ functions on the boundary $∂Ω$, which is simply the restriction, and then it's bounded $\norm{γ_0v} ≤ C\norm{v}_{H^1(Ω)}$. Thing is that we can approximate by $C^∞$functions and then we define the limit. Still true if we use only a part of the boundary, as long as that part has not null measure. We can extend these ideas somehow.
+
+Introduce the space $H^1_0(Ω)$ as the subspace of $H^1(Ω)$ with the additional property that their trace is equal to $0$.
+
+\chapter{Other thing}
+
+Example. find $u ∈ C^2(Ω)$ such that \begin{align*}
+-Δu = f & \text{ in } Ω \\
+u =  0 & \text{ in } ∂Ω
+\end{align*}
+
+We want to use the weak formulation of this problem. Take a function $v ∈ \mathcal{D}(Ω) = C_0^∞(Ω)$. Let's multiply the PDE by this function and integrate. Then we have
+\begin{multline*}
+\int_Ω fv \dif x  = -\int_Ω v Δ u \dif x =
+ \int_Ω \grad u \grad v \dif x - \int \dv (v \grad u) \dif x = \\
+= \int_Ω \grad u \grad v \dif x - \underbracket{\int_{∂Ω} v \pesc{\vn, \grad u} \dif s}_{= 0}
+\end{multline*}
+
+Thus our problem is now to find $u ∈ C^2$ such that for every test function $v ∈ C_0^∞(Ω)$ we have that \[ \int_Ω \grad u \grad v \dif x = \int_Ω fv \dif x \]
+
+What we have accomplished is the fact that $\grad u$ is well defined just by having $u ∈ H_0^1(Ω)$ (we need to account for boundary conditions). We can also relax requirements for $v$, searching then for a function $v ∈ H_0^1(Ω)$.
+
+All in all, we have weakened regularity requirements. The advantage is that we can analytically prove the uniqueness of a solution in this weak formulation, and from that we can start working and studying the regularity of that function.
+
 \appendix
 
-\chapter{---}
+\chapter{Exercises}
 \input{tex/NumericalApproximationofPDEs_Exerc.tex}
+
+\backmatter
+\bibliography{../EPFLNotes.bib}
+
 \printindex
 \end{document}
