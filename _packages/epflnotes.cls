@@ -76,7 +76,6 @@
 \RequirePackage{natbib}
 \RequirePackage{enumitem}
 \RequirePackage[some]{background}
-\let\fref\relax
 \RequirePackage[plain]{fancyref}
 \RequirePackage{booktabs}
 \RequirePackage{natbib}
