@@ -46,6 +46,20 @@
 \RequirePackage{footnotefix}
 \RequirePackage{xfrac}
 \RequirePackage{fancyrefsimproved}
+\RequirePackage{esint}
+
+% Separation rule
+\newcommand{\seprule}[1][$\ast\quad\ast\quad\ast$]{{\color{gray} \noindent \hspace{40pt} \hrulefill~ \raisebox{-4pt}[10pt][10pt]{#1}~ \hrulefill\hspace{40pt}}}
+
+% To separate parts of a proof
+\newlength{\@proofline}
+\newcommand{\proofpart}[1]{
+	\vspace{10pt}
+	\setlength{\@proofline}{\maxof{\widthof{\textbf{#1}} + 40pt}{150pt}}
+	\hspace{-30pt}\rule[-0.5em]{\@proofline}{0.7pt}
+	\hspace{-\@proofline}\hspace{25pt} % I don't know how to add lengths
+	\textbf{#1}
+}
 
 % Para evitar que el \md de nuestro paquete tenga conflictos con el de commath
 \let\mder\md

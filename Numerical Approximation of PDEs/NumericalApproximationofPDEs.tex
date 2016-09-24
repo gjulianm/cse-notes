@@ -144,9 +144,9 @@ For notational convenience, we can define the $H^k$ seminorm as simply by \[ \ab
 
 One important aspect of Sobolev spaces is ``where do they live'' or, in other words, in which spaces can we embed a given Sobolev space and what does that tell us about the regularity of the functions in it. This is solved by the Sobolev embedding theorem.
 
-\begin{theorem}[Sobolev embedding theorem] Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a Lipschitz continuous function.}. Then, the following embedding properties hold:
+\begin{theorem}[Sobolev embedding theorem] Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:LipschitzCont}.}. Then, the following embedding properties hold:
 \begin{enumerate}
-	\item If $0 ≤ 2k < d$, then $H^k(Ω) ⊂ L^q(Ω)$ with $q = \sfrac{2d}{d-k}$.
+	\item If $0 ≤ 2k < d$, then $H^k(Ω) ⊂ L^q(Ω)$ with $q = \sfrac{2d}{(d-k)}$.
 	\item If $2k = d$, then $H^k(Ω) ⊂ L^q$ for $2 ≤ q < ∞$.
 	\item If $2(k-m) > d$, then $H^k(Ω) ⊂ C^m(\adh{Ω})$.
 \end{enumerate}
@@ -156,12 +156,77 @@ The last property is the most interesting, as it tells us that regularity of a g
 
 There are also two embeddings directly from the definition, say $H^{k+1}(Ω) ⊂ H^k(Ω)$ and $H^0(Ω) = L^2(Ω)$.
 
-\subsection{Fractional Sobolev spaces}
+\subsection{Fractional Sobolev spaces and continuity}
 
-Regularity of the functions depend on the dimension. Question for us, if we take $Ω = \bola_r(0) ⊂ ℝ^2$, show that $f(x,y) = \abs{\ln \left(\frac{1}{\sqrt{x^2 + y^2}}\right)^a}$ is in $H^1$ for $0 < a < \frac{1}{2}$ but is not continuous.
+Until now, we have defined Sobolev spaces with integer degree $k$. However, for the next section we will need what we call fractional Sobolev spaces. These will give us ``degrees'' of continuity: a Sobolev space of degree $4.5$ will be the space of functions that have 4 distributional derivatives in $L^p$ and for which the last derivative is ``somewhat continuous'', with that somewhat being graded by $0.5$.
 
-\begin{theorem}[Sobolev embedding theorem] Let $Ω ⊂ ℝ^d$ be a open set with Lipschitz continous boundary, and verifying the three following conditions, then the theorem is completed later by me.
+This ``somewhat continuity'' actually has a formal definition: Hölder continuity.
+
+\begin{defn}[Hölder continuity][Continuity!Hölder] Let $X,Y$ be two metric spaces and $\appl{f}{X}{Y}$ be a function between them. We say that $f$ is Hölder continuous of degree $α$ if there exists constants $C,α ∈ ℝ^+$ such that for every $x,y ∈ ℝ^d$ the following ``Hölder condition'' holds: \( \norm{f(x) - f(y)}_Y ≤ C\norm{x - y}_X^α \label{eq:Fundamentals:HolderCondition} \)
+
+A function will be locally Hölder continuous if we can find those constants $C,α$ for a neighborhood of every point $x ∈ ℝ^d$.
+\end{defn}
+
+Although for the definition we let the degree be $α ∈ ℝ^+$, we are only interested in the case $α ∈ (0,1)$. With $α = 0$, we only have bounded variation, which is not necessarily continuous at all. With any $α > 0$, we have that $f$ is continuous. Magic happens with $α = 1$, a case for which we will need an additional definition.
+
+\begin{defn}[Lipschitz continuity][Continuity!Lipschitz] \label{def:LipschitzCont} Let $X,Y$ be two metric spaces and  $\appl{f}{X}{Y}$ a function between them. We say that $f$ is Lipschitz continuous in $X$ if there exists a constant $K ∈ ℝ$ such that, for every $x,y ∈ X$, we have \( \frac{\norm{f(x) - f(y)}_Y}{\norm{x-y}_X} ≤ K \label{eq:Fundamentals:LipschitzCondition}  \)
+
+As it was the case with Hölder continuity, a function will be locally Lipschitz continuous if we can find the constant $K$ for a neighborhood of every point $x ∈ X$.
+\end{defn}
+
+It is straightforward to see that Hölder continuity of degree $1$ is equivalent to Lipschitz continuity. What is more interesting is the relationship of Lipschitz continuity and derivation.
+
+\begin{theorem}[Rademacher's Theorem] Let $\appl{f}{ℝ^m}{ℝ^n}$ be a Lipschitz continuous function. Then, it is differentiable almost everywhere (that is, the only points where it isn't differentiable have Lebesgue measure zero).
 \end{theorem}
+
+The proof is a little bit complex but uses measure theory so I'm writing it down only the part for one dimension. First of all, an important part which is the Riesz Representation Theorem, which gives us an equivalence between functionals and functions of the same Hilbert space.
+
+\begin{theorem}[Riesz Representation Theorem] \label{thm:RieszRepresentation} Let $H$ be a Hilbert space, and let $H'$ be its topological dual space\footnote{Beware: the topological dual space is the space of all \textbf{continuous} linear functionals on $H$.}. Given $x ∈ H$ an element of the Hilbert space, we can define a continuous linear functional \[ φ_x(y) = \pesc{y,x} \;∀y ∈ H\]
+
+
+The theorem states that \textbf{every} continuous linear functional has this representation as an scalar product. More broadly, the mapping $\appl{Φ}{H}{H'}$ defined as above is an isometric anti-isomorphism:
+\begin{enumerate}
+	\item Φ is bijective.
+	\item Φ conserves norms: $\norm{Φ(x)} = \norm{x}$.
+	\item Φ is antilinear: $\norm{Φ(x + y) } = Φ(x) + Φ(y)$ and $Φ(λx) = \conj{λ}Φ(x)$.
+\end{enumerate}
+\end{theorem}
+
+We are also going to need the Lebesgue differentiation theorem. Just as an improved notation, we define the ``averaging integral'' by $\fint_A f \dif μ = \frac{1}{μ(A)}\int f \dif μ$ where $μ(A)$ is the measure of the set $A$.
+
+\begin{theorem}[Lebesgue Differentiation Theorem] Let $\appl{f}{ℝ^m}{R^n}$ be a Lebesgue integrable function. Then, for almost every $x ∈ ℝ^m$ we have that \( \lim_{r \to 0} \frac{\int_{\bola_r(x)} f \dif μ}{μ(\bola_r(x))} = \fint_{\bola_r(x)} f \dif μ  = f(x) \)
+\end{theorem}
+
+This theorem gives us a nice corollary, which is the fundamental theorem of calculus for Lebesgue integrals.
+
+\begin{corol} \label{crl:LebesgueDifferentiation} Let $f$ be a Lebesgue integrable function, and let $F(x) = \int_{-∞}^x f \dif μ$. Then $F$ is differentiable almost everywhere with $F'(x) = f(x)$.
+\end{corol}
+
+With this, we can do the proof of Rademacher's theorem. We will only need one inequality:
+
+\begin{prop}[Hölder inequality][Inequality!Hölder] \label{prop:HolderInequality} Let $f ∈ L^p$ and $g ∈ L^q$ with $p,q$ conjugate exponents (that is, $\frac{1}{p} + \frac{1}{q} = 1$). Then, $fg ∈ L^1$ and \[ \norm{fg}_1 ≤ \norm{f}_p \norm{g}_q \]
+\end{prop}
+
+\begin{proof}[Rademacher's Theorem] What we are going to prove is that $\appl{f}{[a,b]}{ℝ}$ can be expressed as $f(x) = \int_a^b g(x) \dif x$ with $g$ differentiable. To construct this function, we first define a continuous linear functional and will then use the \nref{thm:RieszRepresentation}. For simplicity, we can assume $[a,b] = [0,1]$.
+
+First, recall the definition of simple functions. These are functions of the form $s(x) ≝ \sum α_i \ind_{[a_i, a_{i+1}]}$. We can define a linear functional $I$ on these functions given by \[ I(s) ≝ \sum α_i \left(f(a_{i+1}) - f(a_{i})\right) \]
+
+Now we will prove that this functional is bounded and thus continuous (linearity is trivial):
+\begin{align*}
+\abs{I(s)} &=\abs{\sum α_i \left(f(a_{i+1}) - f(a_{1})\right)} \\
+	&≤ \sum \abs{α_i} \abs{f(a_{i+1}) - f(a_{i})} \\
+	&≤ K \sum \abs{α_i} \abs{a_{i+1} - a_{i}} \quad\text{ (Lipschitz continuity)} \\
+	&= K \norm{s}_1 \\
+	&≤ K \norm{\ind_{(0,1]}}_2 \norm{s}_2 \quad\text{ (Hölder inequality)} \\
+	&= K \norm{s}_2
+\end{align*}
+
+As the simple functions are a dense subset of $L^2$, this means that $I$ is bounded for every $L^2$ function and thus it is a continuous linear functional on $L^2([0,1])$, and the same with $L^1$. Using the \nref{thm:RieszRepresentation}, there exists a function $φ ∈ L^2([0,1])$ such that $I(ψ) = \pesc{ψ, φ}$ for every $ψ ∈ L^2([0,1])$. As $I$ is also a linear functional on $L^1$, φ must be in $L^1$ too and thus it is Lebesgue integrable.
+
+Finally, we just choose $ψ_x = \ind_{[0,x]}$ so we have \[ I(ψ_x) = f(x) - f(0) = \int_0^x φ \dif μ \], which is the assumption of \fref{crl:LebesgueDifferentiation} and thus we have differentiability almost everywhere.
+\end{proof}
+
+
 
 Fractional sobolev spaces.
 

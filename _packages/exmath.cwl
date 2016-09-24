@@ -1,3 +1,6 @@
+\seprule#m
+\seprule[$\ast\quad\ast\quad\ast$]{{\color{gray} \noindent \hspace{40pt} \hrulefill~ \raisebox{-4pt}[10pt][10pt]#m
+\proofpart{arg0}#m
 \elst{arg0}{arg1}{arg2}#m
 \do{arg0}#m
 \pbreak#m
