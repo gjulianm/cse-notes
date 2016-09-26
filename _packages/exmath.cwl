@@ -334,3 +334,5 @@
 \ddual#m
 \ddual[X]#m
 \dstr#m
+\fcurv#m
+\fcurv[\tau]#m

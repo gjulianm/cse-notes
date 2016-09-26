@@ -1,11 +1,11 @@
 \documentclass[palatino]{epflnotes}
 
 \title{Differential Geometry of Framed Curves}
-\author{}
+\author{Guillermo Julián Moreno}
 \date{16/17 - Fall semester}
 
 % Additional packages
-
+\usepackage{tikztools}
 % --------------------
 
 \begin{document}
@@ -17,10 +17,61 @@
 \mainmatter
 % Content
 
-\backmatter
-\appendix
+\chapter{Framed curves or curves in $SE(3)$}
 
-\chapter{---}
+\begin{figure}[hbtp]
+\inputtikz{FramedCurve}
+\caption{The object of our study is the study of framed curves in the space of rigid body motions. In this space, we represent the position of an object (a displacement $\vr$) but also its rotation in space, represented by the transformation of the frame of reference (in purple).}
+\label{fig:FramedCurve}
+\end{figure}
+
+During this course, we will study curves in the special euclidean group $SE(3)$, the Lie group of matrix representing rigid body motions. It is called like this because, as explained in \fref{fig:FramedCurve}, we want to have a displacement and also a transformation of the frame of reference.
+
+This has a direct translation to the matrix representation of $SE(3)$: \(
+\left(\begin{array}{ccc|c}
+ & & &  \\
+ & R & & \vec{r} \\
+ & & &  \\ \hline
+ & \vec{0} & & 1
+\end{array}\right) \label{eq:SE3MatrixRepr} \), where $R ∈ SO(3)$ is a matrix representing the rotation and $\vr ∈ ℝ^3$ is a vector representing the movement or position in space.
+
+The fact that $R ∈ SO(3)$ (special orthogonal group) gives us the necessary restrictions on allowable rotations. Rotations of the frame of reference must be isometries, and must preserve orientations. Thus, $\det R = 1$ for all $R ∈ SO(3)$.
+
+
+\section{The living space $SE(3)$}
+
+Once we now the reason of working in this space, we can go for the formal definitions and see how do operations behave in here.
+
+\begin{defn}[Special orthogonal group $SO(N)$] The special ortogonal group $SO(N)$ of dimension $N$ is the group of isometries of $ℝ^N$ that maintain the origin as a fixed point and that preserve orientation.
+
+Elements of this space can be represented an $N × N$ matrix with determinant $1$ (that is, $N$ vectors representing the frame of reference which are orthogonal and preserve orientation). These matrixes have the property that, for $R ∈ SO(N)$, we have that $\trans{R} = \inv{R}$.
+\end{defn}
+
+\begin{defn}[Special Euclidean group $SE(N)$] The special euclidean group $SE(N)$ of dimension $N$ is the group of all isometries of $ℝ^N$ that preserve orientations. These isometries can be thought of as a rotation of $SO(N)$ and a displacement given by a vector $ℝ^N$, and with the matrix representation from \eqref{eq:SE3MatrixRepr}.
+\end{defn}
+
+So, now on for computations, we can see how multiplication works \( \label{eq:SE3Mult} \begin{pmatrix} Q_1 & q_1 \\ 0 & 1 \end{pmatrix} ·  \begin{pmatrix} Q_2 & q_2 \\ 0 & 2 \end{pmatrix} = \begin{pmatrix} Q_1 Q_2 & Q_1q_2 + q_1 \\ 0 & 1 \end{pmatrix} \) and also the inverse operation \( \begin{pmatrix} Q & q \\ 0 & 1 \end{pmatrix}^{-1} = \begin{pmatrix} \trans{Q} & - \trans{Q} q \\ 0 & 1 \end{pmatrix} \)
+
+Something about relative rotations that I will copy later.
+
+\section{Curves in $SE(3)$}
+
+We are not only interested in the static picture of $SE(3)$: we actually want to study uniparametric families of these matrixes or, in other words, curves in $SE(3)$.
+
+What we will study will be configurations of a ``tube'', ``rod'' or filaments, which actually will be considered as curves $X(τ) ∈ SE(3)$ for $τ ∈ (a,b)$.
+
+Our first example is a curve in $ℝ^3$ with its Frenet frame of reference. Let's define both things:
+
+\begin{defn}[Frenet\IS frame of reference] \label{def:FrenetFrame}
+\end{defn}
+
+\begin{defn}[Frenet\IS curve] A Frenet curve $\mathcal{F}(τ)$ in $SE(3)$ is a regular curve $\vr(τ)$ in $ℝ^3$ together with its \nref{def:FrenetFrame}: \[ \mathcal{F}(τ) = \begin{pmatrix} F(τ) & \vr(τ) \\ 0 & 1 \end{pmatrix} \]
+\end{defn}
+
+\appendix
+\chapter{Exercises}
 \input{tex/DifferentialGeometryofFramedCurves_Exerc.tex}
+
+\backmatter
 \printindex
 \end{document}

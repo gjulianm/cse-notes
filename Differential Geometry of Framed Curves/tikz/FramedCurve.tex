@@ -1,0 +1,21 @@
+\begin{tikzpicture}[xscale = 1]
+
+\draw[->] (0,0,0) -- (5,0,0);
+\draw[->] (0,0,0) -- (0,4,0);
+\draw[->] (0,0,0) -- (0,0,4);
+
+\node[circle, draw, palette1, inner sep = 3pt, fill = palette1] (N) at (4,3,3) {};
+\draw[thick, palette1] (0,0,0) to [bend left] (N);
+\draw[dotted] (N) -- (4,3,0) -- (4,0,0) -- (4,0,3) -- (N);
+\draw[dotted] (N) -- (4,0,3) -- (0,0,3) -- (0,3,3) -- (N);
+
+\draw[->, palette2] (0,0,0) -- node[below, midway, sloped] {$\mathbf{r}$} (N);
+\draw[->, palette3, very thick] (N) -- (5.33,3,4);
+\draw[->, palette3, very thick] (N) -- (4,3,5.33);
+\draw[->, palette3, very thick] (N) -- (4,4,3);
+
+\draw[->, dashed, palette3, very thick] (0,0,0) -- (1,0,0);
+\draw[->, dashed, palette3, very thick] (0,0,0) -- (0,1,0);
+\draw[->, dashed, palette3, very thick] (0,0,0) -- (0,0,1);
+
+\end{tikzpicture}
