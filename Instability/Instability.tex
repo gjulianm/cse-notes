@@ -66,11 +66,25 @@ However, if $ω^2 > ω_0^2$, things change. In this case the square root is real
 
 An interesting phenomenon is that when we are in the stable zone ($ω^2 < ω_0^2$) but with both quantities very similar, the relaxation time (that is, the time it takes to the system to go back to the stable state) starts to grow up to infinity.
 
-To find the stable states, we should solve the second order equation and things happens.
+\subsection{Stable (constant) states}
+
+\begin{figure}[hbtp]
+\inputtikz{RotatingRingStableSolutions}
+\caption{Stable points of the rotating ring system.}
+\label{fig:Introduction:RotatingRingStable}
+\end{figure}
+
+Stable states are those that arise as constant functions. Solving \eqref{eq:Introduction:RotatingRingEquation} for $θ = c$ constant, we get first $θ_0 = 0$ and \[ θ_s = \pm \arccos\left(\frac{ω_0^2}{ω^2}\right)\] as solutions, where the latter is only defined for $ω^2 ≥ ω_0^2$. This leads to a bifurcation, as can be seen on \fref{fig:Introduction:RotatingRingStable}.
+
+In order to see that these states are actually stable and not static but unstable points is to see what happens with small perturbations. Thus, we would study the case with starting point $θ(0) = θ_s \pm ε$, and then see what does the solution tend to. I would do it but I don't want to deal with nasty trigonometric calculations, that's for engineers.
+
+
 
 Something something potential flow $\curl \vu = 0$ then we can introduce a potential, with some otherconditions like inviscid and incompressible then we can use 2D. Simple expression of Bernoulli?. We have to define dynamic and kinematic boundary conditions. Dynamic is force, kinematic is velocity. Something Navier-Stokes we can let the fluids slip and something more.
 
 Something more boundary conditions I'll just check the slide. The interface is $z = η(x,t)$. The kinematic condition is impermeability, thus locally on each point of the interface the velocities must be the same on both fluids.
+
+\chapter{}
 
 \appendix
 
