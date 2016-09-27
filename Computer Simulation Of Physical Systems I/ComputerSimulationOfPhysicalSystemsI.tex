@@ -5,7 +5,7 @@
 \date{16/17 - Fall semester}
 
 % Additional packages
-
+\usepackage{tikztools}
 % --------------------
 
 \begin{document}
@@ -36,15 +36,42 @@ The simplest formula is called the Euler method.
 \begin{prop}[Euler method] \label{prop:EulerMethod} Let $y(x)$ be a ¿? function with the differential equation $\iod{y}{x} = f(x,y)$ with $f$ being another ¿? function. Let $y(x_n) = y_n$ be a value of the equation. Then we can obtain the next value by the given formula: \( y_{n+1} = y_n + h · f(x_n, y_n) + \mathcal{O}(h^2) \)
 \end{prop}
 
-However, this is a simple method and not very accurate, as it has a low convergence rate. Another method is based on Taylor expansion of again functions in some absolute random space
+However, this is a simple method and not very accurate, as it has a low convergence rate. Another method is based on Taylor expansion of again functions in some absolute random space.
 
-\begin{prop}[Taylor expansion method] In the same conditions (that is, no conditions) of \fref{prop:EulerMethod}, we can use a method of higher-order accuracy: \( y_{n+1} = y_n + hf + \frac{1}{2}h^2 \left(\dpd{f}{x} + f \dpd{f}{y}\right) + \mathcal{O}(h^3) \label{eq:TaylorExpansion} \)
+\begin{prop}[Taylor expansion method] In the same conditions (that is, no conditions) of \fref{prop:EulerMethod}, we can use a method of higher-order accuracy: \( y_{n+1} = y_n + hf(x_n, y_n) + \frac{1}{2}h^2 \left(\dpd{f}{x}(x_n, y_n) + f (x_n, y_n) \dpd{f}{y}(x_n, y_n\right) + \mathcal{O}(h^3) \label{eq:TaylorExpansion} \)
 \end{prop}
+
+We can, however, achieve the same accuracy with a three-point method.
+
+\begin{prop}[Symmetric differences method] In the same no conditions previously not explained, we can approximate by \( y_{n+1} = y_{n-1} + 2hf(x_n, y_n) + \mathcal{O}(h^3)\)
+\end{prop}
+
+The disadvantage is that here we need to be able to differentiate $f$ with respect to $x$ and $y$, something that will not always be easy.
 
 Runge-Kutta. Advantages: accuracy 2nd order,  no easy differentiability required (unlike Taylor), can start right away (unlike multistep), no linearity $f$ in $y$ (implicit linearity)
  and can change step size.
 
+\subsection{Stability}
+
+\begin{figure}[hbtp]
+\inputtikz{ExponentialApprox}
+\caption{A numerical approximation of the ODE $y' = -y$ can suffer from stability problems when the solution goes to 0.}
+\label{fig:ExponentialApproxProblem}
+\end{figure}
+
+One interesting aspect to study is the stability of the methods. For example, let's consider the problem \begin{align*} y' &= -y \\ y(0) &= 1 \end{align*}
+
+This problem has an exact solution given by $y = e^{-x}$.
+
 \chapter{Molecular dynamics}
+
+\section{Classical molecular dynamics}
+
+One of the main purposes when doing simulations of molecular dynamics is to find equilibrum properties of some quantity that depends on the position of the particles and their momemtum. We might also want to calculate time correlation functions, seeing how does a particle evolve in time.
+
+The first step if the definition of the variables and their interactions, which is done by the definition of the hamiltonian. It is also necessary to define the initial configuration. There will finally issues with boundary conditions: we don't want to see physical effects at boundaries so there are several possibilities.
+
+We will be also interested in the cutoff radius $r_C$, the limit until which we suppose forces can act.
 
 \chapter{Monte Carlo simulations}
 

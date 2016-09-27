@@ -1,0 +1,21 @@
+
+\begin{tikzpicture}
+\begin{axis}[width = 15cm, height = 7cm, grid = both, xlabel = $x$, ylabel=$y(x)$]
+\pgfmathsetmacro{\initialx}{0}
+\pgfmathsetmacro{\stepsize}{0.1}
+\pgfmathsetmacro{\previousval}{1 - \stepsize + 0.5 * \stepsize ^ 2}
+\pgfmathsetmacro{\ppreviousval}{1.0}
+\addplot[palette1, thick, domain = 0:12] {e^(-x)};
+\addplot[palette2, only marks, mark size = 0.8pt] coordinates {(\initialx, \ppreviousval) (\initialx + \stepsize, \previousval)};
+\legend{$e^{-x}$, Num. approx}
+
+\foreach \i in {2, ..., 120} {
+	\pgfmathsetmacro{\xcoord}{\initialx + \i * \stepsize}
+	\pgfmathsetmacro{\ycoord}{\ppreviousval - 2 * \stepsize * \previousval}
+	\global\let\ppreviousval\previousval
+	\global\let\previousval\ycoord
+	\addplot[palette2, only marks, mark size = 0.8pt] coordinates {(\xcoord, \ycoord)};
+}
+
+\end{axis}
+\end{tikzpicture}
