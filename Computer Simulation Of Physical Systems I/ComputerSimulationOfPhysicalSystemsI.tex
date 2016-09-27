@@ -41,6 +41,9 @@ However, this is a simple method and not very accurate, as it has a low converge
 \begin{prop}[Taylor expansion method] In the same conditions (that is, no conditions) of \fref{prop:EulerMethod}, we can use a method of higher-order accuracy: \( y_{n+1} = y_n + hf + \frac{1}{2}h^2 \left(\dpd{f}{x} + f \dpd{f}{y}\right) + \mathcal{O}(h^3) \label{eq:TaylorExpansion} \)
 \end{prop}
 
+Runge-Kutta. Advantages: accuracy 2nd order,  no easy differentiability required (unlike Taylor), can start right away (unlike multistep), no linearity $f$ in $y$ (implicit linearity)
+ and can change step size.
+
 \chapter{Molecular dynamics}
 
 \chapter{Monte Carlo simulations}
