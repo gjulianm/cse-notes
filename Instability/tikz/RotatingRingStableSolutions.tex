@@ -4,9 +4,21 @@
 	width = 13cm, height = 7cm, samples = 200,
 	legend pos = north west, legend cell align = left,
 	xlabel = $\sfrac{\omega^2}{\omega_0^2}$]
-\addplot[domain=0:1, palette1, thick] {0};
-\addplot[domain=1:2, palette2, thick] {acos(1 / \x) * 2 * pi / 360};
-\addplot[domain=1:2, palette3, thick] {-acos(1 / \x) * 2 * pi / 360};
-\legend{$\theta_0 = 0$,$\theta_s = \arccos\left(\sfrac{\omega_0^2}{\omega^2}\right)$, $\theta_s = -\arccos\left(\sfrac{\omega_0^2}{\omega^2}\right)$}
+	\addplot[domain=0:1, palette1, thick] {0};
+	\addplot[domain=1:2, palette2, thick] {acos(1 / \x) * 2 * pi / 360};
+	\addplot[domain=1:2, palette3, thick] {-acos(1 / \x) * 2 * pi / 360};
+	\addplot[domain=1:2, palette1, dashed] {0};
+
+	\pgfplotsinvokeforeach{0.1, 0.2, ..., 0.9}{
+		\draw[dense directed, gray] (axis cs:#1, 0.3) -- (axis cs:#1, 0);
+		\draw[dense directed, gray] (axis cs:#1, -0.3) -- (axis cs:#1, 0);
+	}
+
+	\pgfplotsinvokeforeach{1.1, 1.2, ..., 1.9}{
+		\draw[dense directed, gray] (axis cs:#1, 0) -- (axis cs:#1, {acos(1 / #1) * 2 * pi / 360});
+		\draw[dense directed, gray] (axis cs:#1, 0) -- (axis cs:#1, {- acos(1 / #1) * 2 * pi / 360});
+	}
+
+	\legend{$\theta_0 = 0$,$\theta_s = \arccos\left(\sfrac{\omega_0^2}{\omega^2}\right)$, $\theta_s = -\arccos\left(\sfrac{\omega_0^2}{\omega^2}\right)$}
 \end{axis}
 \end{tikzpicture}

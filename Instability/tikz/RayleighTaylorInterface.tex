@@ -1,0 +1,39 @@
+
+\begin{tikzpicture}[xscale = 1.2]
+\draw[->, thin, gray] (0, -3) -- (0, 3) node[above] {$z$};
+\draw[->, thin, gray] (0, 0) -- (9.5, 0) node[above] {$x$};
+
+\fill[palette1, opacity = 0.2, domain = 0:9] (0, 2.8) plot ({\x}, {5 * sin(6 * cos(\x r))}) -- (9, 2.8) -- (0, 2.8);
+\fill[palette2, opacity = 0.2, domain = 0:9] (0, -2.8) plot ({\x}, {5 * sin(6 * cos(\x r))}) -- (9, -2.8) -- (0, -2.8);
+
+\draw[thick, domain = 0:9, samples = 200] plot ({\x}, {5 * sin(6 * cos(\x r))}) node[right] {$z = \eta(x,t)$};
+
+\pgfmathsetmacro{\slope}{0.52}
+
+\coordinate (NA) at (4.7 - 2 * \slope, 2);
+\coordinate (NB) at (4.7 + 2 * \slope, -2);
+
+\draw[dotted] (NA) -- (NB);
+
+\node[nodepoint, palette3] (T) at (4.7,0) {};
+\coordinate (DA) at ({4.7 + 1}, {\slope});
+\coordinate (DB) at ({4.7 - 1}, {- \slope});
+
+\draw[palette3, thick, shorten >= -1cm, shorten <= -1cm] (DA) -- (DB);
+\tikzangle[palette3, name = $\alpha$, name color = palette3]{T}{DA}{5.7, 0}
+
+\coordinate (V) at (4.7, 1);
+\coordinate (U) at (6.5, 0);
+
+\draw[->, palette4] (T) -- (V) node[above] {$V_1$};
+\draw[->, palette5] (T) -- (U) node[below] {$U_1$};
+
+\coordinate (NV) at ($(NA)!(V)!(NB)$);
+\coordinate (NU) at ($(NA)!(U)!(NB)$);
+
+\draw[dashed, gray] (V) -- (NV);
+\draw[thick, palette4, ->] (T) -- (NV) node[left] {$V_\perp$};
+
+\draw[dashed, gray] (U) -- (NU);
+\draw[thick, palette5, ->] (T) -- (NU) node[left] {$U_\perp$};
+\end{tikzpicture}

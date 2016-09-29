@@ -6,6 +6,7 @@
 
 % Additional packages
 \usepackage{tikztools}
+\usepackage{caption}
 % --------------------
 
 \begin{document}
@@ -66,25 +67,81 @@ However, if $ω^2 > ω_0^2$, things change. In this case the square root is real
 
 An interesting phenomenon is that when we are in the stable zone ($ω^2 < ω_0^2$) but with both quantities very similar, the relaxation time (that is, the time it takes to the system to go back to the stable state) starts to grow up to infinity.
 
-\subsection{Stable (constant) states}
+\subsection{Equilibrum states}
 
 \begin{figure}[hbtp]
 \inputtikz{RotatingRingStableSolutions}
-\caption{Stable points of the rotating ring system.}
+\caption{Equilibrum points of the rotating ring system with arrows describing whether it's a stable (attracting) or unstable state. The solution $θ_0$ becomes unstable with $\sfrac{ω^2}{ω_0^2} > 1$.}
 \label{fig:Introduction:RotatingRingStable}
 \end{figure}
 
-Stable states are those that arise as constant functions. Solving \eqref{eq:Introduction:RotatingRingEquation} for $θ = c$ constant, we get first $θ_0 = 0$ and \[ θ_s = \pm \arccos\left(\frac{ω_0^2}{ω^2}\right)\] as solutions, where the latter is only defined for $ω^2 ≥ ω_0^2$. This leads to a bifurcation, as can be seen on \fref{fig:Introduction:RotatingRingStable}.
+Equilibrum states are those that arise as constant functions. Solving \eqref{eq:Introduction:RotatingRingEquation} for $θ = c$ constant, we get first $θ_0 = 0$ and \[ θ_s = \pm \arccos\left(\frac{ω_0^2}{ω^2}\right)\] as solutions, where the latter is only defined for $ω^2 ≥ ω_0^2$. This leads to a bifurcation, as can be seen on \fref{fig:Introduction:RotatingRingStable}.
 
-In order to see that these states are actually stable and not static but unstable points is to see what happens with small perturbations. Thus, we would study the case with starting point $θ(0) = θ_s \pm ε$, and then see what does the solution tend to. I would do it but I don't want to deal with nasty trigonometric calculations, that's for engineers.
+In order to see that these states are actually stable and not static but unstable points is to see what happens with small perturbations. Thus, we would study the case with initial flow $θ(0) = θ_s \pm εθ'$, and then see what does the solution tend to. I would do it but I don't want to deal with nasty trigonometric calculations, that's for engineers.
 
+After those nasty computations, we would end up with a simplified equation for $θ'$ given by \[ \ddot{θ}' = -θ'ω^2 \sin^2 θ_s \] whose solution is a pure imaginary exponential. That is, we have an stable value.
 
+\chapter{Instabilities}
 
-Something something potential flow $\curl \vu = 0$ then we can introduce a potential, with some otherconditions like inviscid and incompressible then we can use 2D. Simple expression of Bernoulli?. We have to define dynamic and kinematic boundary conditions. Dynamic is force, kinematic is velocity. Something Navier-Stokes we can let the fluids slip and something more.
+\section{Rayleigh-Taylor instability}
 
-Something more boundary conditions I'll just check the slide. The interface is $z = η(x,t)$. The kinematic condition is impermeability, thus locally on each point of the interface the velocities must be the same on both fluids.
+\begin{figure}[hbtp]
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=0.8\textwidth]{img/RayleighTaylorInstability.png}
+\captionof{figure}{Image of the evolution of the interface with Rayleigh-Taylor instability.}
+\label{fig:RayleighTaylorInterfaceImage}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\inputtikz{RayleighTaylorModel}
+\captionof{figure}{Simplified model of two liquids: 2D and with infinite semiplanes.}
+\label{fig:RayleighTaylorModel}
+\end{minipage}
+\end{figure}
 
-\chapter{}
+Our first instability will be Rayleigh-Taylor, which models a situation with two impermeable liquids, one below of the other.
+
+To simplify the study of these kind of instabilities, we simplify down to a situation like in \fref{fig:RayleighTaylorModel}. We assume a potential flow with no rotation and no vorticity. Then, to study it we will follow the steps outlined previously.
+
+Our potential flow is $ΔΦ_1 = ΔΦ_2 = 0$, so our velocity equations are \begin{align*}
+U_1 &= \dpd{Φ_1}{x} & V_1 = \dpd{Φ_1}{z} \\
+U_2 &= \dpd{Φ_2}{x} & V_2 = \dpd{Φ_2}{z}
+\end{align*}
+
+The velocities $U$ represent the movement of the flow parallel to the $x$ axis, and $V$ represents the velocity parallel to the $z$ axis.
+
+The boundary conditions will be zero values for $Φ_1$ and $Φ_2$ at $z = \pm ∞$ respectively: we don't want the flows to move at infinity.
+
+The next step is the definition of the interface, the set of points where the two flows ``touch'', and define the relations at that boundary. The first one is impermeability: no particles pass through the interface. This means that, as reflected in \fref{fig:RayleighTaylorInterface}, the components of $V_1$ and $U_1$ normal to the interface ($V_\perp$ and $U_\perp$) must cancel. Knowing also that, at the interface, $V_1 = ∂_t η$, we can start writing down the expressions of that:
+\begin{align*}
+V_\perp &= ∂_t η \cos α \\
+U_\perp &= U_1 \sin α
+\end{align*}
+
+\begin{figure}
+\inputtikz{RayleighTaylorInterface}
+\caption{Interface η in Rayleigh-Taylor instability.}
+\label{fig:RayleighTaylorInterface}
+\end{figure}
+
+Our kinematic condition is that we will force impermeability, so that normal components to the interface must be equal. Now for the fluid we write down some equations and something.
+
+Now on to the dynamic boundary conditions.
+
+For potential flows, we have the second Bernouilli relations:
+\begin{align*}
+\dpd{Φ_1}{t} + \frac{U_1^2 + V_1^2}{2} + \frac{P_1}{ρ_1} + gz &= C_1(t) \\
+\dpd{Φ_2}{t} + \frac{U_2^2 + V_2^2}{2} + \frac{P_2}{ρ_2} + gz &= C_2(t) \\
+\end{align*}
+
+Looking at these relations at infinity, we assume that nothing changes there so we can equate $C_1(t) = C_2(t) = 0$ and life is easier.
+
+Once we have this, we add a small perturbation $ε$ to everything.
+
+Then a lot of linearization without checking if the functions involved are analytic.
+
+Then double Fourier analysis (normal mode expansion). Mumbojumbo. Solutions. Eigenvalue and a dispersion relation for a non-trivial solution.
 
 \appendix
 

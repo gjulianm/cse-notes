@@ -193,8 +193,10 @@
 	radius/.value required,
 	sepradius/.estore in = \asepradius,
 	sepradius/.value required,
+	name color/.estore in = \anamecolor,
+	name color/.value required,
 	default/.style =
-	  { name={}, radius=5mm, sepradius=3mm },
+	  { name={}, radius=5mm, sepradius=3mm, name color = black },
 	.unknown/.code={%
 		\let\currname\pgfkeyscurrentname%
 		\let\currval\pgfkeyscurrentvalue%
@@ -222,7 +224,7 @@
 			\node (bisect_a) at ($(#2)!5mm!(#3)$) {};
 			\node (bisect_b) at ($(#2)!5mm!(#4)$) {};
 			\node (bisect) at ($(bisect_a)!0.5!(bisect_b)$) {};
-			\node[anchor=center] at ($(#2)!\aradius + \asepradius!(bisect)$) {\aname};
+			\node[anchor=center, \anamecolor] at ($(#2)!\aradius + \asepradius!(bisect)$) {\aname};
 	\end{scope}
 }
 
