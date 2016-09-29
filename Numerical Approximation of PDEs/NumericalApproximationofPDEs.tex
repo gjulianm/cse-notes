@@ -234,25 +234,94 @@ Trace allows us to enunciate boundary conditions on functions and, importantly, 
 
 Introduce the space $H^1_0(Ω)$ as the subspace of $H^1(Ω)$ with the additional property that their trace is equal to $0$.
 
-\chapter{Other thing}
+\chapter{Elliptic problems}
 
-Example. find $u ∈ C^2(Ω)$ such that \begin{align*}
+The first chapter will be dedicated to the study of elliptic PDEs. Those are of the form \(
+\begin{cases}
 -Δu = f & \text{ in } Ω \\
 u =  0 & \text{ in } ∂Ω
-\end{align*}
+\end{cases} \label{eq:EllipticProblem} \) for some open domain $Ω ∈ ℝ^d$ and some function $f ∈ C^2(Ω)$.
 
-We want to use the weak formulation of this problem. Take a function $v ∈ \mathcal{D}(Ω) = C_0^∞(Ω)$. Let's multiply the PDE by this function and integrate. Then we have
-\begin{multline*}
-\int_Ω fv \dif x  = -\int_Ω v Δ u \dif x =
- \int_Ω \grad u \grad v \dif x - \int \dv (v \grad u) \dif x = \\
-= \int_Ω \grad u \grad v \dif x - \underbracket{\int_{∂Ω} v \pesc{\vn, \grad u} \dif s}_{= 0}
-\end{multline*}
+This equation models, for example, the distribution of heat in a domain, the concentration of a chemical in a fluid at rest, an electric potential in presence of distributed charges, the deformation of a membrane...
 
-Thus our problem is now to find $u ∈ C^2$ such that for every test function $v ∈ C_0^∞(Ω)$ we have that \[ \int_Ω \grad u \grad v \dif x = \int_Ω fv \dif x \]
+This problem can be solved in the strong form, where we approximate the second derivative using Taylor series and then try to find the solution (finite differences method). But we can also use the weak formulation, which is used for the finite elements method.
 
-What we have accomplished is the fact that $\grad u$ is well defined just by having $u ∈ H_0^1(Ω)$ (we need to account for boundary conditions). We can also relax requirements for $v$, searching then for a function $v ∈ H_0^1(Ω)$.
+\section{Weak formulation}
 
-All in all, we have weakened regularity requirements. The advantage is that we can analytically prove the uniqueness of a solution in this weak formulation, and from that we can start working and studying the regularity of that function.
+As a reminder, we start from a PDE in a strong form such as \[ -Δu = f \text{ in Ω}\]
+
+A physical interpretation is to think of the solutions as solutions that will zero-out the forces for every possible small displacement, that is, solving \[ \int_Ω (-Δu -f) v = 0 \] for all ``virtual displacement'' $\appl{v}{Ω}{ℝ}$ that is sufficiently smooth.
+
+In order to have an improved form of that, we use integration by parts: \begin{multline*} \int_Ω - Δu v = -\int \dv (\grad u) v = \\ = - \int_Ω \dv(\grad u · v) + \int_Ω \grad u · \grad v = - \int_{∂Ω} \underbracket{(\grad u · \vn)}_{∂_\vn u} · v + \int_Ω \grad u · \grad v \end{multline*}
+
+We have a small problem with the integration on the boundary. But if we think of the previous physical argument, if $v$ is a virtual displacement, we should have it constrained in the boundary, so $\restr{v}{∂Ω} = 0$, the boundary term disappears and our weak formulation is \[ \int_Ω \grad u · \grad v = \int_Ω f v \]
+
+Another way to think of this is that is $v$ is any kind of test function, it must have compact support contained in $Ω$ and thus it must be zero on the boundary.
+
+Once we have the formulation, we can study the regularity requirements for $v$. We would like to have bounded integrals, and by applying the \nref{prop:HolderInequality} we see that we need $\norm{\grad v}_2$ and $\norm{v}_2$ to be bounded. That, together with the restriction on the boundary, means that we need $v ∈ H_0^1(Ω)$ (see the introduction for the definition of this space).
+
+Now let's put everything together:
+
+\begin{defn}[Weak\IS formulation of a PDE problem] Given a domain $Ω⊂ℝ^d$ and a function $f ∈ C^2(Ω)$, find $u ∈ H_0^1(Ω)$ such that \( \int_Ω \grad u · \grad v = \int_Ω f v \label{eq:WeakFormulation} \) for every $v ∈ H_0^1(Ω)$.
+\end{defn}
+
+But we can also look at these two terms of \eqref{eq:WeakFormulation} as operators on the Hilbert space \begin{align*}
+\appl{a}{H_0^1(Ω)×H_0^1(Ω)&}{ℝ} & \appl{F}{H_0^1(Ω)&}{ℝ} \\
+(u,v) &\longmapsto \int_Ω \grad u · \grad v  & v &\longmapsto \int_Ω f v
+\end{align*} with $a$ a bilinear form and $F$ a linear form. This gives us an abstract weak formulation.
+
+\begin{defn}[Weak\IS abstract formulation of a PDE problem] \label{def:WeakAbstractFormulation} Given a Hilbert space $V$, a bilinear form $\appl{a}{V×V}{ℝ}$ and a linear form $\appl{F}{V}{ℝ}$, find $u ∈ V$ such that \[ a(u,v) = F(v)\quad ∀ v ∈ V \]
+\end{defn}
+
+Bounded operators are already defined (check \cite{ApuntesAnalisisFunc}). For bilinear forms, two definitions:
+
+\begin{defn}[Continous\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is continous (or bounded\footnote{As with linear forms, both notions are equivalent}) if and only if exists $M > 0$ such that \[ \abs{a(u,v)} ≤ M \norm{u}_V \norm{v}_V\] for all $u,v ∈ V$.
+\end{defn}
+
+\begin{defn}[Coercive\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is coercive if an inly if exists a constant $α > 0$ such that \[ a(u,u) ≥ α \norm{u}^2\]
+
+As notation, α is called the coercivity coefficient
+\end{defn}
+
+WIth that, we can enunciate the Lax-Milgram lemma for the weak abstract formulation.
+
+\begin{lemma}[Lax-Milgram\IS lemma] \label{lem:LaxMilgram} Given a Hilbert space $V$, a bilinear, continuous and coercive form $\appl{a}{V×V}{ℝ}$ and a linear, bounded operator $\appl{F}{V}{ℝ}$; the \nlref{def:WeakAbstractFormulation} has a unique solution $u ∈V$ such that \[ \norm{u}_V ≤ \frac{1}{α} \norm{F}_{V^*} \] with α the coercivity constant of $a$.
+\end{lemma}
+
+\subsection{Poisson problems}
+
+It is easy to see that we can apply the \nref{lem:LaxMilgram} to our problem: if $v ∈ H^1_0(Ω)$, then its $L^2$-norm is bounded so \[ \abs{\int_Ω fv} ≤ \norm{f}_{L^2} \norm{v}_{L^2} ≤ \norm{f}_{L^2} \norm{v}_{H^1} < ∞ \]
+
+Same happens with $a$: the boundedness is directly obtained from the fact that $u, v ∈ H^1_0(Ω)$. Coercivity can be a little bit more complicated. For that, we must use the Poincaré inequality TODO LINK INTRO which tells us that there is a constant $C_p > 0$ such that $\int v^2 ≤ C_p \int \abs{\grad u}^2$ for all $u ∈ H_0^1$. So, in this case we have that \[
+\norm{u}^2_{H^1} = \int v^2 + \int \abs{\grad v}^2 ≤ (1+C_p^2) \int \abs{\grad u}^2
+\] so our coercivity constant is $\frac{1}{1 + C_p^2}$.
+
+This means that, applying the \nref{lem:LaxMilgram}, we have a unique solution $u ∈ V$ such that \[ \norm{u}_{H^1_0} ≤ (1+C_p^2) \norm{F}_{H^1_0} \]
+
+\subsection{Poisson problems with mixed boundary conditions}
+
+We will want to know what happens when we have mixed boundary conditions. We may have two types of boundary conditions, which we define now.
+
+\begin{defn}[Boundary condition\IS Dirichlet] Also called essential boundary condition, is a restriction on the boundary $u = g$.
+\end{defn}
+
+\begin{defn}[Boundary condition\IS Neumann] Also called natural boundary condition, is a restriction on the normal derivative. $∂_\vn u = h$.
+\end{defn}
+
+Thus, we will study the problem \( \begin{cases}
+-Δu =f & \text{in }Ω \\
+u = g & \text{on }Γ_D \\
+∂_\vn u = h & \text{on }Γ_N \end{cases} \) with $Γ_D ∪ Γ_N = ∂Ω$.
+
+We can start with the weak formulation as previously \[ \int_Ω fv = \int_Ω -Δu v = \int_Ω \grad u · \grad v - \int_{∂Ω} ∂_\vn u v = \int_Ω \grad u \grad v - \int_{Γ_N} ∂_\vn v - \int_{Γ_D} ∂_n u v\]
+
+The problem here is how to deal with the boundary term on $Γ_D$. As we did in the previous section, we can select $\restr{v}{Γ_D} = 0$. Thus, our weak formulation is \( \int_Ω \grad u · \grad v = \int_Ω f v + \int_{Γ_N} h v \) with $v ∈ H^1_{Γ_D}$, where we can define \( H^1_{Γ_D} = \set{ v ∈ H^1 \tq \restr{v}{Γ_D} = 0 } \)
+
+Our solution should however live in $V_g = \set{v ∈ H^1 \tq \restr{v}{Γ_D} = g}$, which is not linear but only an affine subspace.
+
+If we have $g = 0$, we still can use a \nlref{def:WeakAbstractFormulation} with $F(v) = \int fv + \int_{Γ_N} hv$ to find a solution $u ∈ H^1_{Γ_D} = V_0$. With $g ≠ 0$ things become a little bit more difficult.
+
+In that case, we need to find a solution $u ∈ V_g$. We will then separate the problem in two, writing $u = u_0 + G$ with $G ∈ H^1$ such that $\restr{G}{Γ_D} = g$, and then solving for $u_0 ∈ V_0$ as before. The question is whether this $G$ can be constructed. Luckily, the theory will say that $∀g ∈ H^{\sfrac{1}{2}}(Γ_D)$ there will be a function $G ∈ H^1$ such that $\restr{G}{Γ_D} = g$ and $\norm{G}_{H^1} ≤ γ \norm{g}_{H^{\sfrac{1}{2}}(Γ_D)}$.
 
 \appendix
 
