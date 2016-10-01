@@ -22,7 +22,7 @@
 \draw[palette3, thick, shorten >= -1cm, shorten <= -1cm] (DA) -- (DB);
 \tikzangle[palette3, name = $\alpha$, name color = palette3]{T}{DA}{5.7, 0}
 
-\coordinate (V) at (4.7, 1);
+\coordinate (V) at (4.7, 2);
 \coordinate (U) at (6.5, 0);
 
 \draw[->, palette4] (T) -- (V) node[above] {$V_1$};
@@ -33,6 +33,7 @@
 
 \draw[dashed, gray] (V) -- (NV);
 \draw[thick, palette4, ->] (T) -- (NV) node[left] {$V_\perp$};
+\draw[thick, palette6, ->, shorten >= 1cm] (T) -- (NV) node[left, yshift = -1cm, xshift = 0.5cm] {$δη_\perp$};
 
 \draw[dashed, gray] (U) -- (NU);
 \draw[thick, palette5, ->] (T) -- (NU) node[left] {$U_\perp$};

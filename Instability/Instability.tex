@@ -104,6 +104,8 @@ Our first instability will be Rayleigh-Taylor, which models a situation with two
 
 To simplify the study of these kind of instabilities, we simplify down to a situation like in \fref{fig:RayleighTaylorModel}. We assume a potential flow with no rotation and no vorticity. Then, to study it we will follow the steps outlined previously.
 
+\subsection{Base state}
+
 Our potential flow is $ΔΦ_1 = ΔΦ_2 = 0$, so our velocity equations are \begin{align*}
 U_1 &= \dpd{Φ_1}{x} & V_1 = \dpd{Φ_1}{z} \\
 U_2 &= \dpd{Φ_2}{x} & V_2 = \dpd{Φ_2}{z}
@@ -113,37 +115,90 @@ The velocities $U$ represent the movement of the flow parallel to the $x$ axis, 
 
 The boundary conditions will be zero values for $Φ_1$ and $Φ_2$ at $z = \pm ∞$ respectively: we don't want the flows to move at infinity.
 
-The next step is the definition of the interface, the set of points where the two flows ``touch'', and define the relations at that boundary. The first one is impermeability: no particles pass through the interface. This means that, as reflected in \fref{fig:RayleighTaylorInterface}, the components of $V_1$ and $U_1$ normal to the interface ($V_\perp$ and $U_\perp$) must cancel. Knowing also that, at the interface, $V_1 = ∂_t η$, we can start writing down the expressions of that:
-\begin{align*}
-V_\perp &= ∂_t η \cos α \\
-U_\perp &= U_1 \sin α
-\end{align*}
-
 \begin{figure}
+\centering
 \inputtikz{RayleighTaylorInterface}
 \caption{Interface η in Rayleigh-Taylor instability.}
 \label{fig:RayleighTaylorInterface}
 \end{figure}
 
+The next step is the definition of the interface, the set of points where the two flows ``touch'', and define the relations at that boundary. The first condition is that of impermeability: no particles pass through the interface. That means that whatever displacement $δη_\perp$ of the interface in its normal direction must be caused by the velocity of the flow. On one hand, our displacement is $δη_\perp = ∂η_t \cos α$. On the other, we have two sources of velocity of the flow: the vertical movement $V_1$ and the horizontal $U_1$. For both of them we will calculate their projection normal to the interface at any point. Thus, we will have
+\begin{align}
+δη_\perp &= V_\perp - U_\perp \nonumber \\
+\dpd{η}{t} \cos α &= V_1 \cos α - U_1 \sin α \nonumber \\
+\dpd{η}{t} &= V_1 - U_1 \tan α \nonumber \\
+\dpd{η}{t} &= V_1 - U_1 \dpd{η}{x} \label{eq:RayleighTaylor:KinematicConds}
+\end{align}
+
+We will have analogous equations for the second fluid.
+
+Now we have to define the dynamic boundary conditions, the ones that relate the interface to the difference of pressure between the two fluids.
+
 Our kinematic condition is that we will force impermeability, so that normal components to the interface must be equal. Now for the fluid we write down some equations and something.
 
-Now on to the dynamic boundary conditions.
+Now on to the dynamic boundary conditions. Using Laplace's law for pressure % TODO: Write it
+which tells us that $P_1 - P_2 = γ\frac{2}{R}$, with γ the surface tension and $R$ the radius of curvature. Thus, our condition at $z = η$ \( P_1 - P_2 = -γ \frac{\dpd[2]{η}{x}}{\left(1 + \left(\pd{η}{x}\right)^2 \right)^{\sfrac{3}{2}}} \label{eq:RayleighTaylor:DynamicConds} \)
 
-For potential flows, we have the second Bernouilli relations:
-\begin{align*}
-\dpd{Φ_1}{t} + \frac{U_1^2 + V_1^2}{2} + \frac{P_1}{ρ_1} + gz &= C_1(t) \\
+Finally, we have the Bernouilli's principle to tie everything up:
+
+\begin{align}
+\dpd{Φ_1}{t} + \frac{U_1^2 + V_1^2}{2} + \frac{P_1}{ρ_1} + gz &= C_1(t) \label{eq:RayleighTaylor:Bernoulli} \\
 \dpd{Φ_2}{t} + \frac{U_2^2 + V_2^2}{2} + \frac{P_2}{ρ_2} + gz &= C_2(t) \\
+\end{align}
+
+Looking at these relations at infinity, we assume that nothing changes there so we can equate $C_1(t) = C_2(t) = 0$ and life is easier. Putting everything together, our equations defining the base state of the system are the following:
+
+\begin{align*}
+0&= Φ_1(∞) & 0&= Φ_2(-∞) \\
+U_1 &= \dpd{Φ_1}{x} & U_2 &= \dpd{Φ_2}{x} \\
+V_1 &= \dpd{Φ_1}{z} & V_2 &= \dpd{Φ_2}{z} \\
+\dpd{η}{t} &= V_1 - U_1 \dpd{η}{x} & \dpd{η}{t} &= V_2 - U_2 \dpd{η}{x} \\
+0 &= \dpd{Φ_1}{t} + \frac{U_1^2 + V_1^2}{2} + \frac{P_1}{ρ_1} + gz &
+	0 &= \dpd{Φ_2}{t} + \frac{U_2^2 + V_2^2}{2} + \frac{P_2}{ρ_2} + gz \\
 \end{align*}
+\vspace{-30pt}
+\[ P_1 - P_2 = -γ \frac{\dpd[2]{η}{x}}{\left(1 + \left(\pd{η}{x}\right)^2 \right)^{\sfrac{3}{2}}} \]
 
-Looking at these relations at infinity, we assume that nothing changes there so we can equate $C_1(t) = C_2(t) = 0$ and life is easier.
+\subsection{Small perturbation and linearization}
 
-Once we have this, we add a small perturbation $ε$ to everything.
+To study what happens, we add small perturbations $εφ_1$ and $εφ_2$ to the flows (maintaining $φ_1 = φ_2 = 0$ at $\pm ∞$ respectively), $εp_1$, $εp_2$ to the pressure and $εσ$ to the interface displacement, with $ε \ll 1$; and we study what happens. For the kinematic conditions \eqref{eq:RayleighTaylor:KinematicConds}, we will see that the perturbation follows the equation \[ ε \pd{σ}{t} = εv_1 - ε^2 u_1 \pd{σ}{x} \] with $v_1 = ∂_z φ_1$, $u_1 = ∂_x φ_1$. Given that ε is small, we can ignore the quadratric term so we have the following equations: \[ v_1 = v_2 = \pd{σ}{t} \text{ at } z = εσ  \]
 
-Then a lot of linearization without checking if the functions involved are analytic.
+We have a small problem there with the fact that we don't know where the interface is. However, as ε is small, we can do Taylor expansion\footnote{No we can't as we don't have absolutetly any regularity conditions assured. But this is not a mathematics course.} and set the interface at $z = 0$, with equations \( v_1 = v_2 = \pd{φ_1}{z} = \pd{φ_2}{z} = \pd{σ}{t} \text{ at } z = 0 \)
 
-Then double Fourier analysis (normal mode expansion). Mumbojumbo. Solutions. Eigenvalue and a dispersion relation for a non-trivial solution.
+We do the same process with the dynamic conditions \eqref{eq:RayleighTaylor:DynamicConds}. The equations of the perturbation are \[ \eval{\left(P_1 + εp_1 -P_2 - εp_2\right)}_{εσ} = -γ ε \dpd[2]{σ}{x} \left(1 - \frac{3}{2}ε^2 \left(\dpd{σ}{x}\right)^2 \right)\] and replacing $P_1 = -gρ_1 z$ and linearizing and flattening (setting the interface at $z = 0$) we end up with \( (ρ_2 - ρ_1)gσ + \eval{(p_1 - p_2)}_{0} = - γ\dpd[2]{σ}{x} \)
 
+Finally, doing the same with the Bernouilli relations \eqref{eq:RayleighTaylor:Bernoulli} (I'm not copying the computations again) we have \( \dpd{φ_1}{t} + \frac{p_1}{ρ_1} = 0 \qquad  \dpd{φ_2}{t} + \frac{p_2}{ρ_2} = 0 \)
+
+\subsection{Normal mode analysis}
+
+Given that the previous equations do not seem easy to solve analytically, we do some magic handwaving called normal mode analysis. With this, we assume that the solution is going to present periodical behaviour in $x$ and $t$, with an excitation depending on $z$. Assume the frequencies of these two excitations are $k$ and ω (notation: wavenumber and frequency), we would then have the following equations:\begin{align*}
+φ_1 &= f_1(z)e^{\imath (kx - ωt)} \\
+φ_2 &= f_2(z)e^{\imath (kx - ωt)} \\
+σ &= C e^{\imath (kx - ωt)}
+\end{align*}
 \appendix
+
+Now, because of some magical reason, we assume that $f_1(z) = Ae^{kz}$ and $f_2(z) = Be^{-kz}$ for some constants $A, B ∈ ℝ$. Replacing these solutions in the linearized equations, we end up with \begin{align*}
+g(ρ_2 - ρ_1)C - \imath ωρ_1A - \imath ω ρ_2 B &= γk^2 C \\
+kA &= -\imath ω C \\
+kB &= -\imath ω C
+\end{align*} which we can solve for $ω$ multiplying by $k$ and replacing $k A$ and $kB$:
+\begin{align}
+kg(ρ_2 - ρ_1)C + ω^2 ρ_1 C + ω^2 ρ_2 C &= γk^3 C \nonumber \\
+ω^2 =\frac{-kg(ρ_2 - ρ_1) + γk^3 }{ρ_1 + ρ_2}
+\end{align}
+
+This is enough to do a quantitative analysis. If $\Im ω > 0$, in our flows $φ_1, φ_2$ we will have an exponential like $e^{\imath (- \imath \Im ω)} = e^{\Im ω}$, a positive exponential that will diverge, and thus we will have an unstable flow. The other possibility is that we have $\Im ω = 0$, in which case we would have oscillating solutions (imaginary exponential). The case $\Im ω < 0$ is not possible in this case, but if it were we would have a damped solution. These types of solutions appear when viscosity is not ignored.
+
+\begin{figure}[hbtp]
+\inputtikz{RayleighTaylorStability}
+\caption{Imaginary value of the frequency $\Im ω$ in the Rayleigh-Taylor interface, depending on the the value $\frac{1}{λl_c}$, with $l_c$ the capillary length and $λ$ the wavelength. Red zones are unstable, green zones are stable. The dashed lines represent the case with damping, which is not possible with the simplficiations we have made.}
+\label{fig:RayleighTaylor:Stability}
+\end{figure}
+
+What is interesting is that the stability depends on the fluid density. If $ρ_1 > ρ_2$ (that is, the denser fluid is below) then $ω^2$ is always positive and the solutions are oscillation. If $ρ_2 > ρ_1$ (denser fluid above), the unstable case may appear depending on the wavenumber, the pressure difference and the surface tension. We can, in fact, combine those three values in the capillary length, given by \[ l_c = \sqrt{\frac{γ}{g\abs{ρ_2 - ρ_1}}} \]
+
+For clarity, we may consider what happens looking at the wavelength associated $λ = \frac{2π}{k}$.The possible wavelengths depend on the opening in which both fluids are connected. If the opening is smaller than the capillary length, we are in a stable situation (e.g., when we put a small tube filled with water facing down). If the opening is too big, we will be in an unstable case and the fluid will fall.
 
 % \chapter{---}
 % \input{tex/Instability_Exerc.tex}
