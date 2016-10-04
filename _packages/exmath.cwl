@@ -141,6 +141,7 @@
 \vf#m
 \vg#m
 \va#m
+\vd#m
 \vA#m
 \vb#m
 \vc#m
@@ -150,6 +151,7 @@
 \ve#m
 \vr#m
 \vz#m
+\vt#m
 \thethm#m
 \thedef#m
 \begin{remark}#
@@ -209,6 +211,7 @@
 \ord#m
 \gr#m
 \kbb#m
+\ident#m
 \mv{vec}#m
 \cv#m
 \cv[\alpha]#m
