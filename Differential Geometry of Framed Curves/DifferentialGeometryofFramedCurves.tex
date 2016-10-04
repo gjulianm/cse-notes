@@ -68,6 +68,48 @@ Our first example is a curve in $ℝ^3$ with its Frenet frame of reference. Let'
 \begin{defn}[Frenet\IS curve] A Frenet curve $\mathcal{F}(τ)$ in $SE(3)$ is a regular curve $\vr(τ)$ in $ℝ^3$ together with its \nref{def:FrenetFrame}: \[ \mathcal{F}(τ) = \begin{pmatrix} F(τ) & \vr(τ) \\ 0 & 1 \end{pmatrix} \]
 \end{defn}
 
+\section{Curves in $SO(N)$}
+
+We are studying curves $R(t) ∈ SO(N)$ with $t ∈ (a,b)$, so $\trans{R}(t)R(t) = \mathrm{Id}$, which are one-parameter families of matrices. We are going to assume that the family is smooth so we can differentiate. In that case, we can obtain some properties: \begin{align*}
+\trans{R} R &= \mathrm{Id}\\
+\trans{R}R' + \trans{R'}R &= 0 \\
+(\trans{R}R') + (\trans{R}R')^{\mathrm{T}} &= 0
+\end{align*}
+
+So, if we say $S = \trans{R}R'$, $S$ is a skew-symmetric matrix ($S = - \trans{S}$). These matrixes have $\frac{1}{2}n(n+1) - n$ independent entries, so in case $n = 3$ it means that there are $3$ independent entries and thus there is a mapping between skew-symmetric $3 × 3$ and vectors in $ℝ^3$ given by \[ [u_1, u_2, u_3] = \vu^{×} = \begin{pmatrix}0 & -u_3 & u_2 \\ u_3 & 0 & -u_1 \\ -u_2 & u_1 & 0 \end{pmatrix} \]
+
+The nice thing about this is that $\vu × \vv = \vu^× \vv$.
+
+So now we are searching for something similar to the Frenet frame. This takes us to the \concept{Basic kinematic equation} for a curve in $SO(N)$: \( R' = \underbracket{R\trans{R}}_{\mathrm{Id}} R' = R S \) with $S$ a skew-symmetric matrix. We can also have coefficients on the right \( R' = \tilde{S} R \) with $\tilde{S} = R S \trans{R}$.
+
+In the case $N = 3$, we have $S = \vu^×$ and $\tilde{S} = \tilde{\vu}^×$. The question is what is the relation between the triple $\vu$ and the triple $\tilde{\vu}$. For the easy case $R\vu$ we compute $\vec{w} (Q\vu)^× \vv$ for $Q ∈ SO(N)$ and after some horrible matricial computations we end with \( (Q\vu)^× = Q\vu^×\trans{Q} \) and finally  $\tilde{\vu}^× = (R\vu)^×$ so $\tilde{\vu} = Ru$, which is the change of bases formula. So if $\vu$ has components in the frame $R$, then $\tilde{\vu}$ has components in the canonical bases. So finally again u twiddle down (I don't know how to write undertwiddle in LaTeX?) is the Darboux vector for the curve $R(t) ∈ SO(3)$. So the down twiddle means real vector.
+
+We also identify the columns of any $R ∈ SO(3)$ with an orthonormal bases $\set{\vec{d}_1, \vec{d}_2, \vec{d}_3}$. So the equation $R' = \tilde{u}^× R$ is equivalent to $\vd_i' = \vu × \vd_i$.
+
+Question now is question 1 of series 2, given a curve $\vr(t) ∈ ℝ^3$, find the Darboux vector $\vu$ for any adapted framing $R(t) ∈ SO(3)$ such that $\vd_3(t) = \vt(t) = \frac{\vec{τ}'(t)}{\norm{\vr'(t)}}$.
+
+Aside: integrals of systems of first order ordinary differential equations. For an initial value problem and under some hypothesis there exists a unique solution. The system is autonomous if there are not explicit dependences on $t$; that is $y' = f(y(t))$. Then a first integral is some function $\appl{G}{ℝ^N}{R}$ such that $\od{}{t}G(y(t)) = 0$ along solutions of the function. We will be focusing for reasons that right now escape my comprehension on linear systems $y' = Ay$, which we will be able to re-arrange as linear matrix equations. So going back to our something $\vd_i' = \vu^× \vd_i$. The claim is that these equations have the integrals $\vd_i · \vd_j$ for $i,j = 1,2,3$. So in other words \[ \od{}{t} (\vd_i · \vd_j) = 0\qquad ∀t ∈ (a,b) \] and then \[ \vd_i \vd_j' + \vd_i' \vd_j = \vd_i (\vu × \vd_j) + (\vu × \vd_i) \vd_j = \vu (\vd_j × \vd_i + \vd_i × \vd_j) = \vu · 0 = 0\] so if $\vd_i(0) · \vd_j(o) = δ_{ij}$ then $\vd_i(t) · \vd_j(t) = δ_{ij}$ (a frame that starts orthonormal ends orthonormal).
+
+So question 1 series 2 (this is still an exercise?) is that $\vu = \vr' × \vr'' + g(t) \vr'$ with $g(t)$ an arbitrary function. Knowing that the Frenet frame $F$ is an adapted frame we know that $F' = F \vu^× = \tilde{\vu}^× F$ and there's a single Darboux vector $\vu$ such that $\vd_i' = \vu × \vd_i$. So yeah, it exists and it is unique.
+
+On the other hand, from last week we remember that \[ F' = F · \begin{pmatrix} 0 & -τ & κ \\ τ & 0 & 0 \\ κ & 0 & 0 \end{pmatrix} \] so $\vu(s) = 0 \vn + κ \vb + τ \vt$.
+
+Overview/summary: Any curve (one-parameter family of matrices $SO(3)$) has a Darboux vector, which has components with respect to fixed bases $\tilde{u}$ and the frame $R(t)$ (moving frame something Cartan) and $R' = \tilde{vu}^× R = R \vu$. Notice no mentions of any curve in $ℝ^3$.
+
+On the other hand if $\vr(s) ∈ ℝ^3$ is an arc-length framed curve is $C^3$ and $\norm{\vr''} ≠ 0$ (that is $κ(s) > 0$) then the Frenet Frame $F(s)$ is a curve in $SO(3)$ and then the associated Darboux vector is $\vu = \begin{pmatrix} 0 & κ & τ \end{pmatrix}^T$. The Frenet frame is adapted to the underlying curve $\vr(s)$ because somethin.
+
+The Frenet frame is intrinsic (knowledge of $r(s)$ and derivatives implies $F(s)$). Question 1 series 2 implies that non-intrinsic adapted framings of $r(t)$ incolve an additional function $g(s)$.
+
+\section{Curves in $SE(3)$}
+
+Further clarify the connections between cures in $ℝ^3$ and curves in $SO(3)$. Our curves $X(t) ∈ SE(3)$ with \[ X(t) = \begin{pmatrix} Q(t) & q(t) \\ 0 & 1 \end{pmatrix} \qquad Q(t) ∈ SO(3),\, q(t) ∈ ℝ^3\]
+
+We want to ask the question: what's the analog of $R' = RS$ with $S$ skew-symmetric for $R ∈ SO(3)$? There's no exact analog in $SE(3)$ to $R\trans{R} = \mathrm{Id}$ so we don't have the same starting point. Luckily, we know that \[ \inv{X} = \begin{pmatrix} \trans{Q} & - \trans{Q} q \\ 0 & 1 \end{pmatrix}\qquad V' = \begin{pmatrix}QS & q' \\ 0 & 0 \end{pmatrix}\] and computing $X' = X\inv{X} X'$ we can compute $\inv{X}X'$ and then \[ \inv{X}X' = \begin{pmatrix} S & \trans{Q}q' \\ 0 & 0 \end{pmatrix} \]
+
+Again, our ODE would be $X' = X\begin{pmatrix}\vu^× & \vv \\ 0 & 0 \end{pmatrix}$ where $\vu$ compoennts of Darboux vector in the $Q$ frame and the $\vv = \trans{Q}q'$. But $q'$ is the tangent vector to $q(t)$ with respect to the canonical basis so $\vv$ is actually the tangent vector with respect to the $Q$ frame.
+
+Another question: when is a curve in $SE(3)$ equivalent to an adapted framing. The answer is that these curves naturally combine curves in $ℝ^3$ and curves in $SO(3)$. In general, $Q$ will not be adapted to $q$. When is $Q$ adapted to $q$, which must be the case sometimes, e.g. Frenet frame)? the key is to look at the matricial equations of before and see that $q' = Q\vv$ so $q'$ is $\vd_3$ if an only if $\vv = (0,0,1)^T$ so we have to take this specific case of a differential equation in order to get an adapted frame.
+
 \appendix
 \chapter{Exercises}
 \input{tex/DifferentialGeometryofFramedCurves_Exerc.tex}
