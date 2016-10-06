@@ -5,7 +5,7 @@
 \date{16/17 - Fall semester}
 
 % Additional packages
-
+\usepackage{tikztools}
 % --------------------
 
 \begin{document}
@@ -285,18 +285,18 @@ As notation, α is called the coercivity coefficient
 
 WIth that, we can enunciate the Lax-Milgram lemma for the weak abstract formulation.
 
-\begin{lemma}[Lax-Milgram\IS lemma] \label{lem:LaxMilgram} Given a Hilbert space $V$, a bilinear, continuous and coercive form $\appl{a}{V×V}{ℝ}$ and a linear, bounded operator $\appl{F}{V}{ℝ}$; the \nlref{def:WeakAbstractFormulation} has a unique solution $u ∈V$ such that \[ \norm{u}_V ≤ \frac{1}{α} \norm{F}_{V^*} \] with α the coercivity constant of $a$.
+\begin{lemma}[Lax-Milgram\IS lemma] \label{lem:Elliptic:LaxMilgram} Given a Hilbert space $V$, a bilinear, continuous and coercive form $\appl{a}{V×V}{ℝ}$ and a linear, bounded operator $\appl{F}{V}{ℝ}$; the \nlref{def:WeakAbstractFormulation} has a unique solution $u ∈V$ such that \[ \norm{u}_V ≤ \frac{1}{α} \norm{F}_{V^*} \] with α the coercivity constant of $a$.
 \end{lemma}
 
 \subsection{Poisson problems}
 
-It is easy to see that we can apply the \nref{lem:LaxMilgram} to our problem: if $v ∈ H^1_0(Ω)$, then its $L^2$-norm is bounded so \[ \abs{\int_Ω fv} ≤ \norm{f}_{L^2} \norm{v}_{L^2} ≤ \norm{f}_{L^2} \norm{v}_{H^1} < ∞ \]
+It is easy to see that we can apply the \nref{lem:Elliptic:LaxMilgram} to our problem: if $v ∈ H^1_0(Ω)$, then its $L^2$-norm is bounded so \[ \abs{\int_Ω fv} ≤ \norm{f}_{L^2} \norm{v}_{L^2} ≤ \norm{f}_{L^2} \norm{v}_{H^1} < ∞ \]
 
 Same happens with $a$: the boundedness is directly obtained from the fact that $u, v ∈ H^1_0(Ω)$. Coercivity can be a little bit more complicated. For that, we must use the Poincaré inequality TODO LINK INTRO which tells us that there is a constant $C_p > 0$ such that $\int v^2 ≤ C_p \int \abs{\grad u}^2$ for all $u ∈ H_0^1$. So, in this case we have that \[
 \norm{u}^2_{H^1} = \int v^2 + \int \abs{\grad v}^2 ≤ (1+C_p^2) \int \abs{\grad u}^2
 \] so our coercivity constant is $\frac{1}{1 + C_p^2}$.
 
-This means that, applying the \nref{lem:LaxMilgram}, we have a unique solution $u ∈ V$ such that \[ \norm{u}_{H^1_0} ≤ (1+C_p^2) \norm{F}_{H^1_0} \]
+This means that, applying the \nref{lem:Elliptic:LaxMilgram}, we have a unique solution $u ∈ V$ such that \[ \norm{u}_{H^1_0} ≤ (1+C_p^2) \norm{F}_{H^1_0} \]
 
 \subsection{Poisson problems with mixed boundary conditions}
 
@@ -315,13 +315,113 @@ u = g & \text{on }Γ_D \\
 
 We can start with the weak formulation as previously \[ \int_Ω fv = \int_Ω -Δu v = \int_Ω \grad u · \grad v - \int_{∂Ω} ∂_\vn u v = \int_Ω \grad u \grad v - \int_{Γ_N} ∂_\vn v - \int_{Γ_D} ∂_n u v\]
 
-The problem here is how to deal with the boundary term on $Γ_D$. As we did in the previous section, we can select $\restr{v}{Γ_D} = 0$. Thus, our weak formulation is \( \int_Ω \grad u · \grad v = \int_Ω f v + \int_{Γ_N} h v \) with $v ∈ H^1_{Γ_D}$, where we can define \( H^1_{Γ_D} = \set{ v ∈ H^1 \tq \restr{v}{Γ_D} = 0 } \)
+The problem here is how to deal with the boundary term on $Γ_D$. As we did in the previous section, we can select $\restr{v}{Γ_D} = 0$. Thus, our weak formulation is \( \int_Ω \grad u · \grad v = \int_Ω f v + \int_{Γ_N} h v \label{eq:Elliptic:WeakFormulationMixedBoundary} \) with $v ∈ H^1_{Γ_D}$, where we can define \( H^1_{Γ_D} = \set{ v ∈ H^1 \tq \restr{v}{Γ_D} = 0 } \)
 
 Our solution should however live in $V_g = \set{v ∈ H^1 \tq \restr{v}{Γ_D} = g}$, which is not linear but only an affine subspace.
 
 If we have $g = 0$, we still can use a \nlref{def:WeakAbstractFormulation} with $F(v) = \int fv + \int_{Γ_N} hv$ to find a solution $u ∈ H^1_{Γ_D} = V_0$. With $g ≠ 0$ things become a little bit more difficult.
 
 In that case, we need to find a solution $u ∈ V_g$. We will then separate the problem in two, writing $u = u_0 + G$ with $G ∈ H^1$ such that $\restr{G}{Γ_D} = g$, and then solving for $u_0 ∈ V_0$ as before. The question is whether this $G$ can be constructed. Luckily, the theory will say that $∀g ∈ H^{\sfrac{1}{2}}(Γ_D)$ there will be a function $G ∈ H^1$ such that $\restr{G}{Γ_D} = g$ and $\norm{G}_{H^1} ≤ γ \norm{g}_{H^{\sfrac{1}{2}}(Γ_D)}$.
+
+\section{Calculus of variations}
+
+We can try to study other approach to this problem with an example, which is the deformation $u$ of a membrane $Ω$ under a certain force $f$. In that case, we try to find a solution that minimizes the elastic energy $E = \int_Ω \frac{1}{2} κ \norm{\grad u}^2$. Supposing $κ = 1$, our energy functional to minimize is \( J(u) = \frac{1}{2} \int_Ω \norm{\grad u}^2 - \int_Ω f u - \int_{Γ_N} h u \label{eq:Elliptic:EnergyFunctional} \) so our solution should be \[ u = \argmin_{\substack{v ∈ H^1(Ω) \\ v = \restr{g}{Γ_D}}}  J(v) \] where we search for the function in $H^1(Ω)$ because we need for the gradient to be square integrable. We need also $f ∈ L^2$, and $h ∈ H^{-\sfrac{1}{2}}$ (the topological dual space of $H^{\sfrac{1}{2}}$) to be able to integrate that last term.
+
+So, how do we do this? If the argument was real, we could find the point with gradient $0$ (all directional derivatives are null). But the functional $J$ from \eqref{eq:Elliptic:EnergyFunctional} is an application $\appl{J}{H^1}{ℝ}$, so we need something different. However, we can still translate the concept of ``gradient $0$''. If $J$ were a real variable function, we could do \[ \grad J (u) = 0 \iff \grad J(u) · \vA = 0\; ∀\vA ∈ ℝ^N \iff \lim_{ε \to 0} \frac{J(u + ε\vA) - J(u)}{ε} = 0 \]
+
+That last notion is the one we can translate to the functional case. If we consider $u$ to be the equilibrum, we can study any variation of $u ∈ V_g$\footnote{Remember from the previous section that $V_g = \set{v ∈ H^1 \tq \restr{v}{Γ_D} = g}$.} such that $u + ε v ∈ V_g$ (that is, respecting the boundary conditions), with $v ∈ V_g$ forcibly.
+
+Knowing this, we can try to calculate the ``derivative'', where some linear terms will be canceled but we will have to deal with the quadratic ones:
+\begin{align*}
+\Dif_v J(u) &= \lim_{ε \to 0} \frac{J(u + εv) - J(u)}{ε} = \\
+	&= \lim_{ε \to 0} \frac{1}{ε} \left[ \frac{1}{2} \int_Ω \grad(u+εv)· \grad(u + εv) - \int_Ωf(u + εv) - \int_{Γ_N} h · (u + εv)\right. \\
+	&\qquad \left.- \frac{1}{2}\int_Ω \grad u \grad u + \int_Ω fu + \int_{Γ_N} h u \right] = \\
+	&= \lim_{ε \to 0}\frac{1}{ε} \left[ \frac{1}{2}\left( \int_Ω \grad(u+εv) \grad (u + εv) - \grad u \grad u \right) - ε \int_Ω fv - ε \int_{Γ_N} h v \right] = \\
+	&= \lim_{ε \to 0}\frac{1}{ε} \left[ \frac{1}{2} \left( \grad u \grad u + ε \grad u \grad v + ε \grad v \grad u + ε^2 \grad v \grad u - \grad u \grad u\right) - ε \int_Ω fv - ε \int_{Γ_N} h v \right] = \\
+	&= \int_Ω \grad u \grad v - \int_Ω fv - \int_{Γ_N} h v
+\end{align*} which is the same weak formulation of the problem we had previously in \eqref{eq:Elliptic:WeakFormulationMixedBoundary}.
+
+\subsection{Regularity of the solution}
+
+We may have proved that the solution exists, but we will also be interested in knowing the regularity of the function in order to be able to prove rates of convergence, for example. That will be given in the following theorem.
+
+\begin{theorem}[Shift theorem] Consider the PDE problem \[
+-Δu =f \qquad \text{in }Ω \] with $f ∈ H^m(Ω)$, $Ω$ a smooth domain ($∂Ω ∈ C^{m+2}$, that is, we can parametrize the boundary as a $C^{m+2}$ manifold) and with the following restrictions depending on the boundary conditions:
+\begin{itemize}
+	\item Full Dirichlet conditions $\restr{u}{Γ_D} = g ∈ H^{m + \sfrac{3}{2}}(Ω)$.
+	\item Full Neumann conditions $∂_\vn u = h ∈ H^{m + \sfrac{1}{2}}(Ω)$.
+\end{itemize}
+
+Under those conditions, $u ∈ H^{m+2}(Ω)$.
+\end{theorem}
+
+\subsubsection{Corner singularities}
+
+\begin{wrapfigure}{L}{0.3\textwidth}
+\centering
+\inputtikz{CornerSingularity}
+\caption{Corner singularity in a domain.}
+\label{fig:Elliptic:CornerSingularity}
+\end{wrapfigure}
+
+One could try to see what happens if we have corner singularities, for example, in a square domain. In a set inside of the square we will have perfect smoothness, but the corners may present problems.
+
+Suppose we want to solve $- Δ u = 0$ in a corner such as \fref{fig:Elliptic:CornerSingularity}. In that case, we will work in polar coordinates and the basis of our solution will be \[φ_k(r,θ) = r^{\frac{kπ}{ω}} \sin \frac{kπθ}{ω} \]
+
+The worst case would be $k = 1$, which would leave us in a case of $u ∈ H^s$ with $s < 1 + \sfrac{π}{ω}$. If $ω > π$ (the case of the square), we have $s < 2$, that is, we only have $H^1$ regularity.
+
+We would have the same situation with Neumann conditions. However, mixed boundary conditions (Neumann on one side, Dirichlet on the other) are more problematic: the solutions are \[ φ_k(r,θ) = r^\frac{(k + \sfrac{1}{2})π}{ω} \sin \frac{(k + \sfrac{1}{2})πθ}{ω} \] and, in the worst case ($k = 0$) we have singularities even in the flat case ($ω = π$) which was not a problem in full Neumann or Dirichlet conditions.
+
+\section{Example problems}
+
+\subsection{Advection-diffusion-reaction}
+
+A more complex form of elliptic problems are advection-diffusion-reaction, where the differential operator is \[ Lu = - \sum_{i,j=1}^d \dpd{}{x_i} \left(a_{ij}\dpd{u}{x_j}\right) + \sum_{i=1}^d b_i \dpd{u}{x_i} + c u = - \dv (A(x) \grad u) + \vb(x) \grad u + c u\] with $A(x) ∈ ℝ^{d×d}, \vb(x) ∈ ℝ^d, c ∈ ℝ$. Our problem, as usual, is $Lu = f$.
+
+These three terms model respectively diffusion, with $A$ being the matrix of coefficients that depend on the axis (the material is not uniform), the transport term along the vector field, and the reaction (for example, a chemical that reacts and its concentration decreases)
+
+In order for the problem to remain elliptic, we require $A(x)$ to be positive definite for all $x ∈ ℝ^d$.
+
+As in previous cases, we can have Dirichlet boundary conditions $\restr{u}{Γ_D} = g$ and Neumann boundary conditions (which are a little bit more complicated): \[ A \grad u · \vn - (b \vn) u = h \quad\text{ on } Γ_N \]
+
+We will want to do a weak formulation where the boundary terms of the problem appear naturally. As always, we multiply by a test function and integrate by parts the divergence and possibly the $b \grad u$ depending on the boundary conditions. Without doing the computations, the weak formulation will end up being \( \int_Ω A \grad u \grad v + b \grad u v + c u v = \int_Ω fv + \int_{Γ_N} h v \label{eq:Elliptic:ADRProblemWeak} \) with $u ∈ H^1$, $\restr{u}{Γ_D} = g$.
+
+This has the same structure as in previous cases, so we are in the conditions of the \nref{lem:Elliptic:LaxMilgram} and there exists a unique solution. Coercivity would need a little bit of work, and may present problems with mixed boundary conditions. Enforcing Neumann conditions on boundaries with incoming flow may cause problems with coercivity.
+
+\subsection{Linear elasticity}
+
+\begin{figure}[hbtp]
+\inputtikz{ElasticDeformation}
+\caption{Elastic deformation of a something.}
+\label{fig:Elliptic:ElasticDeformation}
+\end{figure}
+
+In this problem, we start with an undeformed configuration $Ω ⊂ ℝ^d$, and we want to study the displacement $\appl{\vu}{Ω}{ℝ^d}$. The involved terms are the strain measure \[ ε (\vu) = \frac{\grad \vu + \trans{(\grad \vu)}}{2}\], the stress tensor $σ = σ(ε)$ given by \[ σ_{ij} = \sum_{k,l=1}^d c_{ijkl} ε_{kl} \], which usually can be expressed as \[ σ(ε) = 2με + λ\tr(ε) I \] with $μ,λ$ the Lamé constants.
+
+With all of this, our balance equation is \( \begin{cases} - \dv σ(ε(\vu)) = \vec{f} & \text{in } Ω \\
+\vu = \vec{g} & \text{on } Γ_D \\
+σ(u) · \vn = \vd & \text{on } Γ_N \end{cases} \)
+
+We may want to write now our weak formulation and integrate by parts, caring a little bit about what is a tensor and what is a vector
+\begin{align*}
+0
+	&= \int_Ω \left[- \dv (σ(ε(\vu))) - \vec{f} \right] · \vv = \\
+	&= \int_Ω σ(ε(\vu)) \grad \vv - \int_{∂Ω} (σ · \vn) · \vv - \int_Ω \vec{f} \vv \\
+\int_Ω σ(ε(\vu)) \colon \vv &= \int_Ω \vec{f}\vv + \int_{Γ_N} \vd \vv
+\end{align*}
+
+I'm a little bit lost but \[ \int_Ω - \dv (σ) \vv = \int_Ω - \sum_i \sum_j ∂_j σ_{ij}v_i = \sum_{ij} \int_Ω σ_{ij}∂_jv_i - \int_{∂Ω}σ_{ij}n_j v_i \]
+
+We can rewrite the first term because \begin{align*}
+\int_Ω σ (ε(\vu)) \colon \vv
+	&= \int_Ω σ(ε(\vu))\colon ε(\vv) = \\
+	&= \int_Ω(2με(\vu) + λ\tr(ε(\vu))I) \colon ε(\vv) = \\
+	&= \int_Ω 2με(\vu) \colon ε(\vv) + λ\tr(ε(\vu))I \colon ε(\vv) = \\
+	&= \int_Ω 2μ \frac{\grad \vu + \trans{(\grad \vu)}}{2} \colon \frac{\grad \vv + \trans{(\grad \vv)}}{2} + λ\dv \vu \dv \vv = \\
+	&= a(\vu, \vv)
+\end{align*}
+
+So we have a bilinear form again and whatever.
 
 \appendix
 
