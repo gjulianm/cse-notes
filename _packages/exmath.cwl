@@ -339,3 +339,4 @@
 \dstr#m
 \fcurv#m
 \fcurv[\tau]#m
+\lk#m
