@@ -1,1 +1,40 @@
 % -*- root: ../DifferentialGeometryofFramedCurves.tex -*-
+\section{Series 1}
+
+\section{Series 2}
+
+\begin{problem} \textbf{General form of the Darboux vector of an adapted framing of a given curve.}
+
+Given a smooth curve $\vr(s)$ and a function $u_3(s)$ where $s$ is the arclength parameter, we will show that \( \vec{ξ}' = (u_3\vr' + \vr' ×\vr'')× \vec{ξ} \) with initial condition \( \vec{ξ}(0) · \vr'(0) = 0\qquad \norm{\vec{ξ}(0)}^2 = 1 \label{eq:Series2:Ex2:InitialCond} \) generates an orthonormal framing $(\vec{ξ}, \vr' × \vec{ξ}, \vr')$ of $\vr(s)$.
+
+Verify and calculate
+
+\ppart That if $\norm{\vec{ξ}(0)}^2 = 1$, then $\norm{\vec{ξ}(s)}^2 = 1\;∀s$.
+\ppart That if $\vec{ξ}(0) · \vr'(0) = 0$ then $\vec{ξ}(s) · \vr'(s) = 0$.
+\ppart Now, by picking an initial value of $\vec{ξ}(0)$ satisfying \eqref{eq:Series2:Ex2:InitialCond} we have an orthonormal frame $(\vec{ξ}, \vr' × \vec{ξ}, \vr')$ of $\vr(s)$. What is the Darboux vector?
+
+\solution
+
+\spart
+
+To do that, we compute the derivative of the modulus and see what happens:
+\[ \od{}{s}\norm{\vec{ξ}}^2 = \od{}{s}(\vec{ξ}·\vec{ξ}) = 2\vec{ξ}'\vec{ξ} = 2 · (\dotsb) × \vec{ξ} · \vec{ξ} = 0\]
+
+So the modulus is constant, and given the initial condition $\norm{\vec{ξ}(0)}^2 = 1$ then $\norm{\vec{ξ}(s)}^2 = 1$.
+
+\spart
+
+Again, same idea. \begin{align*}
+\od{}{s} (\vec{ξ}(s) · \vr'(s))
+	&= \vec{ξ}' \vr' + \vec{ξ} · \vr''
+	 = \left((u_3\vr' + \vr' ×\vr'') × \vec{ξ}\right) · \vr' + \vec{ξ} · \vr'' = \\
+	&= \underbracket{(u_3 \vr' × \vec{ξ}) · \vr'}_{=0} + (\vr' × \vr'') × \vec{ξ} · \vr' + \vec{ξ} · \vr'' = \\
+	&= -((\vr'' · \vr') \vec{ξ} - (\vec{ξ} · \vr') \vr'') · \vr' + \vec{ξ} \vr'' = \\
+	&= \dots
+\end{align*} it's 0 so cool.
+
+\spart
+
+The Darboux vector is $(u_3\vr' + \vr' ×\vr'')$. Computations to see that it is the case that $(u_3\vr' + \vr' ×\vr'') × \vd_i = \vd_i'$.
+
+\end{problem}

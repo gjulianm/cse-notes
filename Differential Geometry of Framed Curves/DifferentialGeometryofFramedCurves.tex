@@ -110,6 +110,59 @@ Again, our ODE would be $X' = X\begin{pmatrix}\vu^× & \vv \\ 0 & 0 \end{pmatrix
 
 Another question: when is a curve in $SE(3)$ equivalent to an adapted framing. The answer is that these curves naturally combine curves in $ℝ^3$ and curves in $SO(3)$. In general, $Q$ will not be adapted to $q$. When is $Q$ adapted to $q$, which must be the case sometimes, e.g. Frenet frame)? the key is to look at the matricial equations of before and see that $q' = Q\vv$ so $q'$ is $\vd_3$ if an only if $\vv = (0,0,1)^T$ so we have to take this specific case of a differential equation in order to get an adapted frame.
 
+Something something $D' = DU$ where $U$ is skew and exists a vector $u$ such that $u^× = U$ and then $\vu = D u$.
+
+\chapter{Linking theorem}
+
+\begin{defn}[Link of a curve] Given a curve $\appl{x}{[a,b]}{ℝ^3}$ with adapted framing $R(t) = (\vd_1(t), \vd_2(t), \vd_3(t))$, we can define an adjacent curve such as $y(t) = x(t) + ε \vd_1(t)$. Then, the linking number is \[ \lk (x,y) = \frac{1}{4π} \int_a^b \int_a^b \frac{\left(y(t_2) - x(t_1)\right)  ·\left((y'(t_1) ∧ x'(t_1)\right)}{\norm{y(t_2) - x(t_1)}^3} \dif t_1 \dif t_2 \]
+\end{defn}
+
+We can define other two things
+
+\[ \mop{Tw}(x,R) = \frac{1}{2π} \int_a^b u_3(t) \dif t\]
+
+\[ \mop{Wr}(x) = \frac{1}{4π} \int_a^b \int_a^b \frac{\left(x(t_2) - x(t_1)\right)  ·\left((x'(t_1) ∧ x'(t_1)\right)}{\norm{x(t_2) - x(t_1)}^3} \dif t_1 \dif t_2 \]
+
+
+\begin{theorem}[Horrendousnameguy theorem] If $x$ is regular and smoothly closed ($x(b) = x(a) $ and $x'(b) = x'(a)$) and the same with $R$, we then define $z(t,η) = x(t) + η\vd_1(t)$ with $η∈(0,ε)$ smoothly closed $x ∩z = \emptyset$ for all $n$? The heck is $n$? Actually we want to have curves $z$ not intersecting $x$.
+
+Then \[ \lk  = \mop{Tw} + \mop{Wr}\]
+\end{theorem}
+
+The linking number can be defines for any two curves closed.
+
+\section{Linking number}
+
+Several properties.
+
+\begin{prop} Let $x(t) ∈ SE(3)$ be a curve with adapted frame, and then let $x_s(t) = x(s(t))$ be a reparametrization of $x$, preserving orientation. Then, $\lk (x,y) = \lk (x_s,y)$.
+
+In other words, the linking number is invariant over orientation-preserving reparametrizations.
+
+If the reparametrization changes the orientation, the linking number changes sign.
+\end{prop}
+
+\begin{prop} The link number is independent of dilations ($\lk (x,y) = \lk (λx, λy)$ for $λ > 0$), of translations ($\lk (x,y) = \lk (x + a, y + a)$ for $a ∈ ℝ^3$) and of rotations ($\lk (x,y) = \lk (Rx,Ry)$ for $R ∈ SO(3)$).
+
+\end{prop}
+
+\begin{prop} The link number is invariant by homotopy.
+\end{prop}
+
+\begin{prop}[Signed crossing]
+Some weird rule for computing the number based on crossings.
+\end{prop}
+
+
+Something infinity (physically unlinked curves have link number 0). The converse is not true.
+
+\begin{prop} $\lk(C_1 ∪ C_2, C_3) = \lk(C_1, C_3) + \lk (C_2, C_3)$.
+\end{prop}
+
+Define \[ e(s,σ) = \frac{y(s) - x(σ)}{\norm{y(s) - x(σ)}} \] then \[ e · \left(∂_σ e ∧ ∂_s e\right) = \frac{\left(y(s) - x(σ)\right)  ·\left((y'(s) ∧ x'(σ)\right)}{\norm{y(s) - x(σ)}^3}   \] so we can replace that in the equation for the linking number.
+
+Thenif we define a 2-manifold α orientable and regular ($\norm{∂_s α ∧ ∂_σα} ≠ 0$) and then the linking number is the signed area of something.
+
 \appendix
 \chapter{Exercises}
 \input{tex/DifferentialGeometryofFramedCurves_Exerc.tex}
