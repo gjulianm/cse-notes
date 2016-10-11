@@ -8,5 +8,8 @@
 	\addplot[domain=0:1, palette2, thick] {sqrt(\x - \x * \x * \x)};
 	\addplot[domain=0:1, palette2, thick, dashed] {-sqrt(\x - \x * \x * \x)};
 	\addplot[domain=1:2, palette2, thick] {0};
+
+	\node[red!80!black, align = center] at (axis cs:0.5,-0.2) {Large wavelength \\ Unstable};
+	\node[green!60!black, align = center] at (axis cs:1.5,-0.2) {Small wavelength \\ Stable};
 \end{axis}
 \end{tikzpicture}

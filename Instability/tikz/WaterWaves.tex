@@ -1,0 +1,12 @@
+
+\begin{tikzpicture}
+\draw[gray, ->] (-0.1, 0) -- (10,0) node[right] {$x$};
+\draw[gray, ->] (0, -3) -- (0,3) node[above] {$z$};
+\draw (0,-2.5) -- (10, -2.5);
+\fill[pattern = north east lines, pattern color = palette2] (0, -2.5) rectangle (10, -3);
+
+\fill[palette3, opacity = 0.2] plot[domain = 0:10, samples = 200] ({\x}, {0.5 * sin(3 * \x r)}) -- (10, -2.5) -- (0,-2.5) -- (0,0);
+\draw[variable = \x, domain=0:10, samples = 200, thick, palette3] plot ({\x}, {0.5 * sin(3 * \x r)});
+
+\draw[<->] (-0.3,0) -- node[midway, left] {$H$} (-0.3,-2.5);
+\end{tikzpicture}

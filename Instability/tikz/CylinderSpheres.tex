@@ -1,0 +1,12 @@
+
+
+\begin{tikzpicture}[scale = 0.7]
+\node (A) [cylinder, shape border rotate=90, scale = 0.7, draw,minimum height=6cm,minimum width=2cm, inner sep = 8pt] at (0,0) {};
+\draw [->] (0,3) -- (1,3) node [midway, above,fill=white] {$R$};
+\draw [<->] (1.1, 3) -- node[right] {$h$} (1.1, -2.45) ;
+
+\foreach \y in {3, 1.5, ..., -2.5}
+	\draw (4, \y - 0.3) circle[radius=0.5cm];
+
+\draw[->] (4, 2.7) -- node[above, midway] {$a$} (4.5, 2.7);
+\end{tikzpicture}
