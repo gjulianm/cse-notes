@@ -138,12 +138,53 @@ Again, we can test the precision of this algorithm on a harmonic oscillator.  We
 
 Magical transparency, Gear is best at small steps, become comparable to Verlet at higher values.
 
-\section{Simulation as a computer expt - Rahman's simulation}
+\section{Simulation as a computer experiment - Rahman's simulation}
 
-Box something, periodic boundary conditions. NVE (constant temperature) and the lennard-Jones potential \[ U = \sum_{i < j} u_{ij} = \sum_{i < j} u^{ij}\norm{r_i - r_j} \] with \[ u^{ij}(r) = 4ε \left(\frac{σ^2}{r^12} - \frac{σ^6}{r^6} \right)\]
+Box something, periodic boundary conditions. NVE (constant temperature) and the lennard-Jones potential \[ U = \sum_{i < j} u_{ij} = \sum_{i < j} u^{ij}\norm{r_i - r_j} \] with \[ u^{ij}(r) = 4ε \left(\frac{σ^2}{r^{12}} - \frac{σ^6}{r^6} \right)\]
 
+Computations of atomic forces. Instantaneous temperature: equipartition theorem. Radial distribution function.
 
-Computations of atomic forces. Instantaneous temperature: equipartition theorem. Radial distribution function
+\subsection{Diffusion coefficient in molecular dynamics}
+
+But we can also study things that are not static. For example, we might want to study the \textbf{diffusion coefficient}, which is related to Fick's law explaining macroscopic behaviour of liquids: \( \vec{J} = -D \grad c \) where $\vec{J}$ is the current in the material, $c$ is the concentration and $D$ is the diffusion coefficient.
+
+We also have the continuity relation, which assures us that the material does not disappear: \( \dpd{c}{t}(\vr, t) + \dv \vec{J} (\vr, t) = 0\)
+
+Combining these equations gets us the diffusion equation: \( \dpd{}{t} c(\vr, t) - D Δc(\vr,t) = 0 \) which for initial conditions\footnote{HAASIODJAHSDA DELTA IS NOT A FUNCTION!} $c(\vr, 0) = δ_{\vr_0}$ has solution \[ c(\vr, 0) = \frac{1}{\left(4πDt\right)^{\sfrac{3}{2}}} e^{-\frac{\norm{\vr}^2}{4Dt}} \]
+
+We might want to study the average of the squared norm of $\vr$: \[ \int_{ℝ^N} c(\vr, t) \norm{\vr}^2 \dif \vr = \dotsb = 6 Dt\] which gives us a way of obtaining the diffusion coefficient experimentally.
+
+What happens, however, if the initial condition is not a delta \textit{distribution}? Well, the solution is the convolution of the initial conditions $f(\vr) ∈ L^1(ℝ^N)$ with $\norm{f}_1 = 1$  with the essential solution (Gaussian) given by \[ \Phi(\vr,t)=\frac{1}{\sqrt{4\pi Dt}}\exp\left(-\frac{\vr^2}{4Dt}\right) \] so our equation becomes \begin{align*}
+\int_{ℝ^N} c(\vr, t) \norm{\vr}^2 \dif \vr &= \int_{ℝ^N} (f \ast Φ) \norm{\vr}^2 \dif \vr = \\
+	&= \int_{ℝ^N} \left(\int_{ℝ^N} f(\vx) Φ(\vr - \vx, t) \dif \vx \right) \norm{\vr}^2 \dif \vr = \\
+	&= \int_{ℝ^N} f(\vx) \left(\int_{ℝ^N} Φ(\vr - \vx, t) \norm{\vr}^2 \vr \right) \dif \vx = \\
+	&= 6Dt · \int_{ℝ^N} f(\vx) \dif x = 6Dt
+\end{align*} which agains tells us that the evolution of the second moment is proportional to $t$ and the diffusion coefficient.
+
+In a simulation, we would calculate the diffusion coefficient as \[ D = \lim_{t \to ∞} \frac{1}{6t} \pesc{\norm{Δ\vr(t)}^2} \] with \[ \pesc{\norm{Δ\vr(t)}^2} = \frac{1}{N} \sum_{i=1}^N \norm{\vr_i(t) - \vr_i(t_0)}^2\] for $t_0$ the initial time of the simulation.
+
+A simulation of Rahman's experiment reveals that in short time scales (picoseconds) Fick's law already applies at the atomic level.
+
+\subsubsection{Green-Kubo relation for the diffusion coefficient}
+
+Another way to obtain the diffusion coefficient is something that I did not listen to but the formulas are \[ Δ\vr_x(t) = \int_0^t \dif t' \vv_x(t') \] and \begin{align*}
+\pesc{\abs{Δ\vr_x(t)}^2} &= \pesc{\left(\int_0^t \dif t' \vv_x(t')\right)^2 } = \\
+&= \dotsb =  \\
+&= 2 \pesc{\int_0^t \dif t' \int_0^{t'} \dif t'' \vec{v}_x(t') \vv_x(t'') }
+\end{align*}
+
+And now \[ D = \lim_{t\to ∞} \frac{1}{2} \dpd{}{t} \pesc{\abs{Δ\vr_x}^2}\] beacuse the material is isotropic or something like that and at equilibrum and after some horrible calculations we have that \[ D = \int_0^{∞} \pesc{\vv_x(τ) \vv_x(0)} \dif τ \]
+
+\section{Constant temperature simulations - Sampling in the canonical ensemble}
+
+Although in a setting with an infinite number of particles temperature can remain constant, in the canonical ensemble (CE) there are specific fluctuations related to the fact that there is only a finite number of particles. So $T_i \propto \sum_{I} p_I^2$ and then \begin{multline*} \frac{\pesc{(ΔT)^2}}{T^2} = \frac{\pesc{(T_i - \pesc{T_i})^2}}{\pesc{T_i}^2} = \frac{\pesc{\left(\sum_I p_I^2\right)^2} - \left(N\pesc{p}\right)^2}{\left(N\pesc{p}\right)^2} = \frac{\pesc{\sum_{I,J}p_I^2p_J^2} - \left(N\pesc{p}\right)^2}{\left(N\pesc{p}\right)^2} = \\ = \frac{N\pesc{p^4} + N(N-1)\pesc{p^2}\pesc{p^2} - \left(N\pesc{p}\right)^2}{\left(N\pesc{p}\right)^2} = \frac{1}{N} \frac{\pesc{p^4} - \pesc{p^2}^2}{\pesc{p^2}^2} = \frac{2}{3N}\end{multline*}
+
+We have used here the distribution of momentum Maxwell-Boltzmann given by \[ \mathcal{P}(p) = \left(\frac{β}{2πm}\right)^{\sfrac{3}{2}} e^{-\frac{βp^2}{2m}} \] with $β = \frac{1}{kT}$, so the moments can be calculated \begin{align*}
+\pesc{p^2} &= \frac{3m}{β} \\
+\pesc{p^4} &= 15 \frac{m^2}{β^2}
+\end{align*}
+
+In the microcanonic ensemble, Lebowitz et al. found that the fluctuations are \[ \frac{\pesc{(ΔT)^2}}{T^2} = \frac{2}{3N} \left(1 - \frac{3k}{c_v} \right)\]
 
 \chapter{Monte Carlo simulations}
 
