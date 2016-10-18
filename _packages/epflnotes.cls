@@ -209,7 +209,7 @@
 \headstyles{memman}
 \chapterstyle{ell}
 
-\setsecheadstyle{\scshape\Large}
+\setsecheadstyle{\scshape\large}
 \setsubsecheadstyle{\sffamily\bfseries}
 \setparaheadstyle{\sffamily\bfseries}
 
