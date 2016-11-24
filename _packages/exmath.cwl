@@ -1,3 +1,4 @@
+\CancelColor#m
 \seprule#m
 \seprule[$\ast\quad\ast\quad\ast$]{{\color{gray} \noindent \hspace{40pt} \hrulefill~ \raisebox{-4pt}[10pt][10pt]#m
 \proofpart{arg0}#m
