@@ -369,8 +369,68 @@ Doing that with all the equations \eqref{eq:RayleighPlateau:EulerR,eq:RayleighPl
 
 Perturbing and linearizing the boundary conditions we end up with another thing. I'm going to copy this later.
 
+\section{Kelvin-Helmholtz instability}
+
+Two interpretations, Bernoulli and rotation, see slides. Then use Euler equations (incompressible Navier-Stokes without viscosity), and we need to force continuity with $∂_xu + ∂_y v = 0$ so usnig the streamfunctions gives is this condition for free.
+
+\[ u = ∂_y ψ \quad v = ∂_x ψ \]
+
+Things similar to Rayleigh-Taylor. Key in other instabilities, and inflection points.
+
+\section{Cylinder wake}
+
+Two-dimensional instability.
+
+About parallel flows: for any given 3D instability we can find another 2D instability with lower reynolds number.
+
+\section{Vorticity?}
+
+Sinous, varicose and single street flows: vorticity sheets turning into discrete vortices.
+
+Inviscid limitt! We take euler equations
+\begin{align*}
+\dpd{\vu}{t} + \vu \grad \vu &= - \grad p \\
+\dv \vu &= 0
+\end{align*} which are Navier-Stokes without viscosity and incompressible fluid ($\dv u = 0$).
+
+Our base flow is $\vu = u(y) \ve_x$. Then we add a perturbation $u'$.  Equations, things, calculations. Then linearized euler. Then more computations and details, normal mode expansion because there's no deependence between $x, z, t$ so wavenumbers are independent. Final equations (hats are Fourier transforms:
+\begin{align*}
+- \imath ω\hat{u}_x + U(y) \imath k_x \hat{u}_x + \hat{u} \dod{U(y)}{y} &= - \imath k_x \hat{p} \\
+-\imath ω \hat{u}_y + U(y) \imath k_x \hat{u}_y + 0 &= - \dpd{\hat{p}}{y} \\
+-\imath ω \hat{u}_z + U(y) \imath k_x\hat{u}_z &= -i k_z \hat{p} \\
+\imath k_x \hat{u}_x + \dod{\hat{u}_y}{y} + \imath k_z \hat{u}_z &= 0 \end{align*}
+
+The last one is the divergence of the Fourier expansion. Once here, we do a transformation $\tilde{k} = \sqrt{k_x^2 + k_z^2}$ which is in the slides. Even more horrible equations
+
+I don'tknow how but non-orthogonality of the eigenvalues may imply a transient growth of the isntability which in turn may cause instability even in asymptotically stable states. Very cool. Operator norms and singular value decompositions.
+
+\appendix
+
 \chapter{Exercises}
 \input{tex/Instability_Exerc.tex}
+
+\chapter{Other data about the subject}
+
+Exam will be a presentation of a paper, and then a small 20 \% written exam. The papers are the following:
+
+\begin{enumerate}
+	\item Rayleigh-Taylor in thin cell. They use magnetic levitation to create the base stable flow. The flow is parabolic in the direction of the depth.
+	\item Rayleigh-Taylor under an incline. Same problem of the ``thin layer'' of the first exercise but tilting the plane.
+	\item Saffmann-Taylor instability (the fingers one). 25 pages.
+	\item Rayleigh-Plateau instability of co-flowing viscous jets.
+	\item Influence of confinement on vortex shedding. Explanation of vorticity appearing. Feasible case of numerics.
+	\item Stability analysis on mean flow. They average the flow or something. Sounds interesting.
+	\item Convective instability behind a cylinder. Similar to the previous one.
+	\item Shear-flow instability in circular geometry.
+	\item Rayleigh-Benard-Poiseuille which is Rayleigh-Benard with advection.
+	\item Transient growth in Rayleigh-Benard-Poiseuille.
+	\item Pearls on a fiber.
+	\item Viscous effects in Rayleigh-Taylor instability.
+	\item Draw resonance.
+	\item Dry friction on the bead on a hoop.
+\end{enumerate}
+
+
 
 \backmatter
 \printindex

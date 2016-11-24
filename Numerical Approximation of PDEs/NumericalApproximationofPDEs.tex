@@ -109,7 +109,7 @@ This is actually a direct translation of the motivation we were talking of befor
 
 We require it to be linear because non-linear things are just awful. Continuity is also very important: if we are using a sequence of test functions converging to some other function, we want the result to be the same for the two possible paths of first measuring, then doing the limit and viceversa. Formally:
 
-\begin{defn}[Continous operator][Continuity!of an operator] Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $(φ_n)_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \pesc{T,φ_n} = \pesc{T, φ_n}\]
+\begin{defn}[Continous operator][Continuity!of an operator] Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $(φ_n)_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \pesc{T,φ_n} = \pesc{T, φ}\]
 \end{defn}
 
 In the specific case of test functions $\dstr(Ω)$ with $Ω ∈ ℝ^d$, we have to be careful with the definition of convergence: given a sequence $(φ_n)_{n≥1} ⊂ \dstr(Ω)$, we say that it converges to $φ ∈ \dstr(Ω)$ if and only if $\sop φ_n ⊂ K$ for some compact set $K ⊂ Ω$, and if $∂^\vA φ_n \to ∂^\vA φ$ with respect to the supremum norm for every multiindex\footnote{Reminder: a multiindex $\vA = (α_1, α_2, \dotsc, α_d)$ is a notation for the mixed partial derivatives $\frac{∂^{\abs{\vA}}}{∂x_1^{α_1}∂x_2^{α_2} \dotsb ∂x_d^{α_d}}$.} $\vA ∈ ℕ^d$.
@@ -138,13 +138,13 @@ Sobolev spaces are Banach spaces given the norm \( \norm{f}_{W^{k,p}} = \left(\s
 
 The special case is with $p = 2$, named as $H^k(Ω) = W^{k,2}(Ω)$, which is a Hilbert space with the inner product given by \[ \pesc{f,g}_{H^k(Ω)} ≝ \sum_{\abs{\vA} ≤ k} \int_Ω ∂^\vA f · ∂^\vA g \dif x \] which clearly induces the norm defined previously in \eqref{eq:Fundamentals:NormSobolev}.
 
-For notational convenience, we can define the $H^k$ seminorm as simply by \[ \abs{f}_{H^k(Ω)}^2 = \sum_{\abs{\vA} = h} \norm{∂^\vA f}_{L^2(Ω)}^2\], and thus \[ \norm{f}_{H^k(Ω)}^2 = \sum_{m=0}^k \abs{f}^2_{H^m(Ω)} \]
+For notational convenience, we can define the \concept{Hilbert\IS seminorm} $\abs{·}_{H^k}$ as simply by \( \label{eq:HkSeminorm} \abs{f}_{H^k(Ω)}^2 = \sum_{\abs{\vA} = h} \norm{∂^\vA f}_{L^2(Ω)}^2 \), and thus \[ \norm{f}_{H^k(Ω)}^2 = \sum_{m=0}^k \abs{f}^2_{H^m(Ω)} \]
 
 \subsection{Embeddings of Sobolev spaces and regularity}
 
 One important aspect of Sobolev spaces is ``where do they live'' or, in other words, in which spaces can we embed a given Sobolev space and what does that tell us about the regularity of the functions in it. This is solved by the Sobolev embedding theorem.
 
-\begin{theorem}[Sobolev embedding theorem] Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:LipschitzCont}.}. Then, the following embedding properties hold:
+\begin{theorem}[Sobolev embedding theorem] \label{thm:SobolevEmbedding} Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:LipschitzCont}.}. Then, the following embedding properties hold:
 \begin{enumerate}
 	\item If $0 ≤ 2k < d$, then $H^k(Ω) ⊂ L^q(Ω)$ with $q = \sfrac{2d}{(d-k)}$.
 	\item If $2k = d$, then $H^k(Ω) ⊂ L^q$ for $2 ≤ q < ∞$.
@@ -158,14 +158,16 @@ There are also two embeddings directly from the definition, say $H^{k+1}(Ω) ⊂
 
 \subsection{Fractional Sobolev spaces and continuity}
 
-Until now, we have defined Sobolev spaces with integer degree $k$. However, for the next section we will need what we call fractional Sobolev spaces. These will give us ``degrees'' of continuity: a Sobolev space of degree $4.5$ will be the space of functions that have 4 distributional derivatives in $L^p$ and for which the last derivative is ``somewhat continuous'', with that somewhat being graded by $0.5$.
+Until now, we have defined Sobolev spaces with integer degree $k$. However, for the next section we will need what we call fractional Sobolev spaces. These will give us ``degrees'' of continuity: a Sobolev space of degree $4.5$ will be the space of functions that have 4 distributional derivatives in $L^p$ and for which the last derivative is ``somewhat continuous'', with that somewhat being graded by $0.5$. This will be later useful for defining trace spaces.
 
 This ``somewhat continuity'' actually has a formal definition: Hölder continuity.
 
-\begin{defn}[Hölder continuity][Continuity!Hölder] Let $X,Y$ be two metric spaces and $\appl{f}{X}{Y}$ be a function between them. We say that $f$ is Hölder continuous of degree $α$ if there exists constants $C,α ∈ ℝ^+$ such that for every $x,y ∈ ℝ^d$ the following ``Hölder condition'' holds: \( \norm{f(x) - f(y)}_Y ≤ C\norm{x - y}_X^α \label{eq:Fundamentals:HolderCondition} \)
+\begin{defn}[Hölder continuity][Continuity!Hölder] \label{def:HolderContinuity} Let $X,Y$ be two metric spaces and $\appl{f}{X}{Y}$ be a function between them. We say that $f$ is Hölder continuous of degree $α$ if there exists constants $C,α ∈ ℝ^+$ such that for every $x,y ∈ ℝ^d$ the following ``Hölder condition'' holds: \( \norm{f(x) - f(y)}_Y ≤ C\norm{x - y}_X^α \label{eq:Fundamentals:HolderCondition} \)
 
 A function will be locally Hölder continuous if we can find those constants $C,α$ for a neighborhood of every point $x ∈ ℝ^d$.
 \end{defn}
+
+\subsubsection{Unrelated but interesting rambling on Hölder continuity and derivability}
 
 Although for the definition we let the degree be $α ∈ ℝ^+$, we are only interested in the case $α ∈ (0,1)$. With $α = 0$, we only have bounded variation, which is not necessarily continuous at all. With any $α > 0$, we have that $f$ is continuous. Magic happens with $α = 1$, a case for which we will need an additional definition.
 
@@ -173,6 +175,7 @@ Although for the definition we let the degree be $α ∈ ℝ^+$, we are only int
 
 As it was the case with Hölder continuity, a function will be locally Lipschitz continuous if we can find the constant $K$ for a neighborhood of every point $x ∈ X$.
 \end{defn}
+
 
 It is straightforward to see that Hölder continuity of degree $1$ is equivalent to Lipschitz continuity. What is more interesting is the relationship of Lipschitz continuity and derivation.
 
@@ -226,13 +229,53 @@ As the simple functions are a dense subset of $L^2$, this means that $I$ is boun
 Finally, we just choose $ψ_x = \ind_{[0,x]}$ so we have \[ I(ψ_x) = f(x) - f(0) = \int_0^x φ \dif μ \], which is the assumption of \fref{crl:LebesgueDifferentiation} and thus we have differentiability almost everywhere.
 \end{proof}
 
+\subsubsection{Definition of fractional Sobolev spaces}
 
+So, back on track. Previously, we have defined \nref{def:HolderContinuity} with $α ∈ (0,1)$. We will want to expand that to $L^p$ functions, and that is done via the Slobodecki seminorm.
 
-Fractional sobolev spaces.
+\begin{defn}[Slobodecki seminorm][Seminorm!Slobodecki] Let $1 ≤ p < ∞$, $α ∈ (0,1)$ and $Ω ∈ ℝ^d$ an open subset. Then, for a given $f ∈ L^p(Ω)$ we can define its Slobodecki seminorm as
+\(\label{eq:SlobodeckiSeminorm} [f]_{α,p,Ω} = \left(\iint\limits_{Ω×Ω} \frac{\abs{f(x) - f(y)}^p}{\abs{x-y}^{αp+d}} \dif x \dif y \right)^\frac{1}{p} \)
+\end{defn}
 
-Trace allows us to enunciate boundary conditions on functions and, importantly, generalized functions. Existence of a linear operator from $H^1$ to $L^2$ functions on the boundary $∂Ω$, which is simply the restriction, and then it's bounded $\norm{γ_0v} ≤ C\norm{v}_{H^1(Ω)}$. Thing is that we can approximate by $C^∞$functions and then we define the limit. Still true if we use only a part of the boundary, as long as that part has not null measure. We can extend these ideas somehow.
+This allows us to generalize the notion of ``stronger continuity'' to $L^p$ functions: in this case, we create a notion of ``stronger than $L^p$ integrability''\footnote{I think. I'm not sure about that}. With that, we can define a fractional Sobolev space.
 
-Introduce the space $H^1_0(Ω)$ as the subspace of $H^1(Ω)$ with the additional property that their trace is equal to $0$.
+\begin{defn}[Sobolev\IS fractional space] Given $1 ≤ p < ∞$, $s ∈ ℝ^+$ and $Ω ⊂ ℝ^d$ an open set, we define $θ ≝ s - \floor{s}$ and the corresponding Sobolev fractional space as \[ W^{s,p}(Ω) = \set{f ∈ W^{\floor{s}, p} \tq \sup_{\abs{\vA} = \floor{s}} [∂^\vA f]_{θ,p,Ω} < ∞}\] which is a Banach space when equipped with the norm \[ \norm{f}_{W^{s,p}(Ω)} = \norm{f}_{W^{\floor{s}, p}} + \sup_{\abs{\vA} = \floor{s}} [∂^\vA f]_{θ,p,Ω}\]
+\end{defn}
+
+\section{Trace spaces}
+
+To finish with this chapter on fundamentals, we need to visit the trace spaces. Until now, we have studied spaces with not many restrictions on their functions, and in which we can take derivatives at liberty (Sobolev spaces) not worrying too much about regularity. This will allow us to study partial differential equations in a very general setting leaving regularity aside.
+
+However, one aspect of PDEs that we haven't touched here is boundary conditions. Which is the regularity of functions defined in the boundary of a domain? What requirements should we impose on that boundary? These questions are answered by the trace operator, which is an easy way to deal with the restriction on the boundary.
+
+\begin{theorem}[Trace\IS theorem] Let $Ω ⊂ ℝ^d$ be an open domain with a Lipschitz continuous boundary $∂Ω$, and $k ≥ 1$. Then, there exists an unique linear map (\textbf{trace operator}) \begin{align*}
+\appl{γ_0}{H^k(Ω)&}{H^{k-\sfrac{1}{2}}(∂Ω)}
+\end{align*} such that $γ_0(v) = \restr{v}{∂Ω}$ if $v ∈ H^k(Ω) ∩ C^0(\adh{Ω})$ (that is, the trace operator is the restriction on the boundary when the function is continuous in the closure).
+
+Moreover, there is a constant $C_T > 0$ such that \[ \norm{γ_0(v)}_{L^2(∂Ω)} ≤ C_T \norm{v}_{H^k(Ω)} \]
+
+This results holds if instead of $∂Ω$ we take a subset $Γ ⊂ ∂Ω$ with nonzero measure.
+\end{theorem}
+
+If the function does not happen to be continuous in the closure, the trace is assigned as a limit: $C^∞(Ω)$ is dense in $H^k(Ω)$, so for any $v ∈ H^k(Ω)$ we can find a sequence $\set{v_n} ⊂ C^∞(Ω)$ such that $v_n \to v$, and then we compute $γ_0(v) = \lim_{n \to ∞} γ_0(v_n)$.
+
+Note that $H^{k-\sfrac{1}{2}}(Ω) ⊂ L^2(Ω)$.
+
+A space we will usually be interested in will be $H^1_0(Ω)$, which is the set of $H^1$ functions that are null on the boundary: \[ H^1_0(Ω) = \set{ f ∈ H^1(Ω) \tq γ_0(f) = 0 }\]
+
+Similarly, we can define $H^1_Γ(Ω)$ for partial boundaries $Γ ⊂ ∂Ω$ (with nonzero measure) as \[ H^1_Γ(Ω) = \set{f ∈ H^1(Ω) \tq γ_Γ(f) = 0} \]
+
+\section{Poincaré inequalities}
+
+Now, just for some inequalities that can be considerably useful in the future relating $L^2$ and $H^1$ seminorms.
+
+\begin{theorem}[Poincaré inequality][Inequality!Poincaré] \label{thm:PoincareInequality} Let $Ω ⊂ ℝ^d$ be an open domain. Then there exists a positive constant $C_Ω > 0$ such that, for every $v ∈ H^1_0(Ω)$ the following holds: \[ \norm{v}_{L^2} ≤ C_Ω \abs{v}_H^1\]
+\end{theorem}
+
+The inequality still holds if the function vanishes only on part of the boundary.
+
+\begin{prop}[Friedrichs inequality][Inequality!Friedrichs] The \nref{thm:PoincareInequality} still holds for $v ∈ H^1_Γ$, with $Γ ⊂ ∂Ω$ of nonzero measure.
+\end{prop}
 
 \chapter{Elliptic problems}
 
@@ -423,6 +466,8 @@ We can rewrite the first term because \begin{align*}
 
 So we have a bilinear form again and whatever.
 
+\chapter{Finite element spaces}
+
 \section{Galerkin approximation}
 
 The idea of the Galerkin approximation is, once we have a \nref{def:WeakAbstractFormulation} $a(u,v) = F(v)$ for all $v ∈ V$, limit the problem to a finite-dimensional Hilbert space on which we can solve computationally the problem.
@@ -510,6 +555,221 @@ A mesh can be defined by certain parameters.
 
 \begin{defn}[Quasi-uniform family of meshes] A family of meshes is quasi-uniform if it is regular and $\sfrac{h_{min}}{h} ≥ δ$.
 \end{defn}
+
+\begin{defn}[Affine triangular mesh] An affine triangular mesh is a
+\end{defn}
+
+I think I missed a class here on how to construct these meshes.
+
+\section{Approximation results for finite element spaces}
+
+In this section, we will see results to quantify ``how good'' is a certain approximation. If we have a finite element space $X_h^r$ of dimension $r$ and mesh size $h$ and a function $u ∈ H^s$, we will want to express the bound $\inf_{v_h ∈ X_h^r} \norm{u - v_h}$ in terms of $\mathcal{O}(h^p)$. First, we will try to prove this in terms of $C^0$ continuous piecewise polynomial.
+
+\textit{TODO: Organize this better}
+
+Let $X_h^r$ be a finite element space of $C^0$ continuous piecewise polynomials over an affine triangular mesh $τ_h$ in a polygonal domain Ω given by \[ X_h^r = \set{v ∈ C^0(Ω) \tq \restr{v}{k} ∈ \mathbb{P}_r(k) \; ∀k ∈ τ_h } \]
+
+Then, there exists a constant $C ∈ ℝ^+$ such that \[ \inf_{v_h ∈ X_h^r} \norm{u - v_h} ≤ \norm{u - v_h^*} ≤ Ch^p \] where $v_h^* ∈ X_h^r$ is the optimal approximation.
+
+Supposing a good enough regularity, we can define an interpolant operator $I_h$ such that $v_h^* = I_hu$. This is easy enough if $u ∈ C^0$ (use just the Lagrange interpolating polynomial). For Sobolev spaces, we can use the \nref{thm:SobolevEmbedding}, so if $H^s ⊂ C^0$ when $s > \sfrac{d}{2}$ and we are in dimension $d = 3$, we will require $s ≥ 2$ to be able to define the interpolant.
+
+We have the following result for interpolation, with $r ≥ 1$ and $s ≥ r + 1$, then for all $u ∈ H^2$ it can be proven that \( \norm{u - I_hu}_{H^1} ≤ Ch^r\abs{u}_{H^{r+1}} \) with $\abs{·}_{H^{r+1}}$ the seminorm of the space\footnote{Defined in \eqref{eq:HkSeminorm}, just the norm of the highest derivative.}. If we go with a weaker norm, we gain one order of convergence: \[  \norm{u - I_hu}_{L^2} ≤ Ch^{r+1}\abs{u}_{H^{r+1}}  \]
+
+We can also use stronger ``norms'' (in this case it's not exactly a norm) but we can prove that for $1 < m ≤ r$ \[ \left(\sum_{K ∈ \tau_h} \norm{u - I_hu}^2_{H^m(K)}\right)^{\sfrac{1}{2}} ≤ Ch^{r-m+1} \abs{u}_{H^{r+1}} \]
+
+\subsection{Interpolation estimates in $X_h^r$ for possibly non-smooth functions}
+
+Now we will work with a function $u ∈ H^s$ with $s ≥ 2$. Then, defining $η = \min \set{s, r+1}$ we have the results \begin{align*}
+\norm{u - I_h u}_{L^2} &≤ Ch^η\abs{u}_{H^η} \\
+\norm{u - I_h u}_{H^1} &≤ Ch^{η - 1}\abs{u}_{H^η} \\
+\norm{u - I_h u}_{H^m} &≤ Ch^{η - m}\abs{u}_{H^η} \quad 0 ≤ m ≤ η \\
+\end{align*}
+
+So now we need lemmas on the reference mapping so we have aspect ratio $γ_K = \frac{h_K}{ρ_K}$ (ratio between outer and inner diameters).
+
+\begin{lemma} Given an affine triangular mesh $τ_h$ with mapping $K = F_k(\hat{K})$ and transformation matrix $B_K ∈ ℝ^{d×d}$ we have the following results:
+\[ \norm{B_K} ≤ \frac{h_K}{\hat{ρ}} \quad \norm{\inv{B_K}} ≤ \frac{\hat{h}}{ρ_K} \quad \det B_K = \frac{\abs{K}}{\abs{\hat{K}}} \]
+\end{lemma}
+
+\begin{proof}
+For the first equality, we choose two points $a,b$ in the inner circle in $\hat{K}$, which will be mapped to the inner circle in $K$ and their distance will be less than $h_K$, so \[ \norm{B_k} = \sup_{ξ ∈ \hat{K}} \frac{\norm{B_k ξ}}{\norm{ξ}} ≤ \frac{h_K}{\hat{ρ}}\]
+\end{proof}
+
+\begin{lemma} For any $v ∈ H^m(K)$ and $\hat{v} = v ○ F_K$, there exists a constant $C_m > 0$ such that \[ \abs{v}_{H^m(K)} ≤ C_m \norm{\inv{B_K}}^m \abs{\det B_k}^{\sfrac{1}{2}} \abs{\hat{v}}_{H^m(\hat{K})} \] and \[ \abs{\hat{v}}_{H^m(\hat{K})} ≤ \hat{C}_m \norm{B_K}^m \abs{\det B_k}^{-\sfrac{1}{2}} \abs{v}_{H^m(K)} \] so actually both norms are equivalent. However, there is a change in the dependence of the mesh sice $h$ $h$.
+\end{lemma}
+
+\begin{lemma}[Deny-Lions] \label{lem:Deny-Lions}Given any bounded convex Lipschitz domain $K ⊂ ℝ^d$ and $u ∈ H^s$ with $s ≥ 0$, then there exists a certain constant $C ∈ ℝ^+$ such that \[ \inf_{p ∈ \mathbb{P}_r(K)} \norm{u - p}_{H^m(K)} ≤ C \abs{u}_{H^η} \quad η = \min \set{s, r+1}, \, m = 0,1, \dotsc, h\]
+\end{lemma}
+
+\begin{proof} There's a boring proof (constructive in 1D using Taylor expansion\footnote{I am seriously starting to hate a lot Taylor expansions.}) and an interesting one % http://math.stackexchange.com/questions/1374822/deny-lions-lemma
+\end{proof}
+
+Local interpolation estimates. So we have $K ∈ τ_h$, and for all $u ∈ H^s$ with $s ≥ 2$ we can do \[ \abs{u - I_h u} = \abs{u -I_hu -p + p} ≤ \abs{u-p} + \abs{I_hu - p}\]
+
+If our interpolating operator is idempotent (interpolating polynomials yields the same polynomial) we can say that $p = I_hp$ and $I_hu - p = I_h(u-p)$ so \[ \abs{u-p} + \abs{I_hu - p} ≤ (1 + \norm{I_h})\abs{u-p}_{H^m} \] and then we use \nref{lem:Deny-Lions}. We need to know however that $\norm{I_h}$ is bounded with respect to $h$, so we have to cast things on the reference elements. In this case we have $\hat{u} = u ○ F_K$ and $\hat{I_hu} = I_hu ○ F_K = \hat{I_h} \hat{u}$ using the interpolating operator on the reference element.
+
+\begin{lemma} The Lagrange interpolating operator $\appl{\hat{I}_h}{H^(\hat{K})}{H^m(\hat{K})}$ is a bounded operator for all $m = 0, \dotsc, r+1$.
+\end{lemma}
+
+\begin{proof} Simply write \[ \norm{\hat{I}_h \hat{u}}_{H^m} ≤ \sum \abs{\hat{u}(a_j)} \norm{φ_j}_{H^m} ≤ C \max_{\hat{x} ∈ \hat{K}} \abs{\hat{u}(\hat{x})} ≤ C \norm{\hat{u}}_{H^2} \]
+\end{proof}
+
+Now we can go back to the estimate thing so yeah, it works, I'm sleepy. But it works.
+
+Something something stiffness matrix.
+
+\subsection{Error estimates for finite element approximations}
+
+Again, we discuss the estimates for the model problem and then we will see that the procedures generalize. This problem will be the Poisson equations with boundary conditions:
+\[ \begin{cases}
+-Δu =f & \text{in } Ω \\
+∂_\vn u = d & \text{on } Γ_N \\
+u= g & \text{on } Γ_D
+\end{cases}\]
+
+Its abstract weak form is the problem of finding a function $u ∈ V_g$ such that $a(u,v) = F(v)$ for any $v ∈ V_0$, with
+\begin{align*}
+V_g &= \set{v ∈ H^1(Ω) \tq \restr{v}{Γ_D} = g} \\
+a(u,v) &= \int_Ω ∇u∇v \\
+F(v) &= \int_Ω fv + \int_{Γ_N} d v
+\end{align*} and assuming that $a$ is continuous ($a(u,v) ≤ M \norm{u}_V \norm{v}_V$) and coercive with coercion coefficient $α = \frac{1}{1 + c_p^2}$, and $F$ a bounded linear operator. For the spaces $V_0, V_g$ we pick the $H^1$ norm.
+
+Our finite element space will be $X_h^r$, the space of $P_r$ finite elements on the mesh $τ_h$. We can construct also the finite element space vanishing on the boundary as $V_{0,h} = X_h^r ∩ H_{Γ_D}^1$. The finite element space for $V_g$ is a little bit more tricky, but we can simply try to approximate the boundary value with the interpolation operator so $V_{h,g} = \set{ v_h ∈ X_h^r \tq \restr{v_h}{Γ_D} = I_h^r g}$.
+
+If he have homogeneous Dirichlet boundary conditions (that is, $g \equiv 0$) we have the \nref{lem:Cea} which says that \[ \norm{u - u_h}_V ≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V \]
+
+With that, we can apply the error estimates for interpolation so that $\inf_{v_h ∈ V_{h,0}} \norm{u -v_h}_{H^1} ≤ \norm{u - I_h^r u}_{H^1} ≤ \abs{u}_{H^η}$ and our estimate is \[ \norm{u-u_h}_{H^1} ≤ C h^{η - 1} \abs{u}_{H^η} \] with $η = \min \set{r + 1, s}$ and $u ∈ H^s(Ω)$.
+
+\subsubsection{Error estimate in $L^2$}
+
+We will use the Aubin-Nitsche trick and we will use duality. In order to estimate the error, we define $e_h = u - u_h$ and the adjoint problem of searching for a $φ ∈ V$ such that \[ a(v,φ) = \int_{Ω} e_h v \qquad ∀v ∈ V\]
+
+THis, in order to estimate the error in $L^2$ we can do the following: \[ \norm{u-u_h}^2_{L^2} = \norm{e_h}_{L^2}^2 = \int_Ω e_h e_h = a(e_h, φ) = a(u - u_h, φ) \]
+
+By the Galerkin orthogonality condition, we know that $a(u - u_h, v_h) = 0$ for any $v_h ∈ V_h$. That allows to substract any $w_h ∈ V_h$ to φ, and then \[ a(u-u_h, φ) = a(u - u_h, φ - w_h) ≤ M \norm{u - u_h}_V \inf_{w_h ∈ V_h} \norm{φ-w_h}_V \]
+
+We must know now which is the regularity of this function φ. To do that, we must notice that φ is the solution to the porblem \[
+\begin{cases} - Δφ = e_h & \text{in } Ω \\
+∂_\vn φ = 0 & \text{on } Γ_N \\
+φ = 0 & \text{on } Γ_D
+\end{cases} \] which in turn depends on the smoothness of $e_h$. We will use however only that $e_h ∈ L^2$, if Ω is a convex polygon. So, assuming $φ ∈ H^2$ we can bound the error in $L^2$, getting one more order of convergence: \[ \norm{u - u_h}_{L^2} ≤ C h \norm{u - u_h}_{H^1} \]
+
+\subsection{Error estimates on functionals}
+
+Let $\appl{Q}{V}{ℝ}$ a linear functional, for which we want to estimate $\abs{Q(u) - Q(u_h)}$. This might be useful if, for example, we want to extract some quantity based on the solution to a PDE, such as the temperature of a surface based on its heat flux.
+
+Again, duality arguments. But yeah everthing ok and estiamte on the order of the tcontinuuity.
+
+\subsection{Error estimate for F.E approximations}
+
+For poisson something something something this is boring.
+
+
+\chapter{Mixed problems}
+
+So we have two Hilbert spaces $V,Q$ and two bilinear forms \begin{align*}
+\appl{a}{V×V&}{ℝ} \\
+\appl{b}{V×Q&}{ℝ}
+\end{align*} and we want to find $(u,p) ∈ V×Q$ such that \(
+\begin{aligned}
+a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V\\
+b(u,q) &= G(q) \quad ∀q ∈ Q
+\end{aligned} \label{eq:MixedProblemFormulation}
+\)
+
+If we have the condition $G = 0$, we can define the space $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$, which translates the problem to the usual abstract formulation of finding a $u ∈ V_0$ such that $a(u,v) = F(v)$ for any $v ∈ V_0$.
+
+This type of construction will be useful when studying elliptic equations with constraints, such the incompressible elasticity equation. The problem will come on how to construct the approximation space to $V_0$. That is why sometimes we will nevertheless work on the unconstrained problem.
+
+\begin{example}[Incompressible linear elasticity] In this case, we have a displacement field $\appl{\vu}{Ω}{ℝ^d}$. The strain tensor is the symmetric part of the gradient, so that \[ ε(\vu) = \frac{∇\vu + \trans{∇\vu}}{2} \] and the stress tensor will be just linear on the strain if we assume linear elasticity: \[ σ_{ij}(\vu) = C_{ijkl} ε_{kl} \]
+
+For an isotropic equation, this tells us that the stress tensor is \[ σ(\vu) = 2με(\vu) + λ\tr(ε(\vu)) I\]
+
+We have the following balance equations for the boundary conditions:
+\begin{align*}
+\dv σ(\vu) &= \vec{f} \quad\text{in }Ω \\
+\vu &= \vec{g} \quad\text{on } Γ_D \\
+σ(\vu) \vn &= \vd
+\end{align*}
+
+The weak formulation requires the definition of the space $V_g = \set{\vv ∈ (H^1)^d \tq \restr{\vv}{Γ_D} = \vec{g}}$, and thus the problem is finding a $\vu ∈ V_g$ such that \[ \int_Ω 2μ\left(ε(\vu) \colon ε(\vv)\right) + λ \dv \vu \dv \vv = \int_Ω \vec{f} \vv + \int_{Γ_N} \vd \vv \qquad ∀\vv ∈ V_0\]
+
+The question is what happens if we have an incompressible material, that is, with $λ \to ∞$ (λ is the bulk modulus). What we do is formulate a variational problem: we define the energy of a solution as \[ J_λ(\vu) = \frac{1}{2} \int_{Ω} 2μ ε(\vu) \colon ε(\vu) + λ(\dv \vu)^2 - \int_Ω \vec{f} \vu - \int_{Γ_N} \vd \vu \]
+
+Solving the minimization problem of $J_λ$ (that is, finding $\argmin_{\vu ∈ V_g} J_λ(\vu)$) is equivalent to the weak formulation presented above.
+
+In that case, if $λ \to ∞$ the only way to bound the energy functional is to have $\dv \vu = 0$, so we will search then for the minimization function $\vu$ of the functional $J_0$ with $\vu ∈ V_g$ \textit{and} $\dv \vu = 0$, with \[ J_\text{inc}(\vu) = \frac{1}{2} \int_{Ω} 2μ ε(\vu) \colon ε(\vu) - \int_Ω \vec{f} \vu - \int_{Γ_N} \vd \vu  \]
+
+To enforce the constraint, we can use Lagrange multipliers. The lagrangian will be then \[ \mathcal{L}(\vu,p) = J_0(\vu) - \int_Ω \vec{p} \dv \vu  \] with $\vec{p}$ being the Lagrange multiplier, and thus the problem is finding \[ \argmin_{\vu ∈ V_g} \max_{\vec{p} ∈ ?} \mathcal{L}(\vu, p) \] with the space of the Lagrange multiplier pending to define. To solve this, we write the ``derivatives'' and make them equal to 0 \begin{align*}
+\dpd{\mathcal{L}}{\vu}(\vv) &= \lim_{ε \to 0} \frac{\mathcal{L}(\vu + ε \vv, p) - \mathcal{L}(\vu, p)}{ε} = \\ &= \int_Ω 2μ ε(\vu) \colon ε(\vv) - \int_Ω p \dv \vv - \int_Ω \vec{f} \vv - \int_{Γ_N} \vd \vv = 0 \\
+\dpd{\mathcal{L}}{p}(q) &= \lim_{ε \to 0} \frac{\mathcal{L}(\vu, p  + ε q) - \mathcal{L}(\vu, p)}{ε} = \\ &= \int_Ω q \dv \vu = 0
+\end{align*}
+
+In the first case, the variation should be $0$ on the boundary so that $v ∈ V_0$, and in the second case we will need only $q ∈ L^2(Ω) = Q$ given that $\dv \vu$  is square-integrable.
+
+So, finally, the constrained problem is finding $(u,p) ∈ V_g × Q$ such that \begin{align*}
+\int_Ω 2μ ε(\vu) \colon ε(\vv) - \int_Ω p \dv \vv &= \int_Ω \vec{f} \vv + \int_{Γ_N} \vd \vv & ∀v ∈ V_0 \\
+\int_Ω q \dv \vu &= 0 & ∀q ∈ Q
+\end{align*}
+
+THe trick is that we can adapt this to the mixed formulation of \eqref{eq:MixedProblemFormulation}, defining $a(\vu, \vv) = \int_Ω 2μ ε(\vu) \colon ε(\vv)$ and $b(\vv, p) = \int_Ω p \dv \vv$ (we only have to change the sign on the second equation but that does not change the equation).
+\end{example}
+
+\begin{example}[Nearly incompressible elasticity] Now on to the partial case: what happens if we have an object which is nearly incompressible? The issue is that if we have a very large value of λ (but not ∞) the error estimate constants blow up completely and we have a poor estimate. What we do in that case is to constrain $p = -λ \dv \vu$ and then the problem becomes \begin{align*}
+\int_Ω 2μ ε(\vu) \colon ε(\vv) - \int_Ω p \dv \vv &= \int_Ω \vec{f} \vv + \int_{Γ_N} \vd \vv & ∀v ∈ V_0 \\
+- \int_Ω q \dv \vu  -\underbracket{\frac{1}{λ} \int_{Ω} pq}_{c(p,q)} &= 0 & ∀q ∈ Q
+\end{align*} which is the same problem as before but adding another term $c(p,q)$, which disappears when $λ \to ∞$, and so the solution will be robust when λ is very large.
+\end{example}
+
+\begin{example}[Flows in porous media] To define the equations, we use Darcy's law: $\vu = -k ∇p$ with $p$ the pressure and $k$ the permeability. Also, fluid cannot disappear, so we have to force that, for any small domain ω, we have $\int_{∂ω} \vu \vn = \int_ω f$ where the left hand side is the fluid that gets in/out of the domain, and the right hand side is the sources or sinks in that domain. This gives us the following model:
+\( \begin{aligned}
+\dv \vu &= f \\
+\vu &= -k∇p
+\end{aligned} \label{eq:DarcyLaw} \)
+
+We will also force that on the impervious boundaries $Γ_D$ we have no fluid transfer, that is, $\vu \vn = 0$ on $Γ_D$.
+
+A first approximation would be to replace the velocity field and set $-\dv (k∇p) = f$ and the other boundary conditions, but that approach has issues. Mainly, that if we solve for $p$, the gradient will be a worse approximation and, specifically, if we have $f = 0$  (conservation of mass) then the approximate solution will not exactly conserve mass, which is definitely not very good. So, we need another approach deriving directly the weak formulation of \ref{eq:DarcyLaw}. For the divergence, we get directly by integration and multiplying by a test function $q$ so that \[ \int_Ω q \dv \vu = \int_Ω fq \]
+
+In the other equation $\vu = -k∇p$, we use a test vector function $\appl{\vv}{Ω}{ℝ^d}$ and then integrate by parts:
+\begin{align*}
+\frac{1}{k} \vu &= - ∇p \\
+\int_{Ω} \frac{1}{k} \vu \vv &= - \int_Ω ∇p \vv \\
+\int_{Ω} \frac{1}{k} \vu \vv &= - \int_{Ω} p \dv \vv - \underbracket{\cancelto{0}{\int_{Γ_D} p \vv \vn}}_{\vv \vn = 0 \text{ on } Γ_D} - \int_{Γ_N} \vv \vn
+\end{align*}
+
+With this, we end with the mixed problem formulation given by
+\(
+\begin{aligned}
+\underbracket{\int_{Ω} \frac{1}{k} \vu \vv }_{a(\vu, \vv)} + \underbracket{\left(- \int_Ω p \dv \vv \right)}_{b(\vv, p)} &= \underbracket{\int_{Γ_N} d \vv \vn}_{F(\vv)} \\
+\underbracket{-\int_Ω \dv u q}_{b(\vu,q)} &= \underbracket{- \int_Ω fq}_{G(q)}
+\end{aligned} \label{eq:DarcyLawWeakForm}
+\)
+
+As always, we need to know the spaces for $\vu, \vv$. We only need control on the divergence, so we can define \[ H(\dv, Ω) = \set{\appl{\vv}{Ω}{ℝ^d} \tq \vv ∈ (L^2(Ω))^d,\, \dv \vv ∈ L^2(Ω)} ⊃ (H^1(Ω))^d \] which is a smaller space than $(H^1(Ω))^d$ and with norm \[ \norm{\vv}_{H(\dv, Ω)} = \norm{\vv}^2_{L^2(Ω)} + \norm{\dv \vu}^2_{L^2(Ω)} \]
+
+And, luckily for us, in this space we can define the trace operator as \begin{align*}
+\appl{\tr}{H(\dv, Ω)&}{\left(H^{\sfrac{1}{2}}(∂Ω)\right)' = H^{-\sfrac{1}{2}}(∂Ω)} \\
+\vv &\longmapsto \restr{\vv · \vn}{∂Ω}
+\end{align*} with $H^{-\sfrac{1}{2}}(∂Ω)$ the dual space of $H^{\sfrac{1}{2}}(∂Ω)$. The trace operator is bounded \[ \norm{\vv · \vn}_{H^{-\sfrac{1}{2}}(∂Ω)} ≤ C \norm{\vv}_{H(\dv, Ω)} \]
+
+This allows us to define the test function space $V_g = \set{\vv ∈ H(\dv, Ω) \tq \restr{\vv·\vn}{Γ_D} = g}$, and then we need to find $u ∈ V_g$ and $p ∈ L^2(Ω)$ to solve \eqref{eq:DarcyLawWeakForm}
+\end{example}
+
+So, after the examples, we will define the theorem that gives us the sufficient conditions for well-posedness of the mixed problem.
+
+\begin{theorem} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
+\begin{itemize}
+\item $\appl{a}{V×V}{ℝ}$ is a continuous (continuity bounding constant $M$) and coercive on $V_0$ ($∃ α > 0$ s.t. $a(u, u) ≥ α \norm{u}_V$ for any $v ∈ V_0$) bilinear form.
+\item $\appl{b}{V×Q}{ℝ}$ is a continuous (continuity bounding constant $γ$) bilinear form and with an inf-sup condition: $∃β > 0$ such that \[\inf_{q∈Q}\sup_{v∈V} \frac{b(v,q)}{\norm{v}_V \norm{q}_Q} ≥ β > 0 \] which is equivalent to saying that for any $q ∈ Q$ we have \[ \norm{q}_Q ≤ \frac{1}{β} \sup_{v ∈ V} \frac{b(v,q)}{\norm{\vv}_V} \]
+\item $\appl{F}{V}{ℝ}$ and $\appl{G}{Q}{ℝ}$ are bilinear and bounded forms.
+\end{itemize}
+
+Under these conditions, there exists an unique solution $(u,p) ∈ V × Q$ for the problem \[ \begin{aligned}
+a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V\\
+b(u,q) &= G(q) \quad ∀q ∈ Q
+\end{aligned} \] and there is a constant $C > 0$ such that \[ \norm{u}_V + \norm{p}_Q ≤ C\left(\norm{F}_{V'} + \norm{G}_{Q'}\right)\]
+\end{theorem}
 
 \appendix
 

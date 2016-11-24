@@ -180,13 +180,90 @@ And now \[ D = \lim_{t\to ∞} \frac{1}{2} \dpd{}{t} \pesc{\abs{Δ\vr_x}^2}\] be
 Although in a setting with an infinite number of particles temperature can remain constant, in the canonical ensemble (CE) there are specific fluctuations related to the fact that there is only a finite number of particles. So $T_i \propto \sum_{I} p_I^2$ and then \begin{multline*} \frac{\pesc{(ΔT)^2}}{T^2} = \frac{\pesc{(T_i - \pesc{T_i})^2}}{\pesc{T_i}^2} = \frac{\pesc{\left(\sum_I p_I^2\right)^2} - \left(N\pesc{p}\right)^2}{\left(N\pesc{p}\right)^2} = \frac{\pesc{\sum_{I,J}p_I^2p_J^2} - \left(N\pesc{p}\right)^2}{\left(N\pesc{p}\right)^2} = \\ = \frac{N\pesc{p^4} + N(N-1)\pesc{p^2}\pesc{p^2} - \left(N\pesc{p}\right)^2}{\left(N\pesc{p}\right)^2} = \frac{1}{N} \frac{\pesc{p^4} - \pesc{p^2}^2}{\pesc{p^2}^2} = \frac{2}{3N}\end{multline*}
 
 We have used here the distribution of momentum Maxwell-Boltzmann given by \[ \mathcal{P}(p) = \left(\frac{β}{2πm}\right)^{\sfrac{3}{2}} e^{-\frac{βp^2}{2m}} \] with $β = \frac{1}{kT}$, so the moments can be calculated \begin{align*}
-\pesc{p^2} &= \frac{3m}{β} \\
+\pesc{p^2} &= \frac{3m}{β} &
 \pesc{p^4} &= 15 \frac{m^2}{β^2}
 \end{align*}
 
 In the microcanonic ensemble, Lebowitz et al. found that the fluctuations are \[ \frac{\pesc{(ΔT)^2}}{T^2} = \frac{2}{3N} \left(1 - \frac{3k}{c_v} \right)\]
 
+The method to solve this problem goes by the name of \textbf{Extended Lagrangian} or \textbf{Nosé-Hoover thermostat}, based on two papers.
+
+The quantity calculated depends on static quantities, position and momentum\footnote{Don't ask me what on earth does $\dif p_i^N$ mean.}:
+\( \bar{A} = \pesc{A\left(\set{r_i}, \set{p_i}\right)} = \frac{\int A(r_i', p_i') e^{-βH(p_i', r_i')}\dif p_i^N \dif r_i^N}{\int e^{-βH(p_i',r_i')} \dif p_i^{'N} \dif r_i^{'N}} \label{eq:QuantityThermostat} \) and under the conditions og ergodicity we have that \[ \bar{A} = \lim_{τ \to ∞} \frac{1}{τ} \int_0^τ \det A[r_i(t), p_i(t)] \dif t\]
+
+The idea of the extended lagrangian of Nosé is something. Scaling of velocities so $\dot{r}_k \to s \dot{r}_i$ and $s$ scales time. The Lagrangian looks like this \[ \mathcal{L}^{\text{Nosé}}(\set{r_i}, \set{p_i}, s, \dot{s}) = \sum_{i = 1}^N \frac{m_i}{2} s^2 \dot{r}_i^2 - U(\set{r_i}) + \frac{Q}{2}\dot{s}^2 - V(s) \] with $U$ the potential energy of the system, $\frac{Q}{2}\dot{s}$ the kinetic energy of $s$ ¿? and $V$ is a potential energy that satisfies the correct conditions: \[ V(s) = \frac{g}{β} \log s \]
+
+The advantage of this chaos is that the quantities $r_i, p_i$ of \eqref{eq:QuantityThermostat} do not change. With the Lagrangian we can get the momentum so \[ p_i = \dpd{\mathcal{L}}{\dot{r}_i} = m_i s^2 \dot{r}_i\qquad p_s = \dpd{\mathcal{L}}{\dot{s}} = Q \dot{s} \]
+
+And somehow the Hamiltonian is \[ \mathcal{H}_{\text{Nosé}} = \sum_{i=1}^N \frac{p_i^2}{2m_is^2} + U(\set{r_i}) + \frac{p_s^2}{Q} + \frac{g}{β} \log s\]
+
+As we don't have dependence on time in that Hamiltonian, that quantity is conserved.
+
+Let's look at the microcanonic partition function, which is a mathematical abortion: \[ Q_{\text{Nosé}} = \int \dif p_s \dif s \dif p^N \dif r^N δ\left(\mathcal{H}_{\text{Nosé}}(p^N, r^N, s, p_s) - E\right) \] and I feel like my degree in mathematics is slipping out of my hands. Holy crap that's horrible. Of couse he also called the δ a function.
+
+So he does a little bit more of mathematical heresy and says that $p' = \sfrac{p}{s}$ with $p'$ a physical variable and does a change of variable in and integral that IS NOT FUCKING WELL DEFINED and now he says this aberration \[ δ(h(s)) = \frac{δ(s-s_0)}{\abs{h'(s)}} \] how on earth can he divide a delta distribution by something and saying it is equal to another delta distribution how can he do that. I'm dying inside. \[ h'(s) = \dpd{h}{s} = \frac{g}{βs} \] and so \[ s_0 = \mop{exp}\left(-\frac{β}{g} \left(\sum_{i=1}^N \frac{p_i^{'2}}{2m} + U(r^n)\right) + \frac{p_2^2}{2Q} + E \right)\]
+
+Now he says that there's some $s^{3N}$ that comes out of the Jacobian of some change of variable in a non-derivable function. Seriously what the fuck. After more integrations he ends up with another horrible funciton and sets $g = 3N + 1$ to get nice constants.
+
+Some real variables (with ') and virtual Nosé variables:
+
+\begin{itemize}
+	\item $r' = r$.
+	\item $p' = \sfrac{p}{s}$.
+	\item $Δt' = \sfrac{Δt}{s}$.
+\end{itemize}
+
+So equations of motion in real variables \[ E_{NH}^{const} = \sum \frac{p_i^2}{2m_i} + U(r^N) + \frac{\mathcal{H}_{NH}^2 Q}{2} + g \frac{\mathcal{H}_{NH}}{β} \]
+
+Only static properties can be averaged with Nosé. Uniform sampling in real time $g = 3N$.
+
 \chapter{Monte Carlo simulations}
+
+Minimal standard by Park and Miller for random generators: given $a = 16807$, $m = 2^{31} - 1$, these values give an appropriate uniform distribution. However it is not good enough: there are residuals (plotting pair of numbers in 2D space show planes, which should not happed).
+
+Another standard is \textit{Ran2}, which is a modified Park and Miller that gets rid of periods and residuals.
+
+For the serial correlations, they use a shuffle algorithm. Given a series $\set{x_i}_{i=1}^∞$, we use a memory table of $32$ numbers to introduce disorder. Thus, when the random number generates the number $x_n$, there is a function $f$ that selects a place $j$ on the table $x_{n-1}$: the previous value in place $j$ is returned as the generator output and $x_n$ is replaced by $x_n$ in the table.
+
+For increasing the period of the generator, they use a combination of different sequences. Given two congruential series $\set{x_n}_{n=1}^∞$, $\set{y_n}_{n=1}^∞$ with different periods $m_x - 1$ and $m_y - 1$, we construct a new series $z_n = (x_n - y_n) \mod m_x$ which will have as period $\mop{mcm}(m_x - 1, m_y - 1)$.
+
+Finally, to avoid overflows  we have the Schrage algorithm. Given a modulo generator with parameters $m, a$, we can write $m = aq + r$ (a simple division, $q$ is the quotient and $r$ the remainder). Thus, in order to get the next value $x_{n + 1}$ based on the previous $x_{n-1}$, we can write \[ x_{n} = \floor{\sfrac{x_{n}}{q}} q + z \mod q\] so that
+\begin{align*}
+x_{n+1} &= ax_n \mod m = \\
+	&= \left(\floor{\sfrac{x_{n}}{q}} aq + a · \left(x_n \mod q\right)\right) \mod m = \\
+	&= \left(\floor{\sfrac{x_{n}}{q}} a(m - r) + a · \left(x_n \mod q\right)\right) \mod m = \\
+	&= \left(a · \left(x_n \mod q\right) - r\floor{\sfrac{x_{n}}{q}} \right) \mod m
+\end{align*}
+
+It's easy to see that both values are less than $m$: $a (z \mod q) < aq ≤ m$ and $r \floor{\sfrac{x_n}{q}} ≤ ra < qa = m -r$. Thus, we can control the overflow of numbers. And $a \densein b$.
+
+Then a shift register generator.
+
+\section{Generating random distributions based on the uniform}
+
+Given a random variable $X$ with uniform distribution of support $[0,1]$, we want to construct a random variable $Y$ with another distribution. After dividing by differentials\footnote{Again my degree in math slips away from my hands.} to look like we are doing math then we see that we need the $\mathrm{CDF}$ (which we will call $f$) of the target distribution so that $y = \inv{f}(x)$.
+
+In the case of the Gaussian, the analytical part is a little bit complicated to get, so Box and Muller get a two-dimensional gaussian which is easier to compute. After doing yet another operation with differentials without integrations (why), it turns out we only need an uniform distribution with support $[0, 2π]$ and an exponential which can be calculated from an uniform supported $[0,1]$.
+
+Another option is the rejection method from von Neumann. We have a PDF $f(x) ≥ 0$ without analytical way to get the CDF. Simple way: draw $v \sim \mop{Unif}(\sup f)$, $u \sim \mop{Unif}(0,1)$, if $u < f(v)$ accept the value of $v$, else reject it.
+
+Also generate other things rejection and majorizing function.
+
+\section{Random walks}
+
+\section{Montecarlo integration}
+
+\subsection{Introduction}
+
+\subsection{Method}
+
+\subsection{Scaling error}
+
+Uncertainty goes proportional to the inverse of the square root of the number of points.
+
+\[ σ_I^2 = \frac{1}{N} σ_f^2 \] where $σ_f$ is the width of the function (std dev wrt the mean).
+
+\subsection{Importance sampling}
 
 \appendix
 

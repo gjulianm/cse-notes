@@ -54,9 +54,78 @@ Contractive application theorem.
 
 \chapter{Interpolation, approximation of functions and data}
 
-\chapter{Numerical integration and derivation}
+Least squares method.
+
+\chapter{Numerical differentiation and integration}
+
+\section{Numerical differentiation}
+
+Try to approximate the value of $f'$ given $f ∈ C^1([a,b])$ for some $f ∈ (a,b) ⊆ ℝ$, or if only the set $\set{x_i, f(x_i)}_{i = 0}^n$ is provided. Finite difference, forward, backward, centered.
+
+\begin{prop} Error associated to forward and backward differences: \begin{align*}
+E_+f(x) &= -\frac{1}{2}hf''(ξ_+) \\
+E_-f(x) &= \frac{1}{2}hf''(ξ_-)
+\end{align*} for some $ξ_+, ξ_- ∈ (a,b)$.
+\end{prop}
+
+\begin{proof} Taylor
+\end{proof}
+
+For centered we need $f ∈ C^3$ and $E_cf(x) = -\frac{1}{2}h^2\left[f'''(ξ_+) + f'''(ξ_-)\right]$.
+
+Boundary nodes: use forward/backward or forward/backward with increased accuracy.
+
+\section{Numerical integration}
 
 \chapter{Numerical linear algebra}
+
+Something something
+
+\section{Richardson method}
+
+\subsection{Convergence study}
+
+\begin{prop}
+If $A, P ∈ ℝ^{n × n}$ are nonsingular, then the stationary preconditioned Richardson method converges to $\vx ∈ ℝ^n$ for all $\vx_0 ∈ ℝ^n$ if and only if \[ α \abs{λ_i}^2 < 2 \Re λ_i \] where $α ≠ 0$ and $λ_i$ are all the eigenvalues of $\inv{P}A$.
+\end{prop}
+
+\begin{corol} If $A, P ∈ ℝ^{n×n}$ are nonsingular with real eigenvalues, then the SPRM converges if and only if $0 < α λ_i < 2$ for all $i = 1, \dotsc, n$.
+\end{corol}
+
+For the election of the optimal value of α for the method, we will need to define an special norm.
+
+\begin{defn}[Energy norm][Norm!energy] The energy norm of a vector $\vv ∈ ℝ^n$ with respect to a symmetric and positive definite matrix $A$ is defined as \( \norm{\vv}_A = \sqrt{\trans{\vv} A \vv}\)
+\end{defn}
+
+\begin{prop} If $A, P ∈ ℝ^{n×n}$ are symmetric and positive definite, then the STRM converges for all initial values if and only if \[ 0 < α < \frac{2}{λ_{\text{max}}} \] with $λ_\text{max}$ the maximum eigenvalue of $\inv{P}A$. Moreover, the spectral radius of the iteration matrix $B_α$ is minimum for $α = α_{\text{opt}}$ where \( α_{\text{opt}} = \frac{2}{λ_\text{min} + λ_{\text{max}}} \) with $λ_\text{min}, λ_\text{max}$ the minimum and maximum eigenvalues of $\inv{P}A$. In this case, for $α = α_\text{opt}$ we have that \[ \norm{\ve_k}_A ≤ d^k \norm{\ve_0}_A \qquad k = 0, 1, \dotsc \] with \[ d = \frac{K(\inv{P}A) - 1}{K(\inv{P}A) + 1} \qquad K(\inv{P}A) = \frac{λ_\text{max}(\inv{P}A)}{λ_\text{min}(\inv{P}A)} \]
+\end{prop}
+
+\begin{remark} When $A$ and $P$ are both spd, then the eigenvalues of $\inv{P}A$ are all real and positive. Note that they are solutions of $A\vx = λP\vx$ so it is possible to show that \[ \frac{λ_\text{min}(A)}{λ_\text{max}(P)} ≤ λ_i ≤ \frac{λ_\text{max}(A)}{λ_\text{min}(P)}\]
+\end{remark}
+
+\begin{remark} The closer is the preconditioning matrix $P$ to $A$, the closer is $K(\inv{P}A)$ to $1$ and the further is the convergence. In this case, however, $P\vz_k = \vr_k$ will be more expensive to solve.
+\end{remark}
+
+\section{Gradient methods}
+
+With $A$ spd. This is equivalent to dynamic preconditions on the Richardson method with an optimal choice of $d_k$.
+
+\begin{prop} If $A, P ∈ ℝ^{n×n}$ are spd, then the preconditioned gradient method converges to the solution for all the choices of initial value and we have the same result \[ \norm{\ve_k}_A ≤ d^k \norm{\ve_0}_A \qquad k = 0, 1, \dotsc \]
+\end{prop}
+
+Also if $K(\inv{P}A) \ll K(A)$, it is a good precondition.
+
+\subsection{Interpretation of the gradient method}
+
+Let us introduce the quadratic form \begin{align*}
+\appl{Φ}{ℝ^n&}{ℝ} \\
+\vx &\longmapsto\frac{1}{2} \trans{\vx} A \vx - \trans{\vx} \vb
+\end{align*}
+
+Since $A$ is symmetric, we have that $∇Φ(\vx) = A \vx - \vb$ so if $\vx$ solves the linear system, then $∇Φ(\vx) = 0$ - in particular, $\vx$ minimizes Φ. This means that solving the linear system is equivalent to finding a minimum for Φ.
+
+So the shape of the Φ function will influence the behaviour of the method.
+
 
 \chapter{Numerical approximation of eigenvalue problems}
 
