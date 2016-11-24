@@ -318,15 +318,19 @@
 \if@usechap
 	\newcounter{thm}[chapter]
 	\newcounter{def}[chapter]
+	\newcounter{exm}[chapter]
 	\renewcommand{\thethm}{\thechapter.\arabic{thm}} % IGN
 	\renewcommand{\thedef}{\thechapter.\arabic{def}} % IGN
+	\renewcommand{\theexm}{\thechapter.\arabic{exm}} % IGN
 	\numberwithin{thm}{chapter}
 	\message{Using chapter numbering for theorems and definitions}
 \else
 	\newcounter{thm}[section]
 	\newcounter{def}[section]
+	\newcounter{exm}[section]
 	\renewcommand{\thethm}{\thesection.\arabic{thm}} % IGN
 	\renewcommand{\thedef}{\thesection.\arabic{def}} % IGN
+	\renewcommand{\theexm}{\thesection.\arabic{exm}} % IGN
 	\numberwithin{thm}{section}
 	\message{Using section numbering for theorems and definitions}
 \fi
@@ -355,7 +359,7 @@
   innerrightmargin=10pt, skipabove=0pt, skipbelow=0pt]}{\end{mdframed}}
 
 \newenvironmentx{example}[1][1=] % 1O: titulo;
-{\paragraph{Example: #1} \itshape}
+{\refstepcounter{exm}\paragraph{Example \theexm: #1} \itshape}
 {}
 
 % Entornos y código para problemas. IGN
@@ -654,7 +658,7 @@
 \newcommand{\pnorm}[1]{\norm{#1}_p}
 \newcommandx{\espell}[1][1=2]{\ensuremath{\ell^{#1}(\mathbb{N})}\xspace}
 \DeclareMathOperator{\spn}{span}
-\newcommand{\densein}{\xhookrightarrow{\text{denso}}}
+\newcommand{\densein}{\xhookrightarrow{\text{dense}}}
 \newcommand{\fourier}{\mathfrak{F}}
 
 \stackMath

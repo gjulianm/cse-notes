@@ -154,6 +154,7 @@
 \vt#m
 \thethm#m
 \thedef#m
+\theexm#m
 \begin{remark}#
 \IS#m
 \begin{op}{arg0}#
