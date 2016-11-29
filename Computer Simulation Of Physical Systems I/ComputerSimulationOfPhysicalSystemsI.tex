@@ -6,6 +6,7 @@
 
 % Additional packages
 \usepackage{tikztools}
+\usepackage{esint}
 % --------------------
 
 \begin{document}
@@ -264,6 +265,35 @@ Uncertainty goes proportional to the inverse of the square root of the number of
 \[ σ_I^2 = \frac{1}{N} σ_f^2 \] where $σ_f$ is the width of the function (std dev wrt the mean).
 
 \subsection{Importance sampling}
+
+\subsection{Correlated sampling}
+
+\textit{Today I woke up wanting to do some measure theory. So I'm translating this to measure-theory}.
+
+Correlated sampling is useful for approximating numerically integrals in a different measure space. Let's say our base measurable space is $(X, m)$, and we want to integrate a function $f$ with respect a different measure $μ$ which is difficult to integrate\footnote{What the guy wrote on the blackboard was equivalent to say that $X = ℝ^d$, $\dif m = \dif x_1 \dotsb \dif x_d$ and $\dif μ = \exp\left(-βE(x_1, \dotsc, x_d)\right) \dif m$ with that exponential being difficult and stuff.}, then our integral is \( I = \fint_X f(x) \dif μ \label{eq:IntegralCorrelated} \)
+
+This weight function will be used to construct a Markov chain for random sampling of points for the integral. That is, instead of having independent sampling, we will sample $n$ points $x_1, \dotsc, x_n$ and the probability of this specific appearance will be \[ P_n(x_1, \dotsc, x_n) = P(x_1) · P(x_1 \to x_2) \dotsb P(x_{n-1} \to x_n) \] where $P(x_i \to x_{i + 1})$ is the probability of a jump\footnote{Obviously.}. We will specifically use Markov chains because of the following theorem:
+
+\begin{theorem} Let $X_1, \dotsc, X_n$ be a Markov chain in the space $X$, and assume it is ergodic (that is, every configuration is accessible in a finite number of steps for any other one and not periodic).
+
+Let $x_1$ be the starting point of the chain. Then, we can define the probability distribution given by \[ ρ(x) = \sum_{j = 1}^n \prob{X_j = x | X_1 = x_1} \]
+
+Under the conditions above, this is an invariant (independent of $x_1$) probability distribution.
+\end{theorem}
+
+The trick will be to sample according to a Markov chain that gives us the distribution of the measure μ with respect to the base space $(X, m)$. Thus, we can define an ``unitary measure'' $μ_u(E) = \frac{μ(E)}{μ(X)}$ so that our integral from \eqref{eq:IntegralCorrelated} becomes a regular integral: \[ I = \fint_X f(x) \dif μ = \int_X f(x) \dif μ_u \]
+
+With this new measure, we can define the weight as its Radon-Nykodim derivative\footnote{Given the expression of μ as the exponential, we are under the necessary conditions.}: \[ w(x) = \od{μ_u}{m} \] and then we will force the distribution ρ of the Markov chain to be equal to $w$.
+
+To do that, we use Metropolis sampling: draw a new random state $X_t$, with ``probability'' of accepting the transition given by \[ \mathbb{P}(X_n \to X_t) = \frac{w(X_t)}{w(X_n)} \]
+
+If the transition is accepted, $X_{n+1} = X_t$, if not, $X_{n+1} = X_n$. The only delicate issue here is how to generate a new value $X_t$ from $X_n$. Usually we draw from a Gaussian distribution centered on $X_n$, with some step size (std. deviation) $h$. If $h$ is too small, sampling is too slow; and if $h$ is too big, the sampling is inefficient because we will be drawing configurations that will be rejected. We will also be interested in starting from a probable configuration to accelerate convergence.
+
+Thus, the integral can be approximated by \[ I \approx \frac{1}{n} \sum_{i = 1}^n f(X_i) \]
+
+Usually, there's a burn-in period of measures that are discarded, so that only the ones nearest to the importance sampling are used.
+
+In the case of liquids, we have $w(x) = \exp\left(-βU(\vx)\right)$, so we can move only one particle at a time to reduce the cost of calculating things.
 
 \appendix
 
