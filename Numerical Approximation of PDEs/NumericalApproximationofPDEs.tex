@@ -753,12 +753,12 @@ And, luckily for us, in this space we can define the trace operator as \begin{al
 \vv &\longmapsto \restr{\vv · \vn}{∂Ω}
 \end{align*} with $H^{-\sfrac{1}{2}}(∂Ω)$ the dual space of $H^{\sfrac{1}{2}}(∂Ω)$. The trace operator is bounded \[ \norm{\vv · \vn}_{H^{-\sfrac{1}{2}}(∂Ω)} ≤ C \norm{\vv}_{H(\dv, Ω)} \]
 
-This allows us to define the test function space $V_g = \set{\vv ∈ H(\dv, Ω) \tq \restr{\vv·\vn}{Γ_D} = g}$, and then we need to find $u ∈ V_g$ and $p ∈ L^2(Ω)$ to solve \eqref{eq:DarcyLawWeakForm}
+This allows us to define the test function space $V_g = \set{\vv ∈ H(\dv, Ω) \tq \restr{\vv·\vn}{Γ_D} = g}$, and then we need to find $u ∈ V_g$ and $p ∈ L^2(Ω)$ to solve \eqref{eq:DarcyLawWeakForm}.
 \end{example}
 
 So, after the examples, we will define the theorem that gives us the sufficient conditions for well-posedness of the mixed problem.
 
-\begin{theorem} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
+\begin{theorem} \label{thm:WellPosednessMixedProb} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
 \begin{itemize}
 \item $\appl{a}{V×V}{ℝ}$ is a continuous (continuity bounding constant $M$) and coercive on $V_0$ ($∃ α > 0$ s.t. $a(u, u) ≥ α \norm{u}_V$ for any $v ∈ V_0$) bilinear form.
 \item $\appl{b}{V×Q}{ℝ}$ is a continuous (continuity bounding constant $γ$) bilinear form and with an inf-sup condition: $∃β > 0$ such that \[\inf_{q∈Q}\sup_{v∈V} \frac{b(v,q)}{\norm{v}_V \norm{q}_Q} ≥ β > 0 \] which is equivalent to saying that for any $q ∈ Q$ we have \[ \norm{q}_Q ≤ \frac{1}{β} \sup_{v ∈ V} \frac{b(v,q)}{\norm{\vv}_V} \]
@@ -770,6 +770,109 @@ a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V\\
 b(u,q) &= G(q) \quad ∀q ∈ Q
 \end{aligned} \] and there is a constant $C > 0$ such that \[ \norm{u}_V + \norm{p}_Q ≤ C\left(\norm{F}_{V'} + \norm{G}_{Q'}\right)\]
 \end{theorem}
+
+I lost 1 hour of class here. Some proof of some theorem, some transposes and orthogonal spaces. Now a discussion of the inf-sup condition.
+
+\subsection{General problem on Banach spaces}
+
+So far, we have looked at equations $a(u,v) = F(v)$ with $u,v$ in Hilbert spaces. However, the inf-sup condition is much more well suited to define the well-posedness of the problem. Thus, we can work with $u,v$ in only Banach spaces.
+
+We can write this in operator form. If we `freeze' $u ∈ V$ and let $v ∈ W$ vary, then $a(u,v) = \pesc{Au,v} $ with $\appl{A}{V}{W'}$. In the other direction, we have $\pesc{u, \trans{A}v} = a(u,v)$ with $\appl{\trans{A}}{W}{V'}$ the adjoint operator. In this expression, the inf-sup conditions imply the injectivity and surjectivity of the operator $A$ and its adjoint, and then the problem becomes finding an equality of functionals $A u = F ∈ W'$: if we have \[ \inf_{v∈W}\sup_{u∈V} \frac{a(u,v)}{\norm{u}_V \norm{v}_W} ≥ α > 0\] then we have $\ker \trans{A} = \set{0}$, $\img \trans{A}$ closed and $A$ surjective. If we additionally ask for the inverse inf-sup condition \[ \inf_{u∈V}\sup_{v ∈ W} \frac{a(u,v)}{\norm{u}_V \norm{v}_W} ≥ α > 0\] then we have unique solution $u$.
+
+Even though these conditions are more general than the ones in the Lax-Milgram lemma, the problem is that they are far more difficult to prove than coercivity.
+
+In the symmetric setting ($V = W$, $A = \trans{A}$) then only one check is necessary.
+
+\begin{example} We can try to apply this to the Stokes elasticity problem. In the weak form, its equations were \( \label{eq:StokesElasticity} \begin{cases} \int ∇u ∇v - \int p \dv v = F(v) \\ \int q \dv u + ε \int pq = G(q) \end{cases} \)
+, which can be simplified as a single bilinear form \[ A\left((u,p), (v,q)\right) = \int ∇u ∇v -\int p \dv v + \int q \dv u + ε \int pq \] and then check here the inf-sup condition, setting the norm of the tuple as $\norm{(u,p)}^2 = \norm{u}_V^2 + \norm{p}_Q^2$.
+
+Given that $A$ is symmetric, we only have to prove that for any $(v,q)$ we have \[ \sup_{(u,p)} \frac{A\left((u,p), (v,q)\right) }{\norm{(u,p)}} ≥ α \norm{(v,q)} \], and for that it suffices to find a single $(u,p)$ for any $(v,q)$ for which $\frac{A\left((u,p), (v,q)\right) }{\norm{(u,p)}} ≥ α \norm{(v,q)}$.
+
+Here, we would want to use $(u,p) = (v,q)$ which would give us however a little bit of bad control when $ε \to 0$, although then we can control it by something of the laplacian that was in the exercise and $q$ was like the gradient and something like that.
+\end{example}
+
+\section{Galerkin approximation}
+
+Once we have the theoretical framework for the mixed problems, we will start working with the finite approximation and numerical solution model. Recall the general problem: find $(u,p) ∈ V×Q$ such that \begin{align*}
+a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V \\
+b(u,q) &= G(q) \quad ∀q ∈ Q
+\end{align*}
+
+To apply here the Galerkin approximation, we will define finite subspaces $V_h⊂V$ and $Q_h ⊂ Q$ with the approximation property that when $h \to 0$ they become ``dense'' in their respective parent spaces. More formally, we want for any $v ∈ V$ to have \[ \lim_{h \to 0} \inf_{v_h ∈ V_h} \norm{v - v_h} = 0\]  and the same for $Q$.
+
+Once the spaces are defined, the Galerkin approximation problem will be to find $(u_h, v_h) ∈ V_h × Q_h$ such that \( \begin{aligned}
+a(u_h,v_h) + b(v_h,p_h) &= F(v_h) \quad ∀v_h ∈ V_h \\
+b(u_h,q_h) &= G(q_h) \quad ∀q_h ∈ Q_h
+\end{aligned} \label{eq:GalerkinMixedProblem}\)
+
+From here, we have to questions to answer: whether this approximated problem is well posed and how does it converge to the real solution when $h \to 0$.
+
+\subsection{Well-posedness of the Galerkin approximation}
+
+We will start, of course, by assuming that the original problem is well-posed and that $a,b$ fulfill the conditions of \fref{thm:WellPosednessMixedProb}. We will not have any problem with linearity and continuity as we are working on linear, closed subspaces. However, the coercivity of $a$ on $V_0$ and the inf-sup condition of $b$ may not necessarily hold.
+
+We start by the inf-sup condition, which told us that \[ ∀q ∈ Q \quad \sup_{v ∈ V} \frac{b(v,q)}{\norm{v}_V} ≥ β \norm{q}_Q \]
+
+It is easy to see that restricting $q$ to $Q_h$ maintains this relationship. However, if we restrict $v$ to $V_h$ we might lose that supremum and lose then the property. We will have to choose $V_h$ and $Q_h$ carefully so that restricting on $Q_h$ removes possible problems on that inequality. The discrete condition is the following \( ∀q_h ∈ Q_h \quad \sup_{v_h ∈ V_h} \frac{b(v_h, q_h)}{\norm{v_h}_{V_h}} ≥ β_h \norm{q_h}_{Q_h} \quad ∀ h > 0 \)
+
+In particular, we will not be able to choose small spaces $V_h$ as in those we will have less ``options'' to find some $v$ that fulfills the condition.
+
+What happens, however, if the condition is not satisfied? Then the operator $\trans{B}$ induced by $b$ is not injective, i.e. there exists a $q_h^*$ such that $b(v_h, q_h^*) = 0$ and $\ker \trans{B} ≠ \set{0}$. But then, if $(u_h, p_h)$ is a solution to \eqref{eq:GalerkinMixedProblem} then $(u_h, p_h + αq_h^*)$ is also a solution. This means we might have non-uniqueness or even non-existence if something happens with the second equation and the image of $G$ that completely passed over my head.
+
+This problems tends to happen a lot in reality. Solutions like $q_h^*$ are called spurious solutions that are usually oscillatory. Thus, we will need to explicitly require the inf-sup condition at the discrete level.
+
+The other problem was the coercivity on $V_0$ of $a$. However, if we have coercivity on the full space $V$, we will have coercivity too on any subspaces including $V_h$ and $V_{h,0} = \set{v_h ∈ V_h \tq b(v_h,q_h) = 0 \; ∀q_h ∈ Q_h}$ (the analogous space for the discrete setting).
+
+For some PDE problems, such as the Stokes elasticity problem, coercivity on the full space $V$ will not be too much to ask and will come for free. However, in other problems such as the Darcy law, we only have control of the divergence on the restricted space and then we can't prove coercivity on the full space.
+
+This prompts the question of what happens when $a$ is only coercive on $V_0$. We might be able to prove that $V_{h,0} ⊂ V_0$ so we have no problems, or maybe we are not able and then we have to prove specifically coercivity on the restricted discrete subspace. That depends heavily on the type of discretization used.
+
+With all of this discussion, we can prepare the theorem for well-posedness\footnote{Frigging love existence and uniqueness theorems.}:
+
+\begin{theorem} \label{thm:WellPosednessMixedGalerkin} Assume we start from a well-posed mixed PDE problem. Then, consider the Galerkin approximating problem of finding $(u_h, v_h) ∈ V_h × Q_h$ such that \[ \begin{aligned}
+a(u_h,v_h) + b(v_h,p_h) &= F(v_h) \quad ∀v_h ∈ V_h \\
+b(u_h,q_h) &= G(q_h) \quad ∀q_h ∈ Q_h
+\end{aligned} \]
+
+Assume that $a$ is coercive on $V_{h,0}$ \[ ∃ α_h > 0 \; a(v_h, v_h) ≥ α_h \norm{v_h}_V^2 \; ∀v_h ∈ V_{h,0} \] and $b$ satisfies the discrete inf-sup condition \[ ∃β_h > 0 \; \inf_{q_h ∈Q_h} \sup_{v_h ∈ V_h} \frac{b(v_h, q_h)}{\norm{v_h}_V \norm{q_h}_Q} ≥ β_h\]
+
+Then, there exists an unique solution $(u_h, p_h) ∈ V_h × Q_h$ of the approximating problem and $\norm{u_h}_V + \norm{p_h}_Q ≤ C(\norm{F}_{V'} + \norm{G}_{Q'})$.
+\end{theorem}
+
+\subsection{Convergence of the solution}
+
+\begin{theorem} \label{thm:WellPosednessMixedGalerkinConvergence} In the same conditions of \fref{thm:WellPosednessMixedGalerkin}, we can show that \[ \norm{u-u_h}_V + \norm{p - p_h} ≤ C\left(\inf_{v_h ∈ V_h} \norm{u - v_h}_V + \inf_{q_h ∈ Q_h} \norm{p - q_h}_Q \right) \] with $(u,p)$ a solution of the non-approximate problem.
+\end{theorem}
+
+\begin{proof} To prove this theorem, we will try to bound the $\norm{u_h - w_h}$ and $\norm{p_h - π_h}$ and then conclude by triangular inequality.
+
+For the first one, let $w_h ∈ V_h$ such that $b(w_h, q_h) = G(q_h)$ for any $q_h ∈ Q_h$. In that case, we have $u_h - w_h ∈ V_{h,0}$ and there we have coercivity, so we can write \[ \norm{u_h - w_h}^2 ≤ \frac{1}{α_h}a(u_h - w_h, u_h - w_h)\]
+
+Adding and substracting $u$ in the arguments of $a$; we have that
+\begin{multline*} \frac{1}{α_h}a(u_h - w_h, u_h - w_h) = \frac{1}{α_h}\left(a(u_h - u, u_h - w_h) + a(u -w_h, u - w_h)\right) = \\ = \frac{1}{α_h} \left(F(u_h, w_h) - b(u_h - w_h, p_h) - F(u_h - w_h) + b(u_h - w_h, p) + a(u - w_h, u_h - w_h)\right)\end{multline*}
+
+However, given that $u_h - w_h ∈ V_{h,0}$, we have $b(u_h - w_h, p_h) = 0 = b(u_h - w_h, π_h)$ so the equation becomes \begin{align*}
+\norm{u_h - w_h}^2 &= \frac{1}{α_h} \left(F(u_h, w_h) - b(u_h - w_h, p_h) - F(u_h - w_h) + b(u_h - w_h, p) + a(u - w_h, u_h - w_h)\right) \\
+	&= \frac{1}{α_h}\left(b(u_h - w_h, p - π_h) + a(u-w_h, u_h - w_h)\right) \\
+	&≤ \frac{1}{α_h}\left(γ \norm{p - π_h}_Q \norm{u_h - w_h}_V + M \norm{u -w_h}\norm{u_h - w_h}\right) \\
+\norm{u - u_h}_V &≤ \frac{γ}{α_h} \norm{p - π_h}_Q + \frac{M}{α_h}\norm{u -w_h}
+\end{align*}
+
+With this, we can bound $\norm{u - u_h}$ as $w_h, π_h$ are arbitrary so that \begin{align*}
+\norm{u -u_h}_V &≤ \norm{u - w_h} + \norm{u_h - w_h} \\
+&≤ \left(1 + \frac{M}{α_h}\right) \norm{u - w_h} + \frac{γ}{α_h} \norm{p - π_h} \\
+\norm{u - u_v}_V &≤ \left(1 + \frac{M}{α_h}\right)\inf_{w_h ∈ V_h} \norm{u - w_h} + \frac{γ}{α_h} \inf_{π_h ∈ Q_h} \norm{p - π_h}
+\end{align*} so we are done.
+
+Now we need to recover the bound on $p$ so we have \begin{align*}
+\norm{p - π_h} &≤ \frac{1}{β_h} \sup_{v_h ∈ V_h} \frac{b(v_h, p_h - π_h)}{\norm{v_h}} \\
+&≤ \frac{1}{β_h} \sup\frac{b(v_h, p_h - p)}{\norm{v_h}} + \frac{1}{β_h} \underbracket{\sup \frac{b(v_h, p - π_h)}{\norm{v_h}}}_{≤ γ\norm{p - π_h}} \\
+&≤ \frac{1}{β_h} \sup \frac{a(u - u_h,v_h)}{\norm{v_h}} + \frac{γ}{β} \norm{p - π_h} \\
+&≤ \frac{M}{β_h} \norm{u - u_h} + \frac{γ}{β_h} \norm{p - π_h}
+\end{align*} and then we have the triangular inequality \[ \norm{p - p_h} ≤ \norm{p - π_h} + \norm{p_h - π_h} ≤ \dotsb ≤ C\left(\inf_{w_h} \norm{u - w_h} + \inf_{π_h ∈ Q_h} \norm{p-π_h} \right)\]
+
+We need to take care however that $w_h$ fulfills that $b(w_h, q_h) = G(q_h)$, which is a little bit annoying because we can't take the interpolant to bound $\inf_{w_h} \norm{u - w_h}$. So, let $V_h^G = \set{w_h ∈ V_h \tq b(w_h, q_h) = G(q_h) \; ∀q_h ∈ Q_h}$, and the missing step is to prove that if $b$ satisfies the discrete inf-sup condition then $\inf_{w_h ∈ V_h^G} \norm{u - w_h} ≤ C \inf_{v_h ∈ V_h} \norm{u - v_h}$.
+\end{proof}
 
 \appendix
 
