@@ -1,0 +1,596 @@
+
+\chapter{Elliptic problems}
+
+The first chapter will be dedicated to the study of elliptic PDEs. Those are of the form \(
+\begin{cases}
+-Δu = f & \text{ in } Ω \\
+u =  0 & \text{ in } ∂Ω
+\end{cases} \label{eq:EllipticProblem} \) for some open domain $Ω ∈ ℝ^d$ and some function $f ∈ C^2(Ω)$.
+
+This equation models, for example, the distribution of heat in a domain, the concentration of a chemical in a fluid at rest, an electric potential in presence of distributed charges, the deformation of a membrane...
+
+This problem can be solved in the strong form, where we approximate the second derivative using Taylor series and then try to find the solution (finite differences method). But we can also use the weak formulation, which is used for the finite elements method.
+
+\section{Weak formulation}
+
+As a reminder, we start from a PDE in a strong form such as \[ -Δu = f \text{ in Ω}\]
+
+A physical interpretation is to think of the solutions as solutions that will zero-out the forces for every possible small displacement, that is, solving \[ \int_Ω (-Δu -f) v = 0 \] for all ``virtual displacement'' $\appl{v}{Ω}{ℝ}$ that is sufficiently smooth.
+
+In order to have an improved form of that, we use integration by parts: \begin{multline*} \int_Ω - Δu v = -\int \dv (\grad u) v = \\ = - \int_Ω \dv(\grad u · v) + \int_Ω \grad u · \grad v = - \int_{∂Ω} \underbracket{(\grad u · \vn)}_{∂_\vn u} · v + \int_Ω \grad u · \grad v \end{multline*}
+
+We have a small problem with the integration on the boundary. But if we think of the previous physical argument, if $v$ is a virtual displacement, we should have it constrained in the boundary, so $\restr{v}{∂Ω} = 0$, the boundary term disappears and our weak formulation is \[ \int_Ω \grad u · \grad v = \int_Ω f v \]
+
+Another way to think of this is that is $v$ is any kind of test function, it must have compact support contained in $Ω$ and thus it must be zero on the boundary.
+
+Once we have the formulation, we can study the regularity requirements for $v$. We would like to have bounded integrals, and by applying the \nref{prop:HolderInequality} we see that we need $\norm{\grad v}_2$ and $\norm{v}_2$ to be bounded. That, together with the restriction on the boundary, means that we need $v ∈ H_0^1(Ω)$ (see the introduction for the definition of this space).
+
+Now let's put everything together:
+
+\begin{defn}[Weak\IS formulation of a PDE problem] Given a domain $Ω⊂ℝ^d$ and a function $f ∈ C^2(Ω)$, find $u ∈ H_0^1(Ω)$ such that \( \int_Ω \grad u · \grad v = \int_Ω f v \label{eq:WeakFormulation} \) for every $v ∈ H_0^1(Ω)$.
+\end{defn}
+
+But we can also look at these two terms of \eqref{eq:WeakFormulation} as operators on the Hilbert space \begin{align*}
+\appl{a}{H_0^1(Ω)×H_0^1(Ω)&}{ℝ} & \appl{F}{H_0^1(Ω)&}{ℝ} \\
+(u,v) &\longmapsto \int_Ω \grad u · \grad v  & v &\longmapsto \int_Ω f v
+\end{align*} with $a$ a bilinear form and $F$ a linear form. This gives us an abstract weak formulation.
+
+\begin{defn}[Weak\IS abstract formulation of a PDE problem] \label{def:WeakAbstractFormulation} Given a Hilbert space $V$, a bilinear form $\appl{a}{V×V}{ℝ}$ and a linear form $\appl{F}{V}{ℝ}$, find $u ∈ V$ such that \[ a(u,v) = F(v)\quad ∀ v ∈ V \]
+\end{defn}
+
+Bounded operators are already defined (check \cite{ApuntesAnalisisFunc}). For bilinear forms, two definitions:
+
+\begin{defn}[Continous\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is continous (or bounded\footnote{As with linear forms, both notions are equivalent}) if and only if exists $M > 0$ such that \[ \abs{a(u,v)} ≤ M \norm{u}_V \norm{v}_V\] for all $u,v ∈ V$.
+\end{defn}
+
+\begin{defn}[Coercive\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is coercive if an inly if exists a constant $α > 0$ such that \[ a(u,u) ≥ α \norm{u}^2\]
+
+As notation, α is called the coercivity coefficient
+\end{defn}
+
+WIth that, we can enunciate the Lax-Milgram lemma for the weak abstract formulation.
+
+\begin{lemma}[Lax-Milgram\IS lemma] \label{lem:Elliptic:LaxMilgram} Given a Hilbert space $V$, a bilinear, continuous and coercive form $\appl{a}{V×V}{ℝ}$ and a linear, bounded operator $\appl{F}{V}{ℝ}$; the \nlref{def:WeakAbstractFormulation} has a unique solution $u ∈V$ such that \[ \norm{u}_V ≤ \frac{1}{α} \norm{F}_{V^*} \] with α the coercivity constant of $a$.
+\end{lemma}
+
+\subsection{Poisson problems}
+
+It is easy to see that we can apply the \nref{lem:Elliptic:LaxMilgram} to our problem: if $v ∈ H^1_0(Ω)$, then its $L^2$-norm is bounded so \[ \abs{\int_Ω fv} ≤ \norm{f}_{L^2} \norm{v}_{L^2} ≤ \norm{f}_{L^2} \norm{v}_{H^1} < ∞ \]
+
+Same happens with $a$: the boundedness is directly obtained from the fact that $u, v ∈ H^1_0(Ω)$. Coercivity can be a little bit more complicated. For that, we must use the Poincaré inequality TODO LINK INTRO which tells us that there is a constant $C_p > 0$ such that $\int v^2 ≤ C_p \int \abs{\grad u}^2$ for all $u ∈ H_0^1$. So, in this case we have that \[
+\norm{u}^2_{H^1} = \int v^2 + \int \abs{\grad v}^2 ≤ (1+C_p^2) \int \abs{\grad u}^2
+\] so our coercivity constant is $\frac{1}{1 + C_p^2}$.
+
+This means that, applying the \nref{lem:Elliptic:LaxMilgram}, we have a unique solution $u ∈ V$ such that \[ \norm{u}_{H^1_0} ≤ (1+C_p^2) \norm{F}_{H^1_0} \]
+
+\subsection{Poisson problems with mixed boundary conditions}
+
+We will want to know what happens when we have mixed boundary conditions. We may have two types of boundary conditions, which we define now.
+
+\begin{defn}[Boundary condition\IS Dirichlet] Also called essential boundary condition, is a restriction on the boundary $u = g$.
+\end{defn}
+
+\begin{defn}[Boundary condition\IS Neumann] Also called natural boundary condition, is a restriction on the normal derivative. $∂_\vn u = h$.
+\end{defn}
+
+Thus, we will study the problem \( \begin{cases}
+-Δu =f & \text{in }Ω \\
+u = g & \text{on }Γ_D \\
+∂_\vn u = h & \text{on }Γ_N \end{cases} \) with $Γ_D ∪ Γ_N = ∂Ω$.
+
+We can start with the weak formulation as previously \[ \int_Ω fv = \int_Ω -Δu v = \int_Ω \grad u · \grad v - \int_{∂Ω} ∂_\vn u v = \int_Ω \grad u \grad v - \int_{Γ_N} ∂_\vn v - \int_{Γ_D} ∂_n u v\]
+
+The problem here is how to deal with the boundary term on $Γ_D$. As we did in the previous section, we can select $\restr{v}{Γ_D} = 0$. Thus, our weak formulation is \( \int_Ω \grad u · \grad v = \int_Ω f v + \int_{Γ_N} h v \label{eq:Elliptic:WeakFormulationMixedBoundary} \) with $v ∈ H^1_{Γ_D}$, where we can define \( H^1_{Γ_D} = \set{ v ∈ H^1 \tq \restr{v}{Γ_D} = 0 } \)
+
+Our solution should however live in $V_g = \set{v ∈ H^1 \tq \restr{v}{Γ_D} = g}$, which is not linear but only an affine subspace.
+
+If we have $g = 0$, we still can use a \nlref{def:WeakAbstractFormulation} with $F(v) = \int fv + \int_{Γ_N} hv$ to find a solution $u ∈ H^1_{Γ_D} = V_0$. With $g ≠ 0$ things become a little bit more difficult.
+
+In that case, we need to find a solution $u ∈ V_g$. We will then separate the problem in two, writing $u = u_0 + G$ with $G ∈ H^1$ such that $\restr{G}{Γ_D} = g$, and then solving for $u_0 ∈ V_0$ as before. The question is whether this $G$ can be constructed. Luckily, the theory will say that $∀g ∈ H^{\sfrac{1}{2}}(Γ_D)$ there will be a function $G ∈ H^1$ such that $\restr{G}{Γ_D} = g$ and $\norm{G}_{H^1} ≤ γ \norm{g}_{H^{\sfrac{1}{2}}(Γ_D)}$.
+
+\section{Calculus of variations}
+
+We can try to study other approach to this problem with an example, which is the deformation $u$ of a membrane $Ω$ under a certain force $f$. In that case, we try to find a solution that minimizes the elastic energy $E = \int_Ω \frac{1}{2} κ \norm{\grad u}^2$. Supposing $κ = 1$, our energy functional to minimize is \( J(u) = \frac{1}{2} \int_Ω \norm{\grad u}^2 - \int_Ω f u - \int_{Γ_N} h u \label{eq:Elliptic:EnergyFunctional} \) so our solution should be \[ u = \argmin_{\substack{v ∈ H^1(Ω) \\ v = \restr{g}{Γ_D}}}  J(v) \] where we search for the function in $H^1(Ω)$ because we need for the gradient to be square integrable. We need also $f ∈ L^2$, and $h ∈ H^{-\sfrac{1}{2}}$ (the topological dual space of $H^{\sfrac{1}{2}}$) to be able to integrate that last term.
+
+So, how do we do this? If the argument was real, we could find the point with gradient $0$ (all directional derivatives are null). But the functional $J$ from \eqref{eq:Elliptic:EnergyFunctional} is an application $\appl{J}{H^1}{ℝ}$, so we need something different. However, we can still translate the concept of ``gradient $0$''. If $J$ were a real variable function, we could do \[ \grad J (u) = 0 \iff \grad J(u) · \vA = 0\; ∀\vA ∈ ℝ^N \iff \lim_{ε \to 0} \frac{J(u + ε\vA) - J(u)}{ε} = 0 \]
+
+That last notion is the one we can translate to the functional case. If we consider $u$ to be the equilibrum, we can study any variation of $u ∈ V_g$\footnote{Remember from the previous section that $V_g = \set{v ∈ H^1 \tq \restr{v}{Γ_D} = g}$.} such that $u + ε v ∈ V_g$ (that is, respecting the boundary conditions), with $v ∈ V_g$ forcibly.
+
+Knowing this, we can try to calculate the ``derivative'', where some linear terms will be canceled but we will have to deal with the quadratic ones:
+\begin{align*}
+\Dif_v J(u) &= \lim_{ε \to 0} \frac{J(u + εv) - J(u)}{ε} = \\
+	&= \lim_{ε \to 0} \frac{1}{ε} \left[ \frac{1}{2} \int_Ω \grad(u+εv)· \grad(u + εv) - \int_Ωf(u + εv) - \int_{Γ_N} h · (u + εv)\right. \\
+	&\qquad \left.- \frac{1}{2}\int_Ω \grad u \grad u + \int_Ω fu + \int_{Γ_N} h u \right] = \\
+	&= \lim_{ε \to 0}\frac{1}{ε} \left[ \frac{1}{2}\left( \int_Ω \grad(u+εv) \grad (u + εv) - \grad u \grad u \right) - ε \int_Ω fv - ε \int_{Γ_N} h v \right] = \\
+	&= \lim_{ε \to 0}\frac{1}{ε} \left[ \frac{1}{2} \left( \grad u \grad u + ε \grad u \grad v + ε \grad v \grad u + ε^2 \grad v \grad u - \grad u \grad u\right) - ε \int_Ω fv - ε \int_{Γ_N} h v \right] = \\
+	&= \int_Ω \grad u \grad v - \int_Ω fv - \int_{Γ_N} h v
+\end{align*} which is the same weak formulation of the problem we had previously in \eqref{eq:Elliptic:WeakFormulationMixedBoundary}.
+
+\subsection{Regularity of the solution}
+
+We may have proved that the solution exists, but we will also be interested in knowing the regularity of the function in order to be able to prove rates of convergence, for example. That will be given in the following theorem.
+
+\begin{theorem}[Shift theorem] Consider the PDE problem \[
+-Δu =f \qquad \text{in }Ω \] with $f ∈ H^m(Ω)$, $Ω$ a smooth domain ($∂Ω ∈ C^{m+2}$, that is, we can parametrize the boundary as a $C^{m+2}$ manifold) and with the following restrictions depending on the boundary conditions:
+\begin{itemize}
+	\item Full Dirichlet conditions $\restr{u}{Γ_D} = g ∈ H^{m + \sfrac{3}{2}}(Ω)$.
+	\item Full Neumann conditions $∂_\vn u = h ∈ H^{m + \sfrac{1}{2}}(Ω)$.
+\end{itemize}
+
+Under those conditions, $u ∈ H^{m+2}(Ω)$.
+\end{theorem}
+
+\subsubsection{Corner singularities}
+
+\begin{wrapfigure}{L}{0.3\textwidth}
+\centering
+\inputtikz{CornerSingularity}
+\caption{Corner singularity in a domain.}
+\label{fig:Elliptic:CornerSingularity}
+\end{wrapfigure}
+
+One could try to see what happens if we have corner singularities, for example, in a square domain. In a set inside of the square we will have perfect smoothness, but the corners may present problems.
+
+Suppose we want to solve $- Δ u = 0$ in a corner such as \fref{fig:Elliptic:CornerSingularity}. In that case, we will work in polar coordinates and the basis of our solution will be \[φ_k(r,θ) = r^{\frac{kπ}{ω}} \sin \frac{kπθ}{ω} \]
+
+The worst case would be $k = 1$, which would leave us in a case of $u ∈ H^s$ with $s < 1 + \sfrac{π}{ω}$. If $ω > π$ (the case of the square), we have $s < 2$, that is, we only have $H^1$ regularity.
+
+We would have the same situation with Neumann conditions. However, mixed boundary conditions (Neumann on one side, Dirichlet on the other) are more problematic: the solutions are \[ φ_k(r,θ) = r^\frac{(k + \sfrac{1}{2})π}{ω} \sin \frac{(k + \sfrac{1}{2})πθ}{ω} \] and, in the worst case ($k = 0$) we have singularities even in the flat case ($ω = π$) which was not a problem in full Neumann or Dirichlet conditions.
+
+\section{Example problems}
+
+\subsection{Advection-diffusion-reaction}
+
+A more complex form of elliptic problems are advection-diffusion-reaction, where the differential operator is \[ Lu = - \sum_{i,j=1}^d \dpd{}{x_i} \left(a_{ij}\dpd{u}{x_j}\right) + \sum_{i=1}^d b_i \dpd{u}{x_i} + c u = - \dv (A(x) \grad u) + \vb(x) \grad u + c u\] with $A(x) ∈ ℝ^{d×d}, \vb(x) ∈ ℝ^d, c ∈ ℝ$. Our problem, as usual, is $Lu = f$.
+
+These three terms model respectively diffusion, with $A$ being the matrix of coefficients that depend on the axis (the material is not uniform), the transport term along the vector field, and the reaction (for example, a chemical that reacts and its concentration decreases)
+
+In order for the problem to remain elliptic, we require $A(x)$ to be positive definite for all $x ∈ ℝ^d$.
+
+As in previous cases, we can have Dirichlet boundary conditions $\restr{u}{Γ_D} = g$ and Neumann boundary conditions (which are a little bit more complicated): \[ A \grad u · \vn - (b \vn) u = h \quad\text{ on } Γ_N \]
+
+We will want to do a weak formulation where the boundary terms of the problem appear naturally. As always, we multiply by a test function and integrate by parts the divergence and possibly the $b \grad u$ depending on the boundary conditions. Without doing the computations, the weak formulation will end up being \( \int_Ω A \grad u \grad v + b \grad u v + c u v = \int_Ω fv + \int_{Γ_N} h v \label{eq:Elliptic:ADRProblemWeak} \) with $u ∈ H^1$, $\restr{u}{Γ_D} = g$.
+
+This has the same structure as in previous cases, so we are in the conditions of the \nref{lem:Elliptic:LaxMilgram} and there exists a unique solution. Coercivity would need a little bit of work, and may present problems with mixed boundary conditions. Enforcing Neumann conditions on boundaries with incoming flow may cause problems with coercivity.
+
+\subsection{Linear elasticity}
+
+\begin{figure}[hbtp]
+\inputtikz{ElasticDeformation}
+\caption{Elastic deformation of a something.}
+\label{fig:Elliptic:ElasticDeformation}
+\end{figure}
+
+In this problem, we start with an undeformed configuration $Ω ⊂ ℝ^d$, and we want to study the displacement $\appl{\vu}{Ω}{ℝ^d}$. The involved terms are the strain measure \[ ε (\vu) = \frac{\grad \vu + \trans{(\grad \vu)}}{2}\], the stress tensor $σ = σ(ε)$ given by \[ σ_{ij} = \sum_{k,l=1}^d c_{ijkl} ε_{kl} \], which usually can be expressed as \[ σ(ε) = 2με + λ\tr(ε) I \] with $μ,λ$ the Lamé constants.
+
+With all of this, our balance equation is \( \begin{cases} - \dv σ(ε(\vu)) = \vec{f} & \text{in } Ω \\
+\vu = \vec{g} & \text{on } Γ_D \\
+σ(u) · \vn = \vd & \text{on } Γ_N \end{cases} \)
+
+We may want to write now our weak formulation and integrate by parts, caring a little bit about what is a tensor and what is a vector
+\begin{align*}
+0
+	&= \int_Ω \left[- \dv (σ(ε(\vu))) - \vec{f} \right] · \vv = \\
+	&= \int_Ω σ(ε(\vu)) \grad \vv - \int_{∂Ω} (σ · \vn) · \vv - \int_Ω \vec{f} \vv \\
+\int_Ω σ(ε(\vu)) \colon \vv &= \int_Ω \vec{f}\vv + \int_{Γ_N} \vd \vv
+\end{align*}
+
+I'm a little bit lost but \[ \int_Ω - \dv (σ) \vv = \int_Ω - \sum_i \sum_j ∂_j σ_{ij}v_i = \sum_{ij} \int_Ω σ_{ij}∂_jv_i - \int_{∂Ω}σ_{ij}n_j v_i \]
+
+We can rewrite the first term because \begin{align*}
+\int_Ω σ (ε(\vu)) \colon \vv
+	&= \int_Ω σ(ε(\vu))\colon ε(\vv) = \\
+	&= \int_Ω(2με(\vu) + λ\tr(ε(\vu))I) \colon ε(\vv) = \\
+	&= \int_Ω 2με(\vu) \colon ε(\vv) + λ\tr(ε(\vu))I \colon ε(\vv) = \\
+	&= \int_Ω 2μ \frac{\grad \vu + \trans{(\grad \vu)}}{2} \colon \frac{\grad \vv + \trans{(\grad \vv)}}{2} + λ\dv \vu \dv \vv = \\
+	&= a(\vu, \vv)
+\end{align*}
+
+So we have a bilinear form again and whatever.
+
+\chapter{Finite element spaces}
+
+\section{Galerkin approximation}
+
+The idea of the Galerkin approximation is, once we have a \nref{def:WeakAbstractFormulation} $a(u,v) = F(v)$ for all $v ∈ V$, limit the problem to a finite-dimensional Hilbert space on which we can solve computationally the problem.
+
+Formally, we introduce a sequence of finite dimensional subspaces $V_h ⊂ V$ with $\dim V_h = N_h$ and with a certain approximability property: that for every $v ∈ V$ we can approximate it as well as we want: \[ \lim_{h\to 0} \inf_{v_h ∈ V_h} \norm{v-v_h}_V = 0 \]
+
+\begin{defn}[Generalized Galerkin Formulation][Galerkin formulation!Generalized] \label{def:GalerkinFormulationGen} Given a \nref{def:WeakAbstractFormulation}, we can reformulate it as finding $u_h ∈ V_h$ such that \[ a_h(u_h, v_h) = F_h(v_h) \quad ∀v_h ∈ V_h \] with the requirement that $a_h \convs[][h] 0$, $F_h \convs[][h][0] 0$ for some definition of convergence of functionals that we will see latters.
+\end{defn}
+
+However, the restriction that $V_h ⊂ V$ can be sometimes too strict. A \concept[Galerkin formulation!Non-conforming]{Non-conforming Galerkin Formulation} is one with $V_h\nsubseteq V$. That takes it to the Petrov-Galerkin approximation in which we allow different spaces for the solution and for the test functions.
+
+\begin{defn}[Petrov-Galerkin approximation] Find $u_h ∈V_h$ such that \[ a_h(u_h, v_h) = F(v_h) \quad ∀v_h ∈ W_h \]
+\end{defn}
+
+Now to the interesting part: are these problems well-posed? Do they have unique solutions? And, more importantly, do these solutions converge to the actual solution? We will discuss it now.
+
+\begin{prop} The formulation of a PDE problem as a \nref{def:GalerkinFormulationGen} has an unique solution.
+\end{prop}
+
+\begin{proof}
+The idea here will be to apply the \nref{lem:Elliptic:LaxMilgram}. We know that $(V_h, \norm{·}_V)$ is a Hilbert space, $a(·,·)$ is continuous in $V_h$ because it is continuous in $V$, so $\abs{a(u,v)} ≤ M \norm{u}_V \norm{v}_V\; ∀v∈V_h ⊂ V$, and is coercive with at least the same coefficient because of the same reason. Same happens for $F$, so we are in the conditions of the lemma and thus the problem has an unique solution.
+\end{proof}
+
+Now, on to the quality of the approximation. If our bilinear form is symmetric, we can use Galerking orthogonality:
+
+\begin{defn}[Galerkin orthogonality][Orthogonality!Galerkin] Given a bilinear form $a$, we say that a solution $u$ and its approximation $u_h$ fulfill the Galerkin orthogonality condition if and only if \[ a(u - u_h, v_h)= 0 \quad v_h ∈ V_h \]
+
+Given that a coercive symmetric bilinear form defines an inner product, Galerkin orthogonality is equivalent to saying that $u - u_h \perp V_h$.
+\end{defn}
+
+The usefulness of this property is the fact that, if $u - u_h$ is orthogonal to $V_h$, then we have an \concept{Optimatility property} given by \( \norm{u - u_h}_a ≤ \inf_{v_h ∈ V_h} \norm{u - v_h}_a \label{eq:Elliptic:Optimality} \) with $\norm{·}_a = \sqrt{a(·,·)}$ the norm induced by the inner product $a(·,·)$.
+
+For the general case, we have the following lemma for the optimality result
+
+\begin{lemma}[Ceà's Lemma] Given a \nref{def:GalerkinFormulationGen}, the following optimality result holds: \[ \norm{u - u_h}_V ≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V \] for $M ∈ R^+$ and $α$ the coercion coefficient of $a$.
+\end{lemma}
+
+\begin{proof} Using the coercion property, we know that \[ \norm{u - u_h}^2_V ≤ \frac{1}{α} a(u - u_h, u -u_h)\]
+
+Adding and substracting $v_h ∈ V_h$, we can continue so \begin{align*}
+\norm{u - u_h}^2_V &≤ \frac{1}{α} a(u - u_h, u -u_h + v_h - v_h) \\
+	&= \frac{1}{α} a(u - u_h) + \frac{1}{α} \underbracket{a(u - u_h, v_h - u_h)}_{=0\;\text{(Galerkin Orthogonality)}} \\
+\norm{u - u_h}^2_V &≤ \frac{M}{α} \norm{u - u_h}_V\norm{u - v_h}_V \\
+\norm{u - u_h}_V &≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V
+\end{align*}
+\end{proof}
+
+Knowing that there are optimal and unique solutions, we can go on to an algebraic formulation. Let $u_h = \sum_j u_j φ_j$, $v_h = \sum_i v_i φ_i$ with $\set{φ_i}_{i=1}^{N_h}$ a basis of $V_h$. Then, the problem becomes
+\begin{align*}
+a(u_h,v_h) &= F(v_h) \\
+a\left(\sum_j u_j φ_j, \sum_i v_i φ_i\right) &= F\left(\sum_i v_i φ_i\right) \\
+\sum_{j,i} u_j v_i \underbracket{a(φ_j, φ_i)}_{A_{ij}} &= \sum v_i \underbracket{F(φ_i)}_{F_i}
+\end{align*}
+
+We can write this in a matrix form. If $\vu = (u_1, \dotsc, u_{N_h})$ and $\vv = (v_1, \dotsc, v_{N_h})$ then the equation becomes \begin{align*}
+\trans{\vv}A \vu &= \trans{\vv} \vf \quad ∀\vv ∈ ℝ^{N_h} \\
+A \vu &= \vf
+\end{align*} which is a system of linear equations that can be solved in a purely algebraic manner. There are some nice properties of the matrix $A$ that come from the problem statement. It is positive definite because $a$ is positive.
+
+\subsection{Finite element spaces}
+
+\begin{defn}[Finite element space] A finite element space is a space of piecewise polynomial functions over a partition of a domain $Ω ∈ ℝ^N$ into non-overlapping polyhedra, called a mesh.
+\end{defn}
+
+\begin{defn}[Polyhedral mesh] A polyhedral mesh $τ_h$ on $Ω ∈ ℝ^N$ is the union of a finite number of polyhedra $K_j$, $j = 1, \dotsc, N_k$ such that $\bigcup_{j=1}^{N_k} \adh{K_j} = \adh{Ω}$ and $\intr{K}_j ∩ \intr{K}_i = ∅$ if $i ≠ j$.
+\end{defn}
+
+Usually, in 2D the polyhedrae used are either triangles or squares. In 3D, we have tetrahedron, cubes or rectangular pyramids.
+
+\begin{defn}[Geometrical conformal mesh] A geometrical conformal mesh is a mesh for which if $\adh{K_i} ∩ \adh{K_j} ≠ ∅$ then the intersection is either a common vertex or a common edge or face. That means that half-edge intersections are not allowed in this case.
+\end{defn}
+
+A mesh can be defined by certain parameters.
+
+\begin{itemize}
+	\item \concept{Element diameter} of an element $K ∈ τ_h$ as $h_K = \max_{x,y∈K} \abs{x-y}$.
+	\item \concept{Element inner diameter} $ρ_K$  as the diameter of the largest ball in $K$.
+	\item \concept{Mesh size} $h = \max_{K∈τ_h} h_K$ which gives an idea of the size of the largest element of the mesh.
+	\item \concept{Aspect ratio} $γ_K = \sfrac{h_K}{ρ_K}$. A high aspect ratio indicates elongated elements, while a ratio near to one indicates more regular elements.
+	\item \concept{Mesh minimum size} $h_{min} = \min_{K ∈ τ_k} h_K$.
+\end{itemize}
+
+\begin{defn}[Regular family of meshes] A family of meshes $\set{τ_h}_{h \to 0}$ is said to be regular if the maximum aspect ratio is bounded by some constant $γ$ for all $h$: $\max_{K ∈ τ_h} γ_K ≤ γ ∈ ℝ$. In other words, force that for all $h > 0$ and $∀K ∈ τ_h$ $h_K ≤ γρ_K$.
+\end{defn}
+
+\begin{defn}[Quasi-uniform family of meshes] A family of meshes is quasi-uniform if it is regular and $\sfrac{h_{min}}{h} ≥ δ$.
+\end{defn}
+
+\begin{defn}[Affine triangular mesh] An affine triangular mesh is a
+\end{defn}
+
+I think I missed a class here on how to construct these meshes.
+
+\section{Approximation results for finite element spaces}
+
+In this section, we will see results to quantify ``how good'' is a certain approximation. If we have a finite element space $X_h^r$ of dimension $r$ and mesh size $h$ and a function $u ∈ H^s$, we will want to express the bound $\inf_{v_h ∈ X_h^r} \norm{u - v_h}$ in terms of $\mathcal{O}(h^p)$. First, we will try to prove this in terms of $C^0$ continuous piecewise polynomial.
+
+\textit{TODO: Organize this better}
+
+Let $X_h^r$ be a finite element space of $C^0$ continuous piecewise polynomials over an affine triangular mesh $τ_h$ in a polygonal domain Ω given by \[ X_h^r = \set{v ∈ C^0(Ω) \tq \restr{v}{k} ∈ \mathbb{P}_r(k) \; ∀k ∈ τ_h } \]
+
+Then, there exists a constant $C ∈ ℝ^+$ such that \[ \inf_{v_h ∈ X_h^r} \norm{u - v_h} ≤ \norm{u - v_h^*} ≤ Ch^p \] where $v_h^* ∈ X_h^r$ is the optimal approximation.
+
+Supposing a good enough regularity, we can define an interpolant operator $I_h$ such that $v_h^* = I_hu$. This is easy enough if $u ∈ C^0$ (use just the Lagrange interpolating polynomial). For Sobolev spaces, we can use the \nref{thm:SobolevEmbedding}, so if $H^s ⊂ C^0$ when $s > \sfrac{d}{2}$ and we are in dimension $d = 3$, we will require $s ≥ 2$ to be able to define the interpolant.
+
+We have the following result for interpolation, with $r ≥ 1$ and $s ≥ r + 1$, then for all $u ∈ H^2$ it can be proven that \( \norm{u - I_hu}_{H^1} ≤ Ch^r\abs{u}_{H^{r+1}} \) with $\abs{·}_{H^{r+1}}$ the seminorm of the space\footnote{Defined in \eqref{eq:HkSeminorm}, just the norm of the highest derivative.}. If we go with a weaker norm, we gain one order of convergence: \[  \norm{u - I_hu}_{L^2} ≤ Ch^{r+1}\abs{u}_{H^{r+1}}  \]
+
+We can also use stronger ``norms'' (in this case it's not exactly a norm) but we can prove that for $1 < m ≤ r$ \[ \left(\sum_{K ∈ \tau_h} \norm{u - I_hu}^2_{H^m(K)}\right)^{\sfrac{1}{2}} ≤ Ch^{r-m+1} \abs{u}_{H^{r+1}} \]
+
+\subsection{Interpolation estimates in $X_h^r$ for possibly non-smooth functions}
+
+Now we will work with a function $u ∈ H^s$ with $s ≥ 2$. Then, defining $η = \min \set{s, r+1}$ we have the results \begin{align*}
+\norm{u - I_h u}_{L^2} &≤ Ch^η\abs{u}_{H^η} \\
+\norm{u - I_h u}_{H^1} &≤ Ch^{η - 1}\abs{u}_{H^η} \\
+\norm{u - I_h u}_{H^m} &≤ Ch^{η - m}\abs{u}_{H^η} \quad 0 ≤ m ≤ η \\
+\end{align*}
+
+So now we need lemmas on the reference mapping so we have aspect ratio $γ_K = \frac{h_K}{ρ_K}$ (ratio between outer and inner diameters).
+
+\begin{lemma} Given an affine triangular mesh $τ_h$ with mapping $K = F_k(\hat{K})$ and transformation matrix $B_K ∈ ℝ^{d×d}$ we have the following results:
+\[ \norm{B_K} ≤ \frac{h_K}{\hat{ρ}} \quad \norm{\inv{B_K}} ≤ \frac{\hat{h}}{ρ_K} \quad \det B_K = \frac{\abs{K}}{\abs{\hat{K}}} \]
+\end{lemma}
+
+\begin{proof}
+For the first equality, we choose two points $a,b$ in the inner circle in $\hat{K}$, which will be mapped to the inner circle in $K$ and their distance will be less than $h_K$, so \[ \norm{B_k} = \sup_{ξ ∈ \hat{K}} \frac{\norm{B_k ξ}}{\norm{ξ}} ≤ \frac{h_K}{\hat{ρ}}\]
+\end{proof}
+
+\begin{lemma} For any $v ∈ H^m(K)$ and $\hat{v} = v ○ F_K$, there exists a constant $C_m > 0$ such that \[ \abs{v}_{H^m(K)} ≤ C_m \norm{\inv{B_K}}^m \abs{\det B_k}^{\sfrac{1}{2}} \abs{\hat{v}}_{H^m(\hat{K})} \] and \[ \abs{\hat{v}}_{H^m(\hat{K})} ≤ \hat{C}_m \norm{B_K}^m \abs{\det B_k}^{-\sfrac{1}{2}} \abs{v}_{H^m(K)} \] so actually both norms are equivalent. However, there is a change in the dependence of the mesh sice $h$ $h$.
+\end{lemma}
+
+\begin{lemma}[Deny-Lions] \label{lem:Deny-Lions}Given any bounded convex Lipschitz domain $K ⊂ ℝ^d$ and $u ∈ H^s$ with $s ≥ 0$, then there exists a certain constant $C ∈ ℝ^+$ such that \[ \inf_{p ∈ \mathbb{P}_r(K)} \norm{u - p}_{H^m(K)} ≤ C \abs{u}_{H^η} \quad η = \min \set{s, r+1}, \, m = 0,1, \dotsc, h\]
+\end{lemma}
+
+\begin{proof} There's a boring proof (constructive in 1D using Taylor expansion\footnote{I am seriously starting to hate a lot Taylor expansions.}) and an interesting one % http://math.stackexchange.com/questions/1374822/deny-lions-lemma
+\end{proof}
+
+Local interpolation estimates. So we have $K ∈ τ_h$, and for all $u ∈ H^s$ with $s ≥ 2$ we can do \[ \abs{u - I_h u} = \abs{u -I_hu -p + p} ≤ \abs{u-p} + \abs{I_hu - p}\]
+
+If our interpolating operator is idempotent (interpolating polynomials yields the same polynomial) we can say that $p = I_hp$ and $I_hu - p = I_h(u-p)$ so \[ \abs{u-p} + \abs{I_hu - p} ≤ (1 + \norm{I_h})\abs{u-p}_{H^m} \] and then we use \nref{lem:Deny-Lions}. We need to know however that $\norm{I_h}$ is bounded with respect to $h$, so we have to cast things on the reference elements. In this case we have $\hat{u} = u ○ F_K$ and $\hat{I_hu} = I_hu ○ F_K = \hat{I_h} \hat{u}$ using the interpolating operator on the reference element.
+
+\begin{lemma} The Lagrange interpolating operator $\appl{\hat{I}_h}{H^(\hat{K})}{H^m(\hat{K})}$ is a bounded operator for all $m = 0, \dotsc, r+1$.
+\end{lemma}
+
+\begin{proof} Simply write \[ \norm{\hat{I}_h \hat{u}}_{H^m} ≤ \sum \abs{\hat{u}(a_j)} \norm{φ_j}_{H^m} ≤ C \max_{\hat{x} ∈ \hat{K}} \abs{\hat{u}(\hat{x})} ≤ C \norm{\hat{u}}_{H^2} \]
+\end{proof}
+
+Now we can go back to the estimate thing so yeah, it works, I'm sleepy. But it works.
+
+Something something stiffness matrix.
+
+\subsection{Error estimates for finite element approximations}
+
+Again, we discuss the estimates for the model problem and then we will see that the procedures generalize. This problem will be the Poisson equations with boundary conditions:
+\[ \begin{cases}
+-Δu =f & \text{in } Ω \\
+∂_\vn u = d & \text{on } Γ_N \\
+u= g & \text{on } Γ_D
+\end{cases}\]
+
+Its abstract weak form is the problem of finding a function $u ∈ V_g$ such that $a(u,v) = F(v)$ for any $v ∈ V_0$, with
+\begin{align*}
+V_g &= \set{v ∈ H^1(Ω) \tq \restr{v}{Γ_D} = g} \\
+a(u,v) &= \int_Ω ∇u∇v \\
+F(v) &= \int_Ω fv + \int_{Γ_N} d v
+\end{align*} and assuming that $a$ is continuous ($a(u,v) ≤ M \norm{u}_V \norm{v}_V$) and coercive with coercion coefficient $α = \frac{1}{1 + c_p^2}$, and $F$ a bounded linear operator. For the spaces $V_0, V_g$ we pick the $H^1$ norm.
+
+Our finite element space will be $X_h^r$, the space of $P_r$ finite elements on the mesh $τ_h$. We can construct also the finite element space vanishing on the boundary as $V_{0,h} = X_h^r ∩ H_{Γ_D}^1$. The finite element space for $V_g$ is a little bit more tricky, but we can simply try to approximate the boundary value with the interpolation operator so $V_{h,g} = \set{ v_h ∈ X_h^r \tq \restr{v_h}{Γ_D} = I_h^r g}$.
+
+If he have homogeneous Dirichlet boundary conditions (that is, $g \equiv 0$) we have the \nref{lem:Cea} which says that \[ \norm{u - u_h}_V ≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V \]
+
+With that, we can apply the error estimates for interpolation so that $\inf_{v_h ∈ V_{h,0}} \norm{u -v_h}_{H^1} ≤ \norm{u - I_h^r u}_{H^1} ≤ \abs{u}_{H^η}$ and our estimate is \[ \norm{u-u_h}_{H^1} ≤ C h^{η - 1} \abs{u}_{H^η} \] with $η = \min \set{r + 1, s}$ and $u ∈ H^s(Ω)$.
+
+\subsubsection{Error estimate in $L^2$}
+
+We will use the Aubin-Nitsche trick and we will use duality. In order to estimate the error, we define $e_h = u - u_h$ and the adjoint problem of searching for a $φ ∈ V$ such that \[ a(v,φ) = \int_{Ω} e_h v \qquad ∀v ∈ V\]
+
+THis, in order to estimate the error in $L^2$ we can do the following: \[ \norm{u-u_h}^2_{L^2} = \norm{e_h}_{L^2}^2 = \int_Ω e_h e_h = a(e_h, φ) = a(u - u_h, φ) \]
+
+By the Galerkin orthogonality condition, we know that $a(u - u_h, v_h) = 0$ for any $v_h ∈ V_h$. That allows to substract any $w_h ∈ V_h$ to φ, and then \[ a(u-u_h, φ) = a(u - u_h, φ - w_h) ≤ M \norm{u - u_h}_V \inf_{w_h ∈ V_h} \norm{φ-w_h}_V \]
+
+We must know now which is the regularity of this function φ. To do that, we must notice that φ is the solution to the porblem \[
+\begin{cases} - Δφ = e_h & \text{in } Ω \\
+∂_\vn φ = 0 & \text{on } Γ_N \\
+φ = 0 & \text{on } Γ_D
+\end{cases} \] which in turn depends on the smoothness of $e_h$. We will use however only that $e_h ∈ L^2$, if Ω is a convex polygon. So, assuming $φ ∈ H^2$ we can bound the error in $L^2$, getting one more order of convergence: \[ \norm{u - u_h}_{L^2} ≤ C h \norm{u - u_h}_{H^1} \]
+
+\subsection{Error estimates on functionals}
+
+Let $\appl{Q}{V}{ℝ}$ a linear functional, for which we want to estimate $\abs{Q(u) - Q(u_h)}$. This might be useful if, for example, we want to extract some quantity based on the solution to a PDE, such as the temperature of a surface based on its heat flux.
+
+Again, duality arguments. But yeah everthing ok and estiamte on the order of the tcontinuuity.
+
+\subsection{Error estimate for F.E approximations}
+
+For poisson something something something this is boring.
+
+\chapter{Mixed problems}
+
+So we have two Hilbert spaces $V,Q$ and two bilinear forms \begin{align*}
+\appl{a}{V×V&}{ℝ} \\
+\appl{b}{V×Q&}{ℝ}
+\end{align*} and we want to find $(u,p) ∈ V×Q$ such that \(
+\begin{aligned}
+a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V\\
+b(u,q) &= G(q) \quad ∀q ∈ Q
+\end{aligned} \label{eq:MixedProblemFormulation}
+\)
+
+If we have the condition $G = 0$, we can define the space $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$, which translates the problem to the usual abstract formulation of finding a $u ∈ V_0$ such that $a(u,v) = F(v)$ for any $v ∈ V_0$.
+
+This type of construction will be useful when studying elliptic equations with constraints, such the incompressible elasticity equation. The problem will come on how to construct the approximation space to $V_0$. That is why sometimes we will nevertheless work on the unconstrained problem.
+
+\begin{example}[Incompressible linear elasticity] In this case, we have a displacement field $\appl{\vu}{Ω}{ℝ^d}$. The strain tensor is the symmetric part of the gradient, so that \[ ε(\vu) = \frac{∇\vu + \trans{∇\vu}}{2} \] and the stress tensor will be just linear on the strain if we assume linear elasticity: \[ σ_{ij}(\vu) = C_{ijkl} ε_{kl} \]
+
+For an isotropic equation, this tells us that the stress tensor is \[ σ(\vu) = 2με(\vu) + λ\tr(ε(\vu)) I\]
+
+We have the following balance equations for the boundary conditions:
+\begin{align*}
+\dv σ(\vu) &= \vec{f} \quad\text{in }Ω \\
+\vu &= \vec{g} \quad\text{on } Γ_D \\
+σ(\vu) \vn &= \vd
+\end{align*}
+
+The weak formulation requires the definition of the space $V_g = \set{\vv ∈ (H^1)^d \tq \restr{\vv}{Γ_D} = \vec{g}}$, and thus the problem is finding a $\vu ∈ V_g$ such that \[ \int_Ω 2μ\left(ε(\vu) \colon ε(\vv)\right) + λ \dv \vu \dv \vv = \int_Ω \vec{f} \vv + \int_{Γ_N} \vd \vv \qquad ∀\vv ∈ V_0\]
+
+The question is what happens if we have an incompressible material, that is, with $λ \to ∞$ (λ is the bulk modulus). What we do is formulate a variational problem: we define the energy of a solution as \[ J_λ(\vu) = \frac{1}{2} \int_{Ω} 2μ ε(\vu) \colon ε(\vu) + λ(\dv \vu)^2 - \int_Ω \vec{f} \vu - \int_{Γ_N} \vd \vu \]
+
+Solving the minimization problem of $J_λ$ (that is, finding $\argmin_{\vu ∈ V_g} J_λ(\vu)$) is equivalent to the weak formulation presented above.
+
+In that case, if $λ \to ∞$ the only way to bound the energy functional is to have $\dv \vu = 0$, so we will search then for the minimization function $\vu$ of the functional $J_0$ with $\vu ∈ V_g$ \textit{and} $\dv \vu = 0$, with \[ J_\text{inc}(\vu) = \frac{1}{2} \int_{Ω} 2μ ε(\vu) \colon ε(\vu) - \int_Ω \vec{f} \vu - \int_{Γ_N} \vd \vu  \]
+
+To enforce the constraint, we can use Lagrange multipliers. The lagrangian will be then \[ \mathcal{L}(\vu,p) = J_0(\vu) - \int_Ω \vec{p} \dv \vu  \] with $\vec{p}$ being the Lagrange multiplier, and thus the problem is finding \[ \argmin_{\vu ∈ V_g} \max_{\vec{p} ∈ ?} \mathcal{L}(\vu, p) \] with the space of the Lagrange multiplier pending to define. To solve this, we write the ``derivatives'' and make them equal to 0 \begin{align*}
+\dpd{\mathcal{L}}{\vu}(\vv) &= \lim_{ε \to 0} \frac{\mathcal{L}(\vu + ε \vv, p) - \mathcal{L}(\vu, p)}{ε} = \\ &= \int_Ω 2μ ε(\vu) \colon ε(\vv) - \int_Ω p \dv \vv - \int_Ω \vec{f} \vv - \int_{Γ_N} \vd \vv = 0 \\
+\dpd{\mathcal{L}}{p}(q) &= \lim_{ε \to 0} \frac{\mathcal{L}(\vu, p  + ε q) - \mathcal{L}(\vu, p)}{ε} = \\ &= \int_Ω q \dv \vu = 0
+\end{align*}
+
+In the first case, the variation should be $0$ on the boundary so that $v ∈ V_0$, and in the second case we will need only $q ∈ L^2(Ω) = Q$ given that $\dv \vu$  is square-integrable.
+
+So, finally, the constrained problem is finding $(u,p) ∈ V_g × Q$ such that \begin{align*}
+\int_Ω 2μ ε(\vu) \colon ε(\vv) - \int_Ω p \dv \vv &= \int_Ω \vec{f} \vv + \int_{Γ_N} \vd \vv & ∀v ∈ V_0 \\
+\int_Ω q \dv \vu &= 0 & ∀q ∈ Q
+\end{align*}
+
+THe trick is that we can adapt this to the mixed formulation of \eqref{eq:MixedProblemFormulation}, defining $a(\vu, \vv) = \int_Ω 2μ ε(\vu) \colon ε(\vv)$ and $b(\vv, p) = \int_Ω p \dv \vv$ (we only have to change the sign on the second equation but that does not change the equation).
+\end{example}
+
+\begin{example}[Nearly incompressible elasticity] Now on to the partial case: what happens if we have an object which is nearly incompressible? The issue is that if we have a very large value of λ (but not ∞) the error estimate constants blow up completely and we have a poor estimate. What we do in that case is to constrain $p = -λ \dv \vu$ and then the problem becomes \begin{align*}
+\int_Ω 2μ ε(\vu) \colon ε(\vv) - \int_Ω p \dv \vv &= \int_Ω \vec{f} \vv + \int_{Γ_N} \vd \vv & ∀v ∈ V_0 \\
+- \int_Ω q \dv \vu  -\underbracket{\frac{1}{λ} \int_{Ω} pq}_{c(p,q)} &= 0 & ∀q ∈ Q
+\end{align*} which is the same problem as before but adding another term $c(p,q)$, which disappears when $λ \to ∞$, and so the solution will be robust when λ is very large.
+\end{example}
+
+\begin{example}[Flows in porous media] To define the equations, we use Darcy's law: $\vu = -k ∇p$ with $p$ the pressure and $k$ the permeability. Also, fluid cannot disappear, so we have to force that, for any small domain ω, we have $\int_{∂ω} \vu \vn = \int_ω f$ where the left hand side is the fluid that gets in/out of the domain, and the right hand side is the sources or sinks in that domain. This gives us the following model:
+\( \begin{aligned}
+\dv \vu &= f \\
+\vu &= -k∇p
+\end{aligned} \label{eq:DarcyLaw} \)
+
+We will also force that on the impervious boundaries $Γ_D$ we have no fluid transfer, that is, $\vu \vn = 0$ on $Γ_D$.
+
+A first approximation would be to replace the velocity field and set $-\dv (k∇p) = f$ and the other boundary conditions, but that approach has issues. Mainly, that if we solve for $p$, the gradient will be a worse approximation and, specifically, if we have $f = 0$  (conservation of mass) then the approximate solution will not exactly conserve mass, which is definitely not very good. So, we need another approach deriving directly the weak formulation of \ref{eq:DarcyLaw}. For the divergence, we get directly by integration and multiplying by a test function $q$ so that \[ \int_Ω q \dv \vu = \int_Ω fq \]
+
+In the other equation $\vu = -k∇p$, we use a test vector function $\appl{\vv}{Ω}{ℝ^d}$ and then integrate by parts:
+\begin{align*}
+\frac{1}{k} \vu &= - ∇p \\
+\int_{Ω} \frac{1}{k} \vu \vv &= - \int_Ω ∇p \vv \\
+\int_{Ω} \frac{1}{k} \vu \vv &= - \int_{Ω} p \dv \vv - \underbracket{\cancelto{0}{\int_{Γ_D} p \vv \vn}}_{\vv \vn = 0 \text{ on } Γ_D} - \int_{Γ_N} \vv \vn
+\end{align*}
+
+With this, we end with the mixed problem formulation given by
+\(
+\begin{aligned}
+\underbracket{\int_{Ω} \frac{1}{k} \vu \vv }_{a(\vu, \vv)} + \underbracket{\left(- \int_Ω p \dv \vv \right)}_{b(\vv, p)} &= \underbracket{\int_{Γ_N} d \vv \vn}_{F(\vv)} \\
+\underbracket{-\int_Ω \dv u q}_{b(\vu,q)} &= \underbracket{- \int_Ω fq}_{G(q)}
+\end{aligned} \label{eq:DarcyLawWeakForm}
+\)
+
+As always, we need to know the spaces for $\vu, \vv$. We only need control on the divergence, so we can define \[ H(\dv, Ω) = \set{\appl{\vv}{Ω}{ℝ^d} \tq \vv ∈ (L^2(Ω))^d,\, \dv \vv ∈ L^2(Ω)} ⊃ (H^1(Ω))^d \] which is a smaller space than $(H^1(Ω))^d$ and with norm \[ \norm{\vv}_{H(\dv, Ω)} = \norm{\vv}^2_{L^2(Ω)} + \norm{\dv \vu}^2_{L^2(Ω)} \]
+
+And, luckily for us, in this space we can define the trace operator as \begin{align*}
+\appl{\tr}{H(\dv, Ω)&}{\left(H^{\sfrac{1}{2}}(∂Ω)\right)' = H^{-\sfrac{1}{2}}(∂Ω)} \\
+\vv &\longmapsto \restr{\vv · \vn}{∂Ω}
+\end{align*} with $H^{-\sfrac{1}{2}}(∂Ω)$ the dual space of $H^{\sfrac{1}{2}}(∂Ω)$. The trace operator is bounded \[ \norm{\vv · \vn}_{H^{-\sfrac{1}{2}}(∂Ω)} ≤ C \norm{\vv}_{H(\dv, Ω)} \]
+
+This allows us to define the test function space $V_g = \set{\vv ∈ H(\dv, Ω) \tq \restr{\vv·\vn}{Γ_D} = g}$, and then we need to find $u ∈ V_g$ and $p ∈ L^2(Ω)$ to solve \eqref{eq:DarcyLawWeakForm}.
+\end{example}
+
+So, after the examples, we will define the theorem that gives us the sufficient conditions for well-posedness of the mixed problem.
+
+\begin{theorem} \label{thm:WellPosednessMixedProb} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
+\begin{itemize}
+\item $\appl{a}{V×V}{ℝ}$ is a continuous (continuity bounding constant $M$) and coercive on $V_0$ ($∃ α > 0$ s.t. $a(u, u) ≥ α \norm{u}_V$ for any $v ∈ V_0$) bilinear form.
+\item $\appl{b}{V×Q}{ℝ}$ is a continuous (continuity bounding constant $γ$) bilinear form and with an inf-sup condition: $∃β > 0$ such that \[\inf_{q∈Q}\sup_{v∈V} \frac{b(v,q)}{\norm{v}_V \norm{q}_Q} ≥ β > 0 \] which is equivalent to saying that for any $q ∈ Q$ we have \[ \norm{q}_Q ≤ \frac{1}{β} \sup_{v ∈ V} \frac{b(v,q)}{\norm{\vv}_V} \]
+\item $\appl{F}{V}{ℝ}$ and $\appl{G}{Q}{ℝ}$ are bilinear and bounded forms.
+\end{itemize}
+
+Under these conditions, there exists an unique solution $(u,p) ∈ V × Q$ for the problem \[ \begin{aligned}
+a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V\\
+b(u,q) &= G(q) \quad ∀q ∈ Q
+\end{aligned} \] and there is a constant $C > 0$ such that \[ \norm{u}_V + \norm{p}_Q ≤ C\left(\norm{F}_{V'} + \norm{G}_{Q'}\right)\]
+\end{theorem}
+
+I lost 1 hour of class here. Some proof of some theorem, some transposes and orthogonal spaces. Now a discussion of the inf-sup condition.
+
+\subsection{General problem on Banach spaces}
+
+So far, we have looked at equations $a(u,v) = F(v)$ with $u,v$ in Hilbert spaces. However, the inf-sup condition is much more well suited to define the well-posedness of the problem. Thus, we can work with $u,v$ in only Banach spaces.
+
+We can write this in operator form. If we `freeze' $u ∈ V$ and let $v ∈ W$ vary, then $a(u,v) = \pesc{Au,v} $ with $\appl{A}{V}{W'}$. In the other direction, we have $\pesc{u, \trans{A}v} = a(u,v)$ with $\appl{\trans{A}}{W}{V'}$ the adjoint operator. In this expression, the inf-sup conditions imply the injectivity and surjectivity of the operator $A$ and its adjoint, and then the problem becomes finding an equality of functionals $A u = F ∈ W'$: if we have \[ \inf_{v∈W}\sup_{u∈V} \frac{a(u,v)}{\norm{u}_V \norm{v}_W} ≥ α > 0\] then we have $\ker \trans{A} = \set{0}$, $\img \trans{A}$ closed and $A$ surjective. If we additionally ask for the inverse inf-sup condition \[ \inf_{u∈V}\sup_{v ∈ W} \frac{a(u,v)}{\norm{u}_V \norm{v}_W} ≥ α > 0\] then we have unique solution $u$.
+
+Even though these conditions are more general than the ones in the Lax-Milgram lemma, the problem is that they are far more difficult to prove than coercivity.
+
+In the symmetric setting ($V = W$, $A = \trans{A}$) then only one check is necessary.
+
+\begin{example} We can try to apply this to the Stokes elasticity problem. In the weak form, its equations were \( \label{eq:StokesElasticity} \begin{cases} \int ∇u ∇v - \int p \dv v = F(v) \\ \int q \dv u + ε \int pq = G(q) \end{cases} \)
+, which can be simplified as a single bilinear form \[ A\left((u,p), (v,q)\right) = \int ∇u ∇v -\int p \dv v + \int q \dv u + ε \int pq \] and then check here the inf-sup condition, setting the norm of the tuple as $\norm{(u,p)}^2 = \norm{u}_V^2 + \norm{p}_Q^2$.
+
+Given that $A$ is symmetric, we only have to prove that for any $(v,q)$ we have \[ \sup_{(u,p)} \frac{A\left((u,p), (v,q)\right) }{\norm{(u,p)}} ≥ α \norm{(v,q)} \], and for that it suffices to find a single $(u,p)$ for any $(v,q)$ for which $\frac{A\left((u,p), (v,q)\right) }{\norm{(u,p)}} ≥ α \norm{(v,q)}$.
+
+Here, we would want to use $(u,p) = (v,q)$ which would give us however a little bit of bad control when $ε \to 0$, although then we can control it by something of the laplacian that was in the exercise and $q$ was like the gradient and something like that.
+\end{example}
+
+\section{Galerkin approximation}
+
+Once we have the theoretical framework for the mixed problems, we will start working with the finite approximation and numerical solution model. Recall the general problem: find $(u,p) ∈ V×Q$ such that \begin{align*}
+a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V \\
+b(u,q) &= G(q) \quad ∀q ∈ Q
+\end{align*}
+
+To apply here the Galerkin approximation, we will define finite subspaces $V_h⊂V$ and $Q_h ⊂ Q$ with the approximation property that when $h \to 0$ they become ``dense'' in their respective parent spaces. More formally, we want for any $v ∈ V$ to have \[ \lim_{h \to 0} \inf_{v_h ∈ V_h} \norm{v - v_h} = 0\]  and the same for $Q$.
+
+Once the spaces are defined, the Galerkin approximation problem will be to find $(u_h, v_h) ∈ V_h × Q_h$ such that \( \begin{aligned}
+a(u_h,v_h) + b(v_h,p_h) &= F(v_h) \quad ∀v_h ∈ V_h \\
+b(u_h,q_h) &= G(q_h) \quad ∀q_h ∈ Q_h
+\end{aligned} \label{eq:GalerkinMixedProblem}\)
+
+From here, we have to questions to answer: whether this approximated problem is well posed and how does it converge to the real solution when $h \to 0$.
+
+\subsection{Well-posedness of the Galerkin approximation}
+
+We will start, of course, by assuming that the original problem is well-posed and that $a,b$ fulfill the conditions of \fref{thm:WellPosednessMixedProb}. We will not have any problem with linearity and continuity as we are working on linear, closed subspaces. However, the coercivity of $a$ on $V_0$ and the inf-sup condition of $b$ may not necessarily hold.
+
+We start by the inf-sup condition, which told us that \[ ∀q ∈ Q \quad \sup_{v ∈ V} \frac{b(v,q)}{\norm{v}_V} ≥ β \norm{q}_Q \]
+
+It is easy to see that restricting $q$ to $Q_h$ maintains this relationship. However, if we restrict $v$ to $V_h$ we might lose that supremum and lose then the property. We will have to choose $V_h$ and $Q_h$ carefully so that restricting on $Q_h$ removes possible problems on that inequality. The discrete condition is the following \( ∀q_h ∈ Q_h \quad \sup_{v_h ∈ V_h} \frac{b(v_h, q_h)}{\norm{v_h}_{V_h}} ≥ β_h \norm{q_h}_{Q_h} \quad ∀ h > 0 \)
+
+In particular, we will not be able to choose small spaces $V_h$ as in those we will have less ``options'' to find some $v$ that fulfills the condition.
+
+What happens, however, if the condition is not satisfied? Then the operator $\trans{B}$ induced by $b$ is not injective, i.e. there exists a $q_h^*$ such that $b(v_h, q_h^*) = 0$ and $\ker \trans{B} ≠ \set{0}$. But then, if $(u_h, p_h)$ is a solution to \eqref{eq:GalerkinMixedProblem} then $(u_h, p_h + αq_h^*)$ is also a solution. This means we might have non-uniqueness or even non-existence if something happens with the second equation and the image of $G$ that completely passed over my head.
+
+This problems tends to happen a lot in reality. Solutions like $q_h^*$ are called spurious solutions that are usually oscillatory. Thus, we will need to explicitly require the inf-sup condition at the discrete level.
+
+The other problem was the coercivity on $V_0$ of $a$. However, if we have coercivity on the full space $V$, we will have coercivity too on any subspaces including $V_h$ and $V_{h,0} = \set{v_h ∈ V_h \tq b(v_h,q_h) = 0 \; ∀q_h ∈ Q_h}$ (the analogous space for the discrete setting).
+
+For some PDE problems, such as the Stokes elasticity problem, coercivity on the full space $V$ will not be too much to ask and will come for free. However, in other problems such as the Darcy law, we only have control of the divergence on the restricted space and then we can't prove coercivity on the full space.
+
+This prompts the question of what happens when $a$ is only coercive on $V_0$. We might be able to prove that $V_{h,0} ⊂ V_0$ so we have no problems, or maybe we are not able and then we have to prove specifically coercivity on the restricted discrete subspace. That depends heavily on the type of discretization used.
+
+With all of this discussion, we can prepare the theorem for well-posedness\footnote{Frigging love existence and uniqueness theorems.}:
+
+\begin{theorem} \label{thm:WellPosednessMixedGalerkin} Assume we start from a well-posed mixed PDE problem. Then, consider the Galerkin approximating problem of finding $(u_h, v_h) ∈ V_h × Q_h$ such that \[ \begin{aligned}
+a(u_h,v_h) + b(v_h,p_h) &= F(v_h) \quad ∀v_h ∈ V_h \\
+b(u_h,q_h) &= G(q_h) \quad ∀q_h ∈ Q_h
+\end{aligned} \]
+
+Assume that $a$ is coercive on $V_{h,0}$ \[ ∃ α_h > 0 \; a(v_h, v_h) ≥ α_h \norm{v_h}_V^2 \; ∀v_h ∈ V_{h,0} \] and $b$ satisfies the discrete inf-sup condition \[ ∃β_h > 0 \; \inf_{q_h ∈Q_h} \sup_{v_h ∈ V_h} \frac{b(v_h, q_h)}{\norm{v_h}_V \norm{q_h}_Q} ≥ β_h\]
+
+Then, there exists an unique solution $(u_h, p_h) ∈ V_h × Q_h$ of the approximating problem and $\norm{u_h}_V + \norm{p_h}_Q ≤ C(\norm{F}_{V'} + \norm{G}_{Q'})$.
+\end{theorem}
+
+\subsection{Convergence of the solution}
+
+\begin{theorem} \label{thm:WellPosednessMixedGalerkinConvergence} In the same conditions of \fref{thm:WellPosednessMixedGalerkin}, we can show that \[ \norm{u-u_h}_V + \norm{p - p_h} ≤ C\left(\inf_{v_h ∈ V_h} \norm{u - v_h}_V + \inf_{q_h ∈ Q_h} \norm{p - q_h}_Q \right) \] with $(u,p)$ a solution of the non-approximate problem.
+\end{theorem}
+
+\begin{proof} To prove this theorem, we will try to bound the $\norm{u_h - w_h}$ and $\norm{p_h - π_h}$ and then conclude by triangular inequality.
+
+For the first one, let $w_h ∈ V_h$ such that $b(w_h, q_h) = G(q_h)$ for any $q_h ∈ Q_h$. In that case, we have $u_h - w_h ∈ V_{h,0}$ and there we have coercivity, so we can write \[ \norm{u_h - w_h}^2 ≤ \frac{1}{α_h}a(u_h - w_h, u_h - w_h)\]
+
+Adding and substracting $u$ in the arguments of $a$; we have that
+\begin{multline*} \frac{1}{α_h}a(u_h - w_h, u_h - w_h) = \frac{1}{α_h}\left(a(u_h - u, u_h - w_h) + a(u -w_h, u - w_h)\right) = \\ = \frac{1}{α_h} \left(F(u_h, w_h) - b(u_h - w_h, p_h) - F(u_h - w_h) + b(u_h - w_h, p) + a(u - w_h, u_h - w_h)\right)\end{multline*}
+
+However, given that $u_h - w_h ∈ V_{h,0}$, we have $b(u_h - w_h, p_h) = 0 = b(u_h - w_h, π_h)$ so the equation becomes \begin{align*}
+\norm{u_h - w_h}^2 &= \frac{1}{α_h} \left(F(u_h, w_h) - b(u_h - w_h, p_h) - F(u_h - w_h) + b(u_h - w_h, p) + a(u - w_h, u_h - w_h)\right) \\
+	&= \frac{1}{α_h}\left(b(u_h - w_h, p - π_h) + a(u-w_h, u_h - w_h)\right) \\
+	&≤ \frac{1}{α_h}\left(γ \norm{p - π_h}_Q \norm{u_h - w_h}_V + M \norm{u -w_h}\norm{u_h - w_h}\right) \\
+\norm{u - u_h}_V &≤ \frac{γ}{α_h} \norm{p - π_h}_Q + \frac{M}{α_h}\norm{u -w_h}
+\end{align*}
+
+With this, we can bound $\norm{u - u_h}$ as $w_h, π_h$ are arbitrary so that \begin{align*}
+\norm{u -u_h}_V &≤ \norm{u - w_h} + \norm{u_h - w_h} \\
+&≤ \left(1 + \frac{M}{α_h}\right) \norm{u - w_h} + \frac{γ}{α_h} \norm{p - π_h} \\
+\norm{u - u_v}_V &≤ \left(1 + \frac{M}{α_h}\right)\inf_{w_h ∈ V_h} \norm{u - w_h} + \frac{γ}{α_h} \inf_{π_h ∈ Q_h} \norm{p - π_h}
+\end{align*} so we are done.
+
+Now we need to recover the bound on $p$ so we have \begin{align*}
+\norm{p - π_h} &≤ \frac{1}{β_h} \sup_{v_h ∈ V_h} \frac{b(v_h, p_h - π_h)}{\norm{v_h}} \\
+&≤ \frac{1}{β_h} \sup\frac{b(v_h, p_h - p)}{\norm{v_h}} + \frac{1}{β_h} \underbracket{\sup \frac{b(v_h, p - π_h)}{\norm{v_h}}}_{≤ γ\norm{p - π_h}} \\
+&≤ \frac{1}{β_h} \sup \frac{a(u - u_h,v_h)}{\norm{v_h}} + \frac{γ}{β} \norm{p - π_h} \\
+&≤ \frac{M}{β_h} \norm{u - u_h} + \frac{γ}{β_h} \norm{p - π_h}
+\end{align*} and then we have the triangular inequality \[ \norm{p - p_h} ≤ \norm{p - π_h} + \norm{p_h - π_h} ≤ \dotsb ≤ C\left(\inf_{w_h} \norm{u - w_h} + \inf_{π_h ∈ Q_h} \norm{p-π_h} \right)\]
+
+We need to take care however that $w_h$ fulfills that $b(w_h, q_h) = G(q_h)$, which is a little bit annoying because we can't take the interpolant to bound $\inf_{w_h} \norm{u - w_h}$. So, let $V_h^G = \set{w_h ∈ V_h \tq b(w_h, q_h) = G(q_h) \; ∀q_h ∈ Q_h}$, and the missing step is to prove that if $b$ satisfies the discrete inf-sup condition then $\inf_{w_h ∈ V_h^G} \norm{u - w_h} ≤ C \inf_{v_h ∈ V_h} \norm{u - v_h}$.
+\end{proof}

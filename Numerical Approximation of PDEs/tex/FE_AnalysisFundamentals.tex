@@ -1,0 +1,260 @@
+% -*- root: ../NumericalApproximationofPDEs.tex -*-
+\chapter{Functional analysis fundamentals}
+
+\section{Banach and Hilbert spaces}
+
+The first fundamental of functional analysis is, as usual, to define the basic spaces in which we are going to work. These are going to be, obviously, spaces of functions. The next step is what do we want to study in these spaces. The first notion is that of convergence: knowing when a sequence of functions converges to another and in which sense. Instead of going like in other courses defining special types of convergence, we are actually going to rely on topology. We will treat functions like points in a topological space, and saying that they converge to something if they start getting closer to that something.
+
+So, what we need is a distance or, actually, a norm\footnote{A norm $\norm{·}$ induces a distance directly by $\dst(x,y) = \norm{x-y}$.}. Let's go with the definition:
+
+\begin{defn}[Norm] Given a space $V$ over a field $K$, we say that an application $\appl{\norm{·}}{V}{ℝ}$ is a norm if and only if
+\begin{enumerate}
+	\item Given $λ ∈ K$ and $x ∈ V$, then $\norm{λx} = \abs{λ}\norm{x}$.
+	\item Verifies the triangle equality: given $x,y ∈ V$, then $\norm{x + y} ≤ \norm{x} + \norm{y}$.
+	\item It separates points, that is, $\norm{x} = 0 \iff x = 0$.
+\end{enumerate}
+
+If the last property is not verified, we say we only have a \concept{Seminorm}.
+\end{defn}
+
+We will then work in spaces equipped with a norm. We will ask that these spaces have a nice property with respect to this norm: completeness. We say that a space $V$ is \concept[Completeness]{complete} if and only if for every Cauchy sequence $(x_n) ⊂ V$, we have convergence in the space $x_n \to x ∈ V$. In other words, we don't want to worry whether we are going to be out of the space when working with convergent sequences.
+
+With this, we can go on to the notion of a Banach space:
+
+\begin{defn}[Banach space][Space!Banach] A vector space $V$ is called Banach if it has a norm and is complete with respect to that norm. Formally, the Banach space is the space with the norm, that is, $X = (V, \norm{·}_V)$.
+\end{defn}
+
+Banach spaces are the ones we do topology in. Notions of compactness and convergence\footnote{Mainly the two topological aspects we will be interested in: compactness gives us finiteness and convergence, duh, is convergence.} will be studied on these spaces.
+
+The next step is to be able to do geometry, measuring angles and specially talking about ortogonality. This is accomplished with the scalar product:
+
+\begin{defn}[Scalar product][Product!scalar] Given a vector space $V$, we say that an application $\appl{\pesc{·,·}}{V×V}{ℝ}$ is a scalar product if and only if it is antilinear\footnote{Beware with complex numbers: $\pesc{λx,y} = λ\pesc{x,y}$ but $\pesc{x,λy} = \conj{λ}\pesc{x,y}$.} , positive definite and symmetric\footnote{Again, take into account that with complex numbers we have $\pesc{x,y} = \conj{\pesc{y,x}}$.}.
+\end{defn}
+
+Again, we have a name for spaces with a scalar product:
+
+\begin{defn}[Hilbert space][Space!Hilbert] We say that a vector space with a scalar product $(V, \pesc{·,·}_V)$ if and only if it is Banach with respect to the induced norm $\norm{x}_V = \sqrt{\pesc{x,x}_V}$.
+
+As it was the case with Banach space, the subjacent space and the tuple space-scalar product is often used interchangeably, but the good mathematician should know what is what.
+\end{defn}
+
+\subsection{$L^p$ spaces}
+
+Now on to a specific example of Banach and Hilbert spaces: $L^p$ spaces. These will be our basic workbench, so it pays off to define them carefully.
+
+The first question we have to make is which kind of functions do we want to study. One could think that, given that this is a subject on differential equations, we should be studying $C^k$ spaces for some $k ∈ ℕ$. However, this turns out to be too restrictive, and the reason is one of completeness: these spaces are too small. One can see that we can approximate absolute monster functions (and even things that are not even functions) with infinitely smooth functions. It would be certainly difficult to work in these kind of spaces where one can step out of them at the slightest oversight.
+
+So, if we are dropping smoothness assumptions, we can work with the related operation: integration. Despite this horribly weak argument, this is the best choice although it requires a little bit of care and measure theory. Using integration yields nice complete spaces, a direct definition of a norm and a very good tolerance for monsters.
+
+The first base is then to define the basic space. Given $Ω ∈ ℝ^n$ and a measure $μ$ on $ℝ$, we define the $\mathcal{L}^p$ space as \( \mathcal{L}^p(Ω, μ) ≝ \set{\appl{f}{Ω}{ℝ} \tq \int_Ω\abs{f}^p \dif μ < ∞ } \label{eq:Fundamentals:LCalSpace} \) with the corresponding norm \( \norm{f}_{\mathcal{L}^p(Ω,μ)} = \left(\int_Ω \abs{f}^p \dif μ \right)^{\sfrac{1}{p}} \label{eq:Fundamentals:LpNorm} \)
+
+As the measure used is usually the Lebesgue measure, the `μ' is usually dropped off the notation.
+
+What is important --- and the reason why we need measure theory --- is that the norm defined in \eqref{eq:Fundamentals:LpNorm} is not actually a norm for the space $\mathcal{L}^p$: it does not separate points. The function $f \equiv 0$ has obviously norm 0, but a function that doesn't vanish on a set of measure zero has norm 0 too.
+
+The solution is a little bit `stupid', but it works: we define those two functions as to be the same one, and in fact we will do that with every two functions that are different only on a set of measure zero. With a little bit more formality, we define the following equivalence relation\footnote{Checking the properties is left as an exercise to the distrustful reader.}:
+\( ∀f,g ∈ \mathcal{L}^p(Ω), \quad f \sim g \iff \int_Ω \abs{f-g} \dif μ = 0 \label{eq:Fundamentals:EquivRel} \)
+
+With this we can define what is a $L^p$ space:
+
+\begin{defn}[{$L^p$} space][Space!{$L^p$}] Let $Ω ⊂ ℝ^n$ be a domain, and $μ$ a measure on $ℝ$. Then, we define the $L^p(Ω,μ)$ space as the quotient $\quot{\mathcal{L}^p(Ω,μ)}{\sim}$, with the space defined as in \eqref{eq:Fundamentals:LCalSpace} and the equivalence relation of \eqref{eq:Fundamentals:EquivRel}.
+
+In other words, $L^p$ space is the space of functions $p$-integrable on $Ω$, identifying those which only differ on a set of measure zero.
+
+One special case: when $p = ∞$, the norm is given as \[ \norm{f}_{∞} = \sup_{x ∈ Ω} \abs{f(x)} \] and thus the $L^{∞}(Ω)$ space is the one of bounded functions in Ω.
+\end{defn}
+
+The $L^p$ spaces are always Banach for $0 < p ≤ ∞$. In the case $p = 2$, it is a Hilbert space with the scalar product being \[ \pesc{f,g}_{L^2(Ω)} = \int_Ω f g \dif μ \]
+
+Proofs of these facts are left to the reader.
+
+\section{Distributions}
+
+In the previous section we explained how our space is going to be the one of integrable functions. However, we have not acknowledged something that is really important for PDEs: how can we differentiate general integrable functions?
+
+This requires us to bring in the theory of distributions, which are actually useful not only because they will allow us to define ``derivatives'' of general functions, but also because they are a useful tool when solving PDEs.
+
+A good motivation for distributions is given in \cite{DistributionsFourierTransform}, questioning how do we actually measure things. For example, when we have a thermometer, we don't measure the temperature in just one point in space: we do some kind of ``average'' between all the points of the mercury. An interesting thought experiment is to see what would happen if we measured the temperature of a zone in which there is one single point with infinite temperature. Could we measure that infinite? Or maybe we wouldn't see it because the other points would smooth it out?
+
+Distributions can be seen as a model of these kind of things. We couldn't model a point with infinite value with a function, but maybe we could think of that as some kind of generalized function.
+
+On to the mathematics, we will first define what our ``thermometers'' are going to be. The space of test functions will usually be defined as $\mathcal{D}(Ω) = C_0^∞(Ω)$; infinitely smooth functions with compact support on some open set $Ω ∈ ℝ^n$. This is one example of tradeoffs in functional analysis: by requiring the test functions to be infinitely smooth, we will be able to work with distributions without any kind of regularity property. If we relaxed the requirements on test functions, we would have a smaller class of distributions.
+
+Now, what is a distribution? We will first have the formal definition.
+
+\begin{defn}[Distribution] Let $Ω ⊂ ℝ^n$ be a domain, and $\mathcal{D}(Ω) = C_0^∞(Ω)$ our space of test functions. A distribution is then a continuous linear operator $\appl{T}{\mathcal{D}(Ω)}{ℝ}$.
+
+The space of distributions on $\mathcal{D}(Ω)$ is denoted by $\mathcal{D}'(Ω)$.
+\end{defn}
+
+This is actually a direct translation of the motivation we were talking of before. A distribution is just something that, when measured with a test functions, gives us a number. This is usually denoted by $T(φ)$ or $\pesc{T, φ}$.
+
+We require it to be linear because non-linear things are just awful. Continuity is also very important: if we are using a sequence of test functions converging to some other function, we want the result to be the same for the two possible paths of first measuring, then doing the limit and viceversa. Formally:
+
+\begin{defn}[Continous operator][Continuity!of an operator] Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $(φ_n)_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \pesc{T,φ_n} = \pesc{T, φ}\]
+\end{defn}
+
+In the specific case of test functions $\dstr(Ω)$ with $Ω ∈ ℝ^d$, we have to be careful with the definition of convergence: given a sequence $(φ_n)_{n≥1} ⊂ \dstr(Ω)$, we say that it converges to $φ ∈ \dstr(Ω)$ if and only if $\sop φ_n ⊂ K$ for some compact set $K ⊂ Ω$, and if $∂^\vA φ_n \to ∂^\vA φ$ with respect to the supremum norm for every multiindex\footnote{Reminder: a multiindex $\vA = (α_1, α_2, \dotsc, α_d)$ is a notation for the mixed partial derivatives $\frac{∂^{\abs{\vA}}}{∂x_1^{α_1}∂x_2^{α_2} \dotsb ∂x_d^{α_d}}$.} $\vA ∈ ℕ^d$.
+
+We have to see two examples of distributions. One will convince us that distributions are really generalized functions by seeing that functions are always distributions. Indeed, given $f ∈ \espLloc[1][Ω]$\footnote{Locally integrable functions, that is, funcitons integrable over every compact subset of Ω. This is a bigger class than $L^p$ (trivially, every integrable function in Ω is also integrable on any subset of it).}, we can assign it a distribution $T_f$ by means of \[ T_f(φ) = \int_Ω f φ \]
+
+The second example convinces us that this space is actually bigger and possibly useful: we can define the \concept{Dirac's delta} centered in $x ∈ Ω$ as a distribution \[ \pesc{δ_x, φ} = φ(x)\] that gives us the value of the test function at $x$. It is easy to check that it is a distribution, but we couldn't define it as a function\footnote{We could, however, define it as a measure: given a set $E$, $δ_x(E) = 1$ if $x ∈ E$, and 0 if $x ∉ E$.} (it is zero everywhere but with an ``infinite impulse'' at $x$).
+
+\subsection{Distributional derivatives}
+
+After studying distributions, we can define derivatives on them. The motivation is to make this derivative coincide with the usual derivative when the distribution is associated to a function. So, let $f ∈ C^1(Ω)$, $T_f ∈ \dstr'(Ω)$ the associated distribution and $\dstr(Ω)$ our space of test functions. We would like that $T_f'(φ) = T_{f'}(φ)$ for all $φ ∈ \dstr(Ω)$. Writing it down and integrating by parts: \[ T_{f'}(φ) = \int_Ω f' φ \dif μ = \underbracket{\restr{f φ}{∂Ω}}_{=0} - \int_Ω fφ' \dif μ = - \int_Ω fφ' \dif μ \] where φ vanishes on the border of Ω as it must have compact support. This is enough to define the distributional derivative.
+
+\begin{defn}[Distributional derivative][Derivative!distributional] Let $Ω ⊂ ℝ^d$ be an open set and $T ∈ \dstr'(Ω)$ a distribution. Then, we define the partial distributional derivative (with multiindex) $∂^\vA T$ as \[ \pesc{∂^\vA T, φ} = (-1)^{\abs{\vA}} \pesc{T, ∂^\vA φ} \]
+\end{defn}
+
+\section{Sobolev spaces}
+
+Even though we have been able to define derivatives for arbitrary functions, we have the problem that not every $L^p$ function has a $L^2$ distributional derivative. For example, the function\footnote{Reminder: given a set $A$, we define the indicator or characteristic function as $\ind_A(x) = \begin{cases} 1 & x ∈ A \\ 0 & x ∉ A \end{cases}$.} $\ind_{ℝ^+}$ has distributional derivative $δ_0$, which is not even a function.
+
+This is the motivation to define Sobolev spaces, spaces in which we will be able to do distributional derivatives without problems.
+
+\begin{defn}[Sobolev space][Space!Sobolev] Let $Ω ⊆ ℝ^n$ be an open set. We define the Sobolev space of order $k ∈ ℕ$ and $1 ≤ p < ∞$ as the space of $L^p$ functions whose distributional derivatives are again $L^p$ functions. That is, \( W^{k,p} (Ω) ≝ \set{ u ∈ L^p(Ω) \tq ∂^\vA u ∈ L^p(Ω) \; ∀\abs{\vA} ≤ k} \)
+
+Sobolev spaces are Banach spaces given the norm \( \norm{f}_{W^{k,p}} = \left(\sum_{\abs{\vA} ≤ k} \norm{∂^\vA u}_{L^p}^p\right)^{\sfrac{1}{p}} \label{eq:Fundamentals:NormSobolev} \) with the special case for $p = ∞$ \( \norm{f}_{W^{k,∞}} = \sup_{\abs{\vA} ≤ h} \norm{∂^\vA u}_{L^∞} \label{eq:Fundamentals:NormSobolevInfty} \)
+\end{defn}
+
+The special case is with $p = 2$, named as $H^k(Ω) = W^{k,2}(Ω)$, which is a Hilbert space with the inner product given by \[ \pesc{f,g}_{H^k(Ω)} ≝ \sum_{\abs{\vA} ≤ k} \int_Ω ∂^\vA f · ∂^\vA g \dif x \] which clearly induces the norm defined previously in \eqref{eq:Fundamentals:NormSobolev}.
+
+For notational convenience, we can define the \concept{Hilbert\IS seminorm} $\abs{·}_{H^k}$ as simply by \( \label{eq:HkSeminorm} \abs{f}_{H^k(Ω)}^2 = \sum_{\abs{\vA} = h} \norm{∂^\vA f}_{L^2(Ω)}^2 \), and thus \[ \norm{f}_{H^k(Ω)}^2 = \sum_{m=0}^k \abs{f}^2_{H^m(Ω)} \]
+
+\subsection{Embeddings of Sobolev spaces and regularity}
+
+One important aspect of Sobolev spaces is ``where do they live'' or, in other words, in which spaces can we embed a given Sobolev space and what does that tell us about the regularity of the functions in it. This is solved by the Sobolev embedding theorem.
+
+\begin{theorem}[Sobolev embedding theorem] \label{thm:SobolevEmbedding} Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:LipschitzCont}.}. Then, the following embedding properties hold:
+\begin{enumerate}
+	\item If $0 ≤ 2k < d$, then $H^k(Ω) ⊂ L^q(Ω)$ with $q = \sfrac{2d}{(d-k)}$.
+	\item If $2k = d$, then $H^k(Ω) ⊂ L^q$ for $2 ≤ q < ∞$.
+	\item If $2(k-m) > d$, then $H^k(Ω) ⊂ C^m(\adh{Ω})$.
+\end{enumerate}
+\end{theorem}
+
+The last property is the most interesting, as it tells us that regularity of a given function depends on the number of integrable derivatives and on the dimension in the space.
+
+There are also two embeddings directly from the definition, say $H^{k+1}(Ω) ⊂ H^k(Ω)$ and $H^0(Ω) = L^2(Ω)$.
+
+\subsection{Fractional Sobolev spaces and continuity}
+
+Until now, we have defined Sobolev spaces with integer degree $k$. However, for the next section we will need what we call fractional Sobolev spaces. These will give us ``degrees'' of continuity: a Sobolev space of degree $4.5$ will be the space of functions that have 4 distributional derivatives in $L^p$ and for which the last derivative is ``somewhat continuous'', with that somewhat being graded by $0.5$. This will be later useful for defining trace spaces.
+
+This ``somewhat continuity'' actually has a formal definition: Hölder continuity.
+
+\begin{defn}[Hölder continuity][Continuity!Hölder] \label{def:HolderContinuity} Let $X,Y$ be two metric spaces and $\appl{f}{X}{Y}$ be a function between them. We say that $f$ is Hölder continuous of degree $α$ if there exists constants $C,α ∈ ℝ^+$ such that for every $x,y ∈ ℝ^d$ the following ``Hölder condition'' holds: \( \norm{f(x) - f(y)}_Y ≤ C\norm{x - y}_X^α \label{eq:Fundamentals:HolderCondition} \)
+
+A function will be locally Hölder continuous if we can find those constants $C,α$ for a neighborhood of every point $x ∈ ℝ^d$.
+\end{defn}
+
+\subsubsection{Unrelated but interesting rambling on Hölder continuity and derivability}
+
+Although for the definition we let the degree be $α ∈ ℝ^+$, we are only interested in the case $α ∈ (0,1)$. With $α = 0$, we only have bounded variation, which is not necessarily continuous at all. With any $α > 0$, we have that $f$ is continuous. Magic happens with $α = 1$, a case for which we will need an additional definition.
+
+\begin{defn}[Lipschitz continuity][Continuity!Lipschitz] \label{def:LipschitzCont} Let $X,Y$ be two metric spaces and  $\appl{f}{X}{Y}$ a function between them. We say that $f$ is Lipschitz continuous in $X$ if there exists a constant $K ∈ ℝ$ such that, for every $x,y ∈ X$, we have \( \frac{\norm{f(x) - f(y)}_Y}{\norm{x-y}_X} ≤ K \label{eq:Fundamentals:LipschitzCondition}  \)
+
+As it was the case with Hölder continuity, a function will be locally Lipschitz continuous if we can find the constant $K$ for a neighborhood of every point $x ∈ X$.
+\end{defn}
+
+
+It is straightforward to see that Hölder continuity of degree $1$ is equivalent to Lipschitz continuity. What is more interesting is the relationship of Lipschitz continuity and derivation.
+
+\begin{theorem}[Rademacher's Theorem] Let $\appl{f}{ℝ^m}{ℝ^n}$ be a Lipschitz continuous function. Then, it is differentiable almost everywhere (that is, the only points where it isn't differentiable have Lebesgue measure zero).
+\end{theorem}
+
+The proof is a little bit complex but uses measure theory so I'm writing it down only the part for one dimension. First of all, an important part which is the Riesz Representation Theorem, which gives us an equivalence between functionals and functions of the same Hilbert space.
+
+\begin{theorem}[Riesz Representation Theorem] \label{thm:RieszRepresentation} Let $H$ be a Hilbert space, and let $H'$ be its topological dual space\footnote{Beware: the topological dual space is the space of all \textbf{continuous} linear functionals on $H$.}. Given $x ∈ H$ an element of the Hilbert space, we can define a continuous linear functional \[ φ_x(y) = \pesc{y,x} \;∀y ∈ H\]
+
+
+The theorem states that \textbf{every} continuous linear functional has this representation as an scalar product. More broadly, the mapping $\appl{Φ}{H}{H'}$ defined as above is an isometric anti-isomorphism:
+\begin{enumerate}
+	\item Φ is bijective.
+	\item Φ conserves norms: $\norm{Φ(x)} = \norm{x}$.
+	\item Φ is antilinear: $\norm{Φ(x + y) } = Φ(x) + Φ(y)$ and $Φ(λx) = \conj{λ}Φ(x)$.
+\end{enumerate}
+\end{theorem}
+
+We are also going to need the Lebesgue differentiation theorem. Just as an improved notation, we define the ``averaging integral'' by $\fint_A f \dif μ = \frac{1}{μ(A)}\int f \dif μ$ where $μ(A)$ is the measure of the set $A$.
+
+\begin{theorem}[Lebesgue Differentiation Theorem] Let $\appl{f}{ℝ^m}{R^n}$ be a Lebesgue integrable function. Then, for almost every $x ∈ ℝ^m$ we have that \( \lim_{r \to 0} \frac{\int_{\bola_r(x)} f \dif μ}{μ(\bola_r(x))} = \fint_{\bola_r(x)} f \dif μ  = f(x) \)
+\end{theorem}
+
+This theorem gives us a nice corollary, which is the fundamental theorem of calculus for Lebesgue integrals.
+
+\begin{corol} \label{crl:LebesgueDifferentiation} Let $f$ be a Lebesgue integrable function, and let $F(x) = \int_{-∞}^x f \dif μ$. Then $F$ is differentiable almost everywhere with $F'(x) = f(x)$.
+\end{corol}
+
+With this, we can do the proof of Rademacher's theorem. We will only need one inequality:
+
+\begin{prop}[Hölder inequality][Inequality!Hölder] \label{prop:HolderInequality} Let $f ∈ L^p$ and $g ∈ L^q$ with $p,q$ conjugate exponents (that is, $\frac{1}{p} + \frac{1}{q} = 1$). Then, $fg ∈ L^1$ and \[ \norm{fg}_1 ≤ \norm{f}_p \norm{g}_q \]
+\end{prop}
+
+\begin{proof}[Rademacher's Theorem] What we are going to prove is that $\appl{f}{[a,b]}{ℝ}$ can be expressed as $f(x) = \int_a^b g(x) \dif x$ with $g$ differentiable. To construct this function, we first define a continuous linear functional and will then use the \nref{thm:RieszRepresentation}. For simplicity, we can assume $[a,b] = [0,1]$.
+
+First, recall the definition of simple functions. These are functions of the form $s(x) ≝ \sum α_i \ind_{[a_i, a_{i+1}]}$. We can define a linear functional $I$ on these functions given by \[ I(s) ≝ \sum α_i \left(f(a_{i+1}) - f(a_{i})\right) \]
+
+Now we will prove that this functional is bounded and thus continuous (linearity is trivial):
+\begin{align*}
+\abs{I(s)} &=\abs{\sum α_i \left(f(a_{i+1}) - f(a_{1})\right)} \\
+	&≤ \sum \abs{α_i} \abs{f(a_{i+1}) - f(a_{i})} \\
+	&≤ K \sum \abs{α_i} \abs{a_{i+1} - a_{i}} \quad\text{ (Lipschitz continuity)} \\
+	&= K \norm{s}_1 \\
+	&≤ K \norm{\ind_{(0,1]}}_2 \norm{s}_2 \quad\text{ (Hölder inequality)} \\
+	&= K \norm{s}_2
+\end{align*}
+
+As the simple functions are a dense subset of $L^2$, this means that $I$ is bounded for every $L^2$ function and thus it is a continuous linear functional on $L^2([0,1])$, and the same with $L^1$. Using the \nref{thm:RieszRepresentation}, there exists a function $φ ∈ L^2([0,1])$ such that $I(ψ) = \pesc{ψ, φ}$ for every $ψ ∈ L^2([0,1])$. As $I$ is also a linear functional on $L^1$, φ must be in $L^1$ too and thus it is Lebesgue integrable.
+
+Finally, we just choose $ψ_x = \ind_{[0,x]}$ so we have \[ I(ψ_x) = f(x) - f(0) = \int_0^x φ \dif μ \], which is the assumption of \fref{crl:LebesgueDifferentiation} and thus we have differentiability almost everywhere.
+\end{proof}
+
+\subsubsection{Definition of fractional Sobolev spaces}
+
+So, back on track. Previously, we have defined \nref{def:HolderContinuity} with $α ∈ (0,1)$. We will want to expand that to $L^p$ functions, and that is done via the Slobodecki seminorm.
+
+\begin{defn}[Slobodecki seminorm][Seminorm!Slobodecki] Let $1 ≤ p < ∞$, $α ∈ (0,1)$ and $Ω ∈ ℝ^d$ an open subset. Then, for a given $f ∈ L^p(Ω)$ we can define its Slobodecki seminorm as
+\(\label{eq:SlobodeckiSeminorm} [f]_{α,p,Ω} = \left(\iint\limits_{Ω×Ω} \frac{\abs{f(x) - f(y)}^p}{\abs{x-y}^{αp+d}} \dif x \dif y \right)^\frac{1}{p} \)
+\end{defn}
+
+This allows us to generalize the notion of ``stronger continuity'' to $L^p$ functions: in this case, we create a notion of ``stronger than $L^p$ integrability''\footnote{I think. I'm not sure about that}. With that, we can define a fractional Sobolev space.
+
+\begin{defn}[Sobolev\IS fractional space] Given $1 ≤ p < ∞$, $s ∈ ℝ^+$ and $Ω ⊂ ℝ^d$ an open set, we define $θ ≝ s - \floor{s}$ and the corresponding Sobolev fractional space as \[ W^{s,p}(Ω) = \set{f ∈ W^{\floor{s}, p} \tq \sup_{\abs{\vA} = \floor{s}} [∂^\vA f]_{θ,p,Ω} < ∞}\] which is a Banach space when equipped with the norm \[ \norm{f}_{W^{s,p}(Ω)} = \norm{f}_{W^{\floor{s}, p}} + \sup_{\abs{\vA} = \floor{s}} [∂^\vA f]_{θ,p,Ω}\]
+\end{defn}
+
+\section{Trace spaces}
+
+To finish with this chapter on fundamentals, we need to visit the trace spaces. Until now, we have studied spaces with not many restrictions on their functions, and in which we can take derivatives at liberty (Sobolev spaces) not worrying too much about regularity. This will allow us to study partial differential equations in a very general setting leaving regularity aside.
+
+However, one aspect of PDEs that we haven't touched here is boundary conditions. Which is the regularity of functions defined in the boundary of a domain? What requirements should we impose on that boundary? These questions are answered by the trace operator, which is an easy way to deal with the restriction on the boundary.
+
+\begin{theorem}[Trace\IS theorem] Let $Ω ⊂ ℝ^d$ be an open domain with a Lipschitz continuous boundary $∂Ω$, and $k ≥ 1$. Then, there exists an unique linear map (\textbf{trace operator}) \begin{align*}
+\appl{γ_0}{H^k(Ω)&}{H^{k-\sfrac{1}{2}}(∂Ω)}
+\end{align*} such that $γ_0(v) = \restr{v}{∂Ω}$ if $v ∈ H^k(Ω) ∩ C^0(\adh{Ω})$ (that is, the trace operator is the restriction on the boundary when the function is continuous in the closure).
+
+Moreover, there is a constant $C_T > 0$ such that \[ \norm{γ_0(v)}_{L^2(∂Ω)} ≤ C_T \norm{v}_{H^k(Ω)} \]
+
+This results holds if instead of $∂Ω$ we take a subset $Γ ⊂ ∂Ω$ with nonzero measure.
+\end{theorem}
+
+If the function does not happen to be continuous in the closure, the trace is assigned as a limit: $C^∞(Ω)$ is dense in $H^k(Ω)$, so for any $v ∈ H^k(Ω)$ we can find a sequence $\set{v_n} ⊂ C^∞(Ω)$ such that $v_n \to v$, and then we compute $γ_0(v) = \lim_{n \to ∞} γ_0(v_n)$.
+
+Note that $H^{k-\sfrac{1}{2}}(Ω) ⊂ L^2(Ω)$.
+
+A space we will usually be interested in will be $H^1_0(Ω)$, which is the set of $H^1$ functions that are null on the boundary: \[ H^1_0(Ω) = \set{ f ∈ H^1(Ω) \tq γ_0(f) = 0 }\]
+
+Similarly, we can define $H^1_Γ(Ω)$ for partial boundaries $Γ ⊂ ∂Ω$ (with nonzero measure) as \[ H^1_Γ(Ω) = \set{f ∈ H^1(Ω) \tq γ_Γ(f) = 0} \]
+
+\section{Poincaré inequalities}
+
+Now, just for some inequalities that can be considerably useful in the future relating $L^2$ and $H^1$ seminorms.
+
+\begin{theorem}[Poincaré inequality][Inequality!Poincaré] \label{thm:PoincareInequality} Let $Ω ⊂ ℝ^d$ be an open domain. Then there exists a positive constant $C_Ω > 0$ such that, for every $v ∈ H^1_0(Ω)$ the following holds: \[ \norm{v}_{L^2} ≤ C_Ω \abs{v}_H^1\]
+\end{theorem}
+
+The inequality still holds if the function vanishes only on part of the boundary.
+
+\begin{prop}[Friedrichs inequality][Inequality!Friedrichs] The \nref{thm:PoincareInequality} still holds for $v ∈ H^1_Γ$, with $Γ ⊂ ∂Ω$ of nonzero measure.
+\end{prop}
