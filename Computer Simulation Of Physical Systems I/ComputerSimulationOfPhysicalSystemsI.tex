@@ -295,6 +295,37 @@ Usually, there's a burn-in period of measures that are discarded, so that only t
 
 In the case of liquids, we have $w(x) = \exp\left(-βU(\vx)\right)$, so we can move only one particle at a time to reduce the cost of calculating things.
 
+\subsubsection{Error estimation in correlated sampling}
+
+If we had independent data, the error for a certain average $I = \esp{A} \approx \frac{1}{N} \sum A_n$, the formula we know for the error is \[ σ_I = \frac{1}{\sqrt{N}} σ_A \quad σ_A^2 = \esp{A^2} - \esp{A}^2 \] with the corresponding approximations.
+
+If we have correlated measures, the assumption of independent sampling is not fulfilled and the formula is wrong. Thus, we need to know how correlated two samples after $k$ steps. This is given by \[ c_{AA}(k) = \frac{\esp{\left(A_n - \esp{A_n}\right) ·\left(A_{n+k} - \esp{A_{n+k}\right)}}}{\esp{A_n^2} - \esp{A_n}^2} = \frac{\esp{A_n A_{n+k}} - \esp{A_n}^2}{σ_A^2} \]
+
+This is time-translation invariant (that is, there is no dependence on $n$). Also, $c_{AA}(0) = 1$ and in the limit $k \to ∞$, $A_n$ and $A_{n + k}$ are not correlated and thus $c_{AA}(k) \convs[][k][∞] 0$.
+
+We would also like to characterize the decay of the correlation. We use the definition \[ τ = \frac{1}{2} \sum_{k=-∞}^∞ c_{AA}(k)\] mainly because if $c_{AA}(k) = e^{\sfrac{-\abs{k}}{\tilde{τ}}}$ then $τ = \tilde{τ}$. Some dirty computations after we have that \[ σ_I^2 = \frac{σ_A^2}{N^2} \sum_{n = 1}^N \sum_{m = 1}^N c_{AA}(m - n) \] so that \[ σ_I = \frac{σ_A}{\sqrt{N}} · \sqrt{2τ} \]
+
+How can we find that τ? Next section.
+
+\subsubsection{Data blocking analysis}
+
+We group the daa in consecutive blocks of size $N_B = 2^k$ for $k = 1, 2, \dotsc$. For $N_B \gg τ$, then we have $σ_B^2 = σ_A^2 \frac{2τ}{N_B}$ with $σ_B^2$ the variance of the block averages. Then, we have the convergence result \[ \frac{N_Bσ_B^2}{σ_A^2} \convs[][N_B][∞] 2τ\] so that we can estimate the error as \[ σ_I^2 = \frac{N_Bσ_B^2}{N} \] for large $N_B$, which usually has the shape of a sigmoid, with an explosion when we have blocks too large with respect to the number of points on the simulation.
+
+\subsection{Example: Ising model in 2 dimensions}
+
+We have a grid $N_x × N_y$ so a total of $N_s = N_x N_y$ possible spins and $2^{N_s}$ possible configurations. We want to measure some kind of thing $A(s)$ with $s$ all the possible states. Set $m$ the discrete measure on $X = {0,1}^N_s$, and $\dif μ = \exp\left(-βH(s))\right) \dif m$ the modified measure with the Boltzmann factor so that our integral is \[ \pesc{A} = \fint_X A(s) \dif μ\]
+
+Here we have several physical quantities of interest for physicists. None for mathematicians.
+
+Basic random choice of which spin to flip.
+
+Problems encountered in numerical simulations:
+
+\begin{itemize}
+	\item We are simulating an infinite situation with a finite number of points. Scaling procedures.
+	\item Slowing down of the simulation. For example, we have big patches with different spins. There, a lot of the moves are rejected and we slow down.
+\end{itemize}
+
 \appendix
 
 \chapter{Evaluation methods}

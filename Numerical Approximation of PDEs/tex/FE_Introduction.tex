@@ -1,3 +1,22 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
 \chapter{Finite elements method}
 
+Along this part, we will center on the problem of solving numerically differential equations on 1D such as \( \label{eq:FE:BasicOde} \begin{cases} Du = f & \text{ in } [a,b] ⊂ ℝ \\ u(a) = u_a \\ u(b) = u_b \end{cases} \) with $D$ some kind of differential operator.
+
+Usually, the first approach to a numerical solution of these equations imply the use of finite differences, using an approximation of the derivatives such as \[ f'(x) \approx \frac{f(x + h) - f(x)}{h} \] which then converts the problem \eqref{eq:FE:BasicOde} to one of a linear system $Au = f$ of $N$ equations, one for each of the intervals of length $h$ in which $[a,b]$ gets divided. This, however, poses a problem in terms of the size of the system $\sfrac{b - a}{h}$ equations, and is also ill-conditioned when $h$ is too small.
+
+We will instead search for another approach. We will construct a space $V_h$ of finite dimension, and search there for a solution $u_h$ that approximates $u$. Usually, $V_h$ will be a space of piecewise polynomial functions. These polynomials will be defined on a mesh \mesh defined by a set of $N$ points $\set{a = x_1 < x_2 < \dotsb < x_{N} = b}$, that we will call vertices.
+
+Thus, the generic space will be \( X_h^r = \set{ f ∈ C^0([a,b]) \tq \restr{f}{I_j} ∈ \mathbb{P}_r(I_j) \quad ∀ I_j ∈ \mesh } \label{eq:FE:FiniteElementSpace} \), being $I_j$ each of the intervals of the mesh and $\mathbb{P}_r(I_j)$ the space of polynomials of degree up to $r$ defined in the interval $I_j$. Usually, we will work in a subset of this space to use only functions compatible with the boundary contitions.
+
+It is important to define a basis of functions for this space, and that is a problem that reduces to that of finding a basis of functions for the polynomials defined on one interval. For reasons that are not still fully justified, we will want to use a basis of lagrange polynomials.
+
+\begin{defn}[Lagrangian basis\IS of a polynomial function space] Let $\mathbb{P}_r(I)$ be the space of polynomials of degree $r$ or less in an interval $I = [a, b] ⊂ ℝ$. Each polynomial is completely defined by its values at $r + 1$ points, so we define a set of nodes $\set{x_0 = a < x_1 < \dotsb < x_r = b}$. The basis $\set{φ_i}_{i = 0}^r$ of $\mathbb{P}_r(I)$ is then defined by the polynomials $φ_i$ of degree $r$ such that $φ_i(x_j) = δ_{ij}$ with $δ_{ij}$ being the Kronecker's delta.
+\end{defn}
+
+\begin{figure}[tp]
+\centering
+\inputtikz{LagrangianBasis}
+\caption{Several examples of Lagrangian basis polynomials for degrees $1, 2$ and $3$ respectively.}
+\label{fig:FE:LagrangianBasis}
+\end{figure}
