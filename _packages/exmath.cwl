@@ -135,6 +135,7 @@
 \real#m
 \cplex#m
 \vec{arg0}#m
+\mtr{arg0}#m
 \pesc{arg0}#m
 \md{arg0}#m
 \vx#m
@@ -153,6 +154,7 @@
 \vr#m
 \vz#m
 \vt#m
+\mA#m
 \thethm#m
 \thedef#m
 \theexm#m
