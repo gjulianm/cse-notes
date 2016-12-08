@@ -1,5 +1,5 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
-\chapter{Finite elements method}
+\chapter{Introduction to the finite elements method}
 
 Along this part, we will center on the problem of solving numerically differential equations on 1D such as \( \label{eq:FE:BasicOde} \begin{cases} Du = f & \text{ in } [a,b] ⊂ ℝ \\ u(a) = u_a \\ u(b) = u_b \end{cases} \) with $D$ some kind of differential operator.
 
@@ -9,7 +9,35 @@ We will instead search for another approach. We will construct a space $V_h$ of 
 
 Thus, the generic space will be \( X_h^r = \set{ f ∈ C^0([a,b]) \tq \restr{f}{I_j} ∈ \mathbb{P}_r(I_j) \quad ∀ I_j ∈ \mesh } \label{eq:FE:FiniteElementSpace} \), being $I_j$ each of the intervals of the mesh and $\mathbb{P}_r(I_j)$ the space of polynomials of degree up to $r$ defined in the interval $I_j$. Usually, we will work in a subset of this space to use only functions compatible with the boundary contitions.
 
-It is important to define a basis of functions for this space, and that is a problem that reduces to that of finding a basis of functions for the polynomials defined on one interval. For reasons that are not still fully justified, we will want to use a basis of lagrange polynomials.
+Something that the attentive reader will have noticed by now is the fact that we didn't make functions in $X_h^r$ derivable. We just forced continuity, which is a weird thing given the fact that we are trying to solve differential equations, whose solutions by definition should have some degree of smoothness.
+
+However, we will actually be interested in ``non-continuous'' ``solutions'' to the PDE problems, because those actually exist in physical settings. For example, a vibrating string may have a point force as initial condition, and that is not continuous. This is the motivation to introduce the weak formulation of a differential equation.
+
+\section{Weak formulation}
+
+A physical motivation for the weak formulation is the introduction of ``virtual displacements'' but I have to admit that it is only intuitive if you are a physicist. The mathematical idea is to move to a setting where we can forgive some non-smoothness of the function. This framework is the integration of a product: multiplying by a test functions with minimal regularity and using integration by parts we will be able to move the derivatives from our solution to the test function and then require less regularity on the solution.
+
+For a practical example, let our equation be $-u'' = f$. We will multiply by a function $v$ in some space that we will decide later, integrate in the domain $Ω$ of the solution and then apply integration by parts:
+\begin{align*}
+- u'' &= f \\
+\int_Ω - u'' v &= \int_W fv \\
+\int_Ω u' v' - \restr{u'v}{∂Ω} &=\int_Ω fv
+\end{align*}
+
+If we choose $v$ to be $0$ on the boundary $∂Ω$, we will eliminate the second term and will have ended up with \[ \int_Ω u' v' = \int_Ω fv\] which indeed admits solutions of class $C^1$, one less degree than we originally needed.
+
+Usually, we will use a more abstract form, generic for any problem.
+
+\begin{defn}[Weak\IS abstract formulation] \label{def:FE:WeakAbstract} A weak abstract formulation of a differential equation is the problem of finding $u ∈ V$ with $V$ a certain Hilbert space such that \[ a(u,v) = F(v) \quad ∀v ∈ V\], with $\appl{a}{V × V}{ℝ}$ a bilinear form and $\appl{F}{V}{ℝ}$ a linear functional on $V$.
+\end{defn}
+
+This will allow us to tackle theoretical problems and theorems in a generic setting without worrying about the actual differential operators.
+
+\section{Galerkin approximation and finite element spaces}
+
+Once we have the \nref{def:FE:WeakAbstract}, we can define an approximate problem. We will construct a family of finite dimensional spaces $V_h ⊂ V$ with a proper approximation property (specifically, that $\inf_{v_h ∈ V_h} \norm{v_h - v} \convs[][h][0] 0$ for any $v ∈ V$) and search for a solution there. Thus, we will find a solution $v_h ∈ V_h$ such that \( a(u_h, v_h) = F(v_h) \quad ∀v_h ∈V_h \label{eq:FE:GalerkinApprox} \)
+
+Recall that previously we defined these finite element spaces in \eqref{eq:FE:FiniteElementSpace}. The interesting thing of that kind of finite element spaces is the fact that we can define a very convenient basis for them. That is a problem that reduces to that of finding a basis of functions for the polynomials defined on one interval, and for that we can use the Lagrange polynomials.
 
 \begin{defn}[Lagrangian basis\IS of a polynomial function space] Let $\mathbb{P}_r(I)$ be the space of polynomials of degree $r$ or less in an interval $I = [a, b] ⊂ ℝ$. Each polynomial is completely defined by its values at $r + 1$ points, so we define a set of nodes $\set{x_0 = a < x_1 < \dotsb < x_r = b}$. The basis $\set{φ_i}_{i = 0}^r$ of $\mathbb{P}_r(I)$ is then defined by the polynomials $φ_i$ of degree $r$ such that $φ_i(x_j) = δ_{ij}$ with $δ_{ij}$ being the Kronecker's delta.
 \end{defn}
@@ -20,3 +48,9 @@ It is important to define a basis of functions for this space, and that is a pro
 \caption{Several examples of Lagrangian basis polynomials for degrees $1, 2$ and $3$ respectively.}
 \label{fig:FE:LagrangianBasis}
 \end{figure}
+
+Why is this basis useful? Let's look again at the Galerkin approximation \eqref{eq:FE:GalerkinApprox}. Given that both $a$ and $F$ and linear, for the approximation to hold for any $v_h ∈ X_h^r$ we only need to check it for all the elements $\set{φ_i}_{i = 0}^n$ of the base of $X_h^r$ (any $v_h$ is a linear combination of these elements). That is, we need to ensure that \[ a(u_h, φ_i) = F(φ_i) \quad ∀i = 1, \dotsc, n \]
+
+Again, using linearity of $a$ we can reformulate that as \[ \sum_{j = 0}^n u_j a(φ_j,φ_i) = F(φ_i) \quad ∀i = \dotsc, n\] where $u_j$ are the unknown coefficients of $u_j$ in the base $\set{φ_j}$. The problem is thus reduced to a linear system \[ \mA \vu = \vec{f} \] where the \concept{Stiffness\IS matrix} $\mA$ is defined by \[ \mA_{ij} = a(φ_i, φ_j)\] and analogously $\vec{f}_i = F(φ_i)$.
+
+And although this approach can always be constructed for any finite element space, the advantage with the Lagrangian basis and polynimal finite spaces is that the coefficients are actually the values of $u$ at the nodes, which will make computations far easier.
