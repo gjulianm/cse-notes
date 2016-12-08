@@ -1,4 +1,4 @@
-
+% -*- root: ../NumericalApproximationofPDEs.tex -*-
 \chapter{Elliptic problems}
 
 The first chapter will be dedicated to the study of elliptic PDEs. Those are of the form \(
@@ -249,7 +249,7 @@ We can write this in a matrix form. If $\vu = (u_1, \dotsc, u_{N_h})$ and $\vv =
 A \vu &= \vf
 \end{align*} which is a system of linear equations that can be solved in a purely algebraic manner. There are some nice properties of the matrix $A$ that come from the problem statement. It is positive definite because $a$ is positive.
 
-\subsection{Finite element spaces}
+\section{Finite element spaces}
 
 \begin{defn}[Finite element space] A finite element space is a space of piecewise polynomial functions over a partition of a domain $Ω ∈ ℝ^N$ into non-overlapping polyhedra, called a mesh.
 \end{defn}
@@ -388,15 +388,26 @@ For poisson something something something this is boring.
 
 \chapter{Mixed problems}
 
-So we have two Hilbert spaces $V,Q$ and two bilinear forms \begin{align*}
+\section{Introduction and examples}
+
+Until now, we have studied problems with one differential operator of the form $L u = f$ with some boundary conditions. However, some PDE problems require more operators. One example that we will see with more detail later is the Darcy equation, which models the flow of a viscous fluid in a porous medium.
+
+The main equation is given by conservation of mass: $\dv \vu = f$, where $\vu$ is the flow and $f$ a function giving sources and sinks in the system. However, we have also a constraint on the flow: it must be proportional to the gradient of a pressure function $p$, so $\vu = -k ∇ p$.
+
+As we will see, these kinds of equations can be adapted to the following weak abstract formulation.
+
+\begin{defn}[Weak\IS abstract formulation of a mixed PDE problem] The weak abstract formulation of a PDE problem is given by two Hilbert spaces $V,Q$ and two bilinear forms \begin{align*}
 \appl{a}{V×V&}{ℝ} \\
 \appl{b}{V×Q&}{ℝ}
-\end{align*} and we want to find $(u,p) ∈ V×Q$ such that \(
+\end{align*}
+
+The problem is then finding $(u,p) ∈ V×Q$ such that \(
 \begin{aligned}
 a(u,v) + b(v,p) &= F(v) \quad ∀v ∈ V\\
 b(u,q) &= G(q) \quad ∀q ∈ Q
 \end{aligned} \label{eq:MixedProblemFormulation}
 \)
+\end{defn}
 
 If we have the condition $G = 0$, we can define the space $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$, which translates the problem to the usual abstract formulation of finding a $u ∈ V_0$ such that $a(u,v) = F(v)$ for any $v ∈ V_0$.
 
@@ -477,9 +488,11 @@ And, luckily for us, in this space we can define the trace operator as \begin{al
 This allows us to define the test function space $V_g = \set{\vv ∈ H(\dv, Ω) \tq \restr{\vv·\vn}{Γ_D} = g}$, and then we need to find $u ∈ V_g$ and $p ∈ L^2(Ω)$ to solve \eqref{eq:DarcyLawWeakForm}.
 \end{example}
 
+\section{Theoretical framework for the mixed problem}
+
 So, after the examples, we will define the theorem that gives us the sufficient conditions for well-posedness of the mixed problem.
 
-\begin{theorem} \label{thm:WellPosednessMixedProb} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
+\begin{theorem}[Theorem\IS of existence and unicity for the mixed PDE problem] \label{thm:WellPosednessMixedProb} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
 \begin{itemize}
 \item $\appl{a}{V×V}{ℝ}$ is a continuous (continuity bounding constant $M$) and coercive on $V_0$ ($∃ α > 0$ s.t. $a(u, u) ≥ α \norm{u}_V$ for any $v ∈ V_0$) bilinear form.
 \item $\appl{b}{V×Q}{ℝ}$ is a continuous (continuity bounding constant $γ$) bilinear form and with an inf-sup condition: $∃β > 0$ such that \[\inf_{q∈Q}\sup_{v∈V} \frac{b(v,q)}{\norm{v}_V \norm{q}_Q} ≥ β > 0 \] which is equivalent to saying that for any $q ∈ Q$ we have \[ \norm{q}_Q ≤ \frac{1}{β} \sup_{v ∈ V} \frac{b(v,q)}{\norm{\vv}_V} \]
@@ -550,7 +563,7 @@ This prompts the question of what happens when $a$ is only coercive on $V_0$. We
 
 With all of this discussion, we can prepare the theorem for well-posedness\footnote{Frigging love existence and uniqueness theorems.}:
 
-\begin{theorem} \label{thm:WellPosednessMixedGalerkin} Assume we start from a well-posed mixed PDE problem. Then, consider the Galerkin approximating problem of finding $(u_h, v_h) ∈ V_h × Q_h$ such that \[ \begin{aligned}
+\begin{theorem} \label{thm:WellPosednessMixedGalerkin} Assume we start from a well-posed mixed PDE problem. Then, consider the Galerkin approximating problem of finding $(u_h, p_h) ∈ V_h × Q_h$ such that \[ \begin{aligned}
 a(u_h,v_h) + b(v_h,p_h) &= F(v_h) \quad ∀v_h ∈ V_h \\
 b(u_h,q_h) &= G(q_h) \quad ∀q_h ∈ Q_h
 \end{aligned} \]
@@ -560,7 +573,11 @@ Assume that $a$ is coercive on $V_{h,0}$ \[ ∃ α_h > 0 \; a(v_h, v_h) ≥ α_h
 Then, there exists an unique solution $(u_h, p_h) ∈ V_h × Q_h$ of the approximating problem and $\norm{u_h}_V + \norm{p_h}_Q ≤ C(\norm{F}_{V'} + \norm{G}_{Q'})$.
 \end{theorem}
 
+The inf-sup condition is considerably important as it gives us the uniqueness of the solution. If it does not hold, then there exists a $0 ≠ q_h^* ∈ Q_h$ such that $b(v_h, q_h^*) = 0\;∀v_h ∈ V_h$; so if $(u_h, p_h) ∈ V_h × Q_h$ is a solution then $(u_h, p_h + q_h^*) ∈ V_h × Q_h$ is another solution too.
+
 \subsection{Convergence of the solution}
+
+Next step, as always, is ensuring that we have good convergence conditions on the solution when we approximate well with finite element spaces.
 
 \begin{theorem} \label{thm:WellPosednessMixedGalerkinConvergence} In the same conditions of \fref{thm:WellPosednessMixedGalerkin}, we can show that \[ \norm{u-u_h}_V + \norm{p - p_h} ≤ C\left(\inf_{v_h ∈ V_h} \norm{u - v_h}_V + \inf_{q_h ∈ Q_h} \norm{p - q_h}_Q \right) \] with $(u,p)$ a solution of the non-approximate problem.
 \end{theorem}
@@ -594,3 +611,35 @@ Now we need to recover the bound on $p$ so we have \begin{align*}
 
 We need to take care however that $w_h$ fulfills that $b(w_h, q_h) = G(q_h)$, which is a little bit annoying because we can't take the interpolant to bound $\inf_{w_h} \norm{u - w_h}$. So, let $V_h^G = \set{w_h ∈ V_h \tq b(w_h, q_h) = G(q_h) \; ∀q_h ∈ Q_h}$, and the missing step is to prove that if $b$ satisfies the discrete inf-sup condition then $\inf_{w_h ∈ V_h^G} \norm{u - w_h} ≤ C \inf_{v_h ∈ V_h} \norm{u - v_h}$.
 \end{proof}
+
+\section{Application: Linear elasticity problem}
+
+We are going to apply now the previous theory to the linear elasticity theory. We will have our domain $Ω ⊂ ℝ^d$, and our two Hilbert spaces $V = \left[H_{Γ_D}^1(Ω)\right]^d$ ($d$-dimensional $H^1$ functions on $Ω^d$ that are $0$ on the Dirichlet boundary $Γ_D ⊂ ∂Ω$) and $Q = L^2(Ω)$. The bilinear forms are \begin{align*}
+a(u,v) &= 2 \int_Ω με(\vu) \colon ε(\vv) \dif x \\
+b(v,p) &= \int_Ω p \dv \vv \dif x \\
+F(v) &= \int_Ω fv \dif x + \int_{Γ_N} \vd · \vn \dif x \\
+G(q) &= 0
+\end{align*} where \[ ε(u) = \frac{∇\vu + \trans{∇\vu}}{2} \qquad A \colon B = \tr(A \trans{B}) \]
+
+The untrusting reader should check that $a$ is continuous and coercive, $b$ is continuous and $F$ is bounded. These are not difficult and can be seen directly. However, the proof of the inf-sup condition is a little bit more ``interesting''. To make our lifes easier, we will assume that we don't have any boundary conditions, and that our domain is convex and with Lipschitz boundary.
+
+Now, for any $p ∈ L^2(Ω)$, let $\appl{ψ}{Ω}{ℝ}$ of the following PDE: \( \begin{cases} Δψ = p & \text{ in } Ω \\ ψ = 0 & \text{ on } ∂Ω \end{cases} \label{eq:Mixed:AuxPDEPressure} \)
+
+We know that \eqref{eq:Mixed:AuxPDEPressure} has an unique solution of regularity $H^2$ by the \nref{lem:Elliptic:LaxMilgram} and bounded with $\norm{ψ}_{H^2(Ω)} ≤ C^* \norm{p}_{L^2(Ω)}$. Set now $\vv ≝ ∇ψ ∈ V$, so that $\dv \vv = p$ with bound $\norm{\vv}_V ≤ C^* \norm{p}_Q$.
+
+With this, we can start prove the inf-sup condition: \[ \frac{b(\vv,p)}{\norm{\vv}_V} = \frac{\int_Ω \dv \vv p \dif x }{\norm{\vv}_V} = \frac{\norm{p}^2_Q}{\norm{v}_Q} ≥ \frac{1}{C^*} \norm{p}_Q\]
+
+\subsection{Numerical approximation}
+
+Once we know that the continuous problem has an unique solution, we look at the Galerkin approximation problem of finding $(u_h, p_h) ∈ V_h × Q_h$, with $V_h, Q_h$ finite approximation spaces, such that \[ \begin{aligned} a(u_h, v_h) + b(v_h, p_h) &= F(v_h) & ∀ v_h ∈ V_h \\ b(u_h, q_h) &= 0 & ∀q_h ∈ Q_h \end{aligned} \]
+
+We will need to define the space of functions that fulfill the second equation: \[ V_h^0 = \set{v_h ∈ V_h \tq b(v_h, q_h) = 0 \; ∀q_h ∈ Q_h} \]
+
+For the finite element spaces, we can choose piecewise continuous polynomials of degree $r$ (space $X_h^r$) to approximate $V$, and piecewise non-necessarily continuous polynomials of degree $r$ (space $Y_h^r$) to approximate $Q$ (it's just $L^2$ so we don't need regularity).
+
+However, choosing the domains is not trivial. $X_h^0, Y_h^1$ do not satisfy the inf-sup condition, and in general $X_h^r, Y_h^r$ do not satisfy it because of the same degree.
+
+One polynomial space that will be useful for constructing approximation spaces with the inf-sup condition will be bubble spaces.
+
+\begin{defn}[Bubble space][Space!bubble] ??
+\end{defn}
