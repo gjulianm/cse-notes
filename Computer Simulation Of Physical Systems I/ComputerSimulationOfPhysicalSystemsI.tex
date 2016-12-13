@@ -326,6 +326,42 @@ Problems encountered in numerical simulations:
 	\item Slowing down of the simulation. For example, we have big patches with different spins. There, a lot of the moves are rejected and we slow down.
 \end{itemize}
 
+\chapter{Ewald simulations}
+
+We are considering free charges with the potential given by \[ U_c = \frac{1}{2} \sum_{\substack{I, J \\ I ≠ J}} \frac{q_I q_J}{\norm{\vec{R}_I - \vec{R}_J}} \]
+
+We take the system in a bounded box, and a neutral system ($\sum q_I = 0$).
+
+The quatity we want to calculte is \[ U_c = \frac{1}{2} \sum_{\substack{1, \vec{n}J \\ I ≠ 0·J}} q_I Φ_{\vec{n}J}^p(\vec{R}_I) \] where \[ Φ_{\vec{n}J}^P(\vec{r}) = \frac{q_J}{\norm{\vec{r} - \vec{R}_J - \vec{n}L}} \] so that we are using a periodic system of length $L$.
+
+This sum is conditionally convergent. From the physical point of view, this happens because we have removed the surfaces. To fix it, we will include a vanishing electric field to make the sum convergent.
+
+Problems here: the radius of effect of Coulomb forces is very large (decay of $\sfrac{1}{r}$) so we have to simulate enormous sizes. Then we go to Fourier space which has a decay of $\sfrac{1}{k^2}$. But we still have a problem with large $k$. For some magic reason when we have problems with large $k$ it corresponds to small $r$ and viceversa, so we do part in one space and in the other. ¿?¿?¿?¿?¿?
+
+After a ridiculous attempt at a mathematical explanation of the aberration we are going to perform... The idea is that our charges are point charges, so we change them to ``gaussian'' charges (probably not a Gaussian because he's drawing them with compact support) and to avoid changing we substract the same ``Gaussian''. So call $ρ(x)$ our ``Gaussian'' and $δ(x)$ our delta distribution representing the charge, and obviously we have $δ(x) = δ(x) + ρ(x) - ρ(x)$. We will calculate the $ρ(x)$ in Fourier space (with not a small width to avoid divergence on the Fourier space) and then the $δ(x) - ρ(x)$ in real space (here if we have a very large width we have a large range of interaction and we need more values).
+
+The width will be called α.
+
+Practically we will calculate \[ U_c = \frac{1}{2} \sum_{\substack{I, \vec{n} J \\ I ≠ 0 · J}} q_I Φ_{\vec{n}J}^G(\vec{R}_I) + \frac{1}{2}\sum_{\substack{I, \vec{n} J \\ I ≠ 0 · J}} q_I \left(Φ_{\vec{n}J}^P(\vec{R}_I) - Φ_{\vec{n}J}^G(\vec{R}_I)\right) \]
+
+In Fourier space we don't want to exclude only one point so we remove the restriction $I ≠ 0J$ and in the end we ahve to remove the corresponding extra charge added: \[ U_c =
+\underbracket{\frac{1}{2} \sum_{\substack{I, \vec{n} J}} q_I Φ_{\vec{n}J}^G(\vec{R}_I)}_{E_1}
+- \underbracket{\frac{1}{2} \sum_{\substack{I}} q_I Φ_{0·I}^G(\vec{R}_I)}_{E_2}
+ + \underbracket{\frac{1}{2}\sum_{\substack{I, \vec{n} J \\ I ≠ 0 · J}} q_I \left(Φ_{\vec{n}J}^P(\vec{R}_I) - Φ_{\vec{n}J}^G(\vec{R}_I)\right)}_{E_3}
+ \]
+
+We will calculate $E_1$ (soft long range) in Fourier space, $E_2$ can be computed analytically and $E_3$ is the short interaction calculated in real-space.
+
+Soooo Fourier thingies \[ ρ(r) = \sum_{\vec{k}} \tilde{ρ}(\vec{k}) e^{\imath \vec{k} \vr} \] and the Fourier trnasformed is \[ \tilde{ρ}(\vec{k}) = \frac{1}{V} \int_{Ω} ρ(\vec{r}) e^{-\imath \vec{k} \vr} \dif \vr = \frac{1}{V} \sum_{J = 1}^N q_J \exp(-\imath \vec{k} \vec{R}_J) \exp\left(-\frac{k^2}{4α}\right) \] where $Ω$ is the cube and $V$ its volume.
+
+So to solve this we solve the poisson equation $-ΔΦ(\vec{r}) = 4π ρ(\vec{r})$. Thus, the potential $Φ$ has Fourier expression $\tilde{Φ} = \frac{4π}{k^2} \tilde{ρ}$ and then we can transfrom back. The final expression is then \[ E_1 = \frac{V}{2} \sum_{\vec{k} ≠ 0} \frac{4π}{k^2} \abs{\tilde{ρ}(\vec{k})}^2 \exp\left( - \frac{k^2}{4α}\right) \]
+
+As this decays exponentially with $k^2$, we have fast convergence.
+
+The second piece (self-interaction) can be solved analytically. We have the interaction of a charge sitting centered in another gaussian charge so we can change to spherical coordinates and then we have \[ - \dpd[2]{}{r} (r Φ_I^G) = 4πrρ_I^G(r) \implies Φ_I^G = q_I \frac{\mop{erf}(\sqrt{α} r)}{r} \] and magic magic magic \[ E_2 = - \sqrt{\frac{α}{π}} \sum_{I = 1}^N q_I^2\]
+
+Finally we have to check the Coulomb potential for the third part, which in the long range is cancelled out. Computations after \[ \] and yaaaay it's done because this goes to 0 with $r \to ∞$.
+
 \appendix
 
 \chapter{Evaluation methods}
