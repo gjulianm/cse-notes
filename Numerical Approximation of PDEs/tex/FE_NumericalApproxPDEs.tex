@@ -643,3 +643,29 @@ One polynomial space that will be useful for constructing approximation spaces w
 
 \begin{defn}[Bubble space][Space!bubble] ??
 \end{defn}
+
+\subsubsection{Raviart-Thomas finite element spaces}
+
+We also need a basis of functions for a vector valued functions. This will be the Raviart-Thomas spaces, that we will construct on a triangular mesh \mesh.
+
+\begin{defn}[Raviart-Thomas finite element space][Finite elements space!Raviart-Thomas] Given an element $κ ∈ ℝ^d$ of a triangular mesh, the Raviart-Thomas $\mop{RT}_r$ space of degree $r$ is given by functions of the form $\vv(\vx) = \vec{w} + \vx η$ where $\vec{w} ∈ \left(\mathbb{P}_r(κ)\right)^d$ and $η ∈ \mathbb{P}_r(κ)$.
+\end{defn}
+
+This space has several nice properties.
+
+\begin{prop} Let $\mop{RT}_r(κ)$ be the Raviart-Thomas finite element space. Then the following properties hold:
+\begin{enumerate}
+	\item $\left(\mathbb{P}_r(κ)\right)^d ⊂ \mop{RT}_r(κ) ⊂ \left(\mathbb{P}_{r+1}(κ)\right)^d$.
+	\item If $\vv ∈ \mop{RT}_r(κ)$ and $e ⊂ ∂κ$ is an edge of the mesh, then $\vv · \vn ∈ \mathbb{P}_r(e)$.
+\end{enumerate}
+\end{prop}
+
+These basis functions allows us to define the $\mop{RT}_r$ global space as \( \label{eq:Mixed:RTSpace} W_h^r = \set{\appl{\vv}{Ω}{ℝ^d} \tq \restr{\vv}{κ} ∈ \mop{RT}_r(κ), \, \restr{\vv · \vn}{e} = 0 \, ∀e ⊂ E(∂κ)\, ∀κ ∈ \mesh} \) where $E(∂κ)$ is the set of edges of the element κ.
+
+To prove that this space is useful, we will need the definition of the distributional divergence, done in the usual fashion: $\pesc{\dv \vv, φ} = - \pesc{\vv, \dv φ}$.
+
+\begin{lemma} $W_h^r ⊂ H_{\dv}(Ω)$
+\end{lemma}
+
+\begin{proof} Clearly, if $\vv ∈ W_h^r$ then $\vv ∈ \left(L^2(Ω)\right)^d$. The question is if the distributional derivative is in $L^2(Ω)$ too.
+\end{proof}
