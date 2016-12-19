@@ -154,6 +154,7 @@
 \vr#m
 \vz#m
 \vt#m
+\vp#m
 \mA#m
 \thethm#m
 \thedef#m
