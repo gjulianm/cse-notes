@@ -53,7 +53,7 @@
 \renewcommand{\mathbf}{\mathbold}
 
 \RequirePackage[usenames,dvipsnames]{xcolor}
-\RequirePackage[includemp, left=3cm,right=1cm,top=3cm,bottom=2cm, marginparwidth=1.6cm, marginparsep=0.7cm]{geometry}
+\RequirePackage[includemp, left=3.3cm,right=1cm,top=3cm,bottom=2cm, marginparwidth=1.6cm, marginparsep=0.7cm]{geometry}
 \RequirePackage[english]{babel}
 \RequirePackage{mathpazo}
 \RequirePackage{imakeidx}

@@ -156,6 +156,7 @@
 \vt#m
 \vp#m
 \mA#m
+\mB#m
 \thethm#m
 \thedef#m
 \theexm#m
@@ -347,3 +348,5 @@
 \lk#m
 \mesh#m
 \mesh[h]#m
+\pspace#m
+\pspace[r]#m
