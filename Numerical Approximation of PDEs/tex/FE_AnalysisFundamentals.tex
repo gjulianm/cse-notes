@@ -1,4 +1,17 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
+\chapter{Analysis fundamentals}
+
+Just as a reference, some basic theorems of analysis that will be useful.
+
+\begin{prop}[Integration\IS by parts] \label{prop:Fund:IntegParts} Let $Ω ⊂ ℝ^d$ be an open subset with Lipschitz boundary $∂Ω$, and suppose $\appl{u}{ℝ^d}{ℝ^d}$ and $\appl{v}{ℝ^d}{ℝ}$ are two derivable functions\footnote{Actually, the requirement is just $u,v ∈ H^1(Ω)$.}. Then, the following equality holds:
+\( \int_Ω v \dv u = \int_{∂Ω} u v - \int_Ω ∇v · u \)
+\end{prop}
+
+Also, the Stokes theorem which is incredibly useful for an elegant generalization of Green and Gauss theorems.
+
+\begin{theorem}[Stokes\IS theorem] \label{thm:Fund:Stokes} Let $M$ be a compact orientable manifold of dimension $d$ with border $∂M$, and let $ω$ be a $(d-1)$ differential form. Then, \( \int_{∂M^+} ω = \int_M \dif ω\) where $∂M^+$ is the border in the positive orientation. For this orientation, a thumb rule: the manifold should be at the left of the border.
+\end{theorem}
+
 \chapter{Functional analysis fundamentals}
 
 \section{Banach and Hilbert spaces}
@@ -104,7 +117,15 @@ The second example convinces us that this space is actually bigger and possibly 
 
 After studying distributions, we can define derivatives on them. The motivation is to make this derivative coincide with the usual derivative when the distribution is associated to a function. So, let $f ∈ C^1(Ω)$, $T_f ∈ \dstr'(Ω)$ the associated distribution and $\dstr(Ω)$ our space of test functions. We would like that $T_f'(φ) = T_{f'}(φ)$ for all $φ ∈ \dstr(Ω)$. Writing it down and integrating by parts: \[ T_{f'}(φ) = \int_Ω f' φ \dif μ = \underbracket{\restr{f φ}{∂Ω}}_{=0} - \int_Ω fφ' \dif μ = - \int_Ω fφ' \dif μ \] where φ vanishes on the border of Ω as it must have compact support. This is enough to define the distributional derivative.
 
-\begin{defn}[Distributional derivative][Derivative!distributional] Let $Ω ⊂ ℝ^d$ be an open set and $T ∈ \dstr'(Ω)$ a distribution. Then, we define the partial distributional derivative (with multiindex) $∂^\vA T$ as \[ \pesc{∂^\vA T, φ} = (-1)^{\abs{\vA}} \pesc{T, ∂^\vA φ} \]
+\begin{defn}[Distributional derivative][Derivative!distributional] Let $Ω ⊂ ℝ^d$ be an open set and $T ∈ \dstr'(Ω)$ a distribution. Then, we say that the partial distributional derivative (with multiindex) is $∂^\vA T$ if for every test function $φ ∈ \dstr(Ω)$ \[ \pesc{∂^\vA T, φ} = (-1)^{\abs{\vA}} \pesc{T, ∂^\vA φ} \]
+\end{defn}
+
+Other differential operators can be defined in an analogous manner.
+
+\begin{defn}[Distributional gradient][Gradient!distributional] \label{def:Fund:DistrGradient} Let $Ω ⊂ ℝ^d$ be an open set and $T ∈ \dstr'(Ω)$ a distribution. Then, we say that the distributional gradient of $T$ is $∇T$ if for every test function $φ ∈ \dstr(Ω)$ we have \[ \pesc{∇T,φ} = \pesc{T, ∇φ} \]
+\end{defn}
+
+\begin{defn}[Distributional divergence][Divergence!distributional] \label{def:Fund:DistrDiver} Let $Ω ⊂ ℝ^d$ be an open set and $T ∈ \dstr'(Ω)$ a distribution. Then, we say that the distributional divergence of $T$ is $\dv T$ if for every test function $φ ∈ \dstr(Ω)$ we have \[ \pesc{\dv T,φ} = \pesc{T, \dv φ} \]
 \end{defn}
 
 \section{Sobolev spaces}
@@ -126,7 +147,7 @@ For notational convenience, we can define the \concept{Hilbert\IS seminorm} $\ab
 
 One important aspect of Sobolev spaces is ``where do they live'' or, in other words, in which spaces can we embed a given Sobolev space and what does that tell us about the regularity of the functions in it. This is solved by the Sobolev embedding theorem.
 
-\begin{theorem}[Sobolev embedding theorem] \label{thm:SobolevEmbedding} Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:LipschitzCont}.}. Then, the following embedding properties hold:
+\begin{theorem}[Sobolev embedding theorem][Sobolev!embedding theorem] \label{thm:SobolevEmbedding} Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:LipschitzCont}.}. Then, the following embedding properties hold:
 \begin{enumerate}
 	\item If $0 ≤ 2k < d$, then $H^k(Ω) ⊂ L^q(Ω)$ with $q = \sfrac{2d}{(d-k)}$.
 	\item If $2k = d$, then $H^k(Ω) ⊂ L^q$ for $2 ≤ q < ∞$.
@@ -230,7 +251,7 @@ To finish with this chapter on fundamentals, we need to visit the trace spaces. 
 
 However, one aspect of PDEs that we haven't touched here is boundary conditions. Which is the regularity of functions defined in the boundary of a domain? What requirements should we impose on that boundary? These questions are answered by the trace operator, which is an easy way to deal with the restriction on the boundary.
 
-\begin{theorem}[Trace\IS theorem] Let $Ω ⊂ ℝ^d$ be an open domain with a Lipschitz continuous boundary $∂Ω$, and $k ≥ 1$. Then, there exists an unique linear map (\textbf{trace operator}) \begin{align*}
+\begin{theorem}[Trace\IS theorem][Theorem!trace] \label{thm:Fund:Trace} Let $Ω ⊂ ℝ^d$ be an open domain with a Lipschitz continuous boundary $∂Ω$, and $k ≥ 1$. Then, there exists an unique linear map (\textbf{trace operator}) \begin{align*}
 \appl{γ_0}{H^k(Ω)&}{H^{k-\sfrac{1}{2}}(∂Ω)}
 \end{align*} such that $γ_0(v) = \restr{v}{∂Ω}$ if $v ∈ H^k(Ω) ∩ C^0(\adh{Ω})$ (that is, the trace operator is the restriction on the boundary when the function is continuous in the closure).
 
@@ -258,3 +279,21 @@ The inequality still holds if the function vanishes only on part of the boundary
 
 \begin{prop}[Friedrichs inequality][Inequality!Friedrichs] The \nref{thm:PoincareInequality} still holds for $v ∈ H^1_Γ$, with $Γ ⊂ ∂Ω$ of nonzero measure.
 \end{prop}
+
+\section{Functional analysis theorems}
+
+Some useful, abstract functional analysis theorems, without proofs.
+
+\begin{theorem}[Closed range theorem][Theorem!closed range] \label{thm:Fund:ClosedRange} Let $X, Y$ be Banach spaces and let $D ⊂ X$ be dense in $X$. Let $\appl{T}{D}{Y}$ be a closed linear operator with transpose\footnote{$\appl{T'}{Y'}{D'}$ is the transpose of $T$ if and only if $\pesc{Tx, y'} = {x, T'y'}$ for all $x ∈ D$ and $y' ∈ Y'$.} $T'$ Then, the following claims are equivalent:
+
+\begin{enumerate}
+	\item The image of $T$ is closed in $Y$.
+	\item The image of $T'$ is closed in $X'$.
+	\item $\img T = \left(\ker T'\right)^{\perp}$.
+	\item $\img T' = \left(\ker T\right)^{\perp}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Hahn-Banach theorem][Theorem!Hahn-Banach] \label{thm:Fund:HahnBanach} Let $\appl{T}{V⊂X}{Y}$ a bounded linear operator with $X$ normed space and $Y$ Banach, such that $V$ is dense in $X$. Then, there is a unique bounded linear extension $\appl{\tilde{T}}{X}{Y}$ with $\norm{\tilde{T}} = \norm{T}$.
+\end{theorem}
+

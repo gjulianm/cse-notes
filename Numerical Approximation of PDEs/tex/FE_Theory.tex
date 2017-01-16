@@ -1,0 +1,381 @@
+% -*- root: ../NumericalApproximationofPDEs.tex -*-
+\chapter{Introduction to the finite elements method}
+
+For motivation, we will study the problem of solving numerically differential equations  such as \( \label{eq:FE:BasicOde} \begin{cases} Du = f & \text{ in } [a,b] ⊂ ℝ \\ u(a) = u_a \\ u(b) = u_b \end{cases} \) with $D$ some kind of differential operator. For example, with $D(u) = u' + u$.
+
+Usually, the first approach to a numerical solution of these equations imply the use of finite differences, using an approximation of the derivatives such as \[ f'(x) \approx \frac{f(x + h) - f(x)}{h} \] which then converts the problem \eqref{eq:FE:BasicOde} to one of a linear system $Au = f$ of $N$ equations, one for each of the intervals of length $h$ in which $[a,b]$ gets divided. This, however, poses a problem in terms of the size of the system $\sfrac{b - a}{h}$ equations, and is also ill-conditioned when $h$ is too small.
+
+We will instead search for another approach. We will construct a space $V_h$ of finite dimension, and search there for a solution $u_h$ that approximates $u$. Usually, $V_h$ will be a space of piecewise polynomial functions. These polynomials will be defined on a mesh \mesh defined by a set of $N$ points $\set{a = x_1 < x_2 < \dotsb < x_{N} = b}$, that we will call vertices.
+
+Thus, the generic space will be \( X_h^r = \set{ f ∈ C^0([a,b]) \tq \restr{f}{I_j} ∈ \mathbb{P}_r(I_j) \quad ∀ I_j ∈ \mesh } \label{eq:FE:FiniteElementSpace} \), being $I_j$ each of the intervals of the mesh and $\mathbb{P}_r(I_j)$ the space of polynomials of degree up to $r$ defined in the interval $I_j$. Usually, we will work in a subset of this space to use only functions compatible with the boundary contitions.
+
+Something that the attentive reader will have noticed by now is the fact that we didn't make functions in $X_h^r$ derivable. We just forced continuity, which is a weird thing given the fact that we are trying to solve differential equations, whose solutions by definition should have some degree of smoothness.
+
+However, we will actually be interested in ``non-continuous'' ``solutions'' to the PDE problems, because those actually exist in physical settings. For example, a vibrating string may have a point force as initial condition, and that is not continuous. This is the motivation to introduce the weak formulation of a differential equation.
+
+\section{Weak formulation}
+\label{sec:Theory:WeakFormulation}
+
+A physical motivation for the weak formulation is the introduction of ``virtual displacements'' but I have to admit that it is only intuitive if you are a physicist. The mathematical idea is to move to a setting where we can forgive some non-smoothness of the function. This framework is the integration of a product: multiplying by a test functions with minimal regularity and using integration by parts we will be able to move the derivatives from our solution to the test function and then require less regularity on the solution.
+
+For a practical example, let our equation be $-u'' = f$. We will multiply by a function $v$ in some space that we will decide later, integrate in the domain $Ω$ of the solution and then apply integration by parts:
+\begin{align*}
+- u'' &= f \\
+\int_Ω - u'' v &= \int_W fv \\
+\int_Ω u' v' - \restr{u'v}{∂Ω} &=\int_Ω fv
+\end{align*}
+
+If we choose $v$ to be $0$ on the boundary $∂Ω$, we will eliminate the second term and will have ended up with \[ \int_Ω u' v' = \int_Ω fv\] which indeed admits solutions of class $C^1$, one less degree than we originally needed. This is a new formulation, that we will call the weak formulation.
+
+\begin{defn}[Weak\IS formulation of an ODE problem] \label{def:Theory:WeakFormODE} Given a domain $Ω = [a,b] ⊂ ℝ$ and a function $f ∈ C^2(Ω)$, find $u ∈ H_0^1(Ω)$ such that \( \int_Ω u' v' = \int_Ω f v \label{eq:Theory:WeakFormODE} \) for every $v ∈ H_0^1(Ω)$.
+\end{defn}
+
+\subsection{Weak formulation on $ℝ^3$}
+\label{sec:Theory:WeakFormulationPDE}
+
+If we wanted to move to partial differential equations, things do not usually change much. For example, say we have an elliptic PDE of the form \(
+\begin{cases}
+-Δu = f & \text{ in } Ω \\
+u =  0 & \text{ in } ∂Ω
+\end{cases} \label{eq:PoissonProblem} \) for some open domain $Ω ∈ ℝ^d$ and some function $f ∈ C^2(Ω)$.
+
+This equation models, for example, the distribution of heat in a domain, the concentration of a chemical in a fluid at rest, an electric potential in presence of distributed charges, the deformation of a membrane...
+
+This problem can be solved in the strong form, where we approximate the second derivative using Taylor series and then try to find the solution (finite differences method). But we can also use the weak formulation, which is used for the finite elements method.
+
+A physical interpretation is to think of the solutions as solutions that will zero-out the forces for every possible small displacement, that is, solving \[ \int_Ω (-Δu -f) v = 0 \] for all ``virtual displacement'' $\appl{v}{Ω}{ℝ}$ that is sufficiently smooth.
+
+In order to have an improved form of that, we use integration by parts: \begin{multline*} \int_Ω - Δu v = -\int \dv (\grad u) v = \\ = - \int_Ω \dv(\grad u · v) + \int_Ω \grad u · \grad v = - \int_{∂Ω} \underbracket{(\grad u · \vn)}_{∂_\vn u} · v + \int_Ω \grad u · \grad v \end{multline*}
+
+We have a small problem with the integration on the boundary. But if we think of the previous physical argument, if $v$ is a virtual displacement, we should have it constrained in the boundary, so $\restr{v}{∂Ω} = 0$, the boundary term disappears and our weak formulation is \[ \int_Ω \grad u · \grad v = \int_Ω f v \]
+
+Another way to think of this is that is $v$ is any kind of test function, it must have compact support contained in $Ω$ and thus it must be zero on the boundary.
+
+Once we have the formulation, we can study the regularity requirements for $v$. We would like to have bounded integrals, and by applying the \nref{prop:HolderInequality} we see that we need $\norm{\grad v}_2$ and $\norm{v}_2$ to be bounded. That, together with the restriction on the boundary, means that we need $v ∈ H_0^1(Ω)$ (see the introduction for the definition of this space). Thus, we can reformulate again the problem as follows:
+
+\begin{defn}[Weak\IS formulation of a PDE problem] \label{def:Theory:WeakFormPDE} Given a domain $Ω⊂ℝ^d$ and a function $f ∈ C^2(Ω)$, find $u ∈ H_0^1(Ω)$ such that \( \int_Ω \grad u · \grad v = \int_Ω f v \label{eq:Theory:WeakFormPDE} \) for every $v ∈ H_0^1(Ω)$.
+\end{defn}
+
+\section{Galerkin approximation and finite element spaces}
+
+Once we have the weak formulation by finding functions in some Hilbert space $V$ (in the previous examples, $V = H^1_0(Ω)$) we can define an approximate problem. We will construct a family of finite dimensional spaces $V_h ⊂ V$ with a proper approximation property (specifically, that $\inf_{v_h ∈ V_h} \norm{v_h - v} \convs[][h][0] 0$ for any $v ∈ V$) and search for a solution there. Thus, we will find a solution $v_h ∈ V_h$ such that \( a(u_h, v_h) = F(v_h) \quad ∀v_h ∈V_h \label{eq:FE:GalerkinApprox} \)
+
+Recall that previously we defined these finite element spaces in \eqref{eq:FE:FiniteElementSpace}. The interesting thing of that kind of finite element spaces is the fact that we can define a very convenient basis for them. That is a problem that reduces to that of finding a basis of functions for the polynomials defined on one interval, and for that we can use the Lagrange polynomials.
+
+\begin{defn}[Lagrangian basis\IS of a polynomial function space] Let $\mathbb{P}_r(I)$ be the space of polynomials of degree $r$ or less in an interval $I = [a, b] ⊂ ℝ$. Each polynomial is completely defined by its values at $r + 1$ points, so we define a set of nodes $\set{x_0 = a < x_1 < \dotsb < x_r = b}$. The basis $\set{φ_i}_{i = 0}^r$ of $\mathbb{P}_r(I)$ is then defined by the polynomials $φ_i$ of degree $r$ such that $φ_i(x_j) = δ_{ij}$ with $δ_{ij}$ being the Kronecker's delta.
+\end{defn}
+
+\begin{figure}[tp]
+\centering
+\inputtikz{LagrangianBasis}
+\caption{Several examples of Lagrangian basis polynomials for degrees $1, 2$ and $3$ respectively.}
+\label{fig:FE:LagrangianBasis}
+\end{figure}
+
+Why is this basis useful? Let's look again at the Galerkin approximation \eqref{eq:FE:GalerkinApprox}. Given that both $a$ and $F$ and linear, for the approximation to hold for any $v_h ∈ X_h^r$ we only need to check it for all the elements $\set{φ_i}_{i = 0}^n$ of the base of $X_h^r$ (any $v_h$ is a linear combination of these elements). That is, we need to ensure that \[ a(u_h, φ_i) = F(φ_i) \quad ∀i = 1, \dotsc, n \]
+
+Again, using linearity of $a$ we can reformulate that as \[ \sum_{j = 0}^n u_j a(φ_j,φ_i) = F(φ_i) \quad ∀i = \dotsc, n\] where $u_j$ are the unknown coefficients of $u_j$ in the base $\set{φ_j}$. The problem is thus reduced to a linear system \[ \mA \vu = \vec{f} \] where the \concept{Stiffness\IS matrix} $\mA$ is defined by \[ \mA_{ij} = a(φ_i, φ_j)\] and analogously $\vec{f}_i = F(φ_i)$.
+
+And although this approach can always be constructed for any finite element space, the advantage with the Lagrangian basis and polynimal finite spaces is that the coefficients are actually the values of $u$ at the nodes, which will make computations far easier.
+
+\chapter{Theoretical analysis of the weak formulation}
+
+\section{Definition of the problem and weak formulation}
+
+Now on to the hard theory. We will start off a differential problem of finding a function $\appl{u}{Ω}{ℝ}$ for a given domain $Ω ⊂ ℝ^d$ such that \( \begin{cases} Du = f & \text{in Ω} \\ \text{boundary conditions} \end{cases} \) with $D$ an appropriate differential operator. The boundary conditions can be of three types:
+
+\begin{defn}[Dirichlet boundary condition][Boundary condition!Dirichlet] \label{def:Theory:DirichletBoundary} A condition that fixes the value of $u$ in the boundary $∂Ω$.
+\end{defn}
+
+\begin{defn}[Neumann boundary condition][Boundary condition!Neumann] \label{def:Theory:NeumannBoundary} A restriction on the normal derivative of $u$. That is, assuming $\vn$ is normal to $∂Ω$, fixing the value $∂_\vn u = h$.
+\end{defn}
+
+\begin{defn}[Robin boundary condition][Boundary condition!Robin] \label{def:Theory:RobinBoundary} A weighted combination of Dirichlet and Neumann boundary conditions. That is, restricting $au + b∂_\vn u = g$ on $∂Ω$.
+\end{defn}
+
+Starting from this point, we can usually integrate by parts and obtain a bilinear form as described in \fref{sec:Theory:WeakFormulation}. To tackle these problems in a generic way, we can unify the definitions we saw of the \nlref{def:Theory:WeakFormODE} and the \nlref{def:Theory:WeakFormPDE} in one single weak abstract formulation, which will also allow us to work with different expressions other than $\int_Ω ∇u ∇v$, for example.
+
+The idea is that in both cases, the integral of two functions is a bilinear operator from appropriate Hilbert spaces, and the right-hand side is a linear operator. Thus, our generic formulation is the following:
+
+\begin{defn}[Weak\IS abstract formulation of a PDE problem] \label{def:Theory:WeakAbstractFormulation} Given a Hilbert space $V$, a bilinear form $\appl{a}{V×V}{ℝ}$ and a linear form $\appl{F}{V}{ℝ}$, find $u ∈ V$ such that \( a(u,v) = F(v)\quad ∀ v ∈ V \)
+\end{defn}
+
+Bounded operators are already defined (check \cite{ApuntesAnalisisFunc}). For bilinear forms, two definitions that we will use for the existence theorems.
+
+\begin{defn}[Continous\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is continous (or bounded\footnote{As with linear forms, both notions are equivalent}) if and only if exists $M > 0$ such that \[ \abs{a(u,v)} ≤ M \norm{u}_V \norm{v}_V\] for all $u,v ∈ V$.
+\end{defn}
+
+\begin{defn}[Coercive\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is coercive if an inly if exists a constant $α > 0$ such that \[ a(u,u) ≥ α \norm{u}^2\]
+
+As notation, α is called the coercivity coefficient
+\end{defn}
+
+\section{Lax-Milgram theorem}
+
+With these conditions we can formulate the existence and uniqueness theorem, also called the Lax-Milgram theorem.
+
+\begin{theorem}[Lax-Milgram\IS theorem] \label{thm:Theory:LaxMilgram} Given a Hilbert space $V$, a bilinear, continuous and coercive form $\appl{a}{V×V}{ℝ}$ and a linear, bounded operator $\appl{F}{V}{ℝ}$; the \nlref{def:Theory:WeakAbstractFormulation} has a unique solution $u ∈V$ such that \( \norm{u}_V ≤ \frac{1}{α} \norm{F}_{V^*} \label{eq:Theory:LaxMilgramBound} \) with α the coercivity constant of $a$.
+\end{theorem}
+
+\begin{proof} \citep[Theorem A.3]{larsson2008partial} For each $u ∈ V$, we can define the functional $\appl{a_u}{V}{ℝ}$ such that $a_u(v) = a(u,v)$. It is bounded by definition, so we can apply the \nref{thm:RieszRepresentation}: there exists an unique element $w ∈ V$ such that $a(u,v) = \pesc{w, v}$. In that case, let us write $a(u,v) = \pesc{Au, v}$ for $\appl{A}{V}{V}$ a certain operator on the Hilbert space. On the other hand, again by the Riesz representation theorem we have that there exists an unique $b ∈ V$ such that $F(v) = \pesc{b, v}$ for all $v ∈ V$. Thus, these are equivalent equations: \begin{align*}
+a(u,v) &= F(v) \quad ∀v ∈ V\\
+\pesc{Au, v} &= \pesc{b, v} \quad ∀v ∈ V\\
+u &= \inv{A}b
+\end{align*}
+
+The problem of finding a solution is then reduced to that of showing that the inverse of the operator $A$ is well defined.
+
+It is easy to see that $A$ must be be linear, and also bounded: \[ \norm{Au}^2 = \pesc{Au, Au} = a(u, Au) ≤ M \norm{u} \norm{Au} \implies \norm{Au} ≤ M \norm{u}\] by continuity of the bilinear form $a$. Also, using coercivity, we can see that \( α\norm{v}^2 ≤ a(v,v) = \pesc{Av, v} ≤ \norm{Av} \norm{v} \implies α \norm{v} ≤ \norm{Av} \label{eq:Theory:LaxMilgramPr:1} \) so that $Av = 0$ implies $v = 0$ and thus $A$ is injective. We only have to see that $A$ is surjective to prove existence and uniqueness of the solution $u$.
+
+First, we will show that $R(A)$, the range of $A$, is a closed linear subspace of $V$. Let $\set{Av_j}_{j = 1}^∞ ⊂ R(A)$ be a sequence of elements converging to $w ∈ V$. Then, for any $i, j > 1$ and using \eqref{eq:Theory:LaxMilgramPr:1} we have that \[ \norm{v_j - v_i} ≤ \frac{1}{α} \norm{Av_j - Av_i} \convs[][i,j] 0 \] so the sequence $\set{v_j}$ converges to a certain element $v ∈ V$. By continuity, we then have that $A v_j \to Av = w$ and so $R(A)$ is closed.
+
+Finally, assume that $R(A) ≠ V$. In that case, there must exist a non-null $w ∈ V$ such that $w$ is orthogonal to $R(A)$. But then, using orthogonality and coercivity, we would have that \[ α \norm{w}^2 ≤ a(w,w) = \pesc{Aw, w} \eqreasonup{$Aw ∈ R(A), R(A) \perp w$} 0\] which is a contradiction because we said $w ≠ 0$. Thus, $R(A) = V$, the operator $A$ has an inverse and the solution $u$ exists and is unique.
+
+For the bound estimation \eqref{eq:Theory:LaxMilgramBound}, using coercivity we have that \[ α \norm{u}^2 ≤ a(u,u) = F(u) ≤ \norm{F} \norm{u} \implies \norm{u} ≤ \frac{1}{α} \norm{F}_{V^*} \]
+\end{proof}
+
+\chapter{Approximation of differential problems - Galerkin method}
+
+During this chapter, we will assume that we have a \nlref{def:Theory:WeakAbstractFormulation} given by \[ a(u,v) = F(v) \quad ∀v ∈ V\] with $V$ a Hilbert space and $a, F$ under the conditions of the \nref{thm:Theory:LaxMilgram}, and we will study how to approximate that problem. The issue is obviously that $V$ tends to be an infinite-dimensional space, and that does not go well with computations and such. We will bypass that by using finite-dimensional approximate spaces.
+
+\section{Galerkin approximation}
+
+The idea of the Galerkin approximation is, as we said, limit the problem to a finite-dimensional Hilbert space on which we can solve computationally the problem.
+
+Formally, we introduce a sequence of finite dimensional subspaces $V_h ⊂ V$ with $\dim V_h = N_h$ and with a certain approximability property: that for every $v ∈ V$ we can approximate it as well as we want: \[ \lim_{h\to 0} \inf_{v_h ∈ V_h} \norm{v-v_h}_V = 0 \]
+
+\begin{defn}[Generalized Galerkin Formulation][Galerkin formulation!Generalized] \label{def:GalerkinFormulationGen} Given a \nlref{def:Theory:WeakAbstractFormulation}, we can reformulate it as finding $u_h ∈ V_h$ such that \[ a_h(u_h, v_h) = F_h(v_h) \quad ∀v_h ∈ V_h \] with the requirement that $a_h \convs[][h] 0$, $F_h \convs[][h][0] 0$ for some definition of convergence of functionals that we will see latters.
+\end{defn}
+
+However, the restriction that $V_h ⊂ V$ can be sometimes too strict. A \concept[Galerkin formulation!Non-conforming]{Non-conforming Galerkin Formulation} is one with $V_h\nsubseteq V$. That takes it to the Petrov-Galerkin approximation in which we allow different spaces for the solution and for the test functions.
+
+\begin{defn}[Petrov-Galerkin approximation] Find $u_h ∈V_h$ such that \[ a_h(u_h, v_h) = F(v_h) \quad ∀v_h ∈ W_h \]
+\end{defn}
+
+Now to the interesting part: are these problems well-posed? Do they have unique solutions? And, more importantly, do these solutions converge to the actual solution? We will discuss it now.
+
+\begin{prop} The formulation of a PDE problem as a \nref{def:GalerkinFormulationGen} has an unique solution.
+\end{prop}
+
+\begin{proof}
+The idea here will be to apply the \nref{thm:Theory:LaxMilgram}. We know that $(V_h, \norm{·}_V)$ is a Hilbert space, $a(·,·)$ is continuous in $V_h$ because it is continuous in $V$, so $\abs{a(u,v)} ≤ M \norm{u}_V \norm{v}_V\; ∀v∈V_h ⊂ V$, and is coercive with at least the same coefficient because of the same reason. Same happens for $F$, so we are in the conditions of the lemma and thus the problem has an unique solution.
+\end{proof}
+
+Knowing that there are optimal and unique solutions, we can go on to an algebraic formulation. Let $u_h = \sum_j u_j φ_j$, $v_h = \sum_i v_i φ_i$ with $\set{φ_i}_{i=1}^{N_h}$ a basis of $V_h$. Then, the problem becomes
+\begin{align*}
+a(u_h,v_h) &= F(v_h) \\
+a\left(\sum_j u_j φ_j, \sum_i v_i φ_i\right) &= F\left(\sum_i v_i φ_i\right) \\
+\sum_{j,i} u_j v_i \underbracket{a(φ_j, φ_i)}_{A_{ij}} &= \sum v_i \underbracket{F(φ_i)}_{F_i}
+\end{align*}
+
+We can write this in a matrix form. If $\vu = (u_1, \dotsc, u_{N_h})$ and $\vv = (v_1, \dotsc, v_{N_h})$ then the equation becomes \begin{align*}
+\trans{\vv}A \vu &= \trans{\vv} \vf \quad ∀\vv ∈ ℝ^{N_h} \\
+A \vu &= \vf
+\end{align*} which is a system of linear equations that can be solved in a purely algebraic manner. There are some nice properties of the matrix $A$ that come from the problem statement. It is positive definite because $a$ is positive.
+
+\section{Convergence analysis of the Galerkin method}
+
+Now, on to the quality of the approximation. We will want to ensure that the approximate solution converges in some manner. If our bilinear form is symmetric, we can use Galerkin orthogonality:
+
+\begin{defn}[Galerkin orthogonality][Orthogonality!Galerkin] Given a bilinear form $a$, we say that a solution $u$ and its approximation $u_h$ fulfill the Galerkin orthogonality condition if and only if \[ a(u - u_h, v_h)= 0 \quad v_h ∈ V_h \]
+
+Given that a coercive symmetric bilinear form defines an inner product, Galerkin orthogonality is equivalent to saying that $u - u_h \perp V_h$.
+\end{defn}
+
+The usefulness of this property is the fact that, if $u - u_h$ is orthogonal to $V_h$, then we have an \concept{Optimality property} given by \( \norm{u - u_h}_a ≤ \inf_{v_h ∈ V_h} \norm{u - v_h}_a \label{eq:Elliptic:Optimality} \) with $\norm{·}_a = \sqrt{a(·,·)}$ the norm induced by the inner product $a(·,·)$.
+
+For the general case, we have the following lemma for the optimality result, which will tell us that the approximation to the solution is bounded by how well can we approximate any function with our finite spaces.
+
+\begin{lemma}[Ceà's\IS lemma] \label{lem:Theory:Cea} Given a \nref{def:GalerkinFormulationGen}, the following optimality result holds: \[ \norm{u - u_h}_V ≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V \] for $M ∈ ℝ^+$ and $α$ the coercivity coefficient of $a$.
+\end{lemma}
+
+\begin{proof} Using the coercivity property, we know that \[ \norm{u - u_h}^2_V ≤ \frac{1}{α} a(u - u_h, u -u_h)\]
+
+Adding and substracting $v_h ∈ V_h$, we can continue so \begin{align*}
+\norm{u - u_h}^2_V &≤ \frac{1}{α} a(u - u_h, u -u_h + v_h - v_h) \\
+	&= \frac{1}{α} a(u - u_h) + \frac{1}{α} \underbracket{a(u - u_h, v_h - u_h)}_{=0\;\text{(Galerkin Orthogonality)}} \\
+\norm{u - u_h}^2_V &≤ \frac{M}{α} \norm{u - u_h}_V\norm{u - v_h}_V \\
+\norm{u - u_h}_V &≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V
+\end{align*}
+\end{proof}
+
+\section{Finite element spaces}
+
+Several properties of the approximation will depend on how good our finite element spaces are, and so we will define and construct these spaces along these sections.
+
+\begin{defn}[Finite elements space] A finite element space is a space of piecewise polynomial functions over a partition of a domain $Ω ∈ ℝ^N$ into non-overlapping polyhedra, called a mesh.
+\end{defn}
+
+\begin{defn}[Polyhedral mesh] A polyhedral mesh $\mesh$ on $Ω ∈ ℝ^N$ is the union of a finite number of polyhedra $K_j$, $j = 1, \dotsc, N_k$ such that $\bigcup_{j=1}^{N_k} \adh{K_j} = \adh{Ω}$ and $\intr{K}_j ∩ \intr{K}_i = ∅$ if $i ≠ j$.
+\end{defn}
+
+Usually, in 2D the polyhedrae used are either triangles or squares. In 3D, we have tetrahedron, cubes or rectangular pyramids.
+
+\begin{defn}[Geometrical conformal mesh] A geometrical conformal mesh is a mesh for which if $\adh{K_i} ∩ \adh{K_j} ≠ ∅$ then the intersection is either a common vertex or a common edge or face. That means that half-edge intersections are not allowed in this case.
+\end{defn}
+
+A mesh can be defined by certain parameters.
+
+\begin{itemize}
+	\item \concept[Mesh!diameter]{Element diameter} of an element $K ∈ \mesh$ as $h_K = \max_{x,y∈K} \abs{x-y}$.
+	\item \concept[Mesh!inner diameter]{Element inner diameter} $ρ_K$  as the diameter of the largest ball in $K$.
+	\item \concept{Mesh\IS size} $h = \max_{K∈\mesh} h_K$ which gives an idea of the size of the largest element of the mesh.
+	\item \concept[Mesh!aspect ratio]{Aspect ratio} $γ_K = \sfrac{h_K}{ρ_K}$. A high aspect ratio indicates elongated elements, while a ratio near to one indicates more regular elements.
+	\item \concept[Mesh!minimum size]{Mesh minimum size} $h_{min} = \min_{K ∈ τ_k} h_K$.
+\end{itemize}
+
+We will be interested in a regular family of meshes, that is, some family with a bounded aspect ratio.
+
+\begin{defn}[Regular family of meshes][Mesh!regular] \label{def:Theory:RegularFamilyMeshes} A family of meshes $\set{\mesh}_{h \to 0}$ is said to be regular if the maximum aspect ratio is bounded by some constant $γ$ for all $h$: $\max_{K ∈ \mesh} γ_K ≤ γ ∈ ℝ$. In other words, force that for all $h > 0$ and $∀K ∈ \mesh$ $h_K ≤ γρ_K$.
+\end{defn}
+
+\begin{defn}[Quasi-uniform family of meshes][Mesh!quasi-uniform] A family of meshes is quasi-uniform if it is regular and $\sfrac{h_{min}}{h} ≥ δ$.
+\end{defn}
+
+In order to be able to do calculations, we will be interested specifically on affine meshes with a reference element.
+
+\begin{defn}[Affine mesh][Mesh!affine] \label{def:Theory:AffineMesh} An affine mesh is a mesh for which each element $K$ can be mapped onto a certain reference element $\hat{K}$ by an affine transformation
+\begin{align*}
+\appl{F_K}{\hat{K}&}{K} \\
+\hat{x} & \longmapsto \mB_K \hat{x} + \vb_K
+\end{align*} where $\mB_K ∈ ℝ^{d×d}$ is some matrix and $\vb_K ∈ ℝ^d$ a vector, both such that $K = F_K(\hat{K})$.
+\end{defn}
+
+The reference element will be the ``base'' of this mesh. If we are using triangular meshes, $\hat{K}$ will be the triangle of vertices $(0,0), (1,0), (0,1)$, for quadrilateral meshes we have $\hat{K} = [0,1]^2$ and so on.
+
+\subsection{Affine triangular meshes and mapping to the reference element}
+\label{sec:Theory:ReferenceElement}
+
+The easiest mesh is an affine triangular mesh, which is usually enough for the applications we will see on these courses. These are meshes where the reference element is a simplex\footnote{If I'm not mistaken and remember well that a simplex in 2D is a triangle.}
+
+The construction of the mapping is considerably easy. Given $K ⊂ ℝ^d$, a simplex defined by $d + 1$ vectors $\set{\va_i}_{i = 1}^{d + 1}$, the mapping is given by the following vector and matrix: \( \vb_K = \va_1 \qquad \mB_K = \begin{pmatrix} \va_{2} & \cdots & \va_{d + 1} \end{pmatrix} \)
+
+A special thing about this mapping is that we have several properties that will help us in later proofs.
+
+\begin{lemma}[Properties of the mapping to the reference element][Reference element!mapping properties] \label{lem:Theory:PropertiesRefMapping} Let $h_K$ and $ρ_K$ be the outer and inner diameters of $K$ and $\hat{h}, \hat{ρ}$ the diameters of $\hat{K}$. Then \( \norm{\mB_K} ≤ \frac{h_K}{\hat{ρ}} \quad \norm{\inv{\mB_K}} ≤ \frac{\hat{h}}{ρ_K} \quad \det \mB_K = \frac{\abs{K}}{\abs{\hat{K}}} \label{eq:Theory:PropertiesRefMapping} \) where $\norm{\mB_K} = \sup_{ξ ∈ ℝ^d, ξ ≠ 0} \frac{\norm{\mB_Kξ}}{\norm{ξ}}$ is the spectral norm of $\mB_K$.
+\end{lemma}
+
+The proof is linear algebra and I don't want to.
+
+\subsection{Base functions for finite element spaces}
+
+\section{Approximation results for finite element spaces}
+\label{sec:Theory:ApproxResults}
+
+Once we have the spaces defined, we will be interested in bounding the approximation errors made, more specifically with continuous triangular finite elements on affine meshes: \[ x_h^r = \set{v ∈ C^0(Ω) \tq \restr{v}{K} ∈ \mathbb{P}_r(K) \; ∀K ∈ \mesh } \]
+
+That is, given a function $u ∈ H^s(Ω)$ we would like to quantify the best approximation error in $H^1$ and $L^2$ norms, given by \[ \inf_{v_h ∈ X_h^r} \norm{u - v_h} \] with the norm of the corresponding space. The typical procedure for obtaining these estimates will be the building of a particular function $v_h ∈ X_h^r$ starting from $u$, and this particular function will usually be the interpolant operator $I_h^r$.
+
+In order to prove the interpolation theorems, we will first develop local approximation estimates, that will tell us how well can we approximate any given function by a polynomial in a certain element of the mesh (\fref{sec:Theory:LocalApproxEstimates}). Then, we will see how well the interpolation operator approximates any given function locally (\fref{sec:Theory:LocalInterpEstimates}), and finally we will move to global interpolation estimates (\fref{sec:Theory:GlobalInterpEstimates}) and the theorems (\fref{sec:Theory:InterpTheorems}).
+
+\subsection{Local approximation estimates}
+\label{sec:Theory:LocalApproxEstimates}
+
+As discussed, we will first understand the local approximation properties of the finite element space on a single element of the mesh $K ∈ \mesh$; that is, proving bounds on the approximation of a given function $v ∈ H^s(K)$ by polynomials of degree $r$.
+
+\begin{lemma}[Deny-Lions\IS lemma] \label{lem:Theory:DenyLions} Given any bounded convex Lipschitz domain $K ⊂ ℝ^d$ and $s ≥ 0$, let $η = \min \set{s, r + 1}$. Then there exists a constant $C_{DL} > 0$ such that \( ∀v ∈ H^s(K) \quad \inf_{p ∈ \pspace (K)} \norm{v - p}_{H^m(K)} ≤ C_{DL} \abs{v}_{H^η}\; m = 0, 1, \dotsc, η \label{eq:Theory:DenyLions} \) with the constant depending on $h_K$, $ρ_K$, $m$, $s$ and $d$.
+
+Moreover, asymptotically as $h_K \to 0$, the constant scales\footnote{Remember that $γ_K = \sfrac{h_K}{ρ_K}$} as \( \label{eq:Theory:DenyLionsScaling} C_{DL} \sim h_K^{n-m} γ_K^m \)
+\end{lemma}
+
+\begin{proof} There's a boring proof (constructive in 1D using Taylor expansion\footnote{I am seriously starting to hate a lot Taylor expansions.}) and an interesting one % http://math.stackexchange.com/questions/1374822/deny-lions-lemma
+\end{proof}
+
+The key point of this lemma is that the best approximation error is related\footnote{Again, a recall that the seminorm is defined as $\abs{v}^2_{H^{r}} = \sum_{\abs{\vA} = r} \norm{\Dif^\vA v}^2_{L^2}$.} to the derivatives of $v$ of order $r + 1$ if $v$ is smooth enough, or else it's related to the highest possible derivatives of $v$.
+
+\subsection{Local interpolation estimates}
+\label{sec:Theory:LocalInterpEstimates}
+
+Once we know bounds for the approximation of any given function, we are interested in setting bounds for our interpolation operator $I_h^r$ which, given a function $u$, returns a polynomial of degree $r$. Let us denote by $v_K$ and $I_{h,K}^rv$ the restrictions of $v$ and $I_h^rv$ on $K$, respectively. Our aim is estimating $\abs{v_K - I_{h,K}^rv}_{H^m(K)}$.
+
+However, we do not exactly know how to construct the interpolation polynomial in an arbitrary mesh element $K$, so we will work on understanding how things change when we map the element $K$ onto the reference element $\hat{K}$ via the mapping $F_K$ as defined in \fref{sec:Theory:ReferenceElement}.
+
+Let $\hat{v}_K = v_K ○ F_K$ and $\hat{I}_{h,K}^r = I_{h,K}^rv ○ F_K$. Note that
+\[ \hat{I}_{h,K}^r  = I_{h,K}^rv ○ F_K = \sum_{i=1}^{N_r} v(\va_{i,K}) · \left(\restr{φ_i}{K} ○ F_K\right) = \sum_{i=1}^{N_r} \hat{v}_K(\hat{\va}_i) \hat{φ}_i = I_{\hat{K}}^r \hat{v}_K \]
+where $\set{\va_{i,K}}_{i = 1}^{N_r}$ is the set of nodes defining the degrees of freedom on $K$ and $\restr{φ_i}{K}$ the corresponding Lagrangian basis functions restricted to $K$, and the same for $\hat{\va}_i$ and $\hat{φ}_i$.
+
+First result we want is to see how does the seminorm change when it's mapped.
+
+\begin{lemma}[Seminorm transformation][] \label{lem:Theory:SeminormTrans} For any $v ∈ H^m(K)$ with $M ≥ 0$, let $\hat{v} = v ○ F_k$. Then, $\hat{v} ∈ H^m(\hat{K})$ and there exists a constant $C_{sn} > 0$ depending on $m$ such that \begin{align}
+\abs{v}_{H^m(K)} &≤ C_{sn} \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \abs{\hat{v}}_{H^m(\hat{K})} \\
+\abs{\hat{v}}_{H^m(K)} &≤ \hat{C}_{sn} \norm{\mB_K}^m · \abs{\det \mB_K}^{-\sfrac{1}{2}} · \abs{v}_{H^m(K)}
+\end{align}
+
+Moreover, $C_{sn} = \hat{C}_{sn} = 1$ for $m = 0,1$.
+\end{lemma}
+
+\begin{proof} Proof given only for $m = 0,1$. For $m = 0$ we have that with just a change of variable\[ \norm{v}^2_{L^2(K)} = \int_{K} v^2 = \int_{\hat{K}} \hat{v}^2 \abs{\det \mB_K} = \abs{\det \mB_K} \norm{\hat{v}}^2_{L^2(\hat{K})} \] and the other equality can be proved analogously.
+
+For $m = 1$ it is easy to see that $∇\hat{v} = \trans{\mB_K} ∇v$ so again we can integrate, do a change of variable and have it.
+\end{proof}
+
+Our next lemma is proving that the interpolant is a continuous operator, that is, small changes on the function being interpolated give small changes on the result.
+
+\begin{lemma}[Continuity of interpolant operator][Interpolant operator!continuity] \label{lem:Theory:ContInterpolant} Let $\appl{I_{\hat{K}}^r}{C^0(\hat{K})}{\pspace (\hat{K})}$ be the finite element interpolant operator on the reference element $\hat{K} ⊂ ℝ^d$. Then, for $d ≤ 3$, $I_{\hat{K}}^4$ is a linear bounded operator from $H^2(\hat{K})$ to any $H^m(\hat{K})$ with $0 ≤ m ≤ r + 1$. That is, there exists $C_{I,m} > 0$ such that \( \norm{I_{\hat{K}}^r \hat{v}}_{H^m(\hat{K})} ≤ C_{I,m} \norm{v}_{H^2(\hat{K})} \qquad ∀\hat{v} ∈ H^2(\hat{K}) \)
+\end{lemma}
+
+\begin{proof} Just do operations with the left hand side and it works because the basis elements have bounded norm, and as the embedding $H^2 \hookrightarrow C^0$ is continuous for $d ≤ 3$, everything works.
+\end{proof}
+
+Finally, the proof that the interpolant is exact on polynomials.
+
+\begin{lemma}[Exactness of the interpolant operator][Interpolant operator!exactness] \label{lem:Theory:ExactnessInterpolant} The interpolant operator $\appl{I_{\hat{K}}^r}{C^0(\hat{K})}{\pspace (\hat{K})}$ is exact on $\pspace (\hat{K})$, that is, $I_{\hat{K}}^r p = p$ for any $p ∈ \pspace (\hat{K})$.
+\end{lemma}
+
+\begin{proof} Yes.
+\end{proof}
+
+With this, we can finally prove the local error estimate.
+
+\begin{lemma}[Local error estimate][Interpolant operator!global estimates] \label{lem:Theory:LocalError} Let $K ∈ \mesh$ be an element of the mesh with outer diameter $h_K$ and inner diameter $ρ_K$. Then for $s ≥ 2$ and any $0 ≤ m ≤ η ≝ \min\set{s, r+1}$ there exists a constant $C_l > 0$ depending on $s,r,m$ and the reference element $\hat{K}$ such that \( \abs{v - I_{h,K}^r v}_{H^m(K)} ≤ C_l \left(\frac{h_K}{ρ_K}\right)^m h_{K}^{η - m} \norm{v}_{H^η(K)} \label{eq:Theory:LocalErrorEstimate} \)
+\end{lemma}
+
+\begin{proof} For a first estimate, we use in sequence \nlref{lem:Theory:SeminormTrans}, \nlref{lem:Theory:ExactnessInterpolant} and the \nlref{lem:Theory:ContInterpolant}. Also, we set $\hat{p} ∈ \pspace (\hat{K})$ an arbitrary polynomial. Operating, we have
+\begin{align*}
+\abs{v - I_{h,K}^r v}_{H^m(K)}
+	&≤ C_{sn} \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \abs{\hat{v} - I_{\hat{K}}^r \hat{v}}_{H^m(\hat{K})} \\
+	&≤ C_{sn} \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \left(\abs{\hat{v} - \hat{p}}_{H^m(\hat{K})} +\abs{\hat{p} - I_{\hat{K}}^r \hat{v}}_{H^m(\hat{K})}\right) \\
+	&≤ C_{sn} \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \left(\abs{\hat{v} - \hat{p}}_{H^m(\hat{K})} +\abs{I_{\hat{K}}^r(\hat{p} - \hat{v})}_{H^m(\hat{K})}\right) \\
+	&≤ C_{sn} \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \left(\abs{\hat{v} - \hat{p}}_{H^m(\hat{K})} + C_{I,m} \norm{\hat{p} - \hat{v}}_{H^2(\hat{K})} \right) \\
+	&≤ C_{sn} (1 + C_{I, m}) \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \norm{\hat{v} - \hat{p}}_{H^{\max\set{m, 2}} (\hat{K})}
+\end{align*}
+
+And since $\hat{p}$ is arbitrary, the equality holds for any $\hat{p} ∈ \pspace(\hat{K})$ so that \[ \abs{v - I_{h,K}^r v}_{H^m(K)} ≤ C_{sn} (1 + C_{I, m}) \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \inf_{\hat{p} ∈ \pspace(\hat{K})} \norm{\hat{v} - \hat{p}}_{H^{\max\set{m, 2}} (\hat{K})} \]
+
+Now we can use the local approximation estimate from \nlref{lem:Theory:DenyLions} and again the \nlref{lem:Theory:SeminormTrans} to obtain \begin{align*}
+\abs{v - I_{h,K}^r v}_{H^m(K)}
+	&≤ C_{sn}(1 + C_{I,m}) C_{DL} \norm{\mB_K^{-1}}^m · \abs{\det \mB_K}^{\sfrac{1}{2}} · \abs{\hat{v}}_{H^η(\hat{K})} \\
+	&≤ C_{sn}\hat{C}_{sn} (1 + C_{I,m}) C_{DL} \norm{\mB_K^{-1}}^m · \norm{\mB_K}^η· \abs{v}_{H^η(\hat{K})} \\
+	&≤ C_l \left(\frac{h_K}{ρ_K}\right)^m h_{K}^{η - m} \abs{v}_{H^η(K)}
+\end{align*}
+\end{proof}
+
+\subsection{Global interpolation estimates}
+\label{sec:Theory:GlobalInterpEstimates}
+
+Almost last section: estimates for the global error.
+
+\begin{theorem}[Global interpolation estimates][Interpolant operator!global estimates] \label{thm:Theory:GlobalInterpEstimates} Given a family of regular triangulations $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$ with $d ≤ 3$ and the space $X_h^r$ of continuous finite elements of degree $r$, for $s ≥ 2$ and $0 ≤ m ≤ η ≝ \min \set{s, r+1}$, it holds the following estimate \( \norm{v - I_h^rv}_{H^m(Ω)} ≤ C_l γ^m \left(\sum_{K ∈ \mesh} h^{2(η - m)}_K \abs{v}^2_{H^η(K)}\right)^{\sfrac{1}{2}} \) for any $v ∈ H^s(Ω)$, where $γ = \max_{K ∈ \mesh}γ_K$.
+\end{theorem}
+
+\begin{proof}
+Calculations based on \fref{lem:Theory:LocalError}.
+\end{proof}
+
+\subsection{Interpolation error theorems}
+\label{sec:Theory:InterpTheorems}
+
+We finish them with the theorems of the interpolation error. These theorems are actually weaker than \fref{thm:Theory:GlobalInterpEstimates} but they are more convenient. However, the advantage of this stronger theorem is the representation of the interpolation error as the sum of local contributions for each element of the mesh, which can lead to results with mesh adaptivity.
+
+\begin{theorem}[Interpolation error\IS for smooth functions] Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, there exist $C_m > 0$ and $m = 0, \dotsc, r$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
+\begin{align}
+\norm{u - I_h^r }_{L^2(Ω)} &≤ C_0 h^{r + 1} \abs{v}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothL2} \\
+\norm{u - I_h^r}_{H^m(Ω)} &≤ C_m h^{r + 1 - m} \abs{v}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothHm}
+\end{align} with $C_m$ that depends on the aspect ratio $γ$ of the mesh family, $r$ and $m$, but otherwise independent of $h$.
+\end{theorem}
+
+\begin{theorem}[Interpolation error\IS for possibly non-smooth functions] Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, for $s ≥ 2$ and with $η ≝ \min \set{s, r + 1}$ there exists $C_m > 0$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
+\begin{align}
+\norm{u - I_h^r}_{H^m(Ω)} &≤ C_m h^{η -m} \abs{v}_{H^{η}(Ω)} \label{eq:Theory:InterpSmoothHm}
+\end{align} for $0 ≤ m ≤ η$ and with $C_m$ that depends on the aspect ratio $γ$ of the mesh family, $r$ and $m$, but otherwise independent of $h$.
+\end{theorem}
