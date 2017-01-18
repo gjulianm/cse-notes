@@ -14,6 +14,11 @@
 
 % \precompileTikz
 
+\newcommand{\rey}{\mop{Re}}
+\newcommand{\ra}{\mop{Ra}}
+\newcommand{\rah}{\mop{Ra}_{\sfrac{h}{2}}}
+\newcommand{\pr}{\mop{Pr}}
+
 \begin{document}
 \frontmatter
 \pagestyle{plain}
@@ -86,7 +91,7 @@ In order to see that these states are actually stable and not static but unstabl
 
 After those nasty computations, we would end up with a simplified equation for $θ'$ given by \[ \ddot{θ}' = -θ'ω^2 \sin^2 θ_s \] whose solution is a pure imaginary exponential. That is, we have an stable value.
 
-\chapter{Instabilities}
+\chapter{Surface tension instabilities}
 
 \section{Rayleigh-Taylor instability}
 
@@ -285,8 +290,8 @@ In that case, our capillary wave number is $k_c = \sqrt{\sfrac{ρg}{γ}}$, and w
 \begin{tabular}{cc|c|c}
 & & Gravity & Capillary \\
 & & $\tilde{k} \ll 1$ & $\tilde{k} \gg 1$ \\ \toprule
-Shallow water & $\tilde{k} \ll \sfrac{1}{\tilde{H}}$ & $ω = $ & $ω = $ \\ \midrule
-Deep water & $\tilde{k} \ll \sfrac{1}{\tilde{H}}$ & $ω = $  & $ω = $ \\ \bottomrule
+Shallow water & $\tilde{k} \ll \sfrac{1}{\tilde{H}}$ & $ω = \pm \tilde{k} \sqrt{\tilde{H}}$ & $ω = \pm \tilde{k}^2 \sqrt{\tilde{H}}$ \\ \midrule
+Deep water & $\tilde{k} \ll \sfrac{1}{\tilde{H}}$ & $ω = \pm \sqrt{\tilde{k}}$  & $ω = \pm \tilde{k} \sqrt{\tilde{k}}$ \\ \bottomrule
 \end{tabular}
 \caption{Values of ω depending on the situation of the waves}
 \label{tab:RayleighTaylorWater}
@@ -333,21 +338,21 @@ P_v - P_{\text{atm}} &= \frac{γ}{R_0} \left(1 + \frac{δR}{R_0}\right)
 \end{align*}
 which in turn tells us that $P_v > P_c$.
 
-This is important, because Bernouilli law tells us that flow moves from high to low pressure zone. That will force more water in the `crest' zone which will make the flow more unstable.
+This is important, because Bernoulli law tells us that flow moves from high to low pressure zone. That will force more water in the `crest' zone which will make the flow more unstable.
 
 \subsection{Equations and boundary conditions}
 
-Once we have made the handwaving argument to see how the flow should behave, we can start doing the instability analysis. The base equations are the Navier-Stokes equations in cylindrical geometry. Those are pretty complex, but one can start doing simplifications neglecting viscosity and gravity, and assuming a flow symmetric and without swirl around the axis.
+Once we have made the handwaving argument to see how the flow should behave, we can start doing the instability analysis. The base equations are the Navier-Stokes equations in cylindrical geometry \eqref{eq:NavierStokes:Cylindrical}. Those are pretty complex, but one can start doing simplifications neglecting viscosity and gravity, and assuming a flow symmetric and without swirl around the axis.
 
-Then, our simplified equations are (TODO:Fix them) \begin{align}
-\dpd{u_r}{t} + U \dpd{u_r}{z} &= - \frac{1}{ρ} \dpd{p}{r} \label{eq:RayleighPlateau:EulerR}\\
-\dpd{u_z}{t} + U \dpd{u_z}{z} &= - \frac{1}{ρ} \dpd{p}{z} \label{eq:RayleighPlateau:EulerZ}\\
-\frac{1}{t} \dpd{(ru_r)}{r} + \dpd{u_z}{z} &= 0 \label{eq:RayleighPlateau:EulerP}
-\end{align}
+Then, our simplified equations are \( \begin{aligned}
+ρ\left(  \dpd{u_r}{t} + u_r \dpd{u_r}{r} + u_z \dpd{u_r}{z}\right) &= - \dpd{p}{r} \\
+ρ\left(  \dpd{u_z}{t} + u_r \dpd{u_z}{r} + u_z \dpd{u_z}{z}\right) &= - \dpd{p}{z} \\
+\frac{1}{r} \dpd{(ru_r)}{r} + \dpd{u_z}{z} &= 0
+\end{aligned} \label{eq:RayleighPlateau:Simplified} \)
 
-The kinematic boundary conditions are derived in the same fashion that we did with the Rayleigh-Taylor instability (\fref{fig:RayleighTaylorInterface}), which gives us an equation for the interface $R$: \( \dpd{R}{t} = u_r - u_z \dpd{R}{z} \label{eq:RayleighPlateau:Interface} \)
+The kinematic boundary conditions are derived in the same fashion that we did with the Rayleigh-Taylor instability (\fref{fig:RayleighTaylorInterface}), which gives us an equation for the interface $R$: \( \dpd{R}{t} = u_r - u_z \dpd{R}{z} \label{eq:RayleighPlateau:}\)
 
-For the dynamic boundary conditions, we do some awful computations and then end up with a more awful thing.
+For the dynamic boundary conditions, doing some awful computations (but basically $\mathcal{C} = \dv \vn$ where $\vn$ is normal to the interface) we end up with \( \mathcal{C} = \frac{1}{R\sqrt{1 + \left(\dpd{R}{z}\right)^2}} - \dpd[2]{R}{z} \frac{1}{\left(1 + \left(\dpd{R}{z}\right)^2\right)^{\sfrac{3}{2}}} \label{eq:RayleighPlateau:Dynamic} \) where $P(z) - P_\text{atm} = γ\mathcal{C}$.
 
 \subsection{Base flow, perturbation and linearization}
 
@@ -360,56 +365,427 @@ Now we study what happens when we add a small perturbation: $U_r = ε u_r$, $U_z
 \dpd{u_r}{t} + U_0 \dpd{u_z}{z} &= - \dpd{p}{z}
 \end{align*}
 
-Doing that with all the equations \eqref{eq:RayleighPlateau:EulerR,eq:RayleighPlateau:EulerZ,eq:RayleighPlateau:EulerP} we end up with
+Doing that with all the equations \eqref{eq:RayleighPlateau:Simplified}  we end up with
 \begin{align}
 \dpd{u_r}{t} + U \dpd{u_r}{z} &= - \frac{1}{ρ} \dpd{p}{r} \\
 \dpd{u_z}{t} + U \dpd{u_z}{z} &= - \frac{1}{ρ} \dpd{p}{z} \\
 \frac{1}{t} \dpd{(ru_r)}{r} + \dpd{u_z}{z} &= 0
-\end{align} which we can simplify doing ugly manipulations to a single equation \( \label{eq:RayleighPlateau:SingleSolution} \)
+\end{align} which we can simplify doing ugly manipulations to a single equation \( \dpd[2]{p}{r} + \frac{1}{r} \dpd{p}{r} + \dpd[2]{p}{z} = 0 \label{eq:RayleighPlateau:SingleSolution} \)
 
-Perturbing and linearizing the boundary conditions we end up with another thing. I'm going to copy this later.
+Perturbing and linearizing the boundary conditions we end up with \( \dpd{η}{t} + U \dpd{η}{z} = u_r \) and \( \restr{p}{R} = - γ \left(\frac{η}{R_0^2} + \dpd[2]{η}{z}\right) \)
+
+\subsection{Normal mode expansion}
+
+Suppose normal modes in $z$ and $t$ with wavenumbers $k$ and $ω$ respectively. The solution to the Laplace equation \eqref{eq:RayleighPlateau:SingleSolution} is then \( \dpd[2]{\hat{p}}{r} + \frac{1}{r} \dpd{\hat{p}}{r} - k^2 \hat{p} = 0 \implies \hat{p}(r) = AI_0(kr)\) which is a Bessel function of order 0, with $A ∈ ℝ$ an unknown. From there we can retrieve the radial velocity as \( \hat{u}_r = - \frac{\imath}{ρ(ω -k U)} AkI_0'(kr) \), from the kinematic boundary condition we have \( -\imath ω B + ik UB = - \frac{\imath}{ρ(ω-Uk)} AkI_0'(kr) \), from the dynamic boundary \(AI_0(kR_0) = - γ\left(\frac{B}{R_0^2} - k^2B\right)\)
+
+Putting all of that into a linear system to solve for $A,B$, if we want non-trivial solutions we need to make the determinant equal to $0$ and then the dispersion relation is \( ω = Uk \pm \sqrt{\frac{γk^2}{ρ} \left(k^2 - \frac{1}{R^2_0}\right) \frac{I_0'(kR)}{I_0(kR)}} \)
+
+As always,if we have one $ω$ with $\Im ω > 0$ we have an unstable flow. That happens if $k < \frac{1}{R_0}$.
+
+\chapter{Physical forces instabilities}
+
+\section{Rayleigh-Bénard instability}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/RayleighBernardConvection.png}
+\caption{Simulation of Rayleigh-Bénard convection.}
+\label{fig:RayleighBenard:Sim}
+\end{figure}
+
+The Rayleigh-Bénard is an instability driven by buoyancy, in which one layer of fluid of depth $d$ is heated from below: the temperature $Θ(z)$ at the top is $Θ(d) = T_2$ and at the bottom $Θ(d) = T_1$. The density gradient may cause an instability with convection rolls.
+
+\subsection{Instability mechanism}
+
+To study the mechanism, we first see what happens when an infinitesimal ``bubble'' of radius $a$ of fluid moves vertically an amount $δz$, changing temperature in $δT$ (which in turns causes a change of density of $δρ = α_p δT$).
+
+The buoyancy force is given by \[ F_A = \frac{4π}{3} a^3 g α_p δT \] and the Stokes drag by \[ F_S = - 6π μa v, \qquad v = \frac{2}{9} \frac{α_p g a^2 δT}{ν} \] where ν is the kinematic viscosity and $α_p$ the thermal expansion coefficient.
+
+Then we have two time scales: one driven\footnote{$κ$ is, per Wikipedia, the thermal diffusivity.} by $\sfrac{a^2}{κ}$ that damps the instability and another given by $\sfrac{δz}{v}$ that regenerates the instability. Then, we want to study the relationship between the quantities \[ \frac{a^2}{κ} \quad \text{and} \quad \frac{δT d}{(T_1 - T_2)v} \]
+
+Supposing $a \sim \sfrac{d}{2}$ and replacing for $v$, we end up with the Rayleigh number \( \mop{Ra} ≝ \frac{α_pg (T_1 - T_2)d^3}{νκ} \) which experimentally gives stability if it's less than 72.
+
+\subsection{Equations}
+
+We use the Oberbeck-Boussinesq equations:
+\begin{align*}
+\dv \vec{U} &= 0 \\
+\dpd{\vec{U}}{t} + \vec{U} · ∇\vec{U} &= - \frac{1}{ρ}∇P+ ν ∇^2\vec{U} + g α ΔT \ve_y \\
+\dpd{Θ}{t} + \vec{U} · ∇Θ &= κ ∇^2 Θ
+\end{align*}
+
+We also assume density constant except in the bouyancy term, heat release by viscous isipation neglected and viscosity and thermal conductivity assumed constant.
+
+\subsection{Base flow, perturbation and linearization}
+
+The base flow is of pure condition, given by \begin{align*}
+ρ^* \left(1 - α^*(Θ - T_1)\right) g + \dod{P}{z} &= 0 \\
+\dod[2]{Θ}{z} &= 0 \\
+Θ(z) &= T_1 - \frac{T_1 - T_2}{d} z
+\end{align*}
+
+To change things, we do the curl on both sides of the equations and we end up with the following problem: \begin{gather*}
+\mM \dpd{φ}{t} = \mL φ \\
+φ = \begin{pmatrix} u_z \\ θ' \end{pmatrix} \quad \mM = \begin{pmatrix} ∇^2 & 0 \\ 0 & 1 \end{pmatrix} \quad \mL = \begin{pmatrix} \pr ∇^4 & \pr ∇^2_h \\ \ra & ∇^2 \end{pmatrix}
+\end{gather*} where $∇_h^2 = ∂_x^2 + ∂_y^2$.
+
+\subsection{Normal mode expansion}
+
+Assume $φ = \hat{φ} e^{st + i \imath(k_x x + k_y y)}$, so the operators become \[ \hat{\mM} = \begin{pmatrix} ∂_y^2 - k^2 & 0 \\ 0 & 1 \end{pmatrix} \qquad \begin{pmatrix}
+\pr( ∂_y^2 - k^2 )^2 & - \pr k^2 \\ \ra &  (∂_y^2 - k^2)^2
+\end{pmatrix} \] where $k^2 = k_x^2 + k_y^2$.
+
+With the boundary conditions, we say $\hat{θ}(z = 1) = 0$, and no slip so $∂_z u_y = ∂_z u_x = 0$ at the boundary, and also $∂^2 u_x = 0$. The solution ansatz is then $\hat{φ} = \tilde{f} \sin (nπz)$ and we have the following dispersion relation: \[ s^2 + (1 + \pr)k_n^2 s + \pr\left(k_n^4 - \ra \frac{k^2}{k_n^2}\right) = 0\] with $k_n^2 = k^2 + (nπ)^2$. So, condition for instability, we need to have \[ \ra > \frac{(k^2 + n^2 π^2)^3}{k^2} ≝ \ra_n (k)\]
+
+\subsection{Marangoni effect}
+
+This effect is driven by surface tension, where two fluids with different densities react based on surface tension. This can also be easily demonstrated by spreading a thin film of water on a smooth surface and then allowing a drop of alcohol to fall on the center of the film. The liquid will rush out of the region where the drop of alcohol fell.
+
+The Marangoni number is \[ M = \frac{σ_T Δt d}{ρνκ} \]
+
+\section{Taylor-Couette}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/TaylorCouette.png}
+\caption{Taylor-Couette instability situation}
+\label{fig:TaylorCouette}
+\end{figure}
+
+\subsection{Equations and base flow}
+
+In this case we are going to forget the physical mechanism until later. The flow equations come from the cylindrical Navier-Stokes equations after neglecting viscous stress and probably another thing:
+\begin{align*}
+ρ\frac{U_θ^2}{r} &= \dpd{P}{r} \\
+\dpd[2]{U_θ}{r} + \frac{1}{r} \dpd{U_θ}{r} - \frac{U_θ}{r^2} &= 0
+\end{align*} with boundary conditions $U_θ(R_1) = R_1Ω_1$ and $U_θ(R_2) = R_2Ω_2$.
+
+The general solution of this equation is $U_θ(r) = Ar + \sfrac{B}{r}$ where \[ A = \frac{Ω_2 R_2^2 - Ω_1R_1^2}{R_2^2-R_1^2} \qquad B = \frac{(Ω_1 - Ω_2)R_1^2 R_2^2}{R_2^2 - R_1^2} \]
+
+Here we apply the Rayleigh criterion.
+
+\begin{prop}[Rayleigh criterion] A necessary and sufficient condition for stability of the $(0, U_θ(r), 0)$ basic flow with $r ∈ (R_1, R_2)$ to inviscid axisymmetric perturbations is that \[ \dpd{(rU_θ)^2}{r} > 0\] for $r ∈ [R_1, R_2]$
+\end{prop}
+
+Just as a reminder (or not), inviscid implies $μ = 0$, steady $∂_t = 0$, axisymmetric is $∂_θ = $, parallel $∂_z = 0$ and unidirectional is of the form $(0, U_θ(r), 0)$ so the final equation is \[ ρ \frac{U_θ^2}{r} = \dpd{P}{r}  \]
+
+\subsection{Physical mechanism}
+
+Here, the physical mechanism are centrifugal instabilities. When moving one annulus from $r_a$ to $r_b$, particles must maintain linear velocity, thus \[ V = 2πr_bU_θ(r_b) = 2πr_a u_θ(r_a)\]
+
+If the new velocity $ρu_θ^2(r_a)/r_a$ is greater than the pressure gradient given by $∂_rP(r_a)$, the annulus further escapes towards high $r$ and becomes unstable. Thus, the condition for instability is $U_θ^2(r_b)r_b^2 < U_θ^2(r_a)r_a^2$ which is exactly the Rayleigh criterion.
+
+\subsection{Inviscid study of a viscous fluid}
+
+In this case, we expect the base flow velocity profile to be selected only by viscosity. If the flow is found to be stable, we expect viscosity to stabilize even more. If not, we expect a critical Reynolds number.
+
+We will have two time scales for viscous and convective time, given by \[ τ_ν = \frac{(R_2 - R_1)^2}{ν} \qquad τ_{U_2} = \frac{R_2 - R_1}{Ω_2R_2} \] and the Reynolds number $\mop{Re}_2 = \sfrac{τ_ν}{τ_{U_2}}$. The Rayleigh criterion gives us then that \[ \dod{(rU_θ)^2}{r} = RAr(Ar^2 + B) < 0\] so the flow is unstable if $Ω_2 r_2^2 < Ω_1r_1^2$.
+
+\chapter{Stabilities on parallel flows}
+
+\section{Parallel flow concepts}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.7\textwidth]{img/CylinderWake.png}
+\caption{Parallel flow in a cylinder wake.}
+\label{fig:CylinderWake}
+\end{figure}
+
+Parallel flows, as the one in \fref{fig:CylinderWake}, are considerably important and apply in lots of situations. We will try to study them in a certain generic way. We will generalize them by a flow $\vec{U}$ as in \fref{fig:ParallelFlow} and work on its equations.
+
+\begin{figure}[hbtp]
+\centering
+\begin{tikzpicture}
+\draw[very thick, black] (-3, 2) -- (3, 2);
+\draw[very thick, black] (-3, -2) -- (3, -2);
+
+\draw[->] (0,0) -- (3.5, 0) node[right] {$x$};
+\draw[->] (0,-2.5) -- (0, 2.5) node[above] {$y$};
+\draw[->] (0,0,0) -- (0,0,3) node[left] {$z$};
+
+\draw[palette1, thick] plot[smooth, variable = \y, domain = -2:2] ({2 + (sin(2 * \y r) + \y*\y / 4) / 3}, {\y});
+
+\foreach \y in { -1.95, -1.75, ..., 2 }
+	\draw[palette1, ->] (0, \y) -- ({2 + (sin(2 * \y r) + \y*\y / 4) / 3}, {\y});
+
+\node[palette1] at (3, 1.3) {$U(y)$};
+\end{tikzpicture}
+\caption{Schematic of the setup of a parallel flow.}
+\label{fig:ParallelFlow}
+\end{figure}
+
+The base equations would be the 3D Euler equations:
+\begin{align*}
+\dv \vec{U} &= 0 \\
+\dpd{\vec{U}}{t} +\vec{U} · ∇\vec{U} &= - ∇P
+\end{align*} with basic flow + perturbation \[ \vec{U}(\vx, t) = U(y) \ve_x + \vu (\vx, t)\qquad P(\vx, t) = P_0 + p(\vx, t)\] which would give rise to the linear Euler equations:
+\begin{align*}
+\dv \vu &= 0 \\
+\left(\dpd{}{t} + U(y) \dpd{}{x}\right) \vu + U'(y) ν \ve_x &= -∇p
+\end{align*}
+
+Doing a normal mode decomposition, we would end up with a system of linear ODEs and a 3D dispersion relation given by $D(k_x \ve_x + k_z \ve_z, ω) = 0$. However, we can do the Squire's transformation, changing \begin{align*}
+\tilde{k}^2 &= k_x^2 + k_z^2 \\
+\tilde{k}\tilde{u} &= k_x \hat u + k_z \hat{w} \\
+\frac{\hat{p}}{\hat{k}} &= \frac{\hat{p}}{k_x}
+\end{align*} which gives a 2D dispersion relation $\tilde{D}(\tilde{k}, \tilde{ω}) = 0$ and the relationship $D(k_x \ve_x + k_z \ve_z, ω) = \tilde{D}\left(\sqrt{k_x^2 + k_z^2}, ω \frac{\sqrt{k_x^2 + k_z^2}}{k_x} \right) = 0$. Thus, to each oblique mode of temporal growth rate we can associate another two-dimensional mode with larger temporal growth rate, and then the wave of maximum growth is two-dimensional.
+
+The relevant conclusion is then that to understand instabilities in parallel flow we only need to study equations in 2D, and using the streamfunction $Ψ(x, y,t)$ which gives the following expression for the flow: \[ U = (U, V) = (∂_y Ψ, - ∂_x Ψ)\]
+
+There, we have the 2D vorticity equation \( \label{eq:2DVorticity} \left(\dpd{}{t} + \dpd{Ψ}{y} \dpd{}{x} - \dpd{Ψ}{x} \dpd{}{y}\right) Δ Ψ = 0\)
+
+If we suppose $Ψ(x,y,t) = U(y) y$ as the base flow (that, is, a base parallel flow), adding a perturbation ψ and linearizing gives the linear vorticity equation \( \label{eq:LinearVorticity} \left(\dpd{}{t} + U(y) \dpd{}{x}\right) Δ ψ - U''(y) \dpd{ψ}{x} = 0 \)
+
+Then, we can do a normal mode expansion so that $ψ = φ(y) e^{\imath(kx - ωt)}$. Assuming $φ(\pm ∞) = 0$, we end with the following equation \( (U(y) - c)·(φ'' - k^2 φ) - U''(y) φ = 0\) that will give a dispersion relation, where $c = \sfrac{ω}{k}$. This gives us the Rayleigh's inflection point criterion.
+
+\begin{prop}[Rayleigh's inflection point criterion] In order for the basic flow $U(y)$ to be unstable, it should have an inflection point $y_s$ such that $U''(y_s) = 0$.
+\end{prop}
+
+We can improve on that with the Fjorthoft criterion.
+
+\begin{prop}[Fjorthoft criterion] For monotonous velocity profiles with only one inflection point, $U'(y)$ should have a maximum for instability to be possible.
+\end{prop}
+
+\subsection{Application to wake instability}
+
+\begin{wrapfigure}{r}{0.25\textwidth}
+\centering
+\includegraphics[width = 0.25\textwidth]{img/WakeFlow.png}
+\caption{Velocity profile in a wake.}
+\label{fig:WakeFlow}
+\end{wrapfigure}
+
+If we have a velocity profile given by \[ U(y) = U_∞ + (U_c - U_∞) \mop{sech}^2 \frac{y}{δ} \] as in \fref{fig:WakeFlow} with velocity ratio $R = \frac{U_c - U_∞}{U_c + U_∞}$ we would need to solve a generalized eigenvalue problem given by \( \left(U \left(\dpd[2]{}{y} - k^2\right) -U''(y) \right) ψ = c\left(\dpd[2]{}{y} - k^2\right) ψ\) with boundary conditions $ψ(-L) = ψ(L) = 0$. Discretizing we can solve that problem computationally.
+
+\subsection{2D viscous flow}
+
+If we add viscosity, the 3D Navier-Stokes equations become
+\begin{align*}
+\dv \vec{U} &= 0 \\
+\dpd{\vec{U}}{t} + \vec{U} · ∇\vec{U} &= - ∇P + \frac{1}{\mop{Re}} Δ\vec{U}
+\end{align*}
+
+That would give us another dispersion relation $D(\vec{k}, ω, \mop{Re})$ that we can simplify using Squire's transformation again (adding $\tilde{k}\tilde{\mop{Re}} = k_x \mop{Re}$) and then \[ D(\vec{k}, ω, \mop{Re}) = \tilde{D}\left(\sqrt{k_x^2 + k_z^2}, ω \frac{\sqrt{k_x^2 + k_z^2}}{k_x}, \frac{k_x}{\sqrt{k_x^2 + k_z^2}} \mop{Re} \right) = 0\] which gives again the correspondence between a temporal growth rate mode in 3D with another of larger growth rate and at a lower Reynolds number.
+
+In 2D, the vorticity equation is\footnote{Note that $Δ^2 f = Δ(Δf)$.} \( \label{eq:2DVorticityVIsc} \left(\dpd{}{t} + \dpd{Ψ}{y} \dpd{}{x} - \dpd{Ψ}{x} \dpd{}{y}\right) Δ Ψ = \frac{1}{\mop{Re}} Δ^2 Ψ \) and with the corresponding linear vorticity \( \label{eq:LinearVorticityVisc} \left(\dpd{}{t} + U(y) \dpd{}{x}\right) Δ ψ - U''(y) \dpd{ψ}{x} = \frac{1}{\mop{Re}} Δ^2 ψ \)
+
+Doing again a normal mode decomposition $ψ = φ(y) e^{\imath(kx - ωt)}$ we have the Orr-Sommerfeld equation \( (U(y) - c) (φ'' - k^2 φ) - U''(y) φ = \frac{1}{\imath k \mop{Re}} \left(\dpd[2]{}{y} - k^2\right)^2 φ \) with boundary conditions $φ(\pm ∞) = 0$. As $\mop{Re} = \sfrac{ΔUδ}{ν}$, the maximum unstable wave mode is \[ ω_{i, \text{max}} \frac{δ}{ΔU} \simeq \sqrt{\frac{0.2}{1 + \sfrac{a}{0.2 \mop{Re}}}} \] where $a$ is constant, so it can be seen that viscosity has limited stabilizing influence.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width = 0.8\textwidth]{img/ReViscousKH.png}
+\caption{Stability graph for different Reynolds numbers.}
+\label{fig:StabilityKH}
+\end{figure}
+
+Note that confinement can influence the growth rate, with larger $L$ creating larger growth rates.
+
+\subsection{Inviscidly stable flows}
+
+For inviscidly stable flows with no inflexion points, instabilities can still be found
 
 \section{Kelvin-Helmholtz instability}
 
-Two interpretations, Bernoulli and rotation, see slides. Then use Euler equations (incompressible Navier-Stokes without viscosity), and we need to force continuity with $∂_xu + ∂_y v = 0$ so usnig the streamfunctions gives is this condition for free.
+\begin{figure}[hbtp]
+\centering
+\begin{minipage}{0.45\textwidth}
+\includegraphics[width = \textwidth]{img/HolmboeTube.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}
+\draw[very thick, black] (-2, 1) -- (2, 1);
+\draw[very thick, black] (-2, -1) -- (2, -1);
 
-\[ u = ∂_y ψ \quad v = ∂_x ψ \]
+\foreach \y in {0.05, 0.15, ..., 0.95} {
+	\draw[palette1, ->] (0, \y) -- (0.8, \y);
+	\draw[palette1, ->] (0, -\y) -- (-0.8, -\y);
+}
 
-Things similar to Rayleigh-Taylor. Key in other instabilities, and inflection points.
+\draw[thin, gray] (-2, 0) -- (2,0);
+\draw[dotted] (0, 1) -- (0,-1);
+\end{tikzpicture}
+\end{minipage}
+\caption{An experiment for the Kelvin-Helmhotz instability and the corresponding schematic of the flow.}
+\label{fig:KelvinHelmholtz}
+\end{figure}
 
-\section{Cylinder wake}
+There are two interpretations for this instability. One is due to Bernoulli effect, which is the one we can see in \fref{fig:KelvinHelmholtz}: moving the tube forces a movement of fluids according to densities. We can also see this instability with one fluid moving on top of the other.
 
-Two-dimensional instability.
+\subsection{Equations and boundary conditions}
 
-About parallel flows: for any given 3D instability we can find another 2D instability with lower reynolds number.
-
-\section{Vorticity?}
-
-Sinous, varicose and single street flows: vorticity sheets turning into discrete vortices.
-
-Inviscid limitt! We take euler equations
+The equations in this case would be the Euler equations (incompressible Navier-Stokes without viscosity), and we need to force continuity with $∂_xu + ∂_y v = 0$. An advantage is that we can use the streamfunction formulation where $\appl{Ψ}{ℝ^2 × ℝ^+}{ℝ}$ is the streamfunction and the velocity field of the flow is given by $\vu = (U, V) = (∂_y Ψ, - ∂_x Ψ)$. This leads to the streamfunction formulation of the Euler equations:
 \begin{align*}
-\dpd{\vu}{t} + \vu \grad \vu &= - \grad p \\
-\dv \vu &= 0
-\end{align*} which are Navier-Stokes without viscosity and incompressible fluid ($\dv u = 0$).
+\left(\dpd{}{t} + U_1 \dpd{}{x} + V_1 \dpd{}{y}\right) ΔΨ_1 &= 0 \\
+\left(\dpd{}{t} + U_2 \dpd{}{x} + V_2 \dpd{}{y}\right) ΔΨ_2 &= 0
+\end{align*}
 
-Our base flow is $\vu = u(y) \ve_x$. Then we add a perturbation $u'$.  Equations, things, calculations. Then linearized euler. Then more computations and details, normal mode expansion because there's no deependence between $x, z, t$ so wavenumbers are independent. Final equations (hats are Fourier transforms:
+Boundary conditions are similar than in Rayleigh-Taylor (impermeability) so our equation for the interface $η(x,t)$ is \( \dpd{η}{t} = V_1 - U_1 \dpd{η}{x} \label{eq:KH:Interface} \)
+
+For kinematic boundary conditions, assume $Ψ_1 = W_1y$ at $y = -∞$ and $Ψ_2 = W_2y$ at $y = +∞$ and the pressure by \[ P_1 - P_2 = - γ \frac{\dpd[2]{η}{x}}{\left(1 + \left(\dpd{η}{x}\right)^2\right)^{\sfrac{3}{2}}} \]
+
+\subsection{Base flow, perturbation and linearization}
+
+For the base flow we assume the following state:
+\begin{gather*}
+η = 0 \\
+\begin{aligned}
+Ψ_1 &= W_1 y & Ψ_2 &= Y_2 y \\
+P_1 &= -ρ_1 gz & P_2 &= - ρ_2 g z
+\end{aligned}
+\end{gather*}
+
+We then add the perturbation and linearize, and we end up with $Δψ_1 = Δψ_2 = 0$ and the velocity field as $\vu_i = (u_i, v_i) = (∂_y ψ_i, -∂_x ψ_i)$.
+
+For the perturbation, we set $ψ_1 = 0$, $ψ_2 = 0$ at $z = \mp ∞$ respectively, and then replacing in \eqref{eq:KH:Interface} at $y = εσ$ gives us \begin{align*}
+-W_1 \dpd{σ}{x} - \dpd{ψ_1}{x} &= \dpd{σ}{t} \\
+-W_2 \dpd{σ}{x} - \dpd{ψ_2}{x} &= \dpd{σ}{t} \\
+\end{align*}
+
+We do a Taylor expansion around $0$ so that $ψ(εσ) = ψ(0) + \eval[1]{(εσ)∂_yψ}_0$ and we can then evaluate the previous equations at $y = 0$ instead of at $y = εσ$. Finally, perturbing and linearizing Euler equations we have
 \begin{align*}
-- \imath ω\hat{u}_x + U(y) \imath k_x \hat{u}_x + \hat{u} \dod{U(y)}{y} &= - \imath k_x \hat{p} \\
--\imath ω \hat{u}_y + U(y) \imath k_x \hat{u}_y + 0 &= - \dpd{\hat{p}}{y} \\
--\imath ω \hat{u}_z + U(y) \imath k_x\hat{u}_z &= -i k_z \hat{p} \\
-\imath k_x \hat{u}_x + \dod{\hat{u}_y}{y} + \imath k_z \hat{u}_z &= 0 \end{align*}
+\dpd{u_1}{t} + W_1 \dpd{u_1}{x} &= - \frac{1}{ρ_1} \dpd{p_1}{x} \\
+\dpd{u_2}{t} + W_2 \dpd{u_2}{x} &= - \frac{1}{ρ_2} \dpd{p_2}{x} \\
+\end{align*}
 
-The last one is the divergence of the Fourier expansion. Once here, we do a transformation $\tilde{k} = \sqrt{k_x^2 + k_z^2}$ which is in the slides. Even more horrible equations
+\subsection{Normal mode expansion}
 
-I don't know how but non-orthogonality of the eigenvalues may imply a transient growth of the isntability which in turn may cause instability even in asymptotically stable states. Very cool. Operator norms and singular value decompositions.
+We do the following normal mode expansion:
+\begin{align*}
+ψ_1 &= f_1(y) e^{\imath(kx - ωt)} \\
+ψ_2 &= f_2(y) e^{\imath(kx - ωt)} \\
+σ 	&= Ce^{\imath(kx - ωt)}
+\end{align*}
 
-Something I didn't attend to the last class.
+As $ψ_1, ψ_2$ must be solutions to the Laplace equation, we can say $f_1(y) = Ae^{ky}$, $f_2(y) = B e^{-ky}$. Replacing into the previous equations, we end up with the following linear system to solve:
+\begin{align*}
+g(ρ_2 - ρ_1) C + ρ_1(w - W_1k)A + ρ_2(ω - W_2k)B &= γk^2C \\
+-\imath kW_1 C - \imath k A &= -\imath ω C \\
+-\imath kW_2 C - \imath k B &= -\imath ω C
+\end{align*}
+
+Searching for non-trivial solutions forces the determinant to be zero and so we have the following dispersion relation:
+\( \frac{ω}{k} = \frac{ρ_1 W_1 + ρ_2 W_2 + \sqrt{(ρ_1 W_1 + ρ_2W_2)^2 - (ρ_1 W_1^2 + ρ_2W_2^2 - \sfrac{g(ρ_1 - ρ_2)}{k} - γk)(ρ_1 + ρ_2)}}{ρ_1 + ρ_2}\) or in a non-horrendous way \( ω - k\avg{U})^2 = - \left(\frac{ΔUk}{2}\right)^2 + \frac{γ}{2ρ}k^3\)
+
+Note that if $W_1 = W_2 = 0$, we have the dispersion relation for Rayleigh-Taylor.
+
+\section{Transient growth}
+
+An interesting issue in Rayleigh-Bénard-Couette and Rayleigh-Poiseuille flows is that they can be unstable even when a normal mode analysis indicates that they should be stable. Suppose we have the following linear system \[ \dod{q}{t} = \mL q \qquad q(0) = q_0 \]
+
+This gives a solution $q(t) = \exp(\mL t) q_0$. With this, we can calculate the optimal gain of a given system: \[ G(t) = \max_{q_0} \frac{\norm{q}}{\norm{q_0}} = \norm{\exp(t \mL)} \]
+
+This means that an optimal perturbation, even when being asymptotically stable, can have a transient growth above a certain threshold that causes instability.
+
+The kinetic energy of the perturbation is given by $e_c = \frac{1}{2}(u^2 + v^2 + w^2)$ and then the change is given by \[ \dod{}{t} \int_{y_1}^{y_2} e_c \dif y = \underbracket{\int_{y_1}^{y_2} ∂_y \avg{U} τ_{xy} \dif y}_{\text{Production term}} - \underbracket{\frac{1}{\rey} \int_{y_1}^{y_2} \pesc{ω, ω} \dif y}_{\text{Dissipation term}} \]
+
+\section{Hyperbolic tangent mixing layer}
+
+Interesting case of the hyperbolic tangent mixing layer with equations \[ U(y) = \avg{U} + \frac{ΔU}{2} \tanh \frac{2y}{δ_w} \qquad δ_w(x) = \frac{U_1 - U_2}{\max \dif_y U}\] with velocity ratio $R = \frac{U_1 - U_2}{U_1 + U_2} = \sfrac{ΔU}{2\avg{U}}$.
+
+This is always unstable, with dispersion relation $ω(k, R) = k + Rω_1(k)$ and $c_r = \sfrac{ρ_r}{k}$.
+
+\section{Broken-line profile mixing layer}
+
+Just a linear transition. That gives the equation $φ'' - k^2φ = 0$, use normal modes and the final equation is \[ c = \frac{ω}{k} = 1 \pm \frac{R}{2k}\sqrt{(2k - 1) ^ 2 - e^{-4k}} \]
+
+We can use temporal or spatial approaches depending on whether we want a temporal or spatial instability. The Gaster transformation is done assuming that $R \ll 1$ and then $-k_i(ω, R) \sim Rω_{1,i}(ω)$.
+
+\section{Linear impulse response}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/WaveSpeed.png}
+\caption{Spatial-temporal instability schematic.}
+\label{fig:SpatTempInstab}
+\end{figure}
+
+With little to no known relation to what we were discussing earlier, the gain function $G(x,t)$ gives us several types of instability. If $\lim_{t \to ∞} G(x,t) = 0$ along all rays with $x/t$ constant, we have a linearly stable flow. But if for one ray we have an infinite, we are in a linearly unstable flow, which is an instability that develops together in space and time. It might happen that for every $x$ it is asymptoticall stable, but it can move too.
+
+We can distinguish on the instability if along the ray $x = 0$; we have limit $G \to 0$ or $G \to ∞$, which are called convectively or absolutely unstable flows.
+
+To study these, we see the value of $ω(k)$ with $k ∈ ℂ$, searching for a saddle point where $∂_k ω = 0$. This gives us the criterion of \fref{tab:FourierStabCriteria}.
+
+\begin{table}[hbtp]
+\centering
+\begin{tabular}{rrr}
+\toprule & $> 0$ & $< 0$ \\\midrule
+$ω_{i,\text{max}}$ & Linearly unstable & Linearly stable \\
+$ω_{0, i}$ & Absolutely unstable & Convectively unstable \\ \bottomrule
+\end{tabular}
+\caption{Stability for ω.}
+\label{tab:FourierStabCriteria}
+\end{table}
 
 \appendix
 
-\chapter{Exercises}
-\input{tex/Instability_Exerc.tex}
+\chapter{Equations and other tools}
+
+\section{Navier-Stokes}
+
+Navier-Stokes equation model the flow velocity $\appl{u}{ℝ^3}{ℝ^3}$ of a fluid with density $ρ$ at pressure $p$ and viscosity $μ$, everything depending on time.
+
+\(
+\begin{aligned}
+ x&:\ &\rho \left(\frac{\partial u_x}{\partial t} + u_x \frac{\partial u_x}{\partial x} + u_y \frac{\partial u_x}{\partial y} + u_z \frac{\partial u_x}{\partial z}\right) &= -\frac{\partial p}{\partial x} + \mu \left(\frac{\partial^2 u_x}{\partial x^2} + \frac{\partial^2 u_x}{\partial y^2} + \frac{\partial^2 u_x}{\partial z^2}\right) \\ & & &- \mu \frac{\partial}{\partial x} \left( \frac{\partial u_x}{\partial x} + \frac{\partial u_y}{\partial y} + \frac{\partial u_z}{\partial z} \right) + \rho g_x \\
+ y&:\ &\rho \left(\frac{\partial u_y}{\partial t} + u_x \frac{\partial u_y}{\partial x} + u_y \frac{\partial u_y}{\partial y}+ u_z \frac{\partial u_y}{\partial z}\right) &= -\frac{\partial p}{\partial y} + \mu \left(\frac{\partial^2 u_y}{\partial x^2} + \frac{\partial^2 u_y}{\partial y^2} + \frac{\partial^2 u_y}{\partial z^2}\right) \\ & & &- \mu \frac{\partial}{\partial y} \left( \frac{\partial u_x}{\partial x} + \frac{\partial u_y}{\partial y} + \frac{\partial u_z}{\partial z} \right) + \rho g_y \\
+ z&:\ &\rho \left(\frac{\partial u_z}{\partial t} + u_x \frac{\partial u_z}{\partial x} + u_y \frac{\partial u_z}{\partial y}+ u_z \frac{\partial u_z}{\partial z}\right) &= -\frac{\partial p}{\partial z} + \mu \left(\frac{\partial^2 u_z}{\partial x^2} + \frac{\partial^2 u_z}{\partial y^2} + \frac{\partial^2 u_z}{\partial z^2}\right) \\ & & &- \mu \frac{\partial}{\partial z} \left( \frac{\partial u_x}{\partial x} + \frac{\partial u_y}{\partial y} + \frac{\partial u_z}{\partial z} \right) + \rho g_z. \\
+ Cont&:\ &  \frac{\partial \rho}{\partial t} + \frac{\partial \left(\rho u_x \right) }{ \partial x} + \frac{\partial \left(\rho u_y\right) }{ \partial y} + \frac{\partial \left(\rho u_z\right) }{ \partial z} &= 0
+\end{aligned} \label{eq:NavierStokes:Cartesian} \)
+
+Equations in cylindrical coordinates
+
+\(
+\begin{aligned}
+ r&:\ & \rho \left(\frac{\partial u_r}{\partial t} + u_r \frac{\partial u_r}{\partial r} + \frac{u_{\phi}}{r} \frac{\partial u_r}{\partial \phi} + u_z \frac{\partial u_r}{\partial z} - \frac{u_{\phi}^2}{r}\right) &= -\frac{\partial p}{\partial r} + \mu \left(\frac{1}{r}\frac{\partial}{\partial r}\left(r \frac{\partial u_r}{\partial r}\right) +
+ \frac{1}{r^2}\frac{\partial^2 u_r}{\partial \phi^2} + \right.\\ & & &\left. + \frac{\partial^2 u_r}{\partial z^2} - \frac{u_r}{r^2} -
+ \frac{2}{r^2}\frac{\partial u_\phi}{\partial \phi} \right) + \rho g_r \\
+ \phi&:\ & \rho \left(\frac{\partial u_{\phi}}{\partial t} + u_r \frac{\partial u_{\phi}}{\partial r} +
+ \frac{u_{\phi}}{r} \frac{\partial u_{\phi}}{\partial \phi} + u_z \frac{\partial u_{\phi}}{\partial z} + \frac{u_r u_{\phi}}{r}\right) &= -\frac{1}{r}\frac{\partial p}{\partial \phi} + \mu \left(\frac{1}{r}\frac{\partial}{\partial r}\left(r \frac{\partial u_{\phi}}{\partial r}\right) +
+ \frac{1}{r^2}\frac{\partial^2 u_{\phi}}{\partial \phi^2} + \right.\\ & & &\left. + \frac{\partial^2 u_{\phi}}{\partial z^2} + \frac{2}{r^2}\frac{\partial u_r}{\partial \phi}-\frac{u_{\phi}}{r^2}\right) + \rho g_{\phi} \\
+ z&:\ & \rho \left(\frac{\partial u_z}{\partial t} + u_r \frac{\partial u_z}{\partial r} + \frac{u_{\phi}}{r} \frac{\partial u_z}{\partial \phi} +
+ u_z \frac{\partial u_z}{\partial z}\right) &= -\frac{\partial p}{\partial z} + \mu \left(\frac{1}{r}\frac{\partial}{\partial r}\left(r \frac{\partial u_z}{\partial r}\right) +
+ \frac{1}{r^2}\frac{\partial^2 u_z}{\partial \phi^2} + \frac{\partial^2 u_z}{\partial z^2}\right) + \rho g_z \\
+ Cont&:\ & \frac{\partial\rho}{\partial t} + \frac{1}{r}\frac{\partial}{\partial r}\left(\rho r u_r\right) + \frac{1}{r}\frac{\partial \left(\rho u_\phi\right)}{\partial \phi} + \frac{\partial \left(\rho u_z\right)}{\partial z} &= 0
+\end{aligned} \label{eq:NavierStokes:Cylindrical}
+\)
+
+\section{Random physics facts}
+
+At an interface with normal $\vn$ and curvature $\mathcal{C}$, two fluids will have an equilibrum of $σ_1 \vn - σ_2 \vn = γ\mathcal{C} \vn$, where $γ$ is the surface tension. More specifically, if the difference in pressure is $Δp$, the equation reads $Δp = - γ \left(\sfrac{1}{R_1} + \sfrac{1}{R_2}\right)$.
+
+Ideal gas law: $PV = nRT$.
+
+Reynolds number: $\mop{Re} = \frac{ρvL}{μ}$ with ρ density, $v$ speed, $L$ some kind of length, and $μ$ dynamic viscosity ($N·s/m^2$).
+
+Rayleigh number controling buoyancy: $\mathrm{Ra} = \frac{α g ΔT x^3}{μ κ}$ with α thermal expansion coefficient, κ thermal diffusivity, $ΔT$ difference in temperature between the point and another place far from the surface of the object and $g$ is gravity.
+
+\section{Random math facts}
+
+If $f'' = k^2 f$, then $f = c_1 e^{kx} + c_2 e^{-kx}$ with possibly $k ∈ ℂ$.
+
+Divergence in cylindrical coordinates: \[ \dv (A_ρ, A_φ, A_z) = \frac{1}{ρ} ∂_ρ (ρA_ρ) + \frac{1}{ρ} ∂_φ A_φ + ∂_z A_x \]
+
+For curl, $\curl (\curl \vv) = ∇ \dv \vv - Δ \vv$. Laplacian of a vector is the vector of the laplacian of every coordinate.
+
+Also, $Δ^2 f = ∇^4 f= Δ(Δf) = \sum_i \sum_j \frac{∂^4f}{∂x_i^2 ∂x_j^2}$.
+
+If $\vv = (v_1, \dotsc, v_n)$ is a vector field, then \begin{align*}
+Δ\vv = ∇^2 \vv &= ∇\dv \vv - \curl(\curl \vv)\\
+∇\vv &= (∇v_1, ∇v_2, \dotsc, ∇v_n) \text{  (Matrix)}
+\end{align*}
+
+
+Some rules:
+\begin{align*}
+                           \nabla (fg) &= f\nabla g + g\nabla f \\
+           \nabla(\vec u \cdot \vec v) &= \vec u \times (\nabla \times \vec v) + \vec v \times (\nabla \times \vec u) + ( \vec u \cdot \nabla) \vec v + (\vec v \cdot \nabla )\vec u \\
+               \nabla \cdot (f \vec v) &= f (\nabla \cdot \vec v) + \vec v \cdot (\nabla f) \\
+   \nabla \cdot (\vec u \times \vec v) &= \vec v \cdot (\nabla \times \vec u) - \vec u \cdot (\nabla \times \vec v ) \\
+              \nabla \times (f \vec v) &= (\nabla f) \times \vec v + f (\nabla \times \vec v) \\
+  \nabla \times (\vec u \times \vec v) &= \vec u \, (\nabla \cdot \vec v) - \vec v \, (\nabla \cdot \vec u) + (\vec v \cdot \nabla) \, \vec u - (\vec u \cdot \nabla) \, \vec v
+\end{align*}
 
 \chapter{Other data about the subject}
 
@@ -432,8 +808,9 @@ Exam will be a presentation of a paper, and then a small 20 \% written exam. The
 	\item Dry friction on the bead on a hoop.
 \end{enumerate}
 
-
-
 \backmatter
 \printindex
+
+\includepdf[pages={6,12,15,19,29,31}, nup=1x3]{pdf/_NonlinearAnalysis.pdf}
+
 \end{document}
