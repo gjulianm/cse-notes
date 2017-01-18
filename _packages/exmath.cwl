@@ -157,6 +157,8 @@
 \vp#m
 \mA#m
 \mB#m
+\mL#m
+\mM#m
 \thethm#m
 \thedef#m
 \theexm#m
