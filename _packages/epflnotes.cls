@@ -79,6 +79,7 @@
 \RequirePackage[plain]{fancyref}
 \RequirePackage{booktabs}
 \RequirePackage{natbib}
+\RequirePackage{fastbuild}
 
 %% Some configurations and adjustements
 
@@ -253,6 +254,7 @@
 \newcommand{\titlesetup}[1]{\pgfkeys{/apntstitle, #1}} % Procesamos argumentos
 
 \newcommand{\fullpagetitle}{
+	\tikzexternaldisable
 	\begin{titlingpage}
 	\thispagestyle{empty}
 	\backgroundsetup{
@@ -260,7 +262,7 @@
 		angle=0,
 		opacity=1,
 		contents={
-		\begin{tikzpicture}[remember picture,overlay]
+		\begin{tikzpicture}[external/export = false, remember picture,overlay]
 			\fill[titlepagecolor] (-0.5\paperwidth, -0.5\paperheight) rectangle (-0.35\paperwidth, \paperheight);
 			\fill[titlepagecolor] (-0.33\paperwidth, -0.5\paperheight) rectangle (-0.32\paperwidth, \paperheight);
 			\fill[titlepagecolor] (-0.321\paperwidth, 0.1\paperheight) rectangle (0.5\paperwidth, 0.108\paperheight);
@@ -319,6 +321,7 @@
 	\end{minipage}
 	\hfill\includegraphics[width = 100pt]{EPFLLogo.eps}
 	\end{titlingpage}
+	\tikzexternalenable
 }
 
 \let\maketitle\fullpagetitle

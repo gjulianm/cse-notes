@@ -22,7 +22,7 @@ trycopy exmath.cwl ~/.config/sublime-text-3/Packages/User/cwl/
 
 
 echo "Copying packages..."
-if ! cp -v *.sty $latex_dir ; then
+if ! cp -v *.code.tex *.sty $latex_dir ; then
 	echo "${tred}Error copying packages! Did you run with sudo?${treset}"
 	exit
 else

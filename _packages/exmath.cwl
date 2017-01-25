@@ -21,6 +21,7 @@
 \Or#m
 \y#m
 \tq#m
+\st#m
 \wtf#m
 \deriv{f}{arg1}#m
 \dpa{arg0}{arg1}#m
@@ -159,6 +160,9 @@
 \mB#m
 \mL#m
 \mM#m
+\mU#m
+\mP#m
+\mR#m
 \thethm#m
 \thedef#m
 \theexm#m
@@ -352,3 +356,4 @@
 \mesh[h]#m
 \pspace#m
 \pspace[r]#m
+\linop#m

@@ -10,14 +10,22 @@
 
 \newif\if@useprobframes % Controla si los problemas tienen marcos o no
 \newif\if@usechap
+\newif\if@conceptmarginpar
+\newif\if@compact
 
-\DeclareOption{probframes}{\@useprobframestrue}
-\DeclareOption{noprobframes}{\@useprobframesfalse}
+\DeclareOption{probframes}{\global\@useprobframestrue}
+\DeclareOption{noprobframes}{\global\@useprobframesfalse}
 
-\DeclareOption{chap}{\@usechaptrue}
-\DeclareOption{nochap}{\@usechapfalse}
+\DeclareOption{chap}{\global\@usechaptrue}
+\DeclareOption{nochap}{\global\@usechapfalse}
 
-\ExecuteOptions{probframes, chap}
+\DeclareOption{conceptmarginpar}{\global\@conceptmarginpartrue}
+\DeclareOption{noconceptmarginpar}{\global\@conceptmarginparfalse}
+
+\DeclareOption{compact}{\global\@compacttrue}
+\DeclareOption{nocompact}{\global\@compactfalse}
+
+\ExecuteOptions{probframes,chap,nocompact,conceptmarginpar}
 \ProcessOptions
 
 % Paquetes requeridos
@@ -148,6 +156,7 @@
 \newcommand{\Or}{\vee}
 \newcommand{\y}{\wedge}
 \newcommand{\tq}{\;\diagup\;}
+\newcommand{\st}{\tq} % Porque cuando escribo en inglés es un peñazo.
 \newcommand{\wtf}{(?)}
 
 % Calculo
@@ -324,6 +333,9 @@
 \newcommand{\mB}{\mtr{B}}
 \newcommand{\mL}{\mtr{L}}
 \newcommand{\mM}{\mtr{M}}
+\newcommand{\mU}{\mtr{U}}
+\newcommand{\mP}{\mtr{P}}
+\newcommand{\mR}{\mtr{R}}
 
 % Teoremas. IGN
 \if@usechap
@@ -499,21 +511,26 @@
 	{\end{iprop}\@restore@itemlabels}
 
 \newenvironmentx{theorem}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
-	\vspace{2pt}
-	\toggle@IS@index %IGN
-	\ifthenelse{\equal{#2}{None}}
-		{\index{#1}}
-		{\index{#2}}
-	\set@labelname{#1}
-	\ifthenelse{\equal{#1}{}}
-		{}
-		{\ithm{#1}}
-	\toggle@IS@print %IGN
-	\@set@theorem@itemlabels
-	\begin{framed}
-
-	\begin{itheorem}[#1]}
-	{\end{itheorem}\end{framed}\@restore@itemlabels}
+	\if@compact\else\vspace{2pt}\fi%
+	\toggle@IS@index%
+	\ifthenelse{\equal{#2}{None}}%
+		{\index{#1}}%
+		{\index{#2}}%
+	\set@labelname{#1}%
+	\ifthenelse{\equal{#1}{}}%
+		{}%
+		{\ithm{#1}}%
+	\toggle@IS@print%
+	\@set@theorem@itemlabels%
+	\if@compact%
+	\begin{mdframed}[skipabove = 0pt, innerleftmargin = 2pt, innertopmargin=2pt, innerrightmargin=2pt, innerbottommargin=2pt]%
+	\else%
+	\begin{framed}%
+	\fi%
+	\begin{itheorem}[#1]\if@compact\vspace{-6pt}\fi}
+	{\end{itheorem}%
+	\if@compact\end{mdframed}\else\end{framed}\fi%
+	\@restore@itemlabels}
 
 
 \newenvironmentx{lemma}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
@@ -533,7 +550,7 @@
 
 
 \newcommand{\concept}[2][None]{\toggle@IS@print\textbf{#2}% IGN
-	\marginpar{\footnotesize \textit{\makefirstuc{#2}}}%
+	\if@conceptmarginpar\marginpar{\footnotesize\textit{\makefirstuc{#2}}}\else\marginpar{Woops}\fi%
 	\renewcommand{\IS}{!}%
 	\ifthenelse{\equal{#1}{None}}{\index{#2}}{\index{#1}}}
 
@@ -701,3 +718,4 @@
 % NAPDE
 \newcommand{\mesh}[1][h]{\ensuremath{\mathcal{T}_{#1}}\xspace}
 \newcommand{\pspace}[1][r]{\ensuremath{\mathbb{P}_{#1}}\xspace}
+\newcommand{\linop}{\ensuremath{\mathcal{L}}\xspace}
