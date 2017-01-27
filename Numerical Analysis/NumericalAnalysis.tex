@@ -1,156 +1,120 @@
-\documentclass[palatino]{epflnotes}
+\documentclass[a4paper, 4pt, twocolumn]{article}
 
-\title{Numerical Analysis and Computational Mathematics}
-\author{Guillermo Julián Moreno}
-\date{16/17 - Fall semester}
+\usepackage{lipsum}
+\usepackage{mathpazo}
+\usepackage[compact]{exmath}
+\usepackage{MathUnicode}
+\usepackage{xfrac}
+\usepackage[left = 0.5cm, right = 0.5cm, top = 0.5cm, bottom = 0.5cm]{geometry}
+\usepackage{algpseudocode}
 
-% Additional packages
-
-% --------------------
+\renewcommand{\rmdefault}{ppl}
 
 \begin{document}
-\frontmatter
-\pagestyle{plain}
-\maketitle
+\footnotesize
 
-\tableofcontents
-\mainmatter
-% Content
+\textbf{Solving equations}: Bisection (linear conv.). Newton generalized (quadr. convr) $\vf(x) = 0$ solve by $\vx^{k+1} = \vx^k - m J_{\vf}^{-1} · \vf(\vx^k)$ with jacobian, $m$ multiplicity zero (Newton is linear without the $m$ for $m > 1$). Derivative replaceable by rope $f' \approx \frac{f(b) - f(a)}{b - 1}$ and secant $f' \approx \frac{f(x^k) - f(x^{k-1})}{x^k - x^{k-1}}$ (superlinar convr). Monotonic.
 
-\chapter{Introduction}
+Fixed point, (recall fixed point thm), converges linearly at least. Quadratic if $φ'(α) = 0$ and $φ''(α) ≠ 0$. Monotonic.
 
-For starters, we will define what we understand as a mathematical problem and when it is well-posed.
+Newton as fixed point by $φ_n(x) = x - \frac{f}{f'}$.
 
-\begin{defn}[Mathematical problem] \label{def:MathProblem} A mathematical problem is the problem of finding solutions $x$ to the equation \[ F(x,d) = 0 \] for $x ∈ \mathcal{X}$ a solution, $d ∈ \mathcal{D}$ the given data; both in appropriate spaces $\mathcal{X}, \mathcal{D}$, and with $F$ some function.
-\end{defn}
+\hrule\vspace{3pt}
 
-What we will want to find in these problems are continuous dependence on the data: we want small perturbations in the data to cause only small changes in the solution. Formally:
+\textbf{Interpolation} Lagrangian basis, $φ_k(x_i) = δ_{ki}$ so that $φ_k(x) = \prod_{i=0, i ≠ k}^{n} \frac{x-x_i}{x_k - x_i}$. Error bounded by $\frac{1}{(n+1)!} \max |f^{n+1)}| \max \abs{ω_n}$ if $f ∈ C^{n+1}(I)$ and $ω_n(x) = \prod_{i=0}^n (x - x_i)$. If nodes are equally spaced $\max \abs{ω_n} ≤ n! \frac{h^{n+1}}{4}$ with $h$ spacing between nodes.
 
-\begin{defn}[Continous dependence on the data] Given a \nref{def:MathProblem}, we say that a solution $x ∈ \mathcal{X}$ is continously dependent on the data $d ∈ \mathcal{D}$ if and only if for all $δd$ such that $d + δd ∈ \mathcal{D}$ something something.
-\end{defn}
+For stability, denote $Λ_n = \max \sum_{i = 0}^n \abs{φ_i(x)}$ and then $\max |Π_nf - Π_n\hat{f}| ≤ Λ_n \max |f(x_i) - \hat{f}(x_i)|$ with $\hat{f}$ perturbed function. Equispaced lagrange has $Λ_n \sim \sfrac{2^{n+1}}{n \log n}$. Improved with Gauss Lobato nodes, given by $x_i = \frac{a+b}{2} + \frac{b-a}{2}\hat{x}_i$ with $\hat{x}_i = - \cos \sfrac{π i}{n}$. Interpolation works and $Λ_n \sim \log n$.
 
-One example of ill-posed (not well-posed) problem is finding the number of real roots of a polynomial. For example, given the problem $F(x,d) = x^4 - x^2(2d-1)+d(d-1)$, the number of real roots (4 if $d ≥ 1$, 2 if $d ∈ (0,1)$, 0 if $d < 0$) is not a continuous function.
+Piecewise polynomial interpolation of degree $r$h as error bounds of $\frac{h^{r+1}}{4 (r+1)} \max |f^{r+1)}|$.
 
-However, well-posed mathematical problems may exhibit large variations. We will introduce the condition number in order to measure these changes.
+Splines are piecewise interp. poly. of degree $r$ that is $C^{r-1}$ continuous. Two options: force $r-1$ derivative to be zero at $i = 0, n$ (natural) or force continuity of third derivative at $i = 1, n-1$. Error on $k$-th derivative bounded by $C_r H^{r + 1 - k} \max |f^{r+1)}|$.
 
-\begin{defn}[Conditioning number] Given a problem $F(x,d) = 0$ for data $d ∈ \mathcal{D}$, we define the conditioning number as \( K(d) ≝ \sup \set{ \frac{\sfrac{\norm{δx}}{\norm{x}}}{\sfrac{\norm{δd}}{\norm{d}}} ∀δd \tq d + δd ∈ \mathcal{D} } \)
-\end{defn}
+Least squares minimize $\sum (y_i - \hat{f}_m(x_i))^2$ with $\hat{f}_m$ polynomial of degree $m$. Solve by optimization $\pd{Φ}{b_j} = 0$ with $Φ(\vb) = \sum (y_i - (b_0 + b_1 x_i + \dotsb + b_mx_i^m))^2$. Linear system is oversized so $A = \trans{B}B$ and $\trans{B}{B} \va = \trans{B} \vy$.
 
-Copy from the slides here.
+\hrule \vspace{3pt}
 
-Analogous things for numerical problems.
+\textbf{Numerical differentiation} Finite differences (backward/forward linear error). Centered quadratic error. Forward/backward with order 2 are $f'(x) \approx \frac{1}{2h}(-3f(x) + 4f(x+ h) - f(x + 2h))$ and $f'(x) \approx \frac{1}{2h}(f(x - 2h) - 4f(x-h) + 3f(x))$.
 
-\chapter{Numerical approximation of nonlinear equations}
+\hrule \vspace{3pt}
 
-\section{Bisection method}
+\textbf{Numerical integration} Quadrature formulas based on interpolation polynomials on each subinterval of size $h$.
 
-\section{Newton method}
+Midpoint, $I(f) = (b-a)f(\sfrac{a+b}{2})$ error $\frac{b-a}{24}h^2 f''(ξ)$ exactness 1. Trapezoidal $I(f) = (b-a)\frac{f(a) + f(b)}{2}$ with error $\frac{b-a}{12}h^2 f''(ξ)$ exactness 1. Simpson (based on quadratic poly) is $I(f) = \frac{b-a}{6}(f(a) + 4f(\sfrac{a+b}{2}) + f(b))$ with error $- \frac{b-a}{2880} h^4 f^{4)}(ξ)$ exactness 3.
 
-Include a method for systems.
+General interpolation quadrature wher $I(f) = \int_I Π_n f(x) \dif x = \sum f(x_k) α_j$ with $α_j$ weights such as $α_j = \int_I φ_j $ with $φ_j$ the interpolation basis. Exactness $r ≥ n$. Restriction $\sum_{j=0}^n α_j = (b-a)$. In general, exactness $n + m$ if and only if the nodal polynomial $ω_{n+1} = \prod_{j=0}^n (x - x_j)$ is such that $\int_{-1}^1 ω_{n+1} p = 0$ for any $p ∈ \pspace[m-1]$.
 
-\section{Fixed-point iterations}
+Legendre polynomials have exactness $2n + 1$ with $L_0(x) = 1, L_1(x) =x$, $L_{k+1}(x) = \frac{2k+1}{k+1} x L_k(x) - \frac{k}{k+1} L_{k-1}(x)$. Also $\int_{-1}^1 L_{n+1} L_j = 0$. The nodes are the zeros of $L_{n+1}$. The Gauss-Legendre-Lobatto includes endpoints $-1$ and $1$ apart from the zeros of $L_{n}$.
 
-Contractive application theorem.
+\hrule \vspace{3pt}
 
-\chapter{Interpolation, approximation of functions and data}
+\textbf{Linear systems} of the form $\mA \vx = \vb$. LU factorization implies $\mA = \mL \mU$ so that we first solve $\mL \vy = \vb$ using forward substitution $y_i = \frac{1}{l_{ii}} (b_i - \sum_{j=1}^{i-1} l_{ij} y_j)$ and then $\mU \vx = \vy$ with backaward substitution $x_i = \frac{1}{u_{ii}} (y_i - \sum_{j=i+1}^{n} u_{ij} x_j)$ (starting from the bottom). Cost $\mathcal{O}(\sfrac{2n^3}{3})$. Also, $\det \mA = \det \mU$ because $\det \mL = 1$. Nonsingular matrix with nonsingular submatrices implies unique LU fact. It is enough with symmetry and definite positive, strictly diagonally dominant by row (diagonal is the higher in absval) or by column. Pivoting allows LU for any nonsingular matrix.
 
-Least squares method.
-
-\chapter{Numerical differentiation and integration}
-
-\section{Numerical differentiation}
-
-Try to approximate the value of $f'$ given $f ∈ C^1([a,b])$ for some $f ∈ (a,b) ⊆ ℝ$, or if only the set $\set{x_i, f(x_i)}_{i = 0}^n$ is provided. Finite difference, forward, backward, centered.
-
-\begin{prop} Error associated to forward and backward differences: \begin{align*}
-E_+f(x) &= -\frac{1}{2}hf''(ξ_+) \\
-E_-f(x) &= \frac{1}{2}hf''(ξ_-)
-\end{align*} for some $ξ_+, ξ_- ∈ (a,b)$.
-\end{prop}
-
-\begin{proof} Taylor
-\end{proof}
-
-For centered we need $f ∈ C^3$ and $E_cf(x) = -\frac{1}{2}h^2\left[f'''(ξ_+) + f'''(ξ_-)\right]$.
-
-Boundary nodes: use forward/backward or forward/backward with increased accuracy.
-
-\section{Numerical integration}
-
-\chapter{Numerical linear algebra}
-
-Something something
-
-\section{Richardson method}
-
-\subsection{Convergence study}
-
-\begin{prop}
-If $A, P ∈ ℝ^{n × n}$ are nonsingular, then the stationary preconditioned Richardson method converges to $\vx ∈ ℝ^n$ for all $\vx_0 ∈ ℝ^n$ if and only if \[ α \abs{λ_i}^2 < 2 \Re λ_i \] where $α ≠ 0$ and $λ_i$ are all the eigenvalues of $\inv{P}A$.
-\end{prop}
-
-\begin{corol} If $A, P ∈ ℝ^{n×n}$ are nonsingular with real eigenvalues, then the SPRM converges if and only if $0 < α λ_i < 2$ for all $i = 1, \dotsc, n$.
-\end{corol}
-
-For the election of the optimal value of α for the method, we will need to define an special norm.
-
-\begin{defn}[Energy norm][Norm!energy] The energy norm of a vector $\vv ∈ ℝ^n$ with respect to a symmetric and positive definite matrix $A$ is defined as \( \norm{\vv}_A = \sqrt{\trans{\vv} A \vv}\)
-\end{defn}
-
-\begin{prop} If $A, P ∈ ℝ^{n×n}$ are symmetric and positive definite, then the STRM converges for all initial values if and only if \[ 0 < α < \frac{2}{λ_{\text{max}}} \] with $λ_\text{max}$ the maximum eigenvalue of $\inv{P}A$. Moreover, the spectral radius of the iteration matrix $B_α$ is minimum for $α = α_{\text{opt}}$ where \( α_{\text{opt}} = \frac{2}{λ_\text{min} + λ_{\text{max}}} \) with $λ_\text{min}, λ_\text{max}$ the minimum and maximum eigenvalues of $\inv{P}A$. In this case, for $α = α_\text{opt}$ we have that \[ \norm{\ve_k}_A ≤ d^k \norm{\ve_0}_A \qquad k = 0, 1, \dotsc \] with \[ d = \frac{K(\inv{P}A) - 1}{K(\inv{P}A) + 1} \qquad K(\inv{P}A) = \frac{λ_\text{max}(\inv{P}A)}{λ_\text{min}(\inv{P}A)} \]
-\end{prop}
-
-\begin{remark} When $A$ and $P$ are both spd, then the eigenvalues of $\inv{P}A$ are all real and positive. Note that they are solutions of $A\vx = λP\vx$ so it is possible to show that \[ \frac{λ_\text{min}(A)}{λ_\text{max}(P)} ≤ λ_i ≤ \frac{λ_\text{max}(A)}{λ_\text{min}(P)}\]
-\end{remark}
-
-\begin{remark} The closer is the preconditioning matrix $P$ to $A$, the closer is $K(\inv{P}A)$ to $1$ and the further is the convergence. In this case, however, $P\vz_k = \vr_k$ will be more expensive to solve.
-\end{remark}
-
-\section{Gradient methods}
-
-With $A$ spd. This is equivalent to dynamic preconditions on the Richardson method with an optimal choice of $d_k$.
-
-\begin{prop} If $A, P ∈ ℝ^{n×n}$ are spd, then the preconditioned gradient method converges to the solution for all the choices of initial value and we have the same result \[ \norm{\ve_k}_A ≤ d^k \norm{\ve_0}_A \qquad k = 0, 1, \dotsc \]
-\end{prop}
-
-Also if $K(\inv{P}A) \ll K(A)$, it is a good precondition.
-
-\subsection{Interpretation of the gradient method}
-
-Let us introduce the quadratic form \begin{align*}
-\appl{Φ}{ℝ^n&}{ℝ} \\
-\vx &\longmapsto\frac{1}{2} \trans{\vx} A \vx - \trans{\vx} \vb
-\end{align*}
-
-Since $A$ is symmetric, we have that $∇Φ(\vx) = A \vx - \vb$ so if $\vx$ solves the linear system, then $∇Φ(\vx) = 0$ - in particular, $\vx$ minimizes Φ. This means that solving the linear system is equivalent to finding a minimum for Φ.
-
-So the shape of the Φ function will influence the behaviour of the method.
+\begin{minipage}{0.45\columnwidth}
+\begin{algorithmic}
+\State $\mL \gets I_n$.
+\State $\mP \gets I_n$.
+\State $\mA_1 \gets \mA$
+\For{$k = 1,\dotsc, n-1$}
+	\State $\mA_{k+1} \gets \mA_k$
+	\State $r \gets \argmax_{r = k,\dotsc,n} \abs{a^k_{rk}}$
+	\State \Call{Swap in $\mA, \mP$}{row $k$, row $r$}
+	\For{$i = k+1, \dotsc, n $}
+		\State $l_{ik} \gets \sfrac{a_{ik}^k}{a_{kk}^k}$
+		\For{$j = k+1, \dotsc, n$}
+			\State $a_{ij}^{k+1} \gets a_{ij}^k - l_{ik} a_{kj}^k$
+		\EndFor
+	\EndFor
+\EndFor
+\end{algorithmic}
+\end{minipage}
+\begin{minipage}{0.45\columnwidth}
+\begin{algorithmic}
+\State $r_{11} \gets \sqrt{a_{11}}$
+\For{$i = 2, \dotsc, n$}
+	\For{$j = i, \dotsc, i-1$}
+		\State $r_{ji} \gets \frac{1}{r_{jj}} (a_{ij} - \sum_{k=1}^{j-1}r_{ki} r_{jk})$
+	\EndFor
+	\State $r_{ii} \gets \sqrt{a_{ii} - \sum_{k=1}^{i-1}r^2_{ki}}$
+\EndFor
+\end{algorithmic}
+\end{minipage}
 
 
-\chapter{Numerical approximation of eigenvalue problems}
+Cholesky factorization is $\mA = \trans{\mR} \mR$ with $\mR$ upper triangular and $\mA$ symmetric and positive definite, cost $\mathcal{O}(\sfrac{n^3}{3})$. Can be used for solving systems as in LU
 
-\chapter{Numerical methods for ordinary differential equations}
+Thomas algorithm with tridiagonal $\set{e_i, a_i, c_1}$ has lower $\mL$ with diagonal $\set{β_i, i}$ and upper $\mU$ with $\set{α_i, c_i}$ with $α_1 = a_1$, $β_i = \frac{e_i}{α_{i-1}}$ and $α_i = a_i - β_i c_{i-1}$.
 
-Yet again Lotka-Volterra equations of population control. Cauchy-Lipschitz theorem for existence and uniqueness of ODEs $y' = F(t, y)$, $F ∈ C^0(I × ℝ)$ and Lipschitz-continuous on $y$.
+For accuracy, the conditioning number is $K(\mA) = ρ(\mA) ρ(\inv{\mA}) = \frac{λ_\text{max}}{λ_{\text{min}}}$. Perturbations $δ\vb$ are then $\frac{\norm{\vx - \hat{\vx}}}{\vx} ≤ K(\mA) \frac{\norm{δ\vb}}{\vb}$.
 
-Approximate by finite differences.
+Iteration methods in the way $\vx^{k+1} = \mB \vx^k + \vg$ (iter matrix and vector). Also $\norm{\ve^k} ≤ ρ(\mB)^k \norm{\ve^0}$. so convergence iff $ρ(\mB) < 1$. Splitting method introduce a preconditioner $\mP$ so that $\mB = I - \inv{\mP}\mA$ and $\vg = \inv{\mP}\vb$. Jacobi method implies using $\mP = D_\mA$ (diagonal of $\mA$) so that $x_i^{k+1} = \frac{1}{a_{ii}} (b_i - \sum_{j=1, j≠i}^n a_{ij} x_j^k)$. Gauss-Seidel uses $\mP$ the lower diagonal part (including the diagonal) of $\mA$ and that yields $x_i^{k+1} = \frac{1}{a_{ii}}(b_i - \sum_{j=1}^{i-1}a_{ij}x^{k+1}_j - \sum_{j+1}^n a_{ij}x^k_j)$. $\mA$ nonsingular and strictly diagonally dominant by row imply convergence of both methods for any guess, symmetric and positive definite implies convergence of GS.
 
-\appendix
+Preconditioned RIchardson is the same but solve $\mP\vz^k = \vr^k$ and set $\vx^{k+1} + α_k \vz^k$. The residual is $\vr^k = \vb - \mA \vx^{k}$, so it's actually $\vx^{k+1} = \vx^k + α_k \vz^k$ and $\vr^{k+1} = \vr^k - α_k \mA \vz^{k}$. Convergence if $\mA, \mP$ nonsingular and $α|λ_i(\inv{\mP}\mA)|^2 < 2 \Re λ_i(\inv{\mP}\mA)$. $α_\text{opt} = \frac{2}{λ_\text{min} + λ_\text{max}}$ with eigenvalues of $\inv{\mP}\mA$, convergence of stationary iff $0 < α < \frac{2}{λ_\text{max}}$. The gradient method is dynamic without preconditioning $\mP = I$ and $α_k = \frac{\vr^k · \vr^k}{\vr^k \mA \vr^k}$. Convergence is $\norm{\ve^k}_A≤ d^k \norm{\ve^0}_A$ with $d = \frac{K(\inv{\mP}\mA) - 1}{K(\inv{\mP}\mA) + 1}$.
 
-\chapter{Evaluation method}
+Preconditioned conjugate gradient is the same but we add another stage in each iteration so that set $α_k = \frac{\vz^k \vr^k}{\vp^k \mA \vp^k}$, set $\vx^{k+1} = \vx^k + α_k \vp^k$, $\vr^{l+1} = \vr^k - α_k A \vp^k$, solve $\mP \vz^{k+1} = \vr^{k+1}$, set $β_k = \frac{\vz^{k+1}\vr^{k+1}}{\vz^k \mA \vr^k}$ and set $\vp^k = \vz^{k+1} + β_k \vp^k$. Converges with $\norm{\ve^k}_A ≤ \frac{2c^k}{1 + c^{2k}} \norm{\ve^0}_A$ with $c = \frac{\sqrt{K(\mA)} - 1}{\sqrt{K(\mA)} + 1}$.
 
-Exam is written, and in the computer room. It covers all theoretical and practical arguments (3h/3.5h of duration). Examn is either free-form or multiple choice questions. Part of the questions should be solved numerically with MATLAB, as the exam includes the implementation and use of numerical methods.
+\hrule \vspace{3pt}
 
-In the exam, we can use the MATLAB tutorial, functions implemented in the exercise sessions and one page paper with formulae, definitions and theorems (only front face).
+\textbf{Eigenvalues} Power method is for each iteration $\vx^k = \mA \vy^{k-1}$, $\vy^k$ is $\vx^k$ unitary and then $λ^k = (\vy^k)^H\mA \vy^k$. Approximates largest ev usually stops when $\frac{λ^k - λ^{k-1}}{λ^k}$ small enough. Error as $\abs{\sfrac{λ_2}{λ_1}}^k$, with $2k$ if matrix hermitian. The inverse power method is the same but using the inverse matrix $\inv{\mA}$ so the smalles eigenvalue of $\mA$ is $1/λ^k$. Both can be used with shift $\tilde{\mA} = \mA - s$ so it returns the eigenvalue nearest to $s ∈ ℂ$.
 
-% \chapter{---}
-% \input{tex/NumericalAnalysis_Exerc.tex}
+\hrule \vspace{3pt}
+
+\textbf{ODEs} Remember Cauchy-Lipschitz unicity for the initial value $y'(t) = f(t,y(t))$, $\uexists$ if $f$ cont and Lipschitz continuous wrt $y$. Forward and backward euler methods, $u_0 = y_0$ and $u_{n+1} = u_n + hf(t_{n}, u_n)$, or $u_{n+1} = u_n + hf(t_{n+1}, u_{n+1})$ resp. USually backwards euler needs other method for solving equation.
+
+Crank-Nicholson combines both so $u_{n+1} = u_n + \frac{h}{2}(f(t_n, u_n) + f(t_{n+1}, u_{n+1}))$. Heun method is Crank-Nicholson but replacing $u_{n+1}$ by $u_{n+1}^* = u_n + hf(t_{n}, u_n)$ (forward euler).
+
+Forward/Backward euler is linear with $\abs{y(t_n) - u_n} ≤ h \frac{e^{L(t_n - t_0)} - 1}{2L} \max \abs{y''}$. Stability condition is $h < \frac{2}{\max \abs{∂_y f}}$. Crank-Nicholson and Heun have order $p = 2$.
+
+Zero-stability implies perturbations go to zero with enough step. Absolute stability is that $u_n \convs[][n] 0$ when $y'(t) = λy(t)$ with $λ < 0$. In forward euler and Hen, $h < \sfrac{2}{\abs{λ}}$. Forward euler nor Crank-Nicholson require restrition. Stability functions such that $u_n = [R(hλ)]^n y_0$ are $R^{FE} = 1 + z$, $R^{BE} = \frac{1}{1-z}$, $R^{CN} = \frac{1+z/2}{1 - z/2}$, $R^H(z) = 1 + z + \frac{z^2}{2}$. Thus for stability we need $\abs{R(z)} < 1$ with $z = hλ$. Also, absolute stability implies perturbation control. For proofs we consider the problem $z_{n+1} = z_n + h(f(t_n, z_h) + ρ_{n+1})$ and $z_0 = y_0 + ρ_0$ with $ρ_i$ the perturbations. Then we substract solution without perturbations $u_n$, mean value theorem, and things go well.
+
+Runge-Kutta are one-step where $u_{n+1} = u_n + h\sum_{i=1}^s b_k K_i$ with $K_i = f(t_n + c_ih, u_n + h \sum_{j=i}^{i-1} a_{ij}K_j)$ for some coefficients $\vc$, $\vb$ and $\mA$ which determine the Runge-Kutta method. The most widely employed RungeKutta is RK4 $u_{n+1} = u_n + \frac{h}{6}(K_1 + 2K_2 + 2K_3 + K_4)$ with $K_1 = f_n$, $K_2 = f(t_n + \frac{h}{2}, u_n + \frac{h}{2}K_1)$, $K_3 = f(t_n + \frac{h}{2}, u_n + \frac{h}{2}K_2)$, $K_4 = f(t_{n+1}, u_n + hK_3)$. This is based off the Simpson wuadrature rule to evaluate the integral between $t_n$ and $t_{n+1}$. Has 4th order convergence.
+
+Multistep methods, like $u_{n+1} = \sum_{j=0}^p a_j u_{n-j} + h \sum_{j=-1}^p b_j f(t_{n-j}, u_{n-j})$. Multistep is consistent if $\sum a_j = 1$ and $-\sum_{j=0}^p ja_j + \sum_{j=-1}^p b_j = 1$.
+
+The three-step third order Adams-Bashforth is $u_{n+1} = u_n + \frac{h}{12} (23 f_n - 16f_{n-1} + 5f_{n-2})$. Adams Moulton is implicit with fourth order and $a_{n+1} = u_n + \frac{h}{24} (9f_{n+1} + 19f_n - 5f_{n-1} + f_{n-2})$. Twostep, second order imlicit backward difference is $u_{n+1} = \frac{4}{3} u_n - \frac{1}{3} u_{n-1} + \frac{2h}{3} f_{n+1}$. Three-step third-order backward difference formula is $u_{n+1} = \frac{18}{11}u_n - \frac{9}{11}u_{n-1} + \frac{2}{11} u_{n-2} + \frac{6h}{11} f_{n+1}$.
+
+For systems, we have the θ-method where $\vu_{n+1} = \vu_n + h((1-θ) \vf(t_n, \vu_n) + θ \vf(t_{n+1}, \vu_{n+1}))$. Usually $\vf(t, \vu) = \mA \vy + \vg(t)$. $θ = 0$ is forward Euler, $θ=1$ is Backward Euler and $θ=0.5$ is Crank Nicholson (only with quadratic convergence). Heun method can be extrapolated here too. For stability, we force $h < \frac{2}{ρ(A)}$ (spectral radius).
+
+For high-order ODEs, rewrite problems as more first-order ODEs. Leap-frog and Newmark can be used too if $y'' = f(t, y, y')$, where we approximate $y'(t_n)$ by $\frac{u_{n+1} - 2u_n + u_{n-1}}{h^2} = f(t_n, u_n, v_n)$ and $y'(t_n)$ by $\frac{v_n} = \frac{u_{n+1} - u_{n-1}}{2h}$. Newmark method is more general with $u_{n+1} = u_n + hv_n + h^2[ξf(t_{n+1}, u_{n+1}, v_{n+1} + (\sfrac{1}{2} - ξ)f(t_n, u_n, v_n))]$ and $v_{n+1} = v_n + h[(1-θ)f(t_n, u_n, v_n) + θf(t_{n+1}, u_{n+1}, v_{n+1})]$, and $ξ, θ$ non-negative real numbers. Second order only if $θ = \sfrac{1}{2}$, we need $θ ≥ \sfrac{1}{2}$ for stability. If more $ξ = \frac{1}{4}$ then the method is unconditionally stable but introduces oscillatory spurious solutions on long time intervals, so thaere's better to use $ξ > (θ + \sfrac{1}{2})^2/4$ even though then it's linear order.
 
 
-\backmatter
-
-\nocite{scientificComputingMatlab}
-\bibliography{../EPFLNotes.bib}
-
-\printindex
 \end{document}
