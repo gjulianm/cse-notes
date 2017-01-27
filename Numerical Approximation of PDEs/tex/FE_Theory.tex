@@ -105,7 +105,7 @@ Bounded operators are already defined (check \cite{ApuntesAnalisisFunc}). For bi
 \begin{defn}[Continous\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is continous (or bounded\footnote{As with linear forms, both notions are equivalent}) if and only if exists $M > 0$ such that \[ \abs{a(u,v)} ≤ M \norm{u}_V \norm{v}_V\] for all $u,v ∈ V$.
 \end{defn}
 
-\begin{defn}[Coercive\IS bilinear form] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is coercive if an inly if exists a constant $α > 0$ such that \[ a(u,u) ≥ α \norm{u}^2\]
+\begin{defn}[Coercive\IS bilinear form][Coercivity] Given $V$ a Hilbert space and $\appl{a}{V×V}{ℝ}$ a bilinear form, we say that it is coercive if an inly if exists a constant $α > 0$ such that \[ a(u,u) ≥ α \norm{u}^2\]
 
 As notation, α is called the coercivity coefficient
 \end{defn}
@@ -174,6 +174,7 @@ A \vu &= \vf
 \end{align*} which is a system of linear equations that can be solved in a purely algebraic manner. There are some nice properties of the matrix $A$ that come from the problem statement. It is positive definite because $a$ is positive.
 
 \section{Convergence analysis of the Galerkin method}
+\label{sec:Theory:ConvergenceGalerkin}
 
 Now, on to the quality of the approximation. We will want to ensure that the approximate solution converges in some manner. If our bilinear form is symmetric, we can use Galerkin orthogonality:
 
@@ -369,13 +370,37 @@ We finish them with the theorems of the interpolation error. These theorems are 
 
 \begin{theorem}[Interpolation error\IS for smooth functions] Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, there exist $C_m > 0$ and $m = 0, \dotsc, r$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
 \begin{align}
-\norm{u - I_h^r }_{L^2(Ω)} &≤ C_0 h^{r + 1} \abs{v}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothL2} \\
-\norm{u - I_h^r}_{H^m(Ω)} &≤ C_m h^{r + 1 - m} \abs{v}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothHm}
+\norm{u - I_h^r u}_{L^2(Ω)} &≤ C_0 h^{r + 1} \abs{u}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothL2} \\
+\norm{u - I_h^ru}_{H^m(Ω)} &≤ C_m h^{r + 1 - m} \abs{u}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothHm}
 \end{align} with $C_m$ that depends on the aspect ratio $γ$ of the mesh family, $r$ and $m$, but otherwise independent of $h$.
 \end{theorem}
 
-\begin{theorem}[Interpolation error\IS for possibly non-smooth functions] Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, for $s ≥ 2$ and with $η ≝ \min \set{s, r + 1}$ there exists $C_m > 0$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
+\begin{theorem}[Interpolation error\IS for possibly non-smooth functions] \label{thm:Theory:InterpErrorNonSmooth} Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, for $s ≥ 2$ and with $η ≝ \min \set{s, r + 1}$ there exists $C_m > 0$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
 \begin{align}
-\norm{u - I_h^r}_{H^m(Ω)} &≤ C_m h^{η -m} \abs{v}_{H^{η}(Ω)} \label{eq:Theory:InterpSmoothHm}
+\norm{u - I_h^ru}_{H^m(Ω)} &≤ C_m h^{η -m} \abs{u}_{H^{η}(Ω)} \label{eq:Theory:InterpSmoothHm}
 \end{align} for $0 ≤ m ≤ η$ and with $C_m$ that depends on the aspect ratio $γ$ of the mesh family, $r$ and $m$, but otherwise independent of $h$.
 \end{theorem}
+
+\section{Non-conforming Galerkin method}
+
+Some times we will need a generalized Galerkin method in which something different happens. This is the Strang lemma, for which we need an additional definition.
+
+\begin{defn}[Uniform coercivity][Coercivity\IS uniform] Let $\set{V_h}$ be a family of subspaces of $V$, dense in $V$. Then, a bilinear form $a_h$ is uniformly coercive on $\set{V_h}$ if there exists a constant $α^* > 0$ independent of $h$ such that \[ a_h(v_h, v_h) ≥ α^* \norm{v_h}^2_{V}\quad ∀h > 0,\, v_h ∈ V_h \]
+\end{defn}
+
+Then the lemma commes.
+
+\begin{lemma}[Strang's lemma][Lemma!Strang] Consider the problem of finding $u ∈V$ such that \[ a(u,v) = F(v) \quad ∀ v ∈ V\] where $V$ is a Hilbert space, $F ∈ V'$ is a linear and continuous functional, and $\appl{a}{V×V}{ℝ}$ is a continuous (constant $M$) and coercive bilinear form. Consider its associated generalized Galerkin problem given by finding $u_h ∈V_h$ such that \[ a_h(u_h, v_h) = F_h(v_h) \quad ∀v_h ∈ V_h\] where $\set{V_h}_{h > 0}$ is a family of subspaces of $V$ and dense in $V$.
+
+If $a_h$ is uniformly coercive on $V_h$ with constant $α^*$, we have the following results:
+\begin{enumerate}
+	\item The generalized Galerkin problem is well posed with unique solution $u_h$.
+	\item There is an a-priori estimation of the solution given by \[ \norm{u_h}_V ≤ \frac{1}{α^*} \norm{F_h}_{V_h'} \]
+	\item The approximation error is bound by \(
+	\label{eq:Theory:StrangBound} \begin{aligned}
+	\norm{u -u_h}_V ≤& \inf_{w_h ∈ V_h} \left[\left(1 + \frac{M}{α^*} \right)\norm{u - w_h}_V \right. \\
+	& \qquad \left.+ \frac{1}{α^*} \sup_{\substack{v_h ∈ V_h \\ v_h ≠ 0}} \frac{\abs{a(w_h, v_h) - a(w_h, v_h)}}{\norm{v_h}_V}\right] \\
+	& + \frac{1}{α^*} \sup_{\substack{v_h ∈ V_h \\ v_h ≠ 0}} \frac{\abs{F(v_h) - F_h(v_h)}}{\norm{v_h}_V}
+	\end{aligned}\)
+\end{enumerate}
+\end{lemma}

@@ -1,0 +1,239 @@
+% -*- root: ../NumericalApproximationofPDEs.tex -*-
+\section{Weak formulation}
+
+\begin{problem} Consider the following boundary value problem: \[ \begin{cases}
+- (αu')' + βu' + γu = f & x ∈ Ω = (a,b) \\
+u(a) = u(b) = 0
+\end{cases}\] with $a, β, γ ∈ ℝ^+$ and $\appl{f}{(a,b)}{ℝ}$ a sufficiently regular function. Choose a suitable test function space $V$ and write the weak form of the problem.
+
+\solution
+
+We multiply by a test function $v ∈ V$, and we want to get rid of the second derivative in the term $-(αu')'$. To do that, we integrate by parts:
+\[ - \int_Ω α u'' v \dif x = - \eval[1]{αu'v}_{x = a}^b + \int_Ω αu'v' \dif x \] and we choose $V = H_0^1(Ω)$ to make the first term go to zero. The weak form has then the following forms:
+\begin{align*}
+a(u,v) &= \int_Ω αu'v' + βu'v + γuv \dif x \\
+F(v) &= \int_Ω f v \dif x
+\end{align*}
+\end{problem}
+
+\begin{problem} \label{ex:ODE:WeakForm2} Choose a suitable test function space and write the weak formulation of the following problems in a weak formulation. In every case, $α, β, γ ∈ ℝ^+$.
+
+\ppart \[ \begin{cases}
+- (αu')' + βu' + γu = f & x ∈ (0,1) \\
+u(0) = 0 \\
+u'(1) = 3
+\end{cases}\]
+
+\ppart \[ \begin{cases}
+- (αu')' + βu' + γu = f & x ∈ (0,1) \\
+u(0) = 0 \\
+c_1 u'(1) + c_2 u(1) = 3
+\end{cases}\] with $c_1, c_2$ non-null constants.
+
+\solution
+
+\spart
+
+We use the space $V = \set{v ∈ H^1(0,1) \tq v(0) = 0}$. As in the previous exercise, to remove the second derivative in the first term of the integral we have
+\[ - \int_0^1 α u'' v \dif x = - \eval[1]{αu'v}_{x = 0}^1 + \int_0^1 αu'v' \dif x = - 3 α v(1) + \int_0^1 αu'v' \] and so the forms are
+\begin{align*}
+a(u,v) &= \int_0^1 αu'v' + βu'v + γuv \dif x \\
+F(v) &= \int_0^1 f v \dif x + 3 α v(1)
+\end{align*}
+
+\spart
+
+We use again the space $V = \set{v ∈ H^1(0,1) \tq v(0) = 0}$ which comes restricted by the Dirichlet condition on 0. Then, we see what happens in the first term:
+\[ - \int_0^1 α u'' v \dif x = - \eval[1]{αu'v}_{x = 0}^1 + \int_0^1 αu'v' \dif x = - α \frac{1 - c_2 u(1)}{c_1} v(1) + \int_0^1 αu'v' \] and so the forms are
+\begin{align*}
+a(u,v) &= - α \frac{c_2 u(1)}{c_1} v(1) + \int_0^1 αu'v' + βu'v + γuv \dif x \\
+F(v) &= \int_0^1 f v \dif x + α \frac{1}{c_1} v(1)
+\end{align*}
+
+\end{problem}
+
+\begin{problem} Consider the following boundary value problem, with non-homogeneous boundary conditions: \[ \begin{cases}
+-(αu')' = f & x ∈ (0,1) \\
+u(0) = 1 \\
+u(1) = 2
+\end{cases} \] with $α ∈ ℝ^+$.
+
+Use the lifting technique to write a weak formulation of this problem.
+
+\solution
+
+By what we have seen in the previous exercises, the space of test functions is $H_0^1$ and the forms are \begin{align*}
+a(u,v) &= \int_0^1 α u' v' \dif x \\
+F(v) &= \int_0^1 f v \dif x
+\end{align*} although the issue here is that $u ∉ H_0^1$. However, we can decompose $u = \tilde{u} + R$ where $\tilde{u} ∈ H_0^1$ and $R(0) = u(0)$, $R(1) = u(1)$ and in that case the weak formulation changes to \begin{align*}
+a(u,v) &= F(v) \\
+a(\tilde{u} + R, v) &= F(v) \\
+a(\tilde{u}, v) &= F(v) - a(R, v) ≝ \tilde{F}(v)
+\end{align*}
+
+Here, choosing $R = 1 + x$ is enough and the modified form $\tilde{F}$ is \[ \tilde{F}(v) = F(v) - a(R, v) = \int_0^1 fv \dif x - \int_0^1 αv' \dif x \]
+\end{problem}
+
+\section{Lax-Milgram theorem}
+
+\begin{problem} Consider the following boundary value problem \[
+\begin{cases}
+-(μu')' +βu' + γu = f &\text{in } Ω = (a,b) \\
+u(a) = 0 \\
+u'(b) = g_b
+\end{cases}\] with $μ, β, γ ∈ L^∞(Ω)$, $β' ∈ L^∞(Ω)$, $g_b ∈ ℝ$ and $f ∈ L^2$.
+
+\ppart Write the problem in weak formulation.
+\ppart Give sufficient conditions on $μ, β, γ$ such that the problem has an unique solution by the \nref{thm:Theory:LaxMilgram}.
+
+\solution
+
+\spart
+
+Recalling \fref{ex:ODE:WeakForm2}, the weak form with mixed Neumann-Dirichlet boundary conditions is \begin{align*}
+a(u,v) &= \int_0^1 μu'v' + βu'v + γuv \dif x \\
+F(v) &= \int_0^1 f v \dif x + g_b  μ(1) v(1)
+\end{align*} with $V = \set{v ∈ H^1(Ω) \tq v(0) = 0}$.
+
+\spart
+
+Let's prove continuity of $a, F$ and coercivity of $F$. For continuity of $a$, assuming $M_μ = \essup μ$ and similarly for $β,γ$ we have
+\begin{align*}
+\abs{a(u,v)} ≤ \abs{\int_0^1 M_μ u'v' + M_β + M_γ uv \dif x} ≤ M_μ \abs{u}_{H^1}  \abs{v}_{H^1} + β \abs{u}_{H^1}\norm{v}_{L^2} + M_γ \norm{u}_{L^2} \norm{v}_{L^2}
+\end{align*} which is bounded by the correct norms when applying \nref{thm:Fund:PoincareInequality}.
+
+For continuity of $F$, we see that $g_b μ(1) v(1) = g_b μ(1) \left(\int_{∂Ω} v^2\right)^{\sfrac{1}{2}}$ and so we can bound it by the \nref{thm:Fund:Trace} \[ F(v) = \int_0^1 fv \dif x + g_b μ(1) v(1) ≤ \left(\norm{f}_L^2 + C_T g_b μ(1)\right) \norm{v}_{V}\]
+
+For coercivity of $a$, we need $m_μ = \esinf μ > 0$ and we have it.
+
+\end{problem}
+
+\begin{problem} The temperature $T$ of a bar of length $L$ and constant section $A$ satisfies, for $x ∈ (0,L)$, the following boundary value problem:
+\[
+\begin{cases}
+- k AT'' + σpT = 0 & x ∈ (0,L) \\
+T(0) = T_0 \\
+T'(L) = 0
+\end{cases}\] with $p$ the perimeter of the section $A$, $k$ the termal conductivity, $σ$ the convection coefficient and $T_0$ is a given value.
+
+\ppart Compute the analytical solution of the problem.
+\ppart Write the weak formulation of the problem.
+
+\solution
+
+\spart
+
+The analytical solution must fulfill \[ \frac{T''}{T} = \frac{σp}{kA} ≝ λ^2 > 0 \] so that its general solution is given by $T(x) = C_1 e^{λx} + C_2 e^{-λx}$. By replacing on the boundary conditions, we get the constants:
+\begin{align*}
+T'(L) &= 0 \\
+λ(C_1 e^{λL} - C_2 e^{-λL}) &= 0 \\
+C_1 e^{λL} &= C_2 e^{-λL} \\
+C_1 &= C_2 e^{-2λL} \\
+\end{align*} and
+\begin{align*}
+T(0) &= T_0 \\
+C_1 + C_2 &= T_0 \\
+C_2(e^{-2λL} + 1) &= T_0 \\
+C_2 &= \frac{T_0}{e^{-2λL} + 1} \\
+C_1 &= \frac{T_0 e^{-2λL}}{e^{-2λL} + 1}
+\end{align*}
+
+\spart
+
+Done already. Use a lifting function.
+
+\end{problem}
+
+\section{GLS Stabilization}
+
+\begin{problem} Consider the following advection-diffusion-reaction problem in non-conservative form.
+\[
+\begin{cases}
+Lu ≝ -(μu')' + bu' + γu = 0 & \text{in } Ω = (0,1) \\
+u(0) = 0 \\
+(μu')(1) = 0
+\end{cases}\] with $μ,b, γ ∈ L^∞(Ω)$ and $f ∈ L^2(Ω)$.
+
+\ppart Write the weak formulation of the problem.
+\ppart Show that the problem has a unique solution.
+\ppart Write the Galerkin formulation of the problem with GLS stabilization.
+\ppart Show that under the same hypothesis of the second part of the problem, the following inequality holds for the GLS stabilized problem: \[ \norm{u_h}_{GLS} ≤ C_0 \norm{f}_{L^2} \] where $C_0$ is a constant and \[ \norm{v}_{\text{GLS}}^2 = \norm{\sqrt{μ}v'}^2_{L^2} + \norm{\sqrt{\bar{γ}} v}^2_{L^2} + \sum_{K ∈ \mesh} \pesc{Lv, τ_K Lv} \] with \[ \bar{γ} = -\frac{1}{2} b'(x) + γ(x) \]
+
+\solution
+
+\spart
+
+As usual, multiply by a test function $v ∈ V = \set{v ∈ H^1(Ω) \tq v(0) = 0}$ and integrate by parts to get rid of the second derivative:
+\[ - \int_Ω (μu')' v \dif x = - \eval[1]{v (μu') \dif x}_{x = 0}^1+ \int_Ω μu'v' \dif x = \int_Ω μu'v' \dif x \]
+
+Thus, the weak formulation is given by the forms
+\begin{align*}
+a(u,v) &= \int_Ω μu'v' + bu' + γu \dif x \\
+F(v) &= \int_Ω fv \dif x
+\end{align*}
+
+\spart
+
+I am not going to prove yet another time again the hypothesis of Lax-Milgram on these forms. Do it yourself.
+
+\spart
+
+The problem under GLS stabilization\footnote{See \fref{sec:ODEs:StronglyConsistentMethods} for more details.} implies finding $u_h ∈ V_h$ such that for any $v_h ∈ V_h$ we have \[ a(u_h, v_h) + \linop(u_h, v_h) = F(v_h) + ψ(v_h)\] with \begin{align*}
+\linop(u_h, v_h) &= \sum_{K ∈ \mesh} \pesc{Lu_h, τ_K Lv_h} \\
+Ψ(v_h) &= \sum_{K ∈ \mesh} \pesc{f, τ_K Lv_h}
+\end{align*} and $τ_K$ a function given by \[ τ_K(x) = δ \frac{h_K}{\abs{b}(x)} \qquad δ > 0 \]
+
+\end{problem}
+
+\section{Parabolic problems}
+
+\begin{problem} Consider the following parabolic problem in $Ω = (0,1) ⊂ ℝ$: Find $\appl{u}{Ω ×ℝ^+}{ℝ}$ such that \[\begin{cases} \dpd{u}{t} - \dpd{}{x} \left(μ \dpd{u}{x} - βu\right) + γ u = 0 & x ∈ Ω × ℝ^+ \\
+u(x,0) = u_0(x) & x ∈ Ω\\
+u(0,t) = η & t > 0 \\
+μ(1) \dpd{u}{x} (1,t) - β(1) u(1,t) = -δu(1,t) & t > 0
+\end{cases} \] where $μ, β, β', γ ∈ L^∞(0,1)$, $μ(x) ≥ μ_0 > 0$, $u_0 \equiv u_0(x) ∈ L^2(Ω)$ are given functions, and $η ∈ ℝ$ and $δ ∈ ℝ^+$ are constants.
+
+\ppart Write the weak formulation of the problem, study coercivity and continuity of the bilinear form $a(·, ·)$.
+
+\ppart Show that the Galerkin formulation is stable
+
+\solution
+
+\spart
+
+As usual, multiply by test function $v ∈ V = \set{v ∈ H^1(Ω) \st v(0) = 0}$ and integrate by parts:
+\begin{align*}
+\dpd{u}{t} - \dpd{}{x} \left(μ \dpd{u}{x} - βu\right) + γ u &= \pesc{∂_t u, v} - \int_Ω \dpd{}{x} \left(μ \dpd{u}{x} - βu\right)v + γ u v \dif x = \\
+&= \pesc{∂_t u, v} - \int_{∂Ω} \left(μ \dpd{u}{x} - βu\right)v \dif x + \int_Ω \left(μ \dpd{u}{x} - βu\right) v_x \dif x + \int_Ω γ u v \dif x \\
+&= \pesc{∂_t u, v} + \underbracket{δu(1,t) v(1,t) + \int_Ω \left(μ \dpd{u}{x} - βu\right) v_x \dif x + \int_Ω γ u v \dif x}_{a(u,v)}
+\end{align*}
+
+We need a lifting function, so we say $u = \tilde{u} + R$ with $\tilde{u} ∈ V$, so $F(v) = - a(R, v)$. To fulfill boundary conditions, we say $R = η(1 - x)$ and then \[ F(v) = -a(R,v) = η \int_Ω \left(-μ - β(1-x)\right)v_x + γ(1-x)v \dif x \]
+
+Continuity of $a$:
+\begin{align*}
+\abs{a(u,v)} &≤ δ \abs{u(1,t) v(1,t)} + \abs{\int_Ω μ u_x v_x \dif x} + \abs{\int_Ω βuv_x \dif x} + \abs{\int_Ω γuv \dif x} \\
+	&≤ δC_{T,u} C_{T,v} \norm{u}_{V} \norm{v}_{V} + M_μ C_{P,u} C_{P,v} \norm{u}_V \norm{v}_V + M_β C_{P,v} \norm{u}_V \norm{v}_{V} + M_γ \norm{u}_V \norm{v}_V = \\
+	&= (∂C_T + M_μC_P + M_βC_P +M_γ)\norm{u}_V \norm{v}_V
+\end{align*} where $M_μ = \essup \abs{μ} = \norm{μ}_{∞} < ∞$ because  $μ ∈ L^∞$, similarly with others, and we used the \nref{thm:Fund:Trace} and \nref{thm:Fund:PoincareInequality} for inequalities on the norms of the border and seminorms.
+
+For coercivity, using that $uu_x = \frac{1}{2} ∂_x (u^2)$ and noting $\bar{γ} = \sfrac{β'}{2} + γ$:
+\begin{align*}
+a(u,u) &= δ u(1,t)^2 + \int_Ω μu_x^2 \dif x - \int_{Ω} β uu_x \dif x + \int_Ω γu^2 \dif x \\
+	&≥ δ u(1,t)^2 + μ_0 \abs{u}_V^2 - \frac{1}{2}\int_Ω β ∂_x (u^2)+ β'u^2 \dif x  + \frac{1}{2}\int_{Ω} β' u^2 \dif x + \int_Ω γu^2 \dif x \\
+	&= δ u(1,t)^2 + μ_0 \abs{u}_V^2 - \frac{1}{2} \int_Ω ∂_x(βu^2) \dif x + \int_Ω \left(\frac{β'}{2} + γ\right)u^2 \dif x \\
+	&≥ δu(1,t)^2 + μ_0 \abs{u}_V^2 - \frac{1}{2} \eval[1]{βu^2}_{x = 0}^1 + m_{\bar{γ}} \norm{u}^2_{L^2} \\
+	&≥ \left(δ - \frac{β(1)}{2}\right)u(1,t)^2 + μ_0\abs{u}^2_V+ m_{\bar{γ}} \norm{u}_{L^2}^2
+\end{align*} so if $δ - \sfrac{β(1)}{2} > 0$ and $m_{\bar{γ}} = \esinf \bar{γ} ≥ 0$ we have coercivity with $α = μ_0$.
+
+\spart
+
+Say $v_h = u_h$, so then \begin{align*}
+\pesc{∂_tu_h, u_h} + a(u_h, u_h) &= F(u_h) \\
+\int_Ω \dpd{u_h}{t} u_h + μ_0 \norm{u_h}^2_{V} &≥ C \norm{u_h}_{V} \\
+\frac{1}{2}\int_Ω \dpd{u_h^2}{t} + μ_0 \norm{u_h}^2_V &≥ C \norm{u_h}_V \\
+\frac{1}{2} \dpd{}{t} \norm{u_h}^2_{L^2} + μ_0 \norm{u_h}^2_V &≥ C \norm{u_h}_V \\
+\frac{1}{2} \norm{u_h(t)}_{L^2}^2 - \frac{1}{2}\norm{u_{h0}}_{L^2}^2 + μ_0 \norm{u_h}^2_{V} &≥ C \norm{u_h}_{L^2}
+\end{align*}
+
+\end{problem}

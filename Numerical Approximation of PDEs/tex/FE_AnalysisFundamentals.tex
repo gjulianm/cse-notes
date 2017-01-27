@@ -12,6 +12,16 @@ Also, the Stokes theorem which is incredibly useful for an elegant generalizatio
 \begin{theorem}[Stokes\IS theorem] \label{thm:Fund:Stokes} Let $M$ be a compact orientable manifold of dimension $d$ with border $∂M$, and let $ω$ be a $(d-1)$ differential form. Then, \( \int_{∂M^+} ω = \int_M \dif ω\) where $∂M^+$ is the border in the positive orientation. For this orientation, a thumb rule: the manifold should be at the left of the border.
 \end{theorem}
 
+\subsection{Useful inequalities}
+
+\begin{prop}[Cauchy-Schwarz inequality][Inequality!Cauchy-Schwarz] \label{prop:Fund:CauchySchwarz} Let $V$ be a vector space with inner product $\pesc{·,·}$, and let $a, b ∈ V$. Then, the following holds: \[ \abs{\pesc{a,b}} ≤ \norm{a} \norm{b} \]
+\end{prop}
+
+\begin{prop}[Young's inequality][Inequality!Young] \label{prop:Fund:Young} Let $a,b ∈ ℝ^+$. Then, if $p, q ∈ ℝ^+$ are such that $\sfrac{1}{p} + \sfrac{1}{q}$, then \[ ab ≤ \frac{a^p}{p} + \frac{b^q}{q} \]
+
+Another version: if $ε > 0$, then \[ ab ≤ \frac{a^2}{2ε} + \frac{εb^2}{2} \]
+\end{prop}
+
 \chapter{Functional analysis fundamentals}
 
 \section{Banach and Hilbert spaces}
@@ -81,6 +91,31 @@ The $L^p$ spaces are always Banach for $0 < p ≤ ∞$. In the case $p = 2$, it 
 
 Proofs of these facts are left to the reader.
 
+\subsection{Linear operators}
+\label{sec:Fund:Linops}
+
+We will usually be interested in considering linear operators between Banach and/or Hilbert spaces.
+
+\begin{defn}[Linear operator][Operator!linear] An application $\appl{\linop}{X}{Y}$ between vector spaces $X$, $Y$ is said to be linear if $\linop(a + b) = \linop(a) + \linop(b)$ for all $a,b ∈ X$ and $\linop(λa) = λ\linop(a)$ for any $λ ∈ ℂ$.
+\end{defn}
+
+In infinite dimensional spaces, linear operators are not necessarily continuous. We will be interested in those, so we give the formal definition.
+
+\begin{defn}[Continous operator][Continuity!of an operator] \index{Operator!continuous} \label{def:Fund:ContinuousOp} Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $(φ_n)_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \pesc{T,φ_n} = \pesc{T, φ}\]
+\end{defn}
+
+Some other properties of these operators:
+
+\begin{defn}[Symmetric operator][Operator!symmetric] \label{def:Fund:SymmetricOp} A linear operator $\appl{\linop}{V}{V'}$ is said to be symmetric if \[ (\linop u)(v) = (\linop v)(u) \] where $V'$ is the topological dual space of $V$.
+\end{defn}
+
+\begin{defn}[Antisymmetric operator][Operator!antisymmetric] \index{Operator!skew-symmetric} \label{def:Fund:AntisymmetricOp} A linear operator $\appl{\linop}{V}{V'}$ is said to be antisymmetric or skew-symmetric if \[ (\linop u)(v) = - (\linop v)(u) \]
+\end{defn}
+
+Note that if $V$ is a Hilbert space, then $V' = V$ and evaluating an element $\linop u ∈ V'$ at $v ∈ V$ is the same that doing the inner product: $(\linop v)(u) = \pesc{\linop v, u}_V$. Not that it matters but sometimes notation gets confusing between the duality product and inner product.
+
+As it happens with linear algebra matrices, linear operators can always be decomposed in a symmetric and an antisymmetric part. For example, if we take $V = H_0^1(Ω)$ and the general  elliptic operator \[ \linop u = - (αu')' + (βu)' + γu \] with $α, β, γ$ smooth functions, we have the symmetric part as \[ \linop_S = -(αu')' + γu \] and the antisymmetric as \[ \linop_{SS} = (bu)' \]
+
 \section{Distributions}
 
 In the previous section we explained how our space is going to be the one of integrable functions. However, we have not acknowledged something that is really important for PDEs: how can we differentiate general integrable functions?
@@ -102,10 +137,7 @@ The space of distributions on $\mathcal{D}(Ω)$ is denoted by $\mathcal{D}'(Ω)$
 
 This is actually a direct translation of the motivation we were talking of before. A distribution is just something that, when measured with a test functions, gives us a number. This is usually denoted by $T(φ)$ or $\pesc{T, φ}$.
 
-We require it to be linear because non-linear things are just awful. Continuity is also very important: if we are using a sequence of test functions converging to some other function, we want the result to be the same for the two possible paths of first measuring, then doing the limit and viceversa. Formally:
-
-\begin{defn}[Continous operator][Continuity!of an operator] Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $(φ_n)_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \pesc{T,φ_n} = \pesc{T, φ}\]
-\end{defn}
+We require it to be linear because non-linear things are just awful. Continuity is also very important: if we are using a sequence of test functions converging to some other function, we want the result to be the same for the two possible paths of first measuring, then doing the limit and viceversa. That's the formal definition given in \fref{def:Fund:ContinuousOp}.
 
 In the specific case of test functions $\dstr(Ω)$ with $Ω ∈ ℝ^d$, we have to be careful with the definition of convergence: given a sequence $(φ_n)_{n≥1} ⊂ \dstr(Ω)$, we say that it converges to $φ ∈ \dstr(Ω)$ if and only if $\sop φ_n ⊂ K$ for some compact set $K ⊂ Ω$, and if $∂^\vA φ_n \to ∂^\vA φ$ with respect to the supremum norm for every multiindex\footnote{Reminder: a multiindex $\vA = (α_1, α_2, \dotsc, α_d)$ is a notation for the mixed partial derivatives $\frac{∂^{\abs{\vA}}}{∂x_1^{α_1}∂x_2^{α_2} \dotsb ∂x_d^{α_d}}$.} $\vA ∈ ℕ^d$.
 
@@ -147,7 +179,7 @@ For notational convenience, we can define the \concept{Hilbert\IS seminorm} $\ab
 
 One important aspect of Sobolev spaces is ``where do they live'' or, in other words, in which spaces can we embed a given Sobolev space and what does that tell us about the regularity of the functions in it. This is solved by the Sobolev embedding theorem.
 
-\begin{theorem}[Sobolev embedding theorem][Sobolev!embedding theorem] \label{thm:SobolevEmbedding} Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:LipschitzCont}.}. Then, the following embedding properties hold:
+\begin{theorem}[Sobolev embedding theorem][Sobolev!embedding theorem] \label{thm:SobolevEmbedding} Let $Ω$ be an open subset of $ℝ^d$ with a Lipschitz continuous boundary\footnote{A boundary is Lipschitz continuous if it is locally the graph of a function with \nref{def:Fund:LipschitzCont}.}. Then, the following embedding properties hold:
 \begin{enumerate}
 	\item If $0 ≤ 2k < d$, then $H^k(Ω) ⊂ L^q(Ω)$ with $q = \sfrac{2d}{(d-k)}$.
 	\item If $2k = d$, then $H^k(Ω) ⊂ L^q$ for $2 ≤ q < ∞$.
@@ -165,7 +197,7 @@ Until now, we have defined Sobolev spaces with integer degree $k$. However, for 
 
 This ``somewhat continuity'' actually has a formal definition: Hölder continuity.
 
-\begin{defn}[Hölder continuity][Continuity!Hölder] \label{def:HolderContinuity} Let $X,Y$ be two metric spaces and $\appl{f}{X}{Y}$ be a function between them. We say that $f$ is Hölder continuous of degree $α$ if there exists constants $C,α ∈ ℝ^+$ such that for every $x,y ∈ ℝ^d$ the following ``Hölder condition'' holds: \( \norm{f(x) - f(y)}_Y ≤ C\norm{x - y}_X^α \label{eq:Fundamentals:HolderCondition} \)
+\begin{defn}[Hölder continuity][Continuity!Hölder] \label{def:Fund:HolderContinuity} Let $X,Y$ be two metric spaces and $\appl{f}{X}{Y}$ be a function between them. We say that $f$ is Hölder continuous of degree $α$ if there exists constants $C,α ∈ ℝ^+$ such that for every $x,y ∈ ℝ^d$ the following ``Hölder condition'' holds: \( \norm{f(x) - f(y)}_Y ≤ C\norm{x - y}_X^α \label{eq:Fundamentals:HolderCondition} \)
 
 A function will be locally Hölder continuous if we can find those constants $C,α$ for a neighborhood of every point $x ∈ ℝ^d$.
 \end{defn}
@@ -174,7 +206,7 @@ A function will be locally Hölder continuous if we can find those constants $C,
 
 Although for the definition we let the degree be $α ∈ ℝ^+$, we are only interested in the case $α ∈ (0,1)$. With $α = 0$, we only have bounded variation, which is not necessarily continuous at all. With any $α > 0$, we have that $f$ is continuous. Magic happens with $α = 1$, a case for which we will need an additional definition.
 
-\begin{defn}[Lipschitz continuity][Continuity!Lipschitz] \label{def:LipschitzCont} Let $X,Y$ be two metric spaces and  $\appl{f}{X}{Y}$ a function between them. We say that $f$ is Lipschitz continuous in $X$ if there exists a constant $K ∈ ℝ$ such that, for every $x,y ∈ X$, we have \( \frac{\norm{f(x) - f(y)}_Y}{\norm{x-y}_X} ≤ K \label{eq:Fundamentals:LipschitzCondition}  \)
+\begin{defn}[Lipschitz continuity][Continuity!Lipschitz] \label{def:Fund:LipschitzCont} Let $X,Y$ be two metric spaces and  $\appl{f}{X}{Y}$ a function between them. We say that $f$ is Lipschitz continuous in $X$ if there exists a constant $K ∈ ℝ$ such that, for every $x,y ∈ X$, we have \( \frac{\norm{f(x) - f(y)}_Y}{\norm{x-y}_X} ≤ K \label{eq:Fundamentals:LipschitzCondition}  \)
 
 As it was the case with Hölder continuity, a function will be locally Lipschitz continuous if we can find the constant $K$ for a neighborhood of every point $x ∈ X$.
 \end{defn}
@@ -234,7 +266,7 @@ Finally, we just choose $ψ_x = \ind_{[0,x]}$ so we have \[ I(ψ_x) = f(x) - f(0
 
 \subsubsection{Definition of fractional Sobolev spaces}
 
-So, back on track. Previously, we have defined \nref{def:HolderContinuity} with $α ∈ (0,1)$. We will want to expand that to $L^p$ functions, and that is done via the Slobodecki seminorm.
+So, back on track. Previously, we have defined \nref{def:Fund:HolderContinuity} with $α ∈ (0,1)$. We will want to expand that to $L^p$ functions, and that is done via the Slobodecki seminorm.
 
 \begin{defn}[Slobodecki seminorm][Seminorm!Slobodecki] Let $1 ≤ p < ∞$, $α ∈ (0,1)$ and $Ω ∈ ℝ^d$ an open subset. Then, for a given $f ∈ L^p(Ω)$ we can define its Slobodecki seminorm as
 \(\label{eq:SlobodeckiSeminorm} [f]_{α,p,Ω} = \left(\iint\limits_{Ω×Ω} \frac{\abs{f(x) - f(y)}^p}{\abs{x-y}^{αp+d}} \dif x \dif y \right)^\frac{1}{p} \)
@@ -272,13 +304,29 @@ Similarly, we can define $H^1_Γ(Ω)$ for partial boundaries $Γ ⊂ ∂Ω$ (wit
 
 Now, just for some inequalities that can be considerably useful in the future relating $L^2$ and $H^1$ seminorms.
 
-\begin{theorem}[Poincaré inequality][Inequality!Poincaré] \label{thm:PoincareInequality} Let $Ω ⊂ ℝ^d$ be an open domain. Then there exists a positive constant $C_Ω > 0$ such that, for every $v ∈ H^1_0(Ω)$ the following holds: \[ \norm{v}_{L^2} ≤ C_Ω \abs{v}_H^1\]
+\begin{theorem}[Poincaré inequality][Inequality!Poincaré] \label{thm:Fund:PoincareInequality} Let $Ω ⊂ ℝ^d$ be an open domain. Then there exists a positive constant $C_Ω > 0$ such that, for every $v ∈ H^1_0(Ω)$ the following holds: \[ \norm{v}_{L^2} ≤ C_Ω \abs{v}_{H^1}\]
 \end{theorem}
 
 The inequality still holds if the function vanishes only on part of the boundary.
 
-\begin{prop}[Friedrichs inequality][Inequality!Friedrichs] The \nref{thm:PoincareInequality} still holds for $v ∈ H^1_Γ$, with $Γ ⊂ ∂Ω$ of nonzero measure.
+\begin{prop}[Friedrichs inequality][Inequality!Friedrichs] The \nref{thm:Fund:PoincareInequality} still holds for $v ∈ H^1_Γ$, with $Γ ⊂ ∂Ω$ of nonzero measure.
 \end{prop}
+
+A corollary of the Poincaré inequality is the following reverse inequality
+
+\begin{corol} \label{crl:Fund:PoincareReverse} Let $Ω ⊂ ℝ^d$ be an open domain. Then there exists a positive constant $C_p > 0$ such that, for every $v ∈ H^1_0(Ω)$ the following holds: \[ \norm{v}_{H^1} ≤ C_p \abs{v}_{H^1} \]
+\end{corol}
+
+\begin{proof} By simple computations, \[ \norm{v}_{H^1} = \norm{v}_{L^2} + \abs{v}_{H^1} ≤ (C_Ω + 1) \abs{v}_{H^1} \]
+\end{proof}
+
+And, by extension, equivalence of the full norm and seminorm in the Hilbert space.
+
+\begin{corol} \label{crl:Fund:FullSeminormEquivalent} Let $Ω ⊂ ℝ^d$ be an open domain. Then the seminorm $\abs{·}_{H^1(Ω)}$ and the norm $\norm{·}_{H^1(Ω)}$ are equivalent.
+\end{corol}
+
+\begin{proof} By definition, $\abs{v}_{H^1(Ω)} < \norm{v}_{H^1(Ω)}$ and by \fref{crl:Fund:PoincareReverse} $\norm{v}_{H^1(Ω)} ≤ C_p \abs{v}_{H^1(Ω)}$.
+\end{proof}
 
 \section{Functional analysis theorems}
 

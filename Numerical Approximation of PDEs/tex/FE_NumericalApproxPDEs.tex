@@ -12,7 +12,7 @@ In \fref{sec:Theory:WeakFormulationPDE} we saw that the weak abstract form was  
 
 It is easy to see that we can apply the \nref{thm:Theory:LaxMilgram} to our problem: if $v ∈ H^1_0(Ω)$, then its $L^2$-norm is bounded so \[ \abs{\int_Ω fv} ≤ \norm{f}_{L^2} \norm{v}_{L^2} ≤ \norm{f}_{L^2} \norm{v}_{H^1} < ∞ \]
 
-Same happens with $a$: the boundedness is directly obtained from the fact that $u, v ∈ H^1_0(Ω)$. Coercivity can be a little bit more complicated. For that, we must use the \nref{thm:PoincareInequality} which tells us that there is a constant $C_p > 0$ such that $\int v^2 ≤ C_p \int \abs{\grad u}^2$ for all $u ∈ H_0^1$. So, in this case we have that \[
+Same happens with $a$: the boundedness is directly obtained from the fact that $u, v ∈ H^1_0(Ω)$. Coercivity can be a little bit more complicated. For that, we must use the \nref{thm:Fund:PoincareInequality} which tells us that there is a constant $C_p > 0$ such that $\int v^2 ≤ C_p \int \abs{\grad u}^2$ for all $u ∈ H_0^1$. So, in this case we have that \[
 \norm{u}^2_{H^1} = \int v^2 + \int \abs{\grad v}^2 ≤ (1+C_p^2) \int \abs{\grad u}^2
 \] so our coercivity constant is $\frac{1}{1 + C_p^2}$.
 
@@ -172,7 +172,7 @@ With that, we can apply the error estimates for interpolation so that $\inf_{v_h
 
 We will use the Aubin-Nitsche trick and we will use duality. In order to estimate the error, we define $e_h = u - u_h$ and the adjoint problem of searching for a $φ ∈ V$ such that \[ a(v,φ) = \int_{Ω} e_h v \qquad ∀v ∈ V\]
 
-THis, in order to estimate the error in $L^2$ we can do the following: \[ \norm{u-u_h}^2_{L^2} = \norm{e_h}_{L^2}^2 = \int_Ω e_h e_h = a(e_h, φ) = a(u - u_h, φ) \]
+Thus, in order to estimate the error in $L^2$ we can do the following: \[ \norm{u-u_h}^2_{L^2} = \norm{e_h}_{L^2}^2 = \int_Ω e_h e_h = a(e_h, φ) = a(u - u_h, φ) \]
 
 By the Galerkin orthogonality condition, we know that $a(u - u_h, v_h) = 0$ for any $v_h ∈ V_h$. That allows to substract any $w_h ∈ V_h$ to φ, and then \[ a(u-u_h, φ) = a(u - u_h, φ - w_h) ≤ M \norm{u - u_h}_V \inf_{w_h ∈ V_h} \norm{φ-w_h}_V \]
 

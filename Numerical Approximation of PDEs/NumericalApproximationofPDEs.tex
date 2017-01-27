@@ -6,6 +6,9 @@
 
 % Additional packages
 \usepackage{tikztools}
+\usepackage{fastbuild}
+
+\precompileTikz
 % --------------------
 
 \begin{abstract}
@@ -34,10 +37,13 @@ This document aggregates the notes of several courses on the finite elements met
 \input{tex/FE_NumericalApproxPDEs.tex}
 
 \appendix
-\part{Appendix}
+\part{Exercises}
 
-\chapter{Exercises}
-\input{tex/NumericalApproximationofPDEs_Exerc.tex}
+\chapter{Analysis fundamentals}
+\input{tex/FE_Ex_Fundamentals.tex}
+
+\chapter{Numerical approximation of ODEs}
+\input{tex/FE_Ex_ODEs.tex}
 
 \backmatter
 \bibliography{../EPFLNotes.bib}

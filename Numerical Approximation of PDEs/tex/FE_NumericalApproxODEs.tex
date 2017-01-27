@@ -1,1 +1,456 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
+\chapter{Elliptic boundary value problems}
+
+\section{General elliptic problem}
+
+This chapter will be dedicated to the study of a simple ODE, a boundary value problem. We will start off the following problem:
+\( \label{eq:ODE:BoundaryValueProblem}
+\begin{cases}
+-(α(x) ·u'(x))' + βu' + γu  = f(x) & x ∈ (a, b) \\
+u = 0 & x = a, b
+\end{cases}
+\) with $α,β,γ$ smooth enough functions.
+
+To obtain the weak form, we multiply by a test function $v ∈ V = H_0^1(a,b)$. We need to get rid of the second derivative of $u$ in the term $(αu)$, so we integrate by parts and we have the following:
+\[
+-\int_a^b (αu')' v \dif x =
+- \underbracket{\eval[1]{αu'v}_{x = a}^b}_{= 0} + \int_a^b αu'v' \dif x
+\]
+
+Therefore the problem is that of finding $u ∈ V$ such that \begin{gather*}
+a(u,v) = F(v) \quad ∀v ∈ V \\
+a(u,v) = \int_a^b (αu'v' +βu'v + γuv) \dif x \qquad  F(v) = \int_a^b fv \dif x
+\end{gather*}
+
+In order to apply \nref{thm:Theory:LaxMilgram}, we need to prove continuity of the forms. For $a$, assume at least $α, β, γ ∈ C^0([a,b])$ so they have a finite supremum $M_α = \sup_{x ∈ (a,b)} \abs{α(x)} < ∞$ (similarly for $M_β, M_γ$) and then
+\begin{align*}
+\abs{a(u,v)}
+	&≤ \abs{\int_a^b (αu'v' +βu'v + γuv) \dif x} \\
+	&≤ M_α \norm{u'}_{L^2} \norm{v'}_{L^2}
+		+ M_β \norm{u'}_{L^2} \norm{v}_{L^2}
+		+ M_γ \norm{u}_{L^2} \norm{v}_{L^2} \\
+	&< M_α \norm{u}_{H^1} \norm{v}_{H^1}
+		+ M_β C_p \norm{u}_{H^1} \norm{v}_{H^1}
+		+ M_γ \norm{u}_{H^1} \norm{v}_{H^1} \\
+	&= (M_α + M_β + M_γ) \norm{u}_{H^1} \norm{v}_{H^1}
+\end{align*}
+
+Similarly for $F$, $\abs{F(v)} ≤ \norm{f}_{L^2} \norm{v}_{L^2} < \norm{f}_{L^2} \norm{v}_{H^1}$.
+
+For the coercivity, let analogously as before $m_α = \inf_{x ∈ (a,b)} \abs{α(x)}$, with $m_β$ and $m_γ$ defined too, and all greater than 0. Then we can estimate each term:
+\begin{align*}
+\int_a^b α · (u')^2 \dif x &≥ m_α \abs{u}_{H^1}^2 ≥ m_α C_{p,α} \norm{u}_{H^1}^2 \\
+\int_a^b β u' u \dif x &\eqreasonup{$(u^2)' = 2 u u'$} \frac{1}{2}\int_a^b β · (u^2)' \dif x ≥ \frac{1}{2} \int_a^b m_b (u^2)' \dif x = \eval[1]{\frac{1}{2} m_b u^2 }_{x = a}^b = 0 \\
+\int_a^b γu^2 \dif x &≥ m_γ \norm{u}_{L^2} > 0
+\end{align*}
+
+Putting everything together, we have that $a$ is continous and coercive with the constants \( \label{eq:ODE:GeneralEllipticContinuityCoercivity} M = M_α + M_β + M_γ \qquad α = m_α C_{p,α} \)
+
+We are in the hypothesis of the theorem and thus the problem \eqref{eq:ODE:BoundaryValueProblem} admits an unique solution.
+
+Additionally, using the results of \fref{sec:Theory:ApproxResults} and \fref{sec:Theory:ConvergenceGalerkin} we can see the convergence rates for the Galerkin approximation in a given family of finite subspaces $V_h$. We know by \nref{lem:Theory:Cea} that \[ \norm{u - u_h}_V ≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u_h - v_h}_V \] and that the best approximation is given by the interpolant operator $I_h^r$ which has, by the \nref{thm:Theory:InterpErrorNonSmooth}, the convergence rate given by \[ \norm{u - I_h^r u}_{H^m} ≤ C_m h^{η-m}\abs{u}_{H^η}  \]
+
+Putting everything together, our error estimate is \[ \norm{u - u_h}_V ≤ \frac{M}{α} C h^r \abs{u}_{H^{r+1}} \] so we have convergence of rate $h^r$ for $u$ sufficiently smooth. Note that to achieve that converge rate we need enough degree on the finite elements (see \fref{tab:ODE:Convergence}). If we only wanted the error in the $L^2$ norm we would have an extra degree of convergence.
+
+\begin{table}[tbp]
+\centering
+\begin{tabular}{cccccc}
+\toprule
+$r$ & $u ∈ H^1$ & $u ∈ H^2$ & $u ∈ H^3$ & $u ∈ H^4$ & $u ∈ H^5$ \\ \midrule
+1 & $C$ & $\boxed{h^1}$ & $h^1$ & $h^1$& $h^1$ \\
+2 & $C$ & $h^1$ & $\boxed{h^2}$ & $h^2$& $h^2$ \\
+3 & $C$ & $h^1$ & $h^2$ & $\boxed{h^3}$ & $h^3$ \\
+4 & $C$ & $h^1$ & $h^2$ & $h^3$& $\boxed{h^4}$ \\ \bottomrule
+\end{tabular}
+\caption{Convergence rates for different degrees $r$ of the finite elements and different smoothness of the solution.}
+\label{tab:ODE:Convergence}
+\end{table}
+
+\subsection{Lifting technique}
+
+\section{Stabilization methods for elliptic equations}
+
+One issue that we can have when approximating numerically differential equations is misbehaving approximations. Yes, we have control on convergence by the interpolation error theorems, and we can always put more degrees in the finite element space, but we may find ourselves in a situation where we are wasting resources or finding solutions with too many oscillations.
+
+Along this section we will study methods to stabilize the approximations without losing too much accuracy.
+
+\subsection{Motivation: Diffusion-transport problems with dominant transport}
+
+\begin{figure}[hbtp]
+\centering
+\inputtikz{DiffusionTransport}
+\caption{Illustration of the diffusion-transport problem in a stream of water.}
+\label{fig:ODE:DiffusionTransport}
+\end{figure}
+
+One interesting equation to study is the one that models the pollution in a channel. Assume the channel is not too deep and very narrow so we can model it as a one-dimensional line. We want to see the evolution of the concentration $u(x,t)$ of pollutant at time $t$ in the point $x$.
+
+The mathematical model comes from conservation of mass: the change over time in the mass of the pollutant in a given section $[x, x + δx]$ must be equal to the flux through the endpoints. Denoting the flux as $q(x,t)$, we will have the following equation \[ \od{}{t} \int_{x}^{x + δx} = q(x,t) - q(x + δx, t) \] which converts to the following when dividing by $δx$ and making $δx \to 0$: \( u_t = - q_x \label{eq:ODE:DiffusionBasicLaw} \)
+
+We have two options for the flux. We can model transport (or convection) where the pollutant is just moved by the stream velocity $b$, so the equation would be \[ q(x,t) = b · u(x,t)\]
+
+We can also model diffusion, where the pollutant moves from regions of higher concentration to lower ones. That means it moves with the gradient so \[ q(x,t) = - μ u_x(x,t)\]
+
+Combining both, we have the full model for convection-diffusion: \( u_t - μ u_{xx} + bu_x = 0 \label{eq:ODE:FullDiffusionTransport} \) although for the moment we will only consider the stationary problem \( -μ u_{xx} + bu_x = 0 \label{eq:ODE:StationaryDiffusionTransport} \)
+
+Why is this problem interesting? Mainly because it can have mathematically weird solutions. Say for example that we have a pollutant at the end of the stream, so the problem is \(
+\begin{cases}
+-μ u'' + bu' = 0 & \text{in }(0,1) \\
+u(0) = 0 \\
+u(1) = 1
+\end{cases} \label{eq:ODE:DifTransEndStream} \)
+
+We can integrate once so that $u = \frac{μ}{b}u' + C$, and then the solution can have the form \( u(x) = C_1\left(e^{\frac{b}{μ}x} + C_2\right) \label{eq:ODE:SolutionDifTrans} \)
+
+Replacing in the boundary conditions, $u(0) = 0$ forces $C_2 = -1$, and $u(1) = 1$ forces $C_1 = \frac{1}{e^{\sfrac{b}{μ}} - 1}$ so that our general solution is \( \label{eq:ODE:SolutionDifTransEndStream}  u(x) = \frac{e^{\frac{b}{μ} x} - 1}{e^{\sfrac{b}{μ}} - 1} \)
+
+\begin{figure}[hbtp]
+\centering
+\inputtikz{DiffusionTransportSolution}
+\caption{Plots of the solution $u(x)$ for different values of $b$.}
+\label{fig:ODE:DiffusionTransportSolution}
+\end{figure}
+
+As it can be seen on \fref{fig:ODE:DiffusionTransportSolution}, when $b \ll μ$ (the diffusion is much more relevant than the transport) the solution is similar to $u \sim x$. However, in the other case of $b \gg μ$, we have an issue: most of the diffusion is canceled out by the transport. The solution is almost zero in the whole interval except for a neighbourhood of order $\sfrac{μ}{b} \ll 1$: we have what is called a \concept{Boundary layer} at $x = 1$. The question is: how does this reflect on the finite element approximation?
+
+\subsubsection{Weak formulation and Galerkin problem}
+
+The weak formulation of this problem is that of finding a solution $u ∈ H^1_Γ(0,1) = \set{u ∈ H^1(0,1) \tq u(0) = 1,\, u(1) = 1}$ such that \[ a(u,v) ≝ \int_0^1 μu'v' + \int_0^1 bu'v = 0 \quad ∀v ∈ H_0^1(0,1)\]
+
+We need $v ∈ H_0^1$ to get rid of the border term when integrating by parts, and that leaves us with different solution and test function spaces, something that is not covered by the Lax-Milgram theorem. To solve this, we can use the \concept{Lifting tecnique}: we find a lift function $R(x)$ such that $\restr{R}{∂Ω} = \restr{u}{∂Ω}$ (in our case, $Ω = (0,1)$ and $R(x)  x$ simply), so we can decompose our solution as $u = R + \tilde{u}$ with $\tilde{u} ∈ H_0^1$. The weak formulation is then transformed: \begin{align*}
+a(u,v) &= 0 \\
+a(R + \tilde{u}, v) &= 0 \\
+a(\tilde{u}, v) &= - a(R, v) ≝ F(v)
+\end{align*} with \[ F(v) = - a(R, v) = - \int_0^1 μv' + bv \]
+
+We already proved continuity and coercivity of these forms, and applying the constants obtained in \eqref{eq:ODE:GeneralEllipticContinuityCoercivity} here we have \( M = μ + \abs{b} \qquad α = C_p μ \label{eq:ODE:DiffusionTransportContinuityCoercivity} \) and that gives us an estimation for the approximation error of \[ \norm{\tilde{u} - \tilde{u}_h}_{H^1} ≤ C \left(1 + \frac{\abs{b}}{C_p μ}\right) h^r \abs{\tilde{u}}_{H^{r + 1}} \]
+
+This is an issue with dominant transport: if $b \gg μ$ the constant of approximation can get arbitrarily high and we would have a bad-behaving approximation.
+
+\subsection{Another approach: Finite differences}
+
+We saw that the Galerkin approximation may misbehave badly. We can try to use another approach, using finite differences. Let us denote $u_i = u_h(x_i)$ for $i = 0, \dotsc, N$ with $N$ such that $h = \sfrac{b - a}{N}$, and approximating the derivatives in \eqref{eq:ODE:DifTransEndStream} with finite differences we have \begin{multline*}
+-μu'' + bu' \approx - μ \frac{u_{i - 1} - 2u_i + u_{i + 1}}{h^2} + b \frac{u_{i+1} - u_{i-1}}{2h} = \\ = \left(-\frac{μ}{h^2} + \frac{b}{2h}\right)u_{i+1} + \frac{2μ}{h^2} u_i - \left(\frac{μ}{h^2} + \frac{b}{2h}\right)u_{i-1}
+\end{multline*}
+
+This is an issue because for $b \gg μ$, the central coefficient with $u_i$ is going to be almost irrelevant. Thus, the system will behave like two different independent systems (one with the coefficients for $u_1, u_3, u_5, \dotsc$ and another with the ones for $u_2, u_4, u_6, \dotsc$) and will allow for high oscillations.
+
+The idea to correct this comes from the physical meaning of the transport term: it moves like a wave from left to right or from right to left depending on the sign of $b$. We can try to ``uncenter'' the finite difference so it follows the wave. For $b > 0$, this means using the following finite scheme: \( \label{eq:ODE:Upwinding} \begin{cases} - μ \frac{u_{i - 1} - 2u_i + u_{i + 1}}{h^2} + b \frac{u_{i} - u_{i-1}}{h} = 0& i = 1, \dotsc, N - 1 \\
+u_0 = 0 \\
+u_N = 1
+\end{cases} \)
+
+If $b < 0$, we would change the finite difference in the transport term to be $u_{i + 1} - u_i$.
+
+Expanding this equation, we would have the following expression for the linear system: \[  -\frac{μ}{h^2} u_{i+ 1} + \left(\frac{2μ}{h^2} + \frac{b}{h}\right) u_i - \left(\frac{μ}{h^2} + \frac{b}{h}\right) u_{i-1} = 0\]
+
+There we can see that the solution in this case is monotonic, as \[ u_{i+1} = \left(2 + \frac{hb}{μ}\right)u_{i} - \left(1 + \frac{bh}{μ}\right) u_{i - 1} = u_i + \left(1 + \frac{hb}{μ}\right)(u_i - u_{i-1}) \] where for $i = 1$ we have $u_{2} > u_1$ (simply replace $u_0 = 0$). For $i = 2$ we would then have \[ u_3 = u_2 + \left(1 + \frac{bh}{μ}\right)\underbracket{(u_2 - u_1)}_{> 0 \text{ as } u_2 > u_1} > u_2 \] and then doing the same recursively we have that the solution is monotonic. The price to pay is the convergence decreases to $\mathcal{O}(h)$.
+
+The interesting thing comes from the following fact: \[ \frac{u_i - u_{i-1}}{h} = \frac{u_{i+1} - u_{i-1}}{2h} - \frac{h}{2} \frac{u_i+1 - 2u_i + u_{i-1}}{h^2} \] which basically says that the upwind scheme is equivalent to a finite difference scheme with an artificial diffusion term of coefficient $\sfrac{bh}{2}$. This is easily implementable in the Galerkin method and could solve the issues presented here.
+
+\subsection{The artificial diffusion method}
+
+From the discussion of the previous section, we can try to see what happens when our diffusion term $μ$ is modified by an artificial viscosity \( μ_h = μ + \frac{\abs{b}h}{2} = μ + φ_h \)
+
+The Galerkin problem is then that of finding $u_h ∈ V_h$ so that \[ a_h(u_h, v_h) = a(u_h, v_h) + b_h(u_h, v_h) = F(v_h) \quad ∀v_h ∈ V_h\] with \[ b_h(u_h, v_h) = φ_h \int_0^1 u_h'v_h' \]
+
+Here, we have the following theorem for convergence rates.
+
+\begin{theorem} \label{thm:ODE:ArtificialDiffusionConvergence} Given the weak problem of finding $u ∈ V$ such that $a(u,v) = F(v)$ for all $ v ∈ V$ with an associated discrete problem \[ a_h(u_h, v_h) = a(u_h, v_h) + b_h(u_h, v_h) = F(v_h) \quad ∀v_h ∈ V_h\] with \[ b_h(u_h, v_h) = φ_h \int_0^1 u_h'v_h' \], the following convergence results holds \[ \norm{u- u_h}_{H^1} ≤ C \frac{h^r}{μ + φ_h} \norm{u}_{H^{r+1}} + \frac{φ_h}{μ + φ_h} \norm{u}_{H^1} \]
+\end{theorem}
+
+There are different ways of selecting the constant $φ_h$. For convenience we define the \concept{Péclet\IS number} as \( \mathrm{Pe} = \frac{\abs{b}h}{2μ} \) so that $φ_h = μ φ(\mathrm{Pe})$. For the upwind scheme the function is $φ^U(t) = t$, and the optimal scheme is the \concept{Scharfetter-Gummel\IS method} for which $φ_h = μ φ^{SG}(\mathrm{Pe})$ with \[ φ^{SG} (t) = t - 1 + B(2t) \] where $B$ is the Bernoulli function $B(t) = \frac{t}{\exp t - 1}$. The trick is that $φ^{SG} \simeq φ^U$ when $\mathrm{Pe} \to ∞$, but $φ^{SG} = \mathcal{O}({\mathrm{Pe}^2})$ and $φ^U \simeq \mathcal{O}(\mathrm{Pe})$ when $\mathrm{Pe} \to 0$.
+
+This gives the following corollary of \fref{thm:ODE:ArtificialDiffusionConvergence}:
+
+\begin{corol} If the upwind scheme is used, convergence is linear for any degree $r > 1$. If the method is the Scharfetter-Gummel method, then convergence is linear for $r = 1$ and quadratic for all $r ≥ 2$.
+\end{corol}
+
+\subsection{Strongly consistent methods}
+\label{sec:ODEs:StronglyConsistentMethods}
+
+Although in the previous section we saw a method to eliminate the oscillations of the Galerkin method, we were faced with a problem which was loss of convergence rate. We are actually interested in methods that maintain that convergence.
+
+\begin{defn}[Strongly consistent stabilization][Stabilization!strongly consistent] Given a Galerkin problem of finding $u_h ∈ V_h$ such that \[ a(u_h, v_h) = F(v_h) \quad ∀v_h ∈ V_h\], the strongly consistent stabilization implies adding terms $\linop_h, Ψ_h$ so that $a_h = a + \linop_h$ and $F_h = F + Ψ_h$ form a generalized Galerkin problem. We will request aditionally that \[ \linop_h(u, v_h) - Ψ(v_h) = 0 \quad ∀v_h ∈ V_h\]  with $u$ being the solution of the problem.
+\end{defn}
+
+There are two main methods that we will study, which use the symmetric and skew-symmetric parts of the linear operator (see \fref{sec:Fund:Linops}). We will develop them in the context of a general multidimensional elliptic equation, given by the differential operator \( Lu = -μ Δu + \dv \vb u + γu \label{eq:ODE:General3DEllipticEq} \) where $μ, γ$ are smooth functions and $\vb$ is a vector valued function.
+
+\begin{defn}[Streamline Upwind Petrov Galerkin] This method is given by the stabilization terms \( \label{eq:ODE:SUPG} \begin{aligned}
+\linop_h^\text{SUPG} (u,v) &= \sum_{K ∈ \mesh} \pesc{Lu, τ_K L_{SS} v}_K \\
+Ψ_h^\text{SUPG} &= \sum_{K ∈ \mesh} \pesc{f, τ_K L_{SS} v}_K
+\end{aligned}
+\) where $L$ is the linear operator of the original equation.
+\end{defn}
+
+\begin{defn}[Galerkin Least Squares] This method is given by the stabilization terms \( \label{eq:ODE:GLS} \begin{aligned}
+\linop_h^\text{GLS} (u,v) &= \sum_{K ∈ \mesh} \pesc{Lu, τ_K L v}_K \\
+Ψ_h^\text{GLS} &= \sum_{K ∈ \mesh} \pesc{f, τ_K L v}_K
+\end{aligned}
+\)where $L$ is the linear operator of the original equation.
+\end{defn}
+
+In both cases $τ_K$ is a function to be chosen. We will use \( \label{eq:ODE:StronglyConstMethFunction} τ_K(\vx) = δ \frac{h_K}{\abs{\vb(\vx)}} \) with $δ > 0$ a parameter to be defined.
+
+Note that we can unify both methods by introducing a paramter $ρ$ that is 0 for the SUPG method and 1 for the GLS:
+\( \label{eq:ODE:SUPGGLS} \begin{aligned}
+\linop_h^ρ (u,v) &= \sum_{K ∈ \mesh} \pesc{Lu, τ_K (L_{SS} + ρL_S) v}_K \\
+Ψ_h^ρ &= \sum_{K ∈ \mesh} \pesc{f, τ_K (L_{SS} + ρL_S) v}_K
+\end{aligned}
+\)
+
+It can be easily verified that both methods are strongly consistent as $Lu - f = 0$ and the inner product is linear.
+
+The stabilization parameter can be replaced by an upwind function depending on the local peclet number, so that \[ τ_K(\vx) = \frac{h_K}{2 \abs{\vb(\vx)}} · ξ(\mathrm{Pe}_K) \qquad \mathrm{Pe}_K = \frac{\abs{\vb(x)} h_k}{2μ(\vx)} \]
+
+One choice for the upwind function is \[ ξ(θ) = \coth θ - \frac{1}{θ} \qquad θ > 0\]  for which the SUPG method coincides with the Scharfetter-Gummel method.
+
+\subsubsection{GLS method analysis}
+
+Let's study the GLS method on the problem \( \label{eq:ODE:GLSStudyProblem} \begin{cases}
+Lu = -μu'' + (bu)' + γ u = f & \text{in } Ω = (0,1) \\
+u(0) = u(1) = 0
+\end{cases} \) where $μ > 0$ is constant, and $γ,b$ are smooth functions such that the quantity $\bar{γ} = \sfrac{b'}{2} + γ$ is bounded by two constants $0 < γ_0 ≤ \bar{γ} ≤ γ_1$ for any $x ∈ Ω$. The weak formulation with GLS is $a_h(u_h, v_h) = F_h(v_h)$ with \begin{align*}
+a_h(u_h, v_h) &= \int_0^1 μu_h' v_h' + (bu_h)' v_h + γu_h v_h \dif x + \sum_{K ∈ \mesh} δ \int_K \frac{h_K}{\abs{b}} Lu_h · Lv_h \dif x\\
+F_h(v_h) &= \int_0^1 f v_h \dif x + \sum_{K ∈ \mesh} δ \int_K \frac{h_K}{\abs{b}} f · Lv_h \dif x
+\end{align*}
+
+We will also define the GLS norm in the following way: \( \label{eq:ODE:GLSNorm} \norm{v}_\text{GLS} = \left[μ\norm{v'}^2_{L^2(Ω)} + \norm{v \sqrt{\bar{γ}}}^2_{L^2(Ω)} + \sum_{K ∈ \mesh} δ \pesc{Lv, \frac{h_K}{\abs{b}} Lv}_K \right]^{\frac{1}{2}} \)
+
+With this, we have the following stability theorem.
+
+\begin{theorem}[Stability\IS of the GLS method][GLS method!Stability] There exists a constant $C > 0$ independent of $h_K$ such that \[ \norm{u_h}_\text{GLS} ≤ C \norm{f}_{L^2(Ω)} \] and this inequality is true for any value $δ > 0$.
+\end{theorem}
+
+\begin{proof} By integration by parts and using that $\restr{u_h}{∂Ω} = 0$, we have \[ \int_Ω (bu') u = \frac{1}{2}\int_0^1 b'u^2 \] so that \begin{align*}
+a(u_h, u_h) &= μ\norm{u_h'}_{L^2} + \int_0^1 (bu)'u + \int_0^1 γu_h^2 = \\
+	&= μ\norm{u_h'}_{L^2}  + \int_0^1 \left(\frac{1}{2} b' + γ\right)u_h^2 = \\
+	&= μ\norm{u_h'}_{L^2} + \norm{u_h \sqrt{\bar{γ}}}^2_{L^2}
+\end{align*} so that $a_h(u_h, u_h) = \norm{u_h}^2_\text{GLS}$. As $a(u_h, u_h) = F(v_h)$ we have that \[ \norm{u_h}^2_\text{GLS} = F(u_h) +\sum_{K ∈ \mesh} δ \pesc{f, \frac{h_K}{\abs{b}} Lv}_K \]
+
+We estimate each term separately. First, because of magic, \[ F(u_h) = \pesc{f, u_h} ≤ \frac{1}{4} \norm{u_h \sqrt{\bar{γ}}}_{L^2}^2 + \norm{\frac{1}{\sqrt{\bar{γ}}} f}^2_{L^2} \] and using Cauchy-Scharwz we end with the thing.
+\end{proof}
+
+\begin{theorem}[Convergence of the GLS method][GLS method!Convergence] Considering the same problem \eqref{eq:ODE:GLSStudyProblem} but with $b$ constant, and assuming that
+\begin{enumerate}
+	\item The space $V_h$ satisfies the following local approximation property: for all $v ∈ V ∩ H^{r+1}(Ω)$ there exists a function $\hat{v}_h ∈ V_h$ such that \( \norm{v - \hat{v}_h}_{L^2} + h_K \abs{v -\hat{v}_h}_{H^1} + h_K^2 \abs{v - \hat{v}_h}_{H^2} ≤ Ch_K^{r+1} \abs{v}_{H^{r+1}} \)
+	\item The local Péclet number satisfies the following inequality: \( \mathrm{Pe}_K = \frac{h_K \abs{v}}{2μ} > 1\)
+	\item The following inverse inequality is verified: \( \sum_{K ∈ \mesh} h_K^2 \int_K \abs{v_h''}^2 ≤ C_0 \norm{v_h'}^2_{L^2} \quad ∀v_h ∈ X_h^r \)
+\end{enumerate}
+
+Then, if $0 < δ < 2\inv{C_0} $ we have the following error estimation: \( \norm{u - u_h}_\text{GLS} ≤ Ch^{r + \sfrac{1}{2}} \abs{u}_{H^{r+1}} \) if $u ∈ H^{r+1}$.
+\end{theorem}
+
+\chapter{Parabolic problems}
+
+For this chapter we will consider equations of the type \( \label{eq:ODE:ParabolicEquation}
+\begin{cases}
+\dpd{u}{t} + \linop u = f & \vx ∈ Ω,\, t > 0 \\
+u(\vx,0) = u_0(\vx) & \vx ∈ Ω \\
+u(\vx,t) = φ(\vx,t) & \vx ∈ Γ_D ⊂ ∂Ω,\, t > 0 \\
+\dpd{u}{\vn}(\vx,t) = ψ(\vx,t) & \vx ∈ Γ_N ⊂ ∂Ω,\, t > 0
+\end{cases} \)
+with $Ω ⊂ ℝ^d$, $\appl{f}{Ω×ℝ^+}{ℝ}$ and \linop a general elliptic operator. Under these conditions, \eqref{eq:ODE:ParabolicEquation} is a parabollic equation.
+
+In the one-dimensional case, the most representative problem is the heat equation \(
+\begin{cases}
+\dpd{u}{t} - μ \dpd[2]{u}{x} = f & 0 < x <L,\, t > 0 \\
+u(x,0) = u_0(x) & 0 < x < L \\
+u(0,t) = u(L,t) = 0 & t > 0
+\end{cases}\) which describes the evolution of temperature $u(x,t)$ at point $x$ in time $t$ of a rod of length $L$ and thermal conductivity $μ$ with a temperature of $0$ degrees at the boundaries. The function $u_0$ represents the initial temperature distribution and $f$ is the heat source per unit length being supplied.
+
+The general weak formulation of a parabolic problem will be given by the problem of finding $u(t) ∈ V$ such that \[ \pesc{∂_tu(t), v} + a(u(t), v) = F(v) \qquad ∀v ∈ V,\, ∀ t > 0\] where $a$ is the bilinear form associated with the operator \linop and $F$ the linear functional dependent on $f$ and the boundary conditions. We will also denote for convenience \begin{align*}
+L^2(ℝ^+; V) &= \set{\appl{v}{ℝ^+}{V} \st \int_{ℝ^+} \norm{v(t)}^2_V \dif t < ∞ } \\
+C^0(ℝ^+; V) &= \set{\appl{v}{ℝ^+}{V} \st t \longmapsto \norm{v(t)}_W \text{ is continuous}}
+\end{align*}
+
+We will also need the notion of weak coercivity.
+
+\begin{defn}[Weak coercivity][Coercivity!weak] A bilinear form $a$ is weakly coercive if there exist $λ > 0$, $α > 0$ such that \[ a(v,v) + λ \pesc{v,v} ≥ α \norm{v}^2_V\]
+\end{defn}
+
+If $a$ is continuous and weakly coercive then the weak problem admits a solution. Indeed, one can choose $u = e^{λt} w(x,t)$ and then everything makes sense.
+
+The numerical approximation is however not that easy and we will require a little bit more of work.
+
+\section{Semi-discretization in space}
+
+For $t > 0$ we will approximate the weak problem by a family of subspaces of finite dimension $\set{V_h}_{h > 0}$ for $V$. The semi-discrete problem in space is then finding $u_h(t) ∈ V_h$ such that \( \begin{cases}
+\pesc{∂_t u_h(t), v_h} + a(u_h(t), v_h) = F(v_h) \quad ∀v_h ∈ V_h,\, ∀ t > 0 \\
+u_h(0) = u_{0h}
+\end{cases} \label{eq:ODE:SemidiscSpaceParabolic} \) with $u_{0h}$ an appropriate approximation of $u_0$ in $V_h$.
+
+
+We can then write $u_h(\vx, t)$ as a linear combination of elements of the basis: \[u_h(\vx, t) = \sum_{j = 1}^{N_h} u_j(t) φ_j(\vx) \]
+
+Then, denoting by $\dot{u}_j(t)$ the derivative of $u_j(t)$, we can rewrite \eqref{eq:ODE:SemidiscSpaceParabolic}: \begin{align*}
+\sum_{j = 1}^{N_h} \dot{u}_j(t) \underbracket{\int_{Ω} φ_j φ_i}_{m_{ij}} + \sum_{j=1}^{N_h} u_j(t) \underbracket{a(φ_j, φ_i)}_{a_{ij}} &= \underbracket{{F(φ_i)}}_{f_i(t)} \\
+\mM \dot{\vu}(t) + \mA \vu(t) &= \vf(t) \\
+\dot{\vu}(t) &= - \inv{\mM} \mA \vu(t) + \inv{\mM} \vf(t)
+\end{align*} with $\mM$ the mass matrix (which is invertible), $\mA$ the stiffness matrix and $\vf$ the vector of known terms.
+
+To solve the system we can use the $θ$-method, in which we discretize the time derivative by an incremental ratio and we replace the other terms by a linear combination of the values at times $t^k$ and $t^{k+1}$: \( \mM \frac{\vu^{k+1} - \vu^k}{Δt} + \mA \left(θ \vu^{k+1} + (1-θ) \vu^{k}\right) = θ\vf^{k+1} + (1-θ) \vf^k \label{eq:ODE:GeneralTimeDiscParabolic} \) where $Δt$ indicates the discretization timestep. Depending on $θ$ we have different specific methods:
+
+\begin{itemize}
+	\item \concept{Forward (explicit) Euler method} With $θ = 0$, first order method with respect to $Δt$.
+	\item \concept{Backward (implicit) Euler method} With $θ = 1$, again first order.
+	\item \concept{Crank-Nicolson (trapezoidal) method} With $θ = \sfrac{1}{2}$ is a second order method (and the only one of second order).
+\end{itemize}
+
+\subsection{Stability and convergence of the semi-discretization in space}
+
+We will first study the stability and convergence of the semi-discretization in space. First, we want to check that this system emulates the energy dissipation characteristic of parabolic problems, taking of course the input/output of $f$ into account. Using $v_h = u_h$ in \eqref{eq:ODE:SemidiscSpaceParabolic} we can do some computations:
+\begin{align*}
+	\int_Ω ∂_t u_h(t) u_h(t) + a(u_h(t), u_h(t))
+		&= F(u_h(t)) \qquad ∀t > 0 \\
+	\frac{1}{2} \underbracket{\int_0^t \dpd{}{s} \norm{u_h(s)}^2_{L^2} \dif s}_{ = \norm{u_h(t)}^2- \norm{u_{0h}^2}} + α \norm{u_h(t)}_V^2
+		&≤ \frac{1}{4ε} \norm{f}^2_{L^2} + ε\norm{u_h(t)}_{L^2} \\
+	\norm{u_h(t)}^2_{L^2} + 2α \int_0^t \norm{u_h(s)}_V^2 \dif s &≤
+		\norm{u_{0h}}^2_{L^2} + \frac{1}{2ε} \int_0^t \norm{f(s)}^2_{L^2}\dif s + 2ε \int_0^t \underbracket{\norm{u_h(s)}^2_{L^2}}_{≤ C_p· \norm{u_h(s)}^2_V} \dif s \\
+	\norm{u_h(t)}^2_{L^2} + α \int_0^t \norm{u_h(s)}^2_V \dif s
+		&≤ \norm{u_{0h}}^2_{L^2} + \frac{C}{α} \int_0^t \norm{f(s)}^2_{L^2} \dif s
+\end{align*} where we have used \nref{prop:Fund:Young} with $ε = \frac{α}{2C}$.
+
+Basically, this tells us that the energy of the system is decreasing with time if $f \equiv 0$, and overall gives us control over the solution. In particular, this also implies that $u_h(t) ∈ L^2(Ω)$ for every $t$.
+
+For the convergence, we have the following theorem.
+
+\begin{theorem} Suppose that the hypotheses for existence and uniqueness of the solution to the initial problem in weak form are satisfied with $λ = 0$, and suppose that \begin{multline*}
+ \int_0^t \norm{∂_t u(s)}^2_{L^2} + \norm{∂_tu(s)}^2_{L^2} + \norm{u(s)}^2_{H^2} \dif s ≤ \\ ≤ c \left(\norm{u_{0h}}^2_{H^1} + \norm{u_0}^2_{H^1} + \int_0^t \norm{f(s)}^2_{L^2} \dif s \right) ≝ ψ(t, u_{0h}, u_0) \end{multline*}
+where $u$ is the weak solution of the roblem and $u_h$ the solution of the semi-discretized problem in space. Then, the following holds:
+\( \norm{u(t) - u_h(t)}_{L^2}^2 + α\int_0^t \norm{u(s) - u_h(s)}^2_V \dif s ≤ \norm{u_0 - u_{0h}}^2_{L^2} + Ch^2 ψ(t, u_{0h}, u_0) \)
+\end{theorem}
+
+\subsection{Stability and convergence of the full-discretization (θ-method)}
+
+For the stability and convergence analysis, let us just remark that we can define eigenvalues of the bilinear form $a(·,·)$ so that $λ$ is an eigenvalue with associated eigenfunction $w$ if and only if \[ a(w, v) = λ\pesc{w, v} \quad ∀ v ∈V\]
+
+In the discrete case, we have finite number of eigenvalues and eigenfunctions, and also $λ_\text{max} \convs[][\dim V_h] ∞$.
+
+The eigenvalues form an orthoghonal basis that we can normalize, so we can write any $v_h$ as \[ v_h(\vx) = \sum_{j=1}^{N_h} v_j w_h^j(\vx)\] with $N_h$ the dimension of the space $V_h$, and obviously $\norm{v_h}^2_{L^2} = \sum v_j^2$.
+
+Applying this to the discretization in timewe made previously, we have that \begin{align*}
+\frac{1}{Δt} \sum_{j=1}^{N_h} (u_j^{k+1} - u_j^k) \underbracket{\pesc{w_h^j, w_h^i}}_{= δ_{ij}} + \sum_{j=1}^{N_h} (θu_j^{k+1} + (1-θ)u_j^l) · \underbracket{a(w_h^j, w_h^i)}_{= λ_j \pesc{w_h^j, w_h^i} = λ_j δ_{ij}} &= 0 \quad ∀i = 1, \dotsc, N_h \\
+\frac{u_i^{k+1} - u_i^k}{Δt} + (θu_i^{k+1} + (1-θ) u_i^k) λ_i &= 0 \\
+u_i^{k+1} = u_i^k \frac{1 - (1-θ)λ_iΔt}{1 + θλ_i Δt}
+\end{align*}
+
+Therefore, in order to force stability, we need to ensure that \( \abs{\frac{1 - (1-θ)λ_iΔt}{1 + θλ_i Δt}} < 1 \quad ∀i = 1, \dotsc, N_h s\label{eq:ODE:StabilityConditionThetaDisc} \)
+
+If $θ ≥ \sfrac{1}{2}$, the method is unconditionally stable independently of $Δt$. However, if $θ < \sfrac{1}{2}$, the method is only stable for \( Δt ≤ \frac{1}{(1 - 2θ) λ_\text{max}} \label{eq:ODE:StabilityConditionThetaHalf} \)
+
+For small enough $h$, we have that $λ_\text{max} \simeq Ch^{-2}$ so we will require $Δt ≤ C_θ h^2$ for $C_θ$ a constant depending on θ.
+
+For the convergence, the following estimate can be proven, denoting $e_h^i = u(t^i) - u_h^i$ the error at time $i$: \( \norm{e_h^n}^2_{L^2} + 2αΔt \sum_{k=1}^n \norm{e_h^k}^2_V ≤ C_{u_0, f, u}) · (h^2r + Δt^{2q(θ)})\) with $q(θ) = 2$ if $θ = \sfrac{1}{2}$ and $1$ otherwise.
+
+\chapter{Hyperbolic problems}
+
+Consider the scalar hyperbolic problem, given by \( \label{eq:ODE:ScalarHyperbolic} \begin{cases}
+\dpd{u}{t} + a \dpd{u}{x} = 0 & t > 0,\, x ∈ ℝ \\
+u(x, 0) = u_0(x) & x ∈ ℝ
+\end{cases}\) with $a ∈ ℝ \setminus \set{0}$. The solution of this problem is the wave traveling with velocity $a$, that is, \[ u(x,t) = u_0(x - at) \quad t ≥ 0\]
+
+It is easy to see then that on the curves $x = at + x_0$ the solution is constant. Similarly, in a general problem \( \label{eq:ODE:ScalarHyperbolicGeneral} \begin{cases}
+\dpd{u}{t} + a \dpd{u}{x} +  a_0 u = f & t > 0,\, x ∈ (α, β) \\
+u(x, 0) = u_0(x) & x ∈ [α, β] \\
+u(α, t) = φ(t) & t > 0
+\end{cases}\) with $a, a_0, f$ being functions of the variables $(x,t)$, the characteristic curves $x(t)$ are solution of the Cauchy problem \( \label{eq:ODE:HyperbolicCauchyProblem} \begin{cases}
+\dod{x}{t} = a(x,t) & t > 0 \\
+x(0) = x_0 \end{cases} \)
+
+This is the motivation for the \concept{Method\IS of characteristics}, in which we will solve a differential equation along each characteristic curve. We can easily give an a-priori estimate under the assumptions that $a$ is differentiable with \[ a_0 - \frac{1}{2} \dod{a}{x} ≥ μ_0 > 0 \quad ∀x ∈ [α, β]\]
+
+The estimate is then \begin{multline*} \norm{u(t)}_{L^2}^2 + μ_0 \int_0^t \norm{u(s)}^2_{L^2} \dif s + a(β) \int_0^t u^2(β, s) \dif s ≤ \\ ≤ \norm{u_0}^2_{L^2} + a(α) \int_0^t φ^2(s) \dif s + \frac{1}{μ_0} \int_0^t \norm{f}^2_{L^2} \dif s
+\end{multline*}
+
+This ensures that the solution can be estimated by a function of the data of the problem.
+
+\section{Finite difference method}
+
+The numerical approximation requires discretizing in space and time by finite differences. The space grid is of size $h$, and the time grid of step $Δt$. We define also \[ λ = \frac{Δt}{h} \qquad x_{j + \sfrac{1}{2}} = x_j + \frac{h}{2} \]
+
+The discretization methods can be seen in \fref{tab:ODE:DiscMethodsHyperbolic} with their corresponding error behaviour.
+
+\begin{table}[hbtp]
+\centering
+\begin{tabular}{rll}
+\toprule
+\textbf{Method} & \textbf{Formula} & \textbf{Error behaviour} \\ \midrule
+Forward Euler & $u_j^{n+1} = u_j^n - \frac{λ}{2} a(u_{j+1}^n - u_{j-1}^n)$ & $\mathcal{O}(Δt + h^2)$ \\
+Lax-Friedrichs & $u_j^{n+1} = \frac{1}{2}(u_{j+1}^n + u_{j-1}^n) - \frac{λ}{2} a(u_{j+1}^n - u_{j-1}^n)$ &  $\mathcal{O}(\frac{h^2}{Δt} + Δt + h^2)$\\
+Lax-Wendroff & $u_{j}^{n+1} = u_j^n - \frac{λ a(u_{j+1}^n - u_{j-1}^n)}{2} + \frac{λ^2 a^2 (u_{j+1}^n - 2u_j^n + u_{j-1}^n)}{2}$ & $\mathcal{O}(Δt^2 + h^2 + h^2Δt)$\\
+Upwind & $u_{j}^{n+1} = u_j^n - \frac{λa(u_{j+1}^n - u_{j-1}^n)}{2} + \frac{λ\abs{a} (u_{j+1}^n - 2u_j^n + u_{j-1}^n)}{2}$ & $\mathcal{O}(Δt + h)$ \\
+\bottomrule
+\end{tabular}
+\caption{Discretization methods for hyperbolic equations.}
+\label{tab:ODE:DiscMethodsHyperbolic}
+\end{table}
+
+\section{Stability of the discrete approximation}
+
+We will study the stability of these methods, and we will give a formal definition.
+
+\begin{defn}[Stability] A numerical scheme for an hyperbolic problem is stable if for all instant $t > 0$ there exists a constant $C_t > 0$ and $δ_0 > 0$ such that \[ \norm{\vu^n}_Δ ≤ C_t \norm{\vu^0}_Δ \quad ∀ t ∈ (0, δ_0],\, ∀h ∈ (0, δ_0] \] and for all $n$ such that $nΔt ≤ T$. $C_t$ must not depend on $Δt$ nor $h$.
+\end{defn}
+
+The norm must be a suistable discrete norm, such that for example \( \label{eq:ODE:DiscreteNorm} \norm{\vv}_{Δ,p} = \left(h \sum_{j = -∞}^∞ \abs{v_j}^p\right)^{\sfrac{1}{p}} \)
+
+Basically, an usualy vector $p$-norm.
+
+Another definition:
+
+\begin{defn}[Strong stability][Stability!strong] A numerical scheme for an hyperbolic problem is strongly stable with respect to the norm $\norm{·}_Δ$ if and only if \[ \norm{\vu^n}_Δ ≤ \norm{\vu^{n-1}}_Δ \] for any $n$ such that $nΔt ≤ T$.
+\end{defn}
+
+We will see now in the results that the condition for stability is the following.
+
+\begin{prop}[CFL condition] \label{prop:ODE:CFLCond} An explicit numerical scheme for hyperbolic problems is stable only if the CFL condition holds: \( \abs{aλ} ≤ 1 \text{   or   } Δt ≤ \frac{h}{\abs{a}} \)
+
+Basically, this condition enforces the propagation velocity of the numerical solution $\sfrac{h}{Δt}$ to be greater than the velocity of the exact solution $\abs{a}$.
+
+If $a$ is not a constant, we replace $a$ by $α = \sup_{x ∈ ℝ, t > 0} \abs{a(x,t)}$.
+\end{prop}
+
+Now the theorems:
+
+\begin{theorem}[Stability\IS of Lax-type methods] The Lax-Wendroff, Lax-Friedrichs and upwind methods are strongly stable if the \nref{prop:ODE:CFLCond} is verified.
+\end{theorem}
+
+\begin{theorem}[Stability\IS of the Euler methods] The backward/centered Euler scheme is strongly stable with respect to the norm $\norm{·}_{Δ,2}$ without any restriction on $Δt$.
+
+The forward/centered Euler is never strongly stable. It is stable with constant $C_t = e^{\sfrac{t}{2}}$ if we assume that $Δt$ satisfies the condition \[ Δt ≤ \left(\frac{h}{a}\right)^2\]
+\end{theorem}
+
+\subsection{Von Neumann analysis and amplification coeficients}
+
+The idea of the Von-Neumann analysis is to suppose  that the function $u_0(x)$ is $2π$-periodic and write it as a Fourier series with coefficients $α_k$: \[ u_0(x) = \sum_{k=-∞}^{∞} α_k e^{ikx} \qquad α_k = \frac{1}{2π} \int_0^{2π} u_0(x) e^{-\imath kx} \dif x \]
+
+Thus, in the finite difference scheme we have that \[ u_j^n = \sum_{k=-∞}^∞ α_k e^{\imath k · jh} γ_k^n\] where $γ_k ∈ ℂ$ is the amplification frequency of the $k$-th frequency and characterizes the scheme. Such frequencies can be found in \fref{tab:ODE:DiscMethodsAmplCoef}.
+
+\begin{table}[btp]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Method} & $γ_k$ \\ \midrule
+Forward Euler/centered & $1 - \imath a λ \sin kh$ \\
+Backward Euler/centered & $\left(1 + \imath a λ \sin kh\right)^{-1}$ \\
+Upwind & $1 - \abs{a} λ(1-e^{-\imath kh})$ \\
+Lax-Friedrichs & $\cos kh - \imath a λ \sin kh $ \\
+Lax-Wendroff & $1 - \imath a λ \sin kh - a^2 λ^2 (1 - \cos kh)$ \\ \bottomrule
+\end{tabular}
+\caption{Amplification coefficients for the discretization methods of \fref{tab:ODE:DiscMethodsHyperbolic}. Recall that $λ = \sfrac{Δt}{h}$.}
+\label{tab:ODE:DiscMethodsAmplCoef}
+\end{table}
+
+With this, we can use the Von Neuomann analysis. For that, we assume a Fourier expansion of $\vu^0$ with $N$ odes and then the norm is \[ \norm{\vu^n}_{Δ,2}^2 = h \sum_{j = 0}^{N-1} \sum_{k,m = - \sfrac{N}{2}}^{\sfrac{N}{2} - 1} α_k \conj{α}_m (γ_k\conj{γ}_m)^n e^{\imath(k-m)jh} \] and the following theorem can be stated:
+
+\begin{theorem} If for every instant $T$ there exists a constant $β ≥ 0$ and a positive integer $m$ such that for a convenient choice of $Δt$ and $h$ we have \[ \abs{γ_k} ≤ (1 + βΔt)^{\sfrac{1}{m}} \] for each $k$; then the scheme is stable with respect to the norm $\norm{·}_{Δ, 2}$ with stability constant $C_T = e^{βT/m}$.
+
+In particular, if $β = 0$ the scheme is strongly stable.
+\end{theorem}
+
+Using this theorem we see strong stability of Upwind and Lax-Friedrichs methods if $Δt ≤ \sfrac{h}{\abs{a}}$.
+
+\subsection{Dissipation and dispersion}
+
+We can study how much the numerical scheme disperses energy. We know that the solution to the hyperbolic problem is a traveling wave, so that \[ u(x_j, t^n) = \sum_{k=-∞}^∞ α_k e^{\imath kjh} (g_k)^n \qquad g_k = e^{-\imath α k Δt} \] and so we can define the \concept{Amplification\IS factor} as \( ε_a(k) = \frac{\abs{γ_k}}{\abs{g_k}} \) which by definition is less than 1.

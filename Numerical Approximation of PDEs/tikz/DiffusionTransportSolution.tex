@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\begin{axis}[domain = 0:1, legend pos = outer north east, width = 14cm, height = 7cm, grid, legend cell align = left]
+\foreach \b in {0.1, 1, 2, 10, 50, 1000} {
+	\edef\temp{\noexpand\addlegendentry{$\sfrac{b}{\mu} = \b$}}
+	\addplot +[mark = none, samples=100] {(e^(\b * x) - 1) / (e^(\b) - 1)};
+	\temp
+}
+\end{axis}
+\end{tikzpicture}

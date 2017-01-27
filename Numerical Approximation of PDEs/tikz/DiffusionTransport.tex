@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+
+\begin{scope}[xshift = 1cm]
+\fill[cyan!20!white] (-2, 0) rectangle (2, 1);
+\fill[palette2] (-1.5, 0.5) circle[radius = 0.2cm];
+\end{scope}
+
+\draw[->] (3.2, 0.5) -- (3.8, 2);
+\draw[->] (3.2, 0.5) -- (3.8, -1);
+
+\begin{scope}[xshift = 6cm, yshift = 1.5cm]
+\node[anchor = west, inner sep = 0pt] at (-2, 1.3) {Diffusion};
+\fill[cyan!20!white] (-2, 0) rectangle (2, 1);
+\fill[palette2!50!white] (-1.5, 0.5) circle[radius = 0.4cm];
+\end{scope}
+
+\begin{scope}[xshift = 6cm, yshift = -1.5cm]
+\node[anchor = west, inner sep = 0pt] at (-2, 1.3) {Transport};
+\fill[cyan!20!white] (-2, 0) rectangle (2, 1);
+\draw[blue!80!black, really dense directed] (-2, -0.2) -- node[below] {Stream velocity $b$} (2, -0.2);
+\fill[palette2] (-0.5, 0.5) circle[radius = 0.2cm];
+\end{scope}
+
+\draw[thick, decoration={brace,raise=5pt, amplitude = 10pt},decorate] (8, 2.5) -- (8, -1.5);
+
+\begin{scope}[xshift = 11cm, yshift = 0cm]
+\node[anchor = west, inner sep = 0pt] at (-2, 1.3) {Diffusion-Transport};
+\fill[cyan!20!white] (-2, 0) rectangle (2, 1);
+\fill[palette2!50!white] (-0.5, 0.5) ellipse (0.7cm and 0.4cm);
+\draw[blue!80!black, really dense directed] (-2, -0.2) -- node[below] {Stream velocity $b$} (2, -0.2);
+\end{scope}
+
+\end{tikzpicture}
