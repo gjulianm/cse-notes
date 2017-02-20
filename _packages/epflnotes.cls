@@ -80,6 +80,7 @@
 \RequirePackage{booktabs}
 \RequirePackage{natbib}
 \RequirePackage{fastbuild}
+\RequirePackage{tikztools}
 
 %% Some configurations and adjustements
 
