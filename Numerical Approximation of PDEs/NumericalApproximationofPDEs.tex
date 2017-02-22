@@ -11,6 +11,10 @@
 \precompileTikz
 % --------------------
 
+\newif\ifincludefirstsemester
+\includefirstsemestertrue
+% \includefirstsemesterfalse
+
 \begin{abstract}
 This document aggregates the notes of several courses on the finite elements method for numerical approximation of differential equations, imparted at EPFL during the academic year 2016/2017.
 \end{abstract}
@@ -24,6 +28,7 @@ This document aggregates the notes of several courses on the finite elements met
 \mainmatter
 % Content
 
+\ifincludefirstsemester
 \part{Prelude: Fundamentals on analysis}
 \input{tex/FE_AnalysisFundamentals.tex}
 
@@ -32,9 +37,18 @@ This document aggregates the notes of several courses on the finite elements met
 
 \part{Numerical approximation of ODEs}
 \input{tex/FE_NumericalApproxODEs.tex}
+\fi
 
 \part{Numerical approximation of PDEs}
-\input{tex/FE_NumericalApproxPDEs.tex}
+
+\chapter{Elliptic problems}
+\ifincludefirstsemester\input{tex/FE_EllipticProblemsPDEI.tex}\fi
+
+\chapter{Mixed problems}
+\ifincludefirstsemester\input{tex/FE_MixedProblemsPDEI.tex}\fi
+
+\chapter{Darcy problem - Approximation of vector valued functions}
+\ifincludefirstsemester\input{tex/FE_DarcyProblemPDEI.tex}\fi
 
 \appendix
 \part{Exercises}

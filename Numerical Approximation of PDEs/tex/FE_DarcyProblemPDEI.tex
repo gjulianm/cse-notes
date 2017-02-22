@@ -1,0 +1,58 @@
+% -*- root: ../NumericalApproximationofPDEs.tex -*-
+
+Along this chapter we will study the Darcy problem, which models the flow of a fluid in a saturated porous medium. Its equation are the following:
+\( \label{eq:PDE:Darcy} \begin{cases}
+\frac{1}{k} \vu + ∇p = 0 & \text{in } Ω \\
+\dv \vu = f & \text{in } Ω \\
+p = d & \text{on } ∂Ω
+\end{cases}\) with $f ∈ L^2(Ω)$, $d ∈ H^{\sfrac{1}{2}}(∂Ω)$ and $0 < k_{\text{min}} ≤ k(x) ≤ k_{\text{max}} < ∞$ for all $x ∈ Ω$. For easiness of presentation we will use only Neumann boundary conditions, although it generalizes without difficulty with Dirichlet conditions.
+
+In the \fref{exm:PDE:Darcy} we already derived an abstract weak formulation of the problem, which is that of finding $\vu ∈ H(\dv, Ω) ≝ V$ and $p ∈ L^2(Ω) ≝ Q$ such that \( \begin{cases}a(\vu, \vv) + b(\vv, p) = F(\vv) & ∀v ∈ V \\
+b(\vu, q) = G(q) & ∀q ∈ Q
+\end{cases} \label{eq:PDE:DarcyWeakAbs} \) with \begin{align*}
+a(\vu, \vv) &= \int_Ω \frac{1}{k} \vu \vv & F(\vv) &= \int_{∂Ω} d · \vv · \vn_{∂Ω} \\
+b(\vv, p) &= - \int_{Ω} p \dv \vv & G(q) &= - \int_{Ω} fq
+\end{align*}
+
+We need to check assumptions of \nref{thm:PDE:WellPosednessMixedProb} to ensure well-posedness of \eqref{eq:PDE:DarcyWeakAbs}. Continuity of $a, b, G$ is straightforward. For $F$, it comes from the \nref{thm:Fund:Trace}: \[ F(\vv) = \int_{∂Ω} d \vv · \vn_{∂Ω} ≤ \norm{d}_{H^{\sfrac{1}{2}}(∂Ω)} \norm{\vv · \vn_{∂Ω}}_{H^{-\sfrac{1}{2}} (∂Ω)} ≤ γ \norm{d}_{H^{\sfrac{1}{2}}(∂Ω)} \norm{\vv}_{H(\dv, Ω)} \]
+
+For the coercivity of $a$ in $V_0 = \ker B = \set{\vv ∈ H(\dv, Ω) \tq \dv \vv = 0}$, we have it immediately because of the definition\footnote{As defined in \eqref{eq:PDE:HDivNorm}, we have $\norm{\vu}_{H(\dv, Ω)}^2 = \norm{\vu}_{L^2(Ω)}^2 + \norm{\dv \vu}_{L^2(Ω)}^2$.}
+of the norm in $H(\dv, Ω)$:
+\[
+	a(\vu, \vu) = \int_{Ω} \frac{1}{k} \abs{\vu}^2 ≥ \frac{1}{k_{\text{max}}} \norm{\vu}^2_{L^2(Ω)} = \frac{1}{k_{\text{max}}} \norm{\vu}^2_{H(\dv,Ω)}
+\]
+
+However, $a$ would not be coercive on the full space $V$.
+
+For the inf-sup condition on $b$, for any $p ∈ L^2(Ω)$ we can define $ψ ∈ H^1(Ω)$ as the solution to the Dirichlet problem $Δψ = p$ in $Ω$ with $\restr{ψ}{∂Ω} = 0$, and let $\vv_p = ∇ψ$. Clearly $v_p ∈ H(\dv, Ω)$ and it's bounded by $\norm{\vv_p}_{H(\dv, Ω)} ≤ C\norm{p}_{L^2(Ω)}$ so that \[ \sup_{\vv ∈ V} \frac{b(\vv, p)}{\norm{\vv}} ≥ \frac{b(\vv_p, p)}{\norm{\vv_p}} = \frac{\norm{p}^2}{\norm{\vv_p}} ≥ \frac{1}{C} \norm{p} \]
+
+Therefore all the assumptions of the \nref{thm:PDE:WellPosednessMixedProb} are fulfilled and the problem is well-posed. However, we do not know exactly how to approximate velocity fields $\vu ∈ H(\dv, Ω)$ with finite elements, so we will go and see that.
+
+\section{Raviart-Thomas finite element spaces}
+
+We also need a basis of functions for a vector valued functions. This will be the Raviart-Thomas spaces, that we will construct on a triangular mesh \mesh.
+
+\begin{defn}[Raviart-Thomas finite element space][Finite elements space!Raviart-Thomas] Given an element $κ ∈ ℝ^d$ of a triangular mesh, the Raviart-Thomas $\mop{RT}_r$ space of degree $r$ is given by functions of the form $\vv(\vx) = \vec{w} + \vx η$ where $\vec{w} ∈ \left(\mathbb{P}_r(κ)\right)^d$ and $η ∈ \mathbb{P}_r(κ)$.
+\end{defn}
+
+This space has several nice properties.
+
+\begin{prop} Let $\mop{RT}_r(κ)$ be the Raviart-Thomas finite element space. Then the following properties hold:
+\begin{enumerate}
+	\item $\left(\mathbb{P}_r(κ)\right)^d ⊂ \mop{RT}_r(κ) ⊂ \left(\mathbb{P}_{r+1}(κ)\right)^d$.
+	\item If $\vv ∈ \mop{RT}_r(κ)$ and $e ⊂ ∂κ$ is an edge of the mesh, then $\vv · \vn ∈ \mathbb{P}_r(e)$.
+\end{enumerate}
+\end{prop}
+
+These basis functions allows us to define the $\mop{RT}_r$ global space as \( \label{eq:Mixed:RTSpace} W_h^r = \set{\appl{\vv}{Ω}{ℝ^d} \tq \restr{\vv}{κ} ∈ \mop{RT}_r(κ), \, \restr{\vv · \vn}{e} = 0 \, ∀e ⊂ E(∂κ)\, ∀κ ∈ \mesh} \) where $E(∂κ)$ is the set of edges of the element κ.
+
+To prove that this space is useful, we will need the definition of the distributional divergence, done in the usual fashion: $\pesc{\dv \vv, φ} = - \pesc{\vv, \dv φ}$.
+
+\begin{lemma} $W_h^r ⊂ H(\dv, Ω)$
+\end{lemma}
+
+\begin{proof} Clearly, if $\vv ∈ W_h^r$ then $\vv ∈ \left(L^2(Ω)\right)^d$. The question is if the distributional derivative is in $L^2(Ω)$ too.
+\end{proof}
+
+\begin{lemma}[Interpolation error\IS for Raviart-Thomas finite elements] Given a family of regular triangulations $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$ with $d ≤ 3$ and the space $W_h^r$ of Raviart-Thomas finite elements of degree $r ≥ 0$, it holds \( \label{eq:PDE:RTApprox} \norm{\vv - I_{h}^{\mop{RT}_r} \vv}_{H(\dv, Ω)} ≤ C^{r+1} \left(\abs{\vv}_{H^{r+1}(Ω)} + \abs{\dv \vv}_{H^{r+1}(Ω)}\right) \qquad ∀\vv ∈ \left[H^{r+1}(Ω)\right]^d\) with a constant $C > 0$ independent of $h$.
+\end{lemma}
