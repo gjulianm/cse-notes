@@ -139,6 +139,7 @@ For the bound estimation \eqref{eq:Theory:LaxMilgramBound}, using coercivity we 
 During this chapter, we will assume that we have a \nlref{def:Theory:WeakAbstractFormulation} given by \[ a(u,v) = F(v) \quad ∀v ∈ V\] with $V$ a Hilbert space and $a, F$ under the conditions of the \nref{thm:Theory:LaxMilgram}, and we will study how to approximate that problem. The issue is obviously that $V$ tends to be an infinite-dimensional space, and that does not go well with computations and such. We will bypass that by using finite-dimensional approximate spaces.
 
 \section{Galerkin approximation}
+\label{sec:Theory:GalerkinApprox}
 
 The idea of the Galerkin approximation is, as we said, limit the problem to a finite-dimensional Hilbert space on which we can solve computationally the problem.
 
@@ -230,7 +231,7 @@ We will be interested in a regular family of meshes, that is, some family with a
 \begin{defn}[Regular family of meshes][Mesh!regular] \label{def:Theory:RegularFamilyMeshes} A family of meshes $\set{\mesh}_{h \to 0}$ is said to be regular if the maximum aspect ratio is bounded by some constant $γ$ for all $h$: $\max_{K ∈ \mesh} γ_K ≤ γ ∈ ℝ$. In other words, force that for all $h > 0$ and $∀K ∈ \mesh$ $h_K ≤ γρ_K$.
 \end{defn}
 
-\begin{defn}[Quasi-uniform family of meshes][Mesh!quasi-uniform] A family of meshes is quasi-uniform if it is regular and $\sfrac{h_{min}}{h} ≥ δ$.
+\begin{defn}[Quasi-uniform family of meshes][Mesh!quasi-uniform] \label{def:Theory:QuasiUniformMesh} A family of meshes is quasi-uniform if it is regular and $\sfrac{h_{min}}{h} ≥ δ$.
 \end{defn}
 
 In order to be able to do calculations, we will be interested specifically on affine meshes with a reference element.
@@ -380,6 +381,19 @@ We finish them with the theorems of the interpolation error. These theorems are 
 \norm{u - I_h^ru}_{H^m(Ω)} &≤ C_m h^{η -m} \abs{u}_{H^{η}(Ω)} \label{eq:Theory:InterpSmoothHm}
 \end{align} for $0 ≤ m ≤ η$ and with $C_m$ that depends on the aspect ratio $γ$ of the mesh family, $r$ and $m$, but otherwise independent of $h$.
 \end{theorem}
+
+\section{Conditioning of the numerical approximation matrix}
+
+Apart from the approximation errors, we will be interested in studying the well-posedness of the solution for the linear system $\mA \vu = \vf$ we discussed in \fref{sec:Theory:GalerkinApprox}.
+
+\begin{theorem} \label{thm:Theory:ConditioningMatrix} Let $\mA \vu = \vf$ be a PDE problem in matrix form, with $\mA$ symmetric and positive definite, created using a regular and quasi-uniform family of meshes (\fref{def:Theory:QuasiUniformMesh} and \ref{def:Theory:RegularFamilyMeshes}). Then, there exists two constants $C_1, C_2 > 0$ such that $∀h > 0$ and for all $\vv ∈ ℝ^{N(h)}$ with $N(h) = \dim V_h$ the dimension of the finite element space such that \[ C_1 \trans{\vv} \mM \vv ≤ \trans{\vv} \mA \vv ≤ \frac{C_2}{h^2} \trans{\vv} \mM \vv \], with $\mM$ defined by $M_{ij} = \int_Ω φ_i φ_j$ being the mass matrix.
+
+The most interesting consequence is that the conditioning number is bounded by \[ K(\inv{\mM} \mA) ≤ \frac{C_2}{C_1h^2} \]
+\end{theorem}
+
+With that bound of the condition number of the matrix, the conjugate gradient method to solve $\mA \vu = \vf$ with $\mM$ as a preconditioner converges in $\mathcal{O}(\sfrac{1}{h})$ iterations and so the complexity to solve the system is $\mathcal{O}(N^{\sfrac{4}{3}})$.
+
+We will not be interested in solving these systems with direct methods such as LU decomposition, because then the storage memory shoots up with dimension: the $\mL$ matrix is still sparse, but yet the number of non-zero elements is $\mathcal{O}(N^{\sfrac{5}{3}})$.
 
 \section{Non-conforming Galerkin method}
 

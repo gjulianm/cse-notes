@@ -1,6 +1,8 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
 \chapter{Analysis fundamentals}
 
+\section{Multivariable calculus}
+
 Just as a reference, some basic theorems of analysis that will be useful.
 
 \begin{prop}[Integration\IS by parts] \label{prop:Fund:IntegParts} Let $Ω ⊂ ℝ^d$ be an open subset with Lipschitz boundary $∂Ω$, and suppose $\appl{u}{ℝ^d}{ℝ^d}$ and $\appl{v}{ℝ^d}{ℝ}$ are two derivable functions\footnote{Actually, the requirement is just $u,v ∈ H^1(Ω)$.}. Then, the following equality holds:
@@ -332,7 +334,7 @@ And, by extension, equivalence of the full norm and seminorm in the Hilbert spac
 
 Some useful, abstract functional analysis theorems, without proofs.
 
-\begin{theorem}[Closed range theorem][Theorem!closed range] \label{thm:Fund:ClosedRange} Let $X, Y$ be Banach spaces and let $D ⊂ X$ be dense in $X$. Let $\appl{T}{D}{Y}$ be a closed linear operator with transpose\footnote{$\appl{T'}{Y'}{D'}$ is the transpose of $T$ if and only if $\pesc{Tx, y'} = {x, T'y'}$ for all $x ∈ D$ and $y' ∈ Y'$.} $T'$ Then, the following claims are equivalent:
+\begin{theorem}[Closed range theorem][Theorem!closed range] \label{thm:Fund:ClosedRange} Let $X, Y$ be Banach spaces and let $D ⊂ X$ be dense in $X$. Let $\appl{T}{D}{Y}$ be a closed linear operator with transpose\footnote{$\appl{T'}{Y'}{D'}$ is the transpose of $T$ if and only if $\pesc{Tx, y'} = \pesc{x, T'y'}$ for all $x ∈ D$ and $y' ∈ Y'$.} $T'$ Then, the following claims are equivalent:
 
 \begin{enumerate}
 	\item The image of $T$ is closed in $Y$.
