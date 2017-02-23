@@ -1,0 +1,71 @@
+\documentclass[palatino]{epflnotes}
+
+\title{Harmonic Analysis}
+\author{}
+\date{16/17 - Spring semester}
+
+% Additional packages
+
+% --------------------
+
+\begin{document}
+\frontmatter
+\pagestyle{plain}
+\maketitle
+
+\tableofcontents
+\mainmatter
+% Content
+
+\chapter{Fourier analysis}
+
+\section{Fourier series}
+
+\begin{defn}[Fourier\IS series] Given $f ∈ C^0(\crc[1])$, we can define its fourier series with coefficients \[ \hat{f}(n) = \int_0^1 e^{-2π\imath n x} f(x) \dif x \qquad n ∈ ℤ \] as \[ \sum_{n ∈ ℤ} \hat{f}(n) e^{2π\imath n x}\]
+\end{defn}
+
+The first interesting fact is that functions in $C^0$ are not necessarily equal to their Fourier series. We only have that with Hölder functions.
+
+\begin{defn}[Hölder\IS continuous] A function $\appl{f}{X}{Y}$ between two metric spaces is Hölder continuous if there exists two constants $C > 0$, $α ≥ 0$ such that for any $x, y ∈ X$, the following holds: \[ \norm{f(x) - f(y)} ≤ C \norm{x-  y}^α\]
+\end{defn}
+
+Obviously, if $α = 0$ we have boundedness, for $α > 0$ continuity and for $α = 1$
+
+\begin{prop} If $f ∈ C^0(\crc[1])$ is Hölder continuous, then the Fourier series of a function is equal to the same function.
+\end{prop}
+
+\begin{proof}
+
+\end{proof}
+
+
+\begin{defn}[Convolution] Given two functions $f, g ∈ L^1(Ω)$, the convolution of both is defined as \[ (f \ast g) (x) ≝ \int_Ω f(x-y) g(y) \dif y\]
+\end{defn}
+
+\begin{prop} Consider $f, g ∈ C^0(\crc[1])$. Then, the Fourier series of the convolution is the same that the product of the Fourier series: \[ \widehat{f\ast g} (n) = \hat{f}(n) · \hat{g}(n)\]
+\end{prop}
+
+Dirichlet kernel. Trigonometric thing and you end up with only some terms.
+
+
+\section{Fourier transform}
+
+\chapter{Hilbert transform}
+
+\chapter{Calderon-Zygmund operator}
+
+\chapter{BMO functions}
+
+\chapter{Fourier multipliers}
+
+\appendix
+
+\chapter{Exercises}
+\input{tex/HarmonicAnalysis_Exerc.tex}
+\backmatter
+
+\nocite{muscalu2013classical}
+\bibliography{../EPFLNotes.bib}
+
+\printindex
+\end{document}
