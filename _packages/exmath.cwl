@@ -142,7 +142,9 @@
 \vx#m
 \vy#m
 \vf#m
+\vF#m
 \vg#m
+\vG#m
 \va#m
 \vd#m
 \vA#m
@@ -175,6 +177,8 @@
 \begin{rightbar}#
 \begin{example}#
 \begin{example}[titulo]#
+\cancelwhy{Expr}{arg2}#m
+\cancelwhy[value]{Expr}{arg2}#m
 \IsInteger{arg0}{arg1}{arg2}#m
 \theejr#m
 \theapr#m

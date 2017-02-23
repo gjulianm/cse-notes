@@ -312,8 +312,10 @@
 % Vectores usuales, para no tener que andar escribiendo
 \newcommand{\vx}{\vec{x}}
 \newcommand{\vy}{\vec{y}}
-\newcommand{\vf}{\vec{F}}
-\newcommand{\vg}{\vec{G}}
+\newcommand{\vf}{\vec{f}}
+\newcommand{\vF}{\vec{F}}
+\newcommand{\vg}{\vec{g}}
+\newcommand{\vG}{\vec{G}}
 \newcommand{\va}{\vec{a}}
 \newcommand{\vd}{\vec{d}}
 \newcommand{\vA}{\vec{\alpha}}
@@ -384,6 +386,9 @@
 \newenvironmentx{example}[1][1=] % 1O: titulo;
 {\refstepcounter{exm}\paragraph{Example \theexm: #1} \itshape}
 {}
+
+% Some formatting
+\newcommand{\cancelwhy}[3][0]{\underbracket{\cancelto{#1}{#2}}_{#3}} % 1O: value; 2: Expr; 3: reason
 
 % Entornos y código para problemas. IGN
 
