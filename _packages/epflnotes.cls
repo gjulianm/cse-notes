@@ -3,7 +3,7 @@
 %
 % Guillermo Julián, EPFL
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{nicenotes}[2016/09/19 Note taking class]
+\ProvidesClass{epflnotes}[2016/09/19 Note taking class]
 
 \def\titlepagebuilddate{\tiny Last update: \today\, \currenttime}
 

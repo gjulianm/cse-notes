@@ -147,6 +147,9 @@
 \newcommand{\triple}{\tikz[scale = 0.6] { \draw[black, fill = orange] (0,0) circle (1em); \draw (0, 1em) -- (0, -1em); \draw (1em, 0) -- (-1em, 0); \draw (0.69em, 0.69em) to [bend right = 60] (0.69em, -0.69em);\draw (-0.69em, 0.69em) to [bend left = 60] (-0.69em, -0.69em);  }} % Ejem.
 \newcommand{\hint}[1]{{\textup{\textbf{Suggestion}: #1}}} % 1: Sugerencia; Sugerencias para ejercicios
 
+% Some formatting
+\newcommand{\cancelwhy}[3][0]{\underbracket{\cancelto{#1}{#2}}_{#3}} % 1O: value; 2: Expr; 3: reason
+
 \newcommand{\mop}[1]{\mathrm{#1}\xspace} % 1: operacion;
 \newcommand{\imgref}[1]{(figura \ref{#1})} % 1: referencia; Referencia a imagen.
 
@@ -390,82 +393,6 @@
 {\refstepcounter{exm}\paragraph{Example \theexm: #1} \itshape}
 {}
 
-% Some formatting
-\newcommand{\cancelwhy}[3][0]{\underbracket{\cancelto{#1}{#2}}_{#3}} % 1O: value; 2: Expr; 3: reason
-
-% Entornos y código para problemas. IGN
-
-\newcommand*{\IsInteger}[3]{% %IGN
-    \IfStrEq{#1}{ }{%
-        #3% is a blank string
-    }{%
-        \IfInteger{#1}{#2}{#3}%
-    }%
-}%
-
-\newcounter{ejr}[section]
-\newcounter{apr}[ejr]
-
-\renewcommand{\theejr}{\arabic{section}.\arabic{ejr}} % IGN
-\renewcommand{\theapr}{\theejr\ - \Alph{apr})} % IGN
-
-\newcommand{\iPartSpaceSkip}{} %IGN
-\newcommandx{\ppart}[1][1=\alph{apr}]{\par \indent \stepcounter{apr}\textbf{#1)} } % IGN 1O: apartado; | Marca nuevo apartado del problema
-\newcommandx{\spart}[1][1=\alph{apr}]{ % IGN 1O: apartado; | Marca de apartado para la solución
-	\iPartSpaceSkip
-	\renewcommand{\iPartSpaceSkip}{\vspace{10pt}}
-	\hspace{0pt}\vspace{-15pt}\par\refstepcounter{apr}\textsc{Part #1)} \par
-}
-
-\newcommand{\solution}{  %IGN
-	\if@useprobframes
-		\end{framed}
-	\else
-		\noindent\normalfont\textcolor{gray}{\hrulefill} \\
-	\fi
-	\setcounter{apr}{0}
-}
-
-\newcommand{\ejrheader}{\theejr} % IGN
-\newcommand{\custom@ejrheader}{\theejr} % IGN
-
-\newenvironment{innerproblem}[1]{ % IGN. Common environment
-	\vspace{1 pt}
-	\ifthenelse{\equal{#1}{}}{}{
-		\IsInteger{#1}{
-			\setcounter{ejr}{#1}
-			\addtocounter{ejr}{-1}
-		}{
-			\renewcommand{\ejrheader}{\custom@ejrheader}
-		}
-	}
-	\refstepcounter{ejr}
-	\renewcommand{\iPartSpaceSkip}{}
-	\if@useprobframes\begin{framed}\fi
-	\textbf{Exercise \ejrheader}:
-	\if@useprobframes\itshape\fi
-	\setcounter{apr}{0}
-}{\vspace{10 pt}}
-
-\newenvironmentx{problem}[1][1=] % 1O: N. ejercicio;
-{
-	\renewcommand{\custom@ejrheader}{\arabic{section}.{#1}}
-	\renewcommand{\ejrheader}{\theejr}
-
-	\begin{innerproblem}{#1}
-}{\end{innerproblem}}
-
-% Problemas sin numeración por secciones. IGN
-\newenvironmentx{problemS}[1][1=] % 1O: N. ejercicio;
-{
-	\renewcommand{\ejrheader}{\arabic{ejr}}
-	\renewcommand{\custom@ejrheader}{#1}
-
-	\begin{innerproblem}{#1}
-}{\end{innerproblem}}
-
-% Teoremas y otros entornos. IGN
-
 \newcounter{ithm}[section]
 
 \newcommand{\ithm}[1]{%IGN
@@ -562,9 +489,80 @@
 	\renewcommand{\IS}{!}%
 	\ifthenelse{\equal{#1}{None}}{\index{#2}}{\index{#1}}}
 
-\newcommand{\printtheorems}{\listofithm} %IGN
+\newcommand{\printtheorems}{\listoftheorems} %IGN
 
 \renewenvironment{proof}{\begin{leftbar}\noindent \textit{Proof.} }{\qed\end{leftbar}}
+
+% Entornos y código para problemas. IGN
+
+\newcommand*{\IsInteger}[3]{% %IGN
+    \IfStrEq{#1}{ }{%
+        #3% is a blank string
+    }{%
+        \IfInteger{#1}{#2}{#3}%
+    }%
+}%
+
+\newcounter{ejr}[section]
+\newcounter{apr}[ejr]
+
+\renewcommand{\theejr}{\arabic{section}.\arabic{ejr}} % IGN
+\renewcommand{\theapr}{\theejr\ - \Alph{apr})} % IGN
+
+\newcommand{\iPartSpaceSkip}{} %IGN
+\newcommandx{\ppart}[1][1=\alph{apr}]{\par \indent \stepcounter{apr}\textbf{#1)} } % IGN 1O: apartado; | Marca nuevo apartado del problema
+\newcommandx{\spart}[1][1=\alph{apr}]{ % IGN 1O: apartado; | Marca de apartado para la solución
+	\iPartSpaceSkip
+	\renewcommand{\iPartSpaceSkip}{\vspace{10pt}}
+	\hspace{0pt}\vspace{-15pt}\par\refstepcounter{apr}\textsc{Part #1)} \par
+}
+
+\newcommand{\solution}{  %IGN
+	\if@useprobframes
+		\end{framed}
+	\else
+		\noindent\normalfont\textcolor{gray}{\hrulefill} \\
+	\fi
+	\setcounter{apr}{0}
+}
+
+\newcommand{\ejrheader}{\theejr} % IGN
+\newcommand{\custom@ejrheader}{\theejr} % IGN
+
+\newenvironment{innerproblem}[1]{ % IGN. Common environment
+	\vspace{1 pt}
+	\ifthenelse{\equal{#1}{}}{}{
+		\IsInteger{#1}{
+			\setcounter{ejr}{#1}
+			\addtocounter{ejr}{-1}
+		}{
+			\renewcommand{\ejrheader}{\custom@ejrheader}
+		}
+	}
+	\refstepcounter{ejr}
+	\renewcommand{\iPartSpaceSkip}{}
+	\if@useprobframes\begin{framed}\fi
+	\textbf{Exercise \ejrheader}:
+	\if@useprobframes\itshape\fi
+	\setcounter{apr}{0}
+}{\vspace{10 pt}}
+
+\newenvironmentx{problem}[1][1=] % 1O: N. ejercicio;
+{
+	\renewcommand{\custom@ejrheader}{\arabic{section}.{#1}}
+	\renewcommand{\ejrheader}{\theejr}
+
+	\begin{innerproblem}{#1}
+}{\end{innerproblem}}
+
+% Problemas sin numeración por secciones. IGN
+\newenvironmentx{problemS}[1][1=] % 1O: N. ejercicio;
+{
+	\renewcommand{\ejrheader}{\arabic{ejr}}
+	\renewcommand{\custom@ejrheader}{#1}
+
+	\begin{innerproblem}{#1}
+}{\end{innerproblem}}
 
 % Complejos
 \newcommand{\ctrig}[1]{\cos \left(#1\right) + i \sin \left(#1\right)} % 1: angulo;

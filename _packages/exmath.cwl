@@ -14,6 +14,8 @@
 \inclass#m
 \triple#m
 \hint{Sugerencia}#m
+\cancelwhy{Expr}{arg2}#m
+\cancelwhy[value]{Expr}{arg2}#m
 \mop{operacion}#m
 \imgref{referencia}#m
 \dimplies#m
@@ -180,24 +182,6 @@
 \begin{rightbar}#
 \begin{example}#
 \begin{example}[titulo]#
-\cancelwhy{Expr}{arg2}#m
-\cancelwhy[value]{Expr}{arg2}#m
-\IsInteger{arg0}{arg1}{arg2}#m
-\theejr#m
-\theapr#m
-\iPartSpaceSkip#m
-\ppart#m
-\ppart[apartado]#m
-\spart#m
-\spart[apartado]#m
-\solution#m
-\ejrheader#m
-\custom@ejrheader#m
-\begin{innerproblem}{arg0}#
-\begin{problem}#
-\begin{problem}[N. ejercicio]#
-\begin{problemS}#
-\begin{problemS}[N. ejercicio]#
 \ithm{arg0}#m
 \set@labelname{arg0}#m
 \label@hook#m
@@ -218,6 +202,22 @@
 \concept{arg0}{arg1}#m
 \printtheorems#m
 \begin{proof}#
+\IsInteger{arg0}{arg1}{arg2}#m
+\theejr#m
+\theapr#m
+\iPartSpaceSkip#m
+\ppart#m
+\ppart[apartado]#m
+\spart#m
+\spart[apartado]#m
+\solution#m
+\ejrheader#m
+\custom@ejrheader#m
+\begin{innerproblem}{arg0}#
+\begin{problem}#
+\begin{problem}[N. ejercicio]#
+\begin{problemS}#
+\begin{problemS}[N. ejercicio]#
 \ctrig{angulo}#m
 \ceul{mod}{angulo}#m
 \i#m
