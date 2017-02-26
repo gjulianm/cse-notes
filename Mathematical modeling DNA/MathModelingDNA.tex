@@ -1,10 +1,11 @@
 \documentclass[palatino]{epflnotes}
 
 \title{Mathematical modeling of DNA}
-\author{}
+\author{Guillermo Julián Moreno}
 \date{16/17 - Spring semester}
 
 % Additional packages
+\usepackage{siunitx}
 
 % --------------------
 
@@ -49,11 +50,18 @@ The set of parameters being modeled will by $6n$ intra-basepair and $6(n-1)$ int
 
 For the cgDNA model, the free energy is approximated as a quadratic form \[ U(w)= \frac{1}{2} (w - μ) · K(w -μ)\] with $μ = μ(S) ∈ ℝ^N$ being the ground state configuration and $K = K(S) ∈ ℝ^{N×N}$ being the ground-state stiffness, symmetric and positive-definite.
 
-Of course, the question is how to get those ground states $μ, K$ from the sequence $S$ you are studying. The main assumption is junction and intra-basepair interaction energies.
+Of course, the question is how to get those ground states $μ, K$ from the sequence $S$ you are studying. The main assumption is junction and intra-basepair interaction energies, as shown in \fref{fig:MovementsDNA}.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/movementsDNA.png}
+\caption{Interpair and intrapair interactions}
+\label{fig:MovementsDNA}
+\end{figure}
 
 \appendix
 
-\chapter{---}
+\chapter{Exercises}
 \input{tex/MathModelingDNA_Exerc.tex}
 \backmatter
 \printindex

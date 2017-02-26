@@ -1,1 +1,63 @@
 % -*- root: ../MathModelingDNA.tex -*-
+\section{Session 1 - Introduction}
+
+\begin{problem} Every human cell constains twice the human genome ($\approx \num{3e9}$ base-pairs of DNA) for a total of about $\num{6e9}$ base-pairs of DNA. The diameter of a typical human nucleus cell is of the order of $\SI{10}{\micro\metre} = \SI{e5}{\angstrom} = \SI{e-5}{\metre}$.
+
+\ppart By treating the DNA as a cylinder of length \SI{3.4}{\angstrom} per base-pair, calculate the total length of DNA in any cell. Compare this to the diameter of the cell.
+
+\ppart By treating the DNA as a cylinder of diameter \SI{20}{\angstrom}, calculate the total volumne of DNA in any cell. Compare this to the total volume of the cell assuming it is spherical.
+
+\solution
+
+\spart
+
+Multiply to have $\SI{2.04e10}{\angstrom} = \SI{2.04}{\metre}$, which is obviously a lot of times the diameter of the cell.
+
+\spart
+
+
+
+\end{problem}
+
+\begin{problem} Let $β > 0$, $n ≥ 0$ and $\mK ∈ ℝ^{n×n}$ be a positive-definite symmetric matrix. Show that
+
+\ppart The one-dimensional Gaussian integral is \[ \int_{ℝ} e^{-σ^2} \dif σ = \sqrt{π} \]
+
+\ppart The $n$-dimensional Gaussian integral is \[ Z_n ≝ \int_{ℝ^n} e^{-β(\vx - \hat{\vx}) · \mK(\vx- \hat{\vx})} \dif \vx = \int_{ℝ^n} e^{-β\vx · \mK \vx} \dif \vx = \left(\frac{π}{β}\right)^{\sfrac{n}{2}} \sqrt{\det \inv{K}} \]
+
+\ppart Prove that  \[ \frac{1}{Z_n} \int_{ℝ^n} x_i e^{-β(\vx -\hat{\vx} \mK (\vx - \hat{\vx})} \dif \vx = \hat{x}_i \] for $1 ≤ i ≤ n$.
+
+\ppart Show that \[ \frac{1}{Z_n} \int_{ℝ^n} (x_i - \hat{x}_i)(x_j - \hat{x_j}) e^{-β(\vx - \hat{\vx}) · \mK (\vx - \hat{\vx})} \dif \vx = \frac{1}{2β}K_{ij}^{-1} \]
+
+\solution
+
+\spart
+
+Let us calculate the square of the integral: \begin{align*}
+I &= \int_{ℝ} e^{-x^2} \dif x \\
+I^2 &= \left(\int_{ℝ} e^{-x^2} \dif x\right) \left(\int_{ℝ} e^{-y^2} \dif y\right) = \\
+	&= \iint_{ℝ × ℝ} e^{-(x^2 + y^2)} \dif x \dif y
+\end{align*}
+
+Now we do a change of variable to radial coordinates $r = x^2 + y^2 ∈ ℝ^+$, $θ ∈ [0, 2π)$ where the jacobian is given by \[ \begin{cases} x = r \cos θ \\ y = r \sin θ \end{cases}
+\implies \det \mJ = \begin{vmatrix} \cos θ & -r \sin θ \\ \sin θ & r \cos θ \end{vmatrix} = r \] so that the integral is rewritten and can be solved:
+\begin{align*}
+I^2 &=  \iint_{ℝ × ℝ} e^{-(x^2 + y^2)} \dif x \dif y  \\
+	&= \int_0^{2π} \int_0^{∞} e^{-r^2} r \dif r \dif θ = - π \eval[1]{e^{-r^2}}_{r = 0}^{∞} = π \\
+I &= \sqrt{π}
+\end{align*}
+
+\spart
+
+As we are integrating in the whole $ℝ^n$ space it does not matter very much where are we putting the center $\hat{x}$ so we can ignore the first part. Knowing that $\mK$ is symmetric and positive-definite, we can diagonalize so say $\mD = \trans{\mM} \mK \mM$ with $\mD = \mathrm{diag}(λ_1, \dotsc, λ_n)$ diagonal, and the change of variable is $\vz = \trans{M} \vx$. The jacobian of this transformation is $\det \mM = 1$, so the integral changes right away: \[ \int_{ℝ^n} e^{-β\vx \mK \vx} \dif \vx = \int_{ℝ^n} e^{-β \vz \mD \vz} \dif \vz \] and now the exponent does something perfect, which is that $-β \vz \mD \vz = \sum_{i=1}^n β λ_i z_i^2$ and we end up with a product of exponentials of independent variables:
+\[ \int_{ℝ^n} e^{-β \vz \mD \vz} \dif \vz = \prod_{i=1}^n \int_{ℝ} e^{-β λ_i z_i^2} \dif \vz = \prod_{i=1}^n \sqrt{\frac{π}{βλ_i}} = \left(\frac{π}{β}\right)^{\sfrac{n}{2}} \sqrt{\det \inv{K}} \]
+
+\spart
+
+Just notice that the integrand is an odd function around $\hat{x}_i$.
+
+\spart
+
+Note that $(x_i - \hat{x}_i) (x_j - \hat{x}_j) = x_i x_j - \hat{x}_i x_j - \hat{x}_j x_i - \hat{x}_j \hat{x}_i$. The two terms in the middle are going to get out because of the previous part.
+
+\end{problem}
