@@ -21,10 +21,54 @@
 
 \section{Fourier series}
 
-\begin{defn}[Fourier\IS series] Given $f ∈ C^0(\crc[1])$, we can define its fourier series with coefficients \[ \hat{f}(n) = \int_0^1 e^{-2π\imath n x} f(x) \dif x \qquad n ∈ ℤ \] as \[ \sum_{n ∈ ℤ} \hat{f}(n) e^{2π\imath n x}\]
+The first tool in harmonic analysis will be the Fourier series, which allows representation of a function as a trigonometric polynomial.
+
+\begin{defn}[Fourier\IS series] Given $f ∈ C^0(\crc[1])$, we can define its Fourier series with coefficients \[ \hat{f}(n) = \int_0^1 e^{-2π\imath n x} f(x) \dif x \qquad n ∈ ℤ \] as \( \sum_{n ∈ ℤ} \hat{f}(n) e^{2π\imath n x} \label{eq:FourierSeries} \)
 \end{defn}
 
-The first interesting fact is that functions in $C^0$ are not necessarily equal to their Fourier series. We only have that with Hölder functions.
+
+In our case, we will consider $\crc[1]$ as the space of periodic functions, so equivalently $\crc[1] \cong \quot{ℝ}{ℤ}$. One interesting property of the Fourier series is its relation to the convolution.
+
+\begin{defn}[Convolution] Given two functions $f, g ∈ L^1(Ω)$, the convolution of both is defined as \[ (f \ast g) (x) ≝ \int_Ω f(x-y) g(y) \dif y\] which is itself an $L^1(Ω)$ function.
+\end{defn}
+
+With this, one can see the relationship between the convolution and the Fourier transform.
+
+\begin{prop} Consider $f, g ∈ C^0(\crc[1])$. Then, the Fourier series of the convolution is the same that the product of the Fourier series: \[ \widehat{f\ast g} (n) = \hat{f}(n) · \hat{g}(n)\]
+\end{prop}
+
+\begin{proof} % TODO
+\end{proof}
+
+\subsection{Convergence of the Fourier series}
+
+The first real interesting question in this topic is, of course, when is the serie defined in \eqref{eq:FourierSeries} is convergent and, moreover, when does it converge to the original function. The first one is easy and direct computation:
+
+\begin{prop}[Parseval\IS identity] Let $f ∈ L^2(\crc[1])$. Then, its Fourier series $\{\hat{f}(n)\}$ is absolutely summable (that is, $\{\hat{f}(n)\} ∈ \ell^2(ℤ)$) and $\norm{\hat{f}}_{\ell^2(ℤ)} = \norm{f}_{L^2(\crc[1])}$.
+\end{prop}
+
+\begin{proof} % TODO
+\end{proof}
+
+Now, whether the Fourier series converges to its original function is another question, fairly interesting. A fact that should assureus that we are not working in some crazy world is that we have at least convergence in the $L^2$ norm.
+
+\begin{theorem}[Riesz–Fischer\IS theorem] Let $f ∈ L^2(\crc[1])$ and define its partial Fourier series as \( \label{eq:PartialFourier} S_Nf(x) = \sum_{ \abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} \)
+
+Then, $S_Nf$ converges to $f$ in the $L^2$ norm: \[ \norm{S_Nf - f}_{L^2(\crc[1])} = 0 \]
+\end{theorem}
+
+\begin{proof} % TODO
+\end{proof}
+
+For a deeper study of the Fourier series, we have to turn to the Dirichlet kernel, defined as \( \label{eq:DirichletKernel} D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \), mainly because it has the interesting property that $S_Nf = D_N \ast f$, which allows a better treatment of the Fourier series. With a little bit of calculations (see \cite[Exercise 2.4]{ApuntesAnalisisFunc}) one can also show that \( \label{eq:DirichletKernelNormL1} \norm{D_N}_{L^1(\crc[1])} = C \log N + \mathcal{O}(1) \) so that the Dirichlet kernel is unbounded.
+
+This allows\footnote{This is a summary of \cite[Exercise 2.4]{ApuntesAnalisisFunc}.} us to define the operator $λ_{D_N}(f) = S_Nf(0)$ on the space of continuous functions $X =(C^0(\crc[1]), \norm{·}_∞)$, which is Banach. Each of the operators are bounded with $\norm{λ_{D_N}}_{\linapp[X][ℝ]} = \norm{D_N}_{L^1(\crc[1])}$. However, this family of operators is not uniformly bounded so the Banach-Steinhaus uniform boundedness theorem \citep[Theorem II.8]{ApuntesAnalisisFunc} says that there exists a set $B$ dense in $X$ such that \[ \sup_{N ≥ 1} \norm{λ_{D_N} (f)}_{ℝ} = \sup_{N ≥ 1} \norm{S_N f(0)}_{ℝ} = ∞ \quad ∀f ∈ B\] and thus $\norm{S_Nf(0)}_{ℝ}$ is divergent for those $f ∈ B$.
+
+So, in general, the Fourier series does not necessarily converge pointwise for $C^0$ functions. We will be able, however, to prove pointwise convergence asking just for a little bit of regularity.
+
+\subsubsection{Pointwise convergence for Hölder functions}
+
+Luckily for us, we can have pointwise convergence just by asking a little bit of regularity to the function being transformed. This will be Hölder continuity:
 
 \begin{defn}[Hölder\IS continuous] A function $\appl{f}{X}{Y}$ between two metric spaces is Hölder continuous if there exists two constants $C > 0$, $α ≥ 0$ such that for any $x, y ∈ X$, the following holds: \[ \norm{f(x) - f(y)} ≤ C \norm{x-  y}^α\]
 \end{defn}
@@ -34,16 +78,29 @@ Obviously, if $α = 0$ we have boundedness, for $α > 0$ continuity and for $α 
 \begin{prop} If $f ∈ C^0(\crc[1])$ is Hölder continuous, then the Fourier series of a function is equal to the same function.
 \end{prop}
 
-\begin{proof}
+\begin{proof} We want to prove that, $∀x ∈ \crc$, the following limit is null: \[ \lim_{N \to ∞} S_Nf(x) -f(x) = 0\]
+
+In order to do that, we will put the $f(x)$ inside of the integral and separate it in two intervals: one in which we will use the regularity of $f$ to compensate for the growth of the Dirichlet kernel and another one where we will use the oscillations of the kernel to bound the integral. Making use of the symmetry of $D_N$ we have that \begin{align*}
+S_Nf(x) - f(x) &= \int_0^1 \left(f(x-y) - f(x)\right) D_N(y) \dif y = \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \left(f(x-y) - f(x)\right) D_N(y) \dif y = \\
+&= \underbracket{\int_{\abs{y} < δ} \left(f(x-y) - f(x)\right) D_N(y) \dif y}_{A} +
+	\underbracket{\int_{\sfrac{1}{2} > \abs{y} > δ} \left(f(x-y) - f(x)\right) D_N(y) \dif y}_{B}
+\end{align*}
+
+For the estimate of $A$ we use the Hölder continuity:
+\begin{align*}
+\abs{A}
+	&≤ \int_{\abs{y} < δ} \abs{\left(f(x-y) - f(x)\right) D_N(y)} \dif y  \\
+	&≤ \int_{\abs{y} < δ} C \norm{x-y - x}^α \abs{D_N(y)} \dif y  \\
+	&≤ Cδ^α \int_{\abs{y} < δ} \abs{D_N(y)} \dif y \\
+	&\eqexpl[≤]{\eqref{eq:DirichletKernelNormL1}} Cδ^α \log N
+\end{align*}
 
 \end{proof}
 
 
-\begin{defn}[Convolution] Given two functions $f, g ∈ L^1(Ω)$, the convolution of both is defined as \[ (f \ast g) (x) ≝ \int_Ω f(x-y) g(y) \dif y\]
-\end{defn}
 
-\begin{prop} Consider $f, g ∈ C^0(\crc[1])$. Then, the Fourier series of the convolution is the same that the product of the Fourier series: \[ \widehat{f\ast g} (n) = \hat{f}(n) · \hat{g}(n)\]
-\end{prop}
+
+
 
 Dirichlet kernel. Trigonometric thing and you end up with only some terms.
 
