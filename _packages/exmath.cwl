@@ -160,11 +160,14 @@
 \vp#m
 \mA#m
 \mB#m
+\mD#m
 \mL#m
 \mM#m
 \mU#m
 \mP#m
 \mR#m
+\mK#m
+\mJ#m
 \thethm#m
 \thedef#m
 \theexm#m
