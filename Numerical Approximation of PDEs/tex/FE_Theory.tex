@@ -378,7 +378,7 @@ We finish them with the theorems of the interpolation error. These theorems are 
 
 \begin{theorem}[Interpolation error\IS for possibly non-smooth functions] \label{thm:Theory:InterpErrorNonSmooth} Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, for $s ≥ 2$ and with $η ≝ \min \set{s, r + 1}$ there exists $C_m > 0$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
 \begin{align}
-\norm{u - I_h^ru}_{H^m(Ω)} &≤ C_m h^{η -m} \abs{u}_{H^{η}(Ω)} \label{eq:Theory:InterpSmoothHm}
+\norm{u - I_h^ru}_{H^m(Ω)} &≤ C_m h^{η -m} \abs{u}_{H^{η}(Ω)} \label{eq:Theory:InterpNonSmoothHm}
 \end{align} for $0 ≤ m ≤ η$ and with $C_m$ that depends on the aspect ratio $γ$ of the mesh family, $r$ and $m$, but otherwise independent of $h$.
 \end{theorem}
 
@@ -404,7 +404,7 @@ Some times we will need a generalized Galerkin method in which something differe
 
 Then the lemma commes.
 
-\begin{lemma}[Strang's lemma][Lemma!Strang] Consider the problem of finding $u ∈V$ such that \[ a(u,v) = F(v) \quad ∀ v ∈ V\] where $V$ is a Hilbert space, $F ∈ V'$ is a linear and continuous functional, and $\appl{a}{V×V}{ℝ}$ is a continuous (constant $M$) and coercive bilinear form. Consider its associated generalized Galerkin problem given by finding $u_h ∈V_h$ such that \[ a_h(u_h, v_h) = F_h(v_h) \quad ∀v_h ∈ V_h\] where $\set{V_h}_{h > 0}$ is a family of subspaces of $V$ and dense in $V$.
+\begin{lemma}[Strang\IS lemma] Consider the problem of finding $u ∈V$ such that \[ a(u,v) = F(v) \quad ∀ v ∈ V\] where $V$ is a Hilbert space, $F ∈ V'$ is a linear and continuous functional, and $\appl{a}{V×V}{ℝ}$ is a continuous (constant $M$) and coercive bilinear form. Consider its associated generalized Galerkin problem given by finding $u_h ∈V_h$ such that \[ a_h(u_h, v_h) = F_h(v_h) \quad ∀v_h ∈ V_h\] where $\set{V_h}_{h > 0}$ is a family of subspaces of $V$ and dense in $V$.
 
 If $a_h$ is uniformly coercive on $V_h$ with constant $α^*$, we have the following results:
 \begin{enumerate}

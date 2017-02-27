@@ -292,8 +292,8 @@ Then, denoting by $\dot{u}_j(t)$ the derivative of $u_j(t)$, we can rewrite \eqr
 To solve the system we can use the $θ$-method, in which we discretize the time derivative by an incremental ratio and we replace the other terms by a linear combination of the values at times $t^k$ and $t^{k+1}$: \( \mM \frac{\vu^{k+1} - \vu^k}{Δt} + \mA \left(θ \vu^{k+1} + (1-θ) \vu^{k}\right) = θ\vf^{k+1} + (1-θ) \vf^k \label{eq:ODE:GeneralTimeDiscParabolic} \) where $Δt$ indicates the discretization timestep. Depending on $θ$ we have different specific methods:
 
 \begin{itemize}
-	\item \concept{Forward (explicit) Euler method} With $θ = 0$, first order method with respect to $Δt$.
-	\item \concept{Backward (implicit) Euler method} With $θ = 1$, again first order.
+	\item \concept[Euler method!forward (explicit)]{Forward (explicit) Euler method} With $θ = 0$, first order method with respect to $Δt$.
+	\item \concept[Euler method!backward (implicit)]{Backward (implicit) Euler method} With $θ = 1$, again first order.
 	\item \concept{Crank-Nicolson (trapezoidal) method} With $θ = \sfrac{1}{2}$ is a second order method (and the only one of second order).
 \end{itemize}
 

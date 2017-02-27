@@ -234,7 +234,7 @@ The theorem states that \textbf{every} continuous linear functional has this rep
 
 We are also going to need the Lebesgue differentiation theorem. Just as an improved notation, we define the ``averaging integral'' by $\fint_A f \dif μ = \frac{1}{μ(A)}\int f \dif μ$ where $μ(A)$ is the measure of the set $A$.
 
-\begin{theorem}[Lebesgue Differentiation Theorem] Let $\appl{f}{ℝ^m}{R^n}$ be a Lebesgue integrable function. Then, for almost every $x ∈ ℝ^m$ we have that \( \lim_{r \to 0} \frac{\int_{\bola_r(x)} f \dif μ}{μ(\bola_r(x))} = \fint_{\bola_r(x)} f \dif μ  = f(x) \)
+\begin{theorem}[Lebesgue\IS differentiation theorem] Let $\appl{f}{ℝ^m}{R^n}$ be a Lebesgue integrable function. Then, for almost every $x ∈ ℝ^m$ we have that \( \lim_{r \to 0} \frac{\int_{\bola_r(x)} f \dif μ}{μ(\bola_r(x))} = \fint_{\bola_r(x)} f \dif μ  = f(x) \)
 \end{theorem}
 
 This theorem gives us a nice corollary, which is the fundamental theorem of calculus for Lebesgue integrals.
@@ -285,7 +285,7 @@ To finish with this chapter on fundamentals, we need to visit the trace spaces. 
 
 However, one aspect of PDEs that we haven't touched here is boundary conditions. Which is the regularity of functions defined in the boundary of a domain? What requirements should we impose on that boundary? These questions are answered by the trace operator, which is an easy way to deal with the restriction on the boundary.
 
-\begin{theorem}[Trace\IS theorem][Theorem!trace] \label{thm:Fund:Trace} Let $Ω ⊂ ℝ^d$ be an open domain with a Lipschitz continuous boundary $∂Ω$, and $k ≥ 1$. Then, there exists an unique linear map (\textbf{trace operator}) \begin{align*}
+\begin{theorem}[Trace\IS theorem] \label{thm:Fund:Trace} Let $Ω ⊂ ℝ^d$ be an open domain with a Lipschitz continuous boundary $∂Ω$, and $k ≥ 1$. Then, there exists an unique linear map (\textbf{trace operator}) \begin{align*}
 \appl{γ_0}{H^k(Ω)&}{H^{k-\sfrac{1}{2}}(∂Ω)}
 \end{align*} such that $γ_0(v) = \restr{v}{∂Ω}$ if $v ∈ H^k(Ω) ∩ C^0(\adh{Ω})$ (that is, the trace operator is the restriction on the boundary when the function is continuous in the closure).
 
@@ -334,7 +334,7 @@ And, by extension, equivalence of the full norm and seminorm in the Hilbert spac
 
 Some useful, abstract functional analysis theorems, without proofs.
 
-\begin{theorem}[Closed range theorem][Theorem!closed range] \label{thm:Fund:ClosedRange} Let $X, Y$ be Banach spaces and let $D ⊂ X$ be dense in $X$. Let $\appl{T}{D}{Y}$ be a closed linear operator with transpose\footnote{$\appl{T'}{Y'}{D'}$ is the transpose of $T$ if and only if $\pesc{Tx, y'} = \pesc{x, T'y'}$ for all $x ∈ D$ and $y' ∈ Y'$.} $T'$ Then, the following claims are equivalent:
+\begin{theorem}[Closed range\IS theorem] \label{thm:Fund:ClosedRange} Let $X, Y$ be Banach spaces and let $D ⊂ X$ be dense in $X$. Let $\appl{T}{D}{Y}$ be a closed linear operator with transpose\footnote{$\appl{T'}{Y'}{D'}$ is the transpose of $T$ if and only if $\pesc{Tx, y'} = \pesc{x, T'y'}$ for all $x ∈ D$ and $y' ∈ Y'$.} $T'$ Then, the following claims are equivalent:
 
 \begin{enumerate}
 	\item The image of $T$ is closed in $Y$.
@@ -344,6 +344,6 @@ Some useful, abstract functional analysis theorems, without proofs.
 \end{enumerate}
 \end{theorem}
 
-\begin{theorem}[Hahn-Banach theorem][Theorem!Hahn-Banach] \label{thm:Fund:HahnBanach} Let $\appl{T}{V⊂X}{Y}$ a bounded linear operator with $X$ normed space and $Y$ Banach, such that $V$ is dense in $X$. Then, there is a unique bounded linear extension $\appl{\tilde{T}}{X}{Y}$ with $\norm{\tilde{T}} = \norm{T}$.
+\begin{theorem}[Hahn-Banach\IS theorem] \label{thm:Fund:HahnBanach} Let $\appl{T}{V⊂X}{Y}$ a bounded linear operator with $X$ normed space and $Y$ Banach, such that $V$ is dense in $X$. Then, there is a unique bounded linear extension $\appl{\tilde{T}}{X}{Y}$ with $\norm{\tilde{T}} = \norm{T}$.
 \end{theorem}
 
