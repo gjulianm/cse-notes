@@ -81,6 +81,7 @@
 \RequirePackage{natbib}
 \RequirePackage{fastbuild}
 \RequirePackage{tikztools}
+\RequirePackage{mathenvs}
 
 %% Some configurations and adjustements
 

@@ -1,0 +1,234 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{theorenvs}[2017/02/27 Extended theorem-type environments and problems]
+
+\newif\if@menvs@usechap
+\newif\if@menvs@useprobframes % Controla si los problemas tienen marcos o no
+\newif\if@menvs@conceptmarginpar
+\newif\if@menvs@compact
+
+\DeclareOption{chap}{\global\@menvs@usechaptrue}
+\DeclareOption{nochap}{\global\@menvs@usechapfalse}
+
+\DeclareOption{probframes}{\global\@menvs@useprobframestrue}
+\DeclareOption{noprobframes}{\global\@menvs@useprobframesfalse}
+
+\DeclareOption{conceptmarginpar}{\global\@menvs@conceptmarginpartrue}
+\DeclareOption{noconceptmarginpar}{\global\@menvs@conceptmarginparfalse}
+
+\DeclareOption{compact}{\global\@menvs@compacttrue}
+\DeclareOption{nocompact}{\global\@menvs@compactfalse}
+
+\ExecuteOptions{chap,probframes,conceptmarginpar,nocompact}
+\ProcessOptions
+
+\RequirePackage{amsthm} % Base class for defining theorems
+\RequirePackage{texpatches}
+
+% Definitions for the counters depending on chapters/no chapeters
+\if@menvs@usechap
+	\newcounter{thm}[chapter]
+	\newcounter{def}[chapter]
+	\newcounter{exm}[chapter]
+	\renewcommand{\thethm}{\thechapter.\arabic{thm}} % IGN
+	\renewcommand{\thedef}{\thechapter.\arabic{def}} % IGN
+	\renewcommand{\theexm}{\thechapter.\arabic{exm}} % IGN
+	\numberwithin{thm}{chapter}
+	\message{Using chapter numbering for theorems and definitions}
+\else
+	\newcounter{thm}[section]
+	\newcounter{def}[section]
+	\newcounter{exm}[section]
+	\renewcommand{\thethm}{\thesection.\arabic{thm}} % IGN
+	\renewcommand{\thedef}{\thesection.\arabic{def}} % IGN
+	\renewcommand{\theexm}{\thesection.\arabic{exm}} % IGN
+	\numberwithin{thm}{section}
+	\message{Using section numbering for theorems and definitions}
+\fi
+
+% These theorems are only intended for internal use as they are wrapped in other environment
+\newtheorem{ilemma}[thm]{Lemma}
+\newtheorem{itheorem}[thm]{Theorem}
+\newtheorem{iprop}[thm]{Proposition}
+
+% These ones can be used
+\newtheorem{corol}[thm]{Corollary}
+\newtheorem{axiom}[thm]{Axiom}
+
+% Pseudo-theorem environments
+\newenvironment{remark}{\vspace{10pt}\par \noindent \textbf{Remark}: }{}
+\newtheorem*{props}{Properties}
+\newenvironmentx{example}[1][1=]{\refstepcounter{exm}\paragraph{Example \theexm: #1} \itshape} % 1O: title;
+
+% To separate parts of a proof
+\newlength{\@proofline}
+\newcommand{\proofpart}[1]{ % 1: Part name
+	\vspace{10pt}
+	\setlength{\@proofline}{\maxof{\widthof{\textbf{#1}} + 40pt}{150pt}}
+	\hspace{-30pt}\rule[-0.5em]{\@proofline}{0.7pt}
+	\hspace{-\@proofline}\hspace{25pt} % I don't know how to add lengths
+	\textbf{#1}
+}
+
+\renewenvironment{proof}{\begin{leftbar}\noindent \textit{Proof.} }{\qed\end{leftbar}}
+
+% The index separator to allow easy output of indexed words
+\newcommand{\IS}{ } % IGN
+\def\toggle@IS@print{\renewcommand{\IS}{ }}
+\def\toggle@IS@index{\renewcommand{\IS}{!}}
+
+% Setup for the list of theorems
+\newlistof{listoftheorems}{thm}{List of theorems, lemmas and propositions}
+\newcommand{\printtheorems}{\clearsidepage\listoftheorems} %IGN
+
+\newlistentry{theorem}{thm}{0}
+\newlistentry{lemma}{thm}{0}
+\newlistentry{prop}{thm}{0}
+
+\setlength\cfttheoremnumwidth{6.5em}
+\setlength\cftlemmanumwidth{6.5em}
+\setlength\cftpropnumwidth{6.5em}
+\def\cfttheorempresnum{Theorem\;}
+\def\cftlemmapresnum{Lemma\;}
+\def\cftproppresnum{Prop.\;}
+
+\newcommand{\@menvs@addtolist}[2]{\addcontentsline{thm}{#1}{\protect\numberline{\thethm}#2}} % IGN
+
+% Allow name references (see fancyrefsimproved)
+\newcommand{\@menvs@setlabelname}[1]{%IGN
+	\ifthenelse{\equal{#1}{}}
+		{}
+		{\toggle@IS@print\protected@edef\@currentlabelname{#1}%
+		\renewcommand{\label@hook}{}}
+}
+
+% Allow referencing of enumerate items inside theorems
+\def\@menvs@thmitemlabels@enable{
+	\renewcommand{\labelenumi}{\alph{enumi}. }
+	\renewcommand{\theenumi}{\thethm\ - (\alph{enumi})}
+}
+
+\def\@menvs@thmitemlabels@restore{
+	\renewcommand{\labelenumi}{\alph{enumi}. }
+	\renewcommand{\theenumi}{\alph{enumi}}
+}
+
+% Set name and index for theorem
+\newcommand{\@menvs@setnameindex}[2]{% IGN
+	\toggle@IS@index%
+	\ifthenelse{\equal{#2}{None}}%
+		{\index{#1}}%
+		{\index{#2}}%
+	\@menvs@setlabelname{#1}%
+	\toggle@IS@print%
+	\@menvs@thmitemlabels@enable%
+}
+
+% Marks a concept in the index and sidebar
+\newcommand{\concept}[2][None]{\toggle@IS@print\textbf{#2}% IGN
+	\if@menvs@conceptmarginpar\marginpar{\footnotesize\textit{\makefirstuc{#2}}}\else\fi%
+	\toggle@IS@index%
+	\ifthenelse{\equal{#1}{None}}{\index{#2}}{\index{#1}}}
+
+
+% Theorems and other similar environments
+\newenvironmentx{defn}[2][1=, 2=None]{  % 1O: title; 2O: index;
+	\vspace{15pt}%
+	\@menvs@setlabelname{#1}%
+	\@menvs@thmitemlabels@enable%
+	\refstepcounter{def}%
+	\noindent\textit{Definition \thedef}
+	\concept[#2]{#1}.\itshape}
+	{\vspace{2pt}\@menvs@thmitemlabels@restore}
+
+\newenvironmentx{prop}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
+	\vspace{2pt}
+	\@menvs@setnameindex{#1}{#2}
+	\begin{iprop}[#1]\@menvs@addtolist{prop}{#1}%
+	}
+	{\end{iprop}\@menvs@thmitemlabels@restore}
+
+\newenvironmentx{theorem}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
+	\if@menvs@compact\else\vspace{2pt}\fi%
+	\@menvs@setnameindex{#1}{#2}
+	\if@menvs@compact%
+	\begin{mdframed}[skipabove = 0pt, innerleftmargin = 2pt, innertopmargin=2pt, innerrightmargin=2pt, innerbottommargin=2pt]%
+	\else%
+	\begin{framed}%
+	\fi%
+	\begin{itheorem}[#1]\if@menvs@compact\vspace{-6pt}\fi%
+	\@menvs@addtolist{theorem}{#1}%
+	}
+	{\end{itheorem}%
+	\if@menvs@compact\end{mdframed}\else\end{framed}\fi%
+	\@menvs@thmitemlabels@restore}
+
+
+\newenvironmentx{lemma}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
+	\vspace{2pt}
+	\@menvs@setnameindex{#1}{#2}
+	\begin{ilemma}[#1]\@menvs@addtolist{lemma}{#1}%
+	}
+	{\end{ilemma}\@menvs@thmitemlabels@restore}
+
+
+% Problems and exercise environments
+\newcounter{exr}[section]
+\newcounter{apr}[exr]
+
+\renewcommand{\theexr}{\arabic{section}.\arabic{exr}} % IGN
+\renewcommand{\theapr}{\theexr\ - \Alph{apr})} % IGN
+
+\newcommand{\@menvs@partskip}{} %IGN
+\newcommandx{\ppart}[1][1=\alph{apr}]{\par \indent \stepcounter{apr}\textbf{#1)} } % 1O: part; | Marks a new part in the problem
+\newcommandx{\spart}[1][1=\alph{apr}]{ % 1O: part; | Mark for part in the solution
+	\@menvs@partskip
+	\renewcommand{\@menvs@partskip}{\vspace{10pt}}
+	\hspace{0pt}\vspace{-15pt}\par\refstepcounter{apr}\textsc{Part #1)} \par
+}
+
+\newcommand{\solution}{
+	\if@menvs@useprobframes
+		\end{framed}
+	\else
+		\noindent\normalfont\textcolor{gray}{\hrulefill} \\
+	\fi
+	\setcounter{apr}{0}
+}
+
+\newcommand{\exrheader}{\theexr} % IGN
+\newcommand{\custom@exrheader}{\theexr} % IGN
+
+\newenvironment{innerproblem}[1]{ % IGN. Common environment
+	\vspace{1 pt}
+	\ifthenelse{\equal{#1}{}}{}{
+		\IsInteger{#1}{
+			\setcounter{exr}{#1}
+			\addtocounter{exr}{-1}
+		}{
+			\renewcommand{\exrheader}{\custom@exrheader}
+		}
+	}
+	\refstepcounter{exr}
+	\renewcommand{\@menvs@partskip}{}
+	\if@menvs@useprobframes\begin{framed}\fi
+	\textbf{Exercise \exrheader}:
+	\if@menvs@useprobframes\itshape\fi
+	\setcounter{apr}{0}
+}{\vspace{10 pt}}
+
+\newenvironmentx{problem}[1][1=] % 1O: Ex. number
+{
+	\renewcommand{\custom@exrheader}{\arabic{section}.{#1}}
+	\renewcommand{\exrheader}{\theexr}
+
+	\begin{innerproblem}{#1}
+}{\end{innerproblem}}
+
+% Problem without section numbering
+\newenvironmentx{problemS}[1][1=] % 1O: Ex.number
+{
+	\renewcommand{\exrheader}{\arabic{exr}}
+	\renewcommand{\custom@exrheader}{#1}
+
+	\begin{innerproblem}{#1}
+}{\end{innerproblem}}

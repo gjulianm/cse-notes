@@ -12,14 +12,18 @@ function trycopy() {
 	fi
 }
 
-echo "Creating completion file..."
-python cwlcreator.py exmath.sty exmath.cwl
+echo "Creating completion files..."
+cwlpaths="~/.config/texstudio/ ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/cwl/ ~/.config/sublime-text-3/Packages/User/cwl/"
 
-trycopy exmath.cwl ~/.config/texstudio/
-trycopy exmath.cwl ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/cwl/
-trycopy exmath.cwl ~/.config/sublime-text-3/Packages/User/cwl/
+for sty in $(ls *.sty) ; do
+	cwl="${sty/%.sty/.cwl}"
+	echo "$sty -> $cwl"
+	python cwlcreator.py $sty $cwl
 
-
+	for path in $cwlpaths ; do
+		trycopy $cwl $path
+	done
+done
 
 echo "Copying packages..."
 if ! cp -v *.code.tex *.sty $latex_dir ; then

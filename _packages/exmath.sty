@@ -8,26 +8,6 @@
 %	La "O" (una "o", no un 0) después del número de argumento indica que es opcional.
 % ----------------------------------------------------------
 
-\newif\if@useprobframes % Controla si los problemas tienen marcos o no
-\newif\if@usechap
-\newif\if@conceptmarginpar
-\newif\if@compact
-
-\DeclareOption{probframes}{\global\@useprobframestrue}
-\DeclareOption{noprobframes}{\global\@useprobframesfalse}
-
-\DeclareOption{chap}{\global\@usechaptrue}
-\DeclareOption{nochap}{\global\@usechapfalse}
-
-\DeclareOption{conceptmarginpar}{\global\@conceptmarginpartrue}
-\DeclareOption{noconceptmarginpar}{\global\@conceptmarginparfalse}
-
-\DeclareOption{compact}{\global\@compacttrue}
-\DeclareOption{nocompact}{\global\@compactfalse}
-
-\ExecuteOptions{probframes,chap,nocompact,conceptmarginpar}
-\ProcessOptions
-
 % Paquetes requeridos
 \RequirePackage{amsmath} % Matemáticas
 \RequirePackage{amsfonts} % Mas matemáticas
@@ -62,16 +42,6 @@
 % Separation rule
 \newcommand{\seprule}[1][$\ast\quad\ast\quad\ast$]{{\color{gray} \noindent \hspace{40pt} \hrulefill~ \raisebox{-4pt}[10pt][10pt]{#1}~ \hrulefill\hspace{40pt}}}
 
-% To separate parts of a proof
-\newlength{\@proofline}
-\newcommand{\proofpart}[1]{
-	\vspace{10pt}
-	\setlength{\@proofline}{\maxof{\widthof{\textbf{#1}} + 40pt}{150pt}}
-	\hspace{-30pt}\rule[-0.5em]{\@proofline}{0.7pt}
-	\hspace{-\@proofline}\hspace{25pt} % I don't know how to add lengths
-	\textbf{#1}
-}
-
 % Para evitar que el \md de nuestro paquete tenga conflictos con el de commath
 \let\mder\md
 
@@ -94,29 +64,6 @@
   \textcolor{blue}{Hecho por mÃ­. No fiarse al 100\%}%
 }
 
-\newcommand*\IsExactlyOneToken[1]{%
-  TT\fi
-  \ifx\@empty#1\@empty
-    \expandafter\@EmptyCase
-  \else
-    \expandafter\@IsOnlyOneToken
-  \fi
-  #1\@@@
-}
-\@ifdefinable\@IsOnlyOneToken{\def\@IsOnlyOneToken#1#2\@@@{%
-  \ifx\@empty#2\@empty
-}}
-\@ifdefinable\@EmptyCase{\def\@EmptyCase#1\@@@{% #1 for robustness
-  \iffalse % since 0 != 1
-}}
-
-\newcommand{\@addparensifrequired}[1]{
-	\if\IsExactlyOneToken{#1}%
-		\,#1%
-    \else
-		\left(#1\right)%
-  	\fi
-}
 
 % Se puede definir de forma genérica con \doneby{Quién}.
 \newcommand{\doneby}[1]{\textcolor{\@nameuse{probcolor-#1}}{\itshape Hecho por #1. Se aceptan correcciones.}} % 1: Autor | Muestra el texto "Hecho por..."
@@ -139,9 +86,6 @@
 \@namedef{probcolor-prof}{NavyBlue}
 
 % Para evitar que desaparezcan caracteres en ciertas fuentes.
-\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
-\DeclareSymbolFontAlphabet{\mathbbold}{bbold}
-
 % BEGIN CMDDEF
 
 \newcommand{\triple}{\tikz[scale = 0.6] { \draw[black, fill = orange] (0,0) circle (1em); \draw (0, 1em) -- (0, -1em); \draw (1em, 0) -- (-1em, 0); \draw (0.69em, 0.69em) to [bend right = 60] (0.69em, -0.69em);\draw (-0.69em, 0.69em) to [bend left = 60] (-0.69em, -0.69em);  }} % Ejem.
@@ -345,231 +289,6 @@
 \newcommand{\mK}{\mtr{K}}
 \newcommand{\mJ}{\mtr{J}}
 
-% Teoremas. IGN
-\if@usechap
-	\newcounter{thm}[chapter]
-	\newcounter{def}[chapter]
-	\newcounter{exm}[chapter]
-	\renewcommand{\thethm}{\thechapter.\arabic{thm}} % IGN
-	\renewcommand{\thedef}{\thechapter.\arabic{def}} % IGN
-	\renewcommand{\theexm}{\thechapter.\arabic{exm}} % IGN
-	\numberwithin{thm}{chapter}
-	\message{Using chapter numbering for theorems and definitions}
-\else
-	\newcounter{thm}[section]
-	\newcounter{def}[section]
-	\newcounter{exm}[section]
-	\renewcommand{\thethm}{\thesection.\arabic{thm}} % IGN
-	\renewcommand{\thedef}{\thesection.\arabic{def}} % IGN
-	\renewcommand{\theexm}{\thesection.\arabic{exm}} % IGN
-	\numberwithin{thm}{section}
-	\message{Using section numbering for theorems and definitions}
-\fi
-
-\newtheorem{ilemma}[thm]{Lemma}
-\newtheorem{itheorem}[thm]{Theorem}
-\newtheorem{corol}[thm]{Corollary}
-\newtheorem{iprop}[thm]{Proposition}
-\newtheorem{axiom}[thm]{Axiom}
-
-\newenvironment{remark}{\vspace{10pt}\par \noindent \textbf{Observation}: }{}
-\newtheorem*{props}{Properties}
-
-\newcommand{\IS}{} % IGN
-\def\toggle@IS@print{\renewcommand{\IS}{ }}
-\def\toggle@IS@index{\renewcommand{\IS}{!}}
-
-\newenvironment{op}[1]{\indent \\ \noindent\textsc{#1}\\\[}{\]}
-
-\renewcommand{\(}[1][]{\begin{equation}\ifthenelse{\equal{#1}{}}{}{\label{#1}}} % 1O: etiqueta; | IGN
-\renewcommand{\)}{\end{equation}} % IGN
-
-
-\newenvironment{rightbar}{\begin{mdframed}[topline=false, leftline=false, bottomline=false,%
-  linewidth=2pt, innerleftmargin=0pt, rightmargin=0pt,%
-  innerrightmargin=10pt, skipabove=0pt, skipbelow=0pt]}{\end{mdframed}}
-
-\newenvironmentx{example}[1][1=] % 1O: titulo;
-{\refstepcounter{exm}\paragraph{Example \theexm: #1} \itshape}
-{}
-
-\newcounter{ithm}
-\newlistof{listoftheorems}{thm}{List of theorems, lemmas and propositions}
-\newlistentry{theorem}{thm}{0}
-\newlistentry{lemma}{thm}{0}
-\newlistentry{prop}{thm}{0}
-
-\setlength\cfttheoremnumwidth{6.5em}
-\setlength\cftlemmanumwidth{6.5em}
-\setlength\cftpropnumwidth{6.5em}
-\def\cfttheorempresnum{Theorem\;}
-\def\cftlemmapresnum{Lemma\;}
-\def\cftproppresnum{Prop.\;}
-
-\newcommand{\addthmtolist}[2]{%IGN
-	\refstepcounter{ithm}
-	\addcontentsline{thm}{#1}{\protect\numberline{\thethm}#2}
-}
-
-% Esta cosa permite el uso de referencias con nombre 			IGN
-% con comandos como \nref{ref}, que escribira en el 			IGN
-% documento algo como "Teorema nombre del teorema (1.25)".		IGN
-% Ver el paquete fancyspfrefs.sty								IGN
-\newcommand{\set@labelname}[1]{%IGN
-	\ifthenelse{\equal{#1}{}}
-		{}
-		{\toggle@IS@print\protected@edef\@currentlabelname{#1}%
-		\renewcommand{\label@hook}{}}
-}
-
-\def\@restore@itemlabels{
-	\renewcommand{\labelenumi}{\alph{enumi}. }
-	\renewcommand{\theenumi}{\alph{enumi}}
-}
-
-\newenvironmentx{defn}[2][1=, 2=None]{  % 1O: titulo; 2O: indice;
-	\vspace{15 pt}
-	\set@labelname{#1}
-	\renewcommand{\labelenumi}{\alph{enumi}. }
-	\renewcommand{\theenumi}{\thedef\ - (\alph{enumi})}
-	\noindent \refstepcounter{def} \textit{Definition \thedef}
-	\concept[#2]{#1}.\itshape}
-	{\vspace{2 pt}\@restore@itemlabels}
-
-\def\@set@theorem@itemlabels{
-	\renewcommand{\labelenumi}{\alph{enumi}. }
-	\renewcommand{\theenumi}{\thethm\ - (\alph{enumi})}
-}
-
-\newenvironmentx{prop}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
-	\vspace{2pt}
-	\toggle@IS@index %IGN
-	\ifthenelse{\equal{#2}{None}}
-		{\index{#1}}
-		{\index{#2}}
-	\set@labelname{#1}
-	\toggle@IS@print %IGN
-	\@set@theorem@itemlabels
-	\begin{iprop}[#1]\addthmtolist{prop}{#1}%
-	}
-	{\end{iprop}\@restore@itemlabels}
-
-\newenvironmentx{theorem}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
-	\if@compact\else\vspace{2pt}\fi%
-	\toggle@IS@index%
-	\ifthenelse{\equal{#2}{None}}%
-		{\index{#1}}%
-		{\index{#2}}%
-	\set@labelname{#1}%
-	\toggle@IS@print%
-	\@set@theorem@itemlabels%
-	\if@compact%
-	\begin{mdframed}[skipabove = 0pt, innerleftmargin = 2pt, innertopmargin=2pt, innerrightmargin=2pt, innerbottommargin=2pt]%
-	\else%
-	\begin{framed}%
-	\fi%
-	\begin{itheorem}[#1]\if@compact\vspace{-6pt}\fi%
-	\addthmtolist{theorem}{#1}%
-	}
-	{\end{itheorem}%
-	\if@compact\end{mdframed}\else\end{framed}\fi%
-	\@restore@itemlabels}
-
-
-\newenvironmentx{lemma}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
-	\vspace{2pt}
-	\set@labelname{#1}
-	\toggle@IS@index %IGN
-	\ifthenelse{\equal{#2}{None}}
-		{\index{#1}}
-		{\index{#2}}
-	\toggle@IS@print %IGN
-	\@set@theorem@itemlabels
-	\begin{ilemma}[#1]\addthmtolist{lemma}{#1}%
-	}
-	{\end{ilemma}\@restore@itemlabels}
-
-
-\newcommand{\concept}[2][None]{\toggle@IS@print\textbf{#2}% IGN
-	\if@conceptmarginpar\marginpar{\footnotesize\textit{\makefirstuc{#2}}}\else\marginpar{Woops}\fi%
-	\renewcommand{\IS}{!}%
-	\ifthenelse{\equal{#1}{None}}{\index{#2}}{\index{#1}}}
-
-\newcommand{\printtheorems}{\clearsidepage\listoftheorems} %IGN
-
-\renewenvironment{proof}{\begin{leftbar}\noindent \textit{Proof.} }{\qed\end{leftbar}}
-
-% Entornos y código para problemas. IGN
-
-\newcommand*{\IsInteger}[3]{% %IGN
-    \IfStrEq{#1}{ }{%
-        #3% is a blank string
-    }{%
-        \IfInteger{#1}{#2}{#3}%
-    }%
-}%
-
-\newcounter{ejr}[section]
-\newcounter{apr}[ejr]
-
-\renewcommand{\theejr}{\arabic{section}.\arabic{ejr}} % IGN
-\renewcommand{\theapr}{\theejr\ - \Alph{apr})} % IGN
-
-\newcommand{\iPartSpaceSkip}{} %IGN
-\newcommandx{\ppart}[1][1=\alph{apr}]{\par \indent \stepcounter{apr}\textbf{#1)} } % IGN 1O: apartado; | Marca nuevo apartado del problema
-\newcommandx{\spart}[1][1=\alph{apr}]{ % IGN 1O: apartado; | Marca de apartado para la solución
-	\iPartSpaceSkip
-	\renewcommand{\iPartSpaceSkip}{\vspace{10pt}}
-	\hspace{0pt}\vspace{-15pt}\par\refstepcounter{apr}\textsc{Part #1)} \par
-}
-
-\newcommand{\solution}{  %IGN
-	\if@useprobframes
-		\end{framed}
-	\else
-		\noindent\normalfont\textcolor{gray}{\hrulefill} \\
-	\fi
-	\setcounter{apr}{0}
-}
-
-\newcommand{\ejrheader}{\theejr} % IGN
-\newcommand{\custom@ejrheader}{\theejr} % IGN
-
-\newenvironment{innerproblem}[1]{ % IGN. Common environment
-	\vspace{1 pt}
-	\ifthenelse{\equal{#1}{}}{}{
-		\IsInteger{#1}{
-			\setcounter{ejr}{#1}
-			\addtocounter{ejr}{-1}
-		}{
-			\renewcommand{\ejrheader}{\custom@ejrheader}
-		}
-	}
-	\refstepcounter{ejr}
-	\renewcommand{\iPartSpaceSkip}{}
-	\if@useprobframes\begin{framed}\fi
-	\textbf{Exercise \ejrheader}:
-	\if@useprobframes\itshape\fi
-	\setcounter{apr}{0}
-}{\vspace{10 pt}}
-
-\newenvironmentx{problem}[1][1=] % 1O: N. ejercicio;
-{
-	\renewcommand{\custom@ejrheader}{\arabic{section}.{#1}}
-	\renewcommand{\ejrheader}{\theejr}
-
-	\begin{innerproblem}{#1}
-}{\end{innerproblem}}
-
-% Problemas sin numeración por secciones. IGN
-\newenvironmentx{problemS}[1][1=] % 1O: N. ejercicio;
-{
-	\renewcommand{\ejrheader}{\arabic{ejr}}
-	\renewcommand{\custom@ejrheader}{#1}
-
-	\begin{innerproblem}{#1}
-}{\end{innerproblem}}
-
 % Complejos
 \newcommand{\ctrig}[1]{\cos \left(#1\right) + i \sin \left(#1\right)} % 1: angulo;
 \newcommand{\ceul}[2]{#1 e^{i #2}} % 1: mod; 2: angulo;
@@ -582,10 +301,6 @@
 % Probabilidad
 \DeclareMathOperator{\bin}{Bin}
 \DeclareMathOperator{\geom}{Geom}
-
-% Imagenes IGN
-\newcommand{\easyimgw}[4]{\begin{figure}[htbp]\begin{centering}\includegraphics[width=#4\textwidth]{#1}\caption{#2}\label{#3}\end{centering}\end{figure}} % 1: ruta; 2: caption; 3: label; 4: width; | IGN
-\newcommand{\easyimg}[3]{\easyimgw{#1}{#2}{#3}{0.8}} % 1: ruta; 2: caption; 3: label; | IGN
 
 % Estructuras algebraicas
 \newcommand{\gen}[1]{\mathopen{<} #1 \mathclose{>}} % 1: genlist; | Grupo generado por...

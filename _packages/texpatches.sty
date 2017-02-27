@@ -1,0 +1,44 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{texpatches}[2017/02/27 Some patches for LaTeX]
+
+\RequirePackage{amsmath}
+
+\newcommand*\IsExactlyOneToken[1]{%
+  TT\fi
+  \ifx\@empty#1\@empty
+    \expandafter\@EmptyCase
+  \else
+    \expandafter\@IsOnlyOneToken
+  \fi
+  #1\@@@
+}
+\@ifdefinable\@IsOnlyOneToken{\def\@IsOnlyOneToken#1#2\@@@{%
+  \ifx\@empty#2\@empty
+}}
+\@ifdefinable\@EmptyCase{\def\@EmptyCase#1\@@@{% #1 for robustness
+  \iffalse % since 0 != 1
+}}
+
+\newcommand{\@addparensifrequired}[1]{
+	\if\IsExactlyOneToken{#1}%
+		\,#1%
+    \else
+		\left(#1\right)%
+  	\fi
+}
+
+\newcommand*{\IsInteger}[3]{% %IGN
+    \IfStrEq{#1}{ }{%
+        #3% is a blank string
+    }{%
+        \IfInteger{#1}{#2}{#3}%
+    }%
+}%
+
+% Use \( \) for labeled equations
+\renewcommand{\(}[1][]{\begin{equation}\ifthenelse{\equal{#1}{}}{}{\label{#1}}} % 1O: etiqueta; | IGN
+\renewcommand{\)}{\end{equation}} % IGN
+
+% Avoid weird character issues in some fonts
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
+\DeclareSymbolFontAlphabet{\mathbbold}{bbold}
