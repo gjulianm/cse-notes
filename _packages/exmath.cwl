@@ -182,7 +182,7 @@
 \begin{rightbar}#
 \begin{example}#
 \begin{example}[titulo]#
-\ithm{arg0}#m
+\addthmtolist{arg0}{arg1}#m
 \set@labelname{arg0}#m
 \label@hook#m
 \labelenumi#m

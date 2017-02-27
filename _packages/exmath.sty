@@ -393,11 +393,22 @@
 {\refstepcounter{exm}\paragraph{Example \theexm: #1} \itshape}
 {}
 
-\newcounter{ithm}[section]
+\newcounter{ithm}
+\newlistof{listoftheorems}{thm}{List of theorems, lemmas and propositions}
+\newlistentry{theorem}{thm}{0}
+\newlistentry{lemma}{thm}{0}
+\newlistentry{prop}{thm}{0}
 
-\newcommand{\ithm}[1]{%IGN
+\setlength\cfttheoremnumwidth{6.5em}
+\setlength\cftlemmanumwidth{6.5em}
+\setlength\cftpropnumwidth{6.5em}
+\def\cfttheorempresnum{Theorem\;}
+\def\cftlemmapresnum{Lemma\;}
+\def\cftproppresnum{Prop.\;}
+
+\newcommand{\addthmtolist}[2]{%IGN
 	\refstepcounter{ithm}
-	\addcontentsline{ithmc}{ithm}{\protect\numberline{\theithm}#1}\par
+	\addcontentsline{thm}{#1}{\protect\numberline{\thethm}#2}
 }
 
 % Esta cosa permite el uso de referencias con nombre 			IGN
@@ -437,12 +448,10 @@
 		{\index{#1}}
 		{\index{#2}}
 	\set@labelname{#1}
-	\ifthenelse{\equal{#1}{}}
-		{}
-		{\ithm{#1}}
 	\toggle@IS@print %IGN
 	\@set@theorem@itemlabels
-	\begin{iprop}[#1]}
+	\begin{iprop}[#1]\addthmtolist{prop}{#1}%
+	}
 	{\end{iprop}\@restore@itemlabels}
 
 \newenvironmentx{theorem}[2][1=, 2=None]{ % 1O: titulo; 2O: indice;
@@ -452,9 +461,6 @@
 		{\index{#1}}%
 		{\index{#2}}%
 	\set@labelname{#1}%
-	\ifthenelse{\equal{#1}{}}%
-		{}%
-		{\ithm{#1}}%
 	\toggle@IS@print%
 	\@set@theorem@itemlabels%
 	\if@compact%
@@ -462,7 +468,9 @@
 	\else%
 	\begin{framed}%
 	\fi%
-	\begin{itheorem}[#1]\if@compact\vspace{-6pt}\fi}
+	\begin{itheorem}[#1]\if@compact\vspace{-6pt}\fi%
+	\addthmtolist{theorem}{#1}%
+	}
 	{\end{itheorem}%
 	\if@compact\end{mdframed}\else\end{framed}\fi%
 	\@restore@itemlabels}
@@ -475,12 +483,10 @@
 	\ifthenelse{\equal{#2}{None}}
 		{\index{#1}}
 		{\index{#2}}
-	\ifthenelse{\equal{#1}{}}
-		{}
-		{\ithm{#1}}
 	\toggle@IS@print %IGN
 	\@set@theorem@itemlabels
-	\begin{ilemma}[#1]}
+	\begin{ilemma}[#1]\addthmtolist{lemma}{#1}%
+	}
 	{\end{ilemma}\@restore@itemlabels}
 
 
@@ -489,7 +495,7 @@
 	\renewcommand{\IS}{!}%
 	\ifthenelse{\equal{#1}{None}}{\index{#2}}{\index{#1}}}
 
-\newcommand{\printtheorems}{\listoftheorems} %IGN
+\newcommand{\printtheorems}{\clearsidepage\listoftheorems} %IGN
 
 \renewenvironment{proof}{\begin{leftbar}\noindent \textit{Proof.} }{\qed\end{leftbar}}
 
