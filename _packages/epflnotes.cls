@@ -331,4 +331,6 @@
 \setlength{\parskip}{2mm}
 \setlength{\headheight}{15pt}
 
+\indexsetup{level=\chapter}
+
 \makeindex
