@@ -46,7 +46,7 @@ This section is nothing specially new, as it is just applying the results of \fr
 
 \proofpart{Bound for $\norm{∇u - ∇u_h}_{L^2}$}
 
-By definition, we know that $\norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h)$. By \nref{def:Theory:GalerkinOrthog}, we know that, for any $v_h ∈ V_h$,  $\int_{Ω} ∇(u - u_h) · ∇v_h a(u - u_h, v_h) = 0$ so that \[ \norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h) ≤ \norm{∇(u - u_h)}_{L^2} \norm{∇(u - v_h)}_{L^2}\]
+By definition, we know that $\norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h)$. By \nref{def:Theory:GalerkinOrthog}, we know that, for any $v_h ∈ V_h$,  $\int_{Ω} ∇(u - u_h) · ∇v_h = a(u - u_h, v_h) = 0$ so that \[ \norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h) ≤ \norm{∇(u - u_h)}_{L^2} \norm{∇(u - v_h)}_{L^2}\]
 
 The trick is now choosing the correct $v_h$, and we will select the Lagrange interpolant given by \[ v_h = I_h u = \sum_{j=1}^N u(p_j) φ_j \]
 
