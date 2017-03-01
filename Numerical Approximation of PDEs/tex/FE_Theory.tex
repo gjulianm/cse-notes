@@ -145,12 +145,12 @@ The idea of the Galerkin approximation is, as we said, limit the problem to a fi
 
 Formally, we introduce a sequence of finite dimensional subspaces $V_h ⊂ V$ with $\dim V_h = N_h$ and with a certain approximability property: that for every $v ∈ V$ we can approximate it as well as we want: \[ \lim_{h\to 0} \inf_{v_h ∈ V_h} \norm{v-v_h}_V = 0 \]
 
-\begin{defn}[Generalized Galerkin Formulation][Galerkin formulation!Generalized] \label{def:GalerkinFormulationGen} Given a \nlref{def:Theory:WeakAbstractFormulation}, we can reformulate it as finding $u_h ∈ V_h$ such that \[ a_h(u_h, v_h) = F_h(v_h) \quad ∀v_h ∈ V_h \] with the requirement that $a_h \convs[][h] 0$, $F_h \convs[][h][0] 0$ for some definition of convergence of functionals that we will see latters.
+\begin{defn}[Generalized Galerkin Formulation][Galerkin formulation!Generalized] \label{def:GalerkinFormulationGen} Given a \nlref{def:Theory:WeakAbstractFormulation}, we can reformulate it as finding $u_h ∈ V_h$ such that \[ a_h(u_h, v_h) = F_h(v_h) \quad ∀v_h ∈ V_h \] with the requirement that $a_h \convs[][h] 0$, $F_h \convs[][h][0] 0$ for some definition of convergence of functionals that we will see later.
 \end{defn}
 
 However, the restriction that $V_h ⊂ V$ can be sometimes too strict. A \concept[Galerkin formulation!Non-conforming]{Non-conforming Galerkin Formulation} is one with $V_h\nsubseteq V$. That takes it to the Petrov-Galerkin approximation in which we allow different spaces for the solution and for the test functions.
 
-\begin{defn}[Petrov-Galerkin approximation] Find $u_h ∈V_h$ such that \[ a_h(u_h, v_h) = F(v_h) \quad ∀v_h ∈ W_h \]
+\begin{defn}[Petrov-Galerkin\IS approximation] Find $u_h ∈V_h$ such that \[ a_h(u_h, v_h) = F(v_h) \quad ∀v_h ∈ W_h \]
 \end{defn}
 
 Now to the interesting part: are these problems well-posed? Do they have unique solutions? And, more importantly, do these solutions converge to the actual solution? We will discuss it now.
@@ -179,7 +179,7 @@ A \vu &= \vf
 
 Now, on to the quality of the approximation. We will want to ensure that the approximate solution converges in some manner. If our bilinear form is symmetric, we can use Galerkin orthogonality:
 
-\begin{defn}[Galerkin orthogonality][Orthogonality!Galerkin] Given a bilinear form $a$, we say that a solution $u$ and its approximation $u_h$ fulfill the Galerkin orthogonality condition if and only if \[ a(u - u_h, v_h)= 0 \quad v_h ∈ V_h \]
+\begin{defn}[Galerkin orthogonality][Orthogonality!Galerkin] \label{def:Theory:GalerkinOrthog} Given a bilinear form $a$, we say that a solution $u$ and its approximation $u_h$ fulfill the Galerkin orthogonality condition if and only if \[ a(u - u_h, v_h)= 0 \quad v_h ∈ V_h \]
 
 Given that a coercive symmetric bilinear form defines an inner product, Galerkin orthogonality is equivalent to saying that $u - u_h \perp V_h$.
 \end{defn}
@@ -188,7 +188,7 @@ The usefulness of this property is the fact that, if $u - u_h$ is orthogonal to 
 
 For the general case, we have the following lemma for the optimality result, which will tell us that the approximation to the solution is bounded by how well can we approximate any function with our finite spaces.
 
-\begin{lemma}[Ceà's\IS lemma] \label{lem:Theory:Cea} Given a \nref{def:GalerkinFormulationGen}, the following optimality result holds: \[ \norm{u - u_h}_V ≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V \] for $M ∈ ℝ^+$ and $α$ the coercivity coefficient of $a$.
+\begin{lemma}[Ceà's\IS lemma] \label{lem:Theory:Cea} Given a \nref{def:GalerkinFormulationGen}, the following optimality result holds: \[ \norm{u - u_h}_V ≤ \frac{M}{α} \inf_{v_h ∈ V_h} \norm{u - v_h}_V \] for $M ∈ ℝ^+$ the continuity constant and $α$ the coercivity coefficient of $a$.
 \end{lemma}
 
 \begin{proof} Using the coercivity property, we know that \[ \norm{u - u_h}^2_V ≤ \frac{1}{α} a(u - u_h, u -u_h)\]
@@ -213,7 +213,7 @@ Several properties of the approximation will depend on how good our finite eleme
 
 Usually, in 2D the polyhedrae used are either triangles or squares. In 3D, we have tetrahedron, cubes or rectangular pyramids.
 
-\begin{defn}[Geometrical conformal mesh] A geometrical conformal mesh is a mesh for which if $\adh{K_i} ∩ \adh{K_j} ≠ ∅$ then the intersection is either a common vertex or a common edge or face. That means that half-edge intersections are not allowed in this case.
+\begin{defn}[Geometrical conformal mesh][Mesh!geometrically conformal] A geometrical conformal mesh is a mesh for which if $\adh{K_i} ∩ \adh{K_j} ≠ ∅$ then the intersection is either a common vertex or a common edge or face. That means that half-edge intersections are not allowed in this case.
 \end{defn}
 
 A mesh can be defined by certain parameters.
@@ -369,7 +369,7 @@ Calculations based on \fref{lem:Theory:LocalError}.
 
 We finish them with the theorems of the interpolation error. These theorems are actually weaker than \fref{thm:Theory:GlobalInterpEstimates} but they are more convenient. However, the advantage of this stronger theorem is the representation of the interpolation error as the sum of local contributions for each element of the mesh, which can lead to results with mesh adaptivity.
 
-\begin{theorem}[Interpolation error\IS for smooth functions] Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, there exist $C_m > 0$ and $m = 0, \dotsc, r$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
+\begin{theorem}[Interpolation error\IS for smooth functions] \label{thm:Theory:InterpErrorSmooth} Given a \nlref{def:Theory:RegularFamilyMeshes} $\set{\mesh}_{h > 0}$ of a polygonal domain $Ω ⊂ ℝ^d$, with $d ≤ 3$, and a space $X_h^r$ of continuous finite elements of degree $r ≥ 1$, there exist $C_m > 0$ and $m = 0, \dotsc, r$ such that for any function $u ∈ H^s$ with $s ≥ r + 1$ we have the following estimates:
 \begin{align}
 \norm{u - I_h^r u}_{L^2(Ω)} &≤ C_0 h^{r + 1} \abs{u}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothL2} \\
 \norm{u - I_h^ru}_{H^m(Ω)} &≤ C_m h^{r + 1 - m} \abs{u}_{H^{r+1}(Ω)} \label{eq:Theory:InterpSmoothHm}
@@ -383,6 +383,7 @@ We finish them with the theorems of the interpolation error. These theorems are 
 \end{theorem}
 
 \section{Conditioning of the numerical approximation matrix}
+\label{sec:Theory:ConditioningNumber}
 
 Apart from the approximation errors, we will be interested in studying the well-posedness of the solution for the linear system $\mA \vu = \vf$ we discussed in \fref{sec:Theory:GalerkinApprox}.
 
@@ -390,6 +391,9 @@ Apart from the approximation errors, we will be interested in studying the well-
 
 The most interesting consequence is that the conditioning number is bounded by \[ K(\inv{\mM} \mA) ≤ \frac{C_2}{C_1h^2} \]
 \end{theorem}
+
+\begin{proof} % TODO
+\end{proof}
 
 With that bound of the condition number of the matrix, the conjugate gradient method to solve $\mA \vu = \vf$ with $\mM$ as a preconditioner converges in $\mathcal{O}(\sfrac{1}{h})$ iterations and so the complexity to solve the system is $\mathcal{O}(N^{\sfrac{4}{3}})$.
 

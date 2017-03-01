@@ -1,6 +1,89 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
 
+\subsection{Numerical approximation - Galerkin method}
+
+In this section we will study the numerical approximation of the Poisson problem by the Galerkin problem we saw in \fref{sec:Theory:GalerkinApprox}, centering too in the computational complexity of solving this problem.
+
+As always, we can consider a finite element space $V_h ∈ H_0^1(Ω)$ spanned by a finite number of basis functions $\set{φ_i}_{i = 1}^N$ and we try to solve the problem there. As we have a finite element space, we can consider the coefficients of the functions as a vector $\vu ∈ ℝ^N$ so that the bilinear form can be expressed in matrix form: \[ a(u_h, v_h) = \sum_{i,j = 1}^N u_i · v_i \underbracket{a(φ_i, φ_j)}_{A_{ij}} = \trans{\vu} \mA \vv \]
+
+This allows us to see that $\mA$ is positive definite and invertible. For the first, we can see that coercivity gives it directly: $\vv^T \mA \vv = a(v_h, v_h) ≥ α \norm{v_h}^2$. For invertibility, if $\trans{\vv} \mA \vv = 0$, then $a(v_h, v_h) = 0$ but by coercivity $a(v_h, v_h) ≥ \norm{v_h}^2$ so we need $v_h = 0$. Thus, $\ker \mA = \set{0}$ and it is invertible.
+
+This allows us to formulate the following proposition for the bounding of the eigenvalues\footnote{Which is just a problem-specific version of \fref{thm:Theory:ConditioningMatrix}.}, which in turn will let us give bounds for the time required to solve this problem.
+
+\begin{prop} \label{prop:PDE:BoundsMatrix} Let $\mA ∈ ℝ^{N×N}$ be the stiffness matrix of the Poisson problem \eqref{eq:PDE:PoissonProblem} defined by $A_{ij} = \int_Ω ∇φ_i ∇φ_j$. Then, there exists two constants $C_1, C_2 > 0$ such that \[ C_1 \vv^T \mM \vv ≤ \vv^T \mA ≤ \frac{C_2}{h^2} \vv^T \mM \vv \] with $\mM$ the mass matrix given by $M_{ij} = \int_Ω φ_i φ_j$.
+\end{prop}
+
+For the proof of this proposition we will need the inverse inequality.
+
+\begin{prop}[Inverse inequality][Inequality!inverse] \label{prop:PDE:InverseInequality} Let $V_h ∈ H_0^1(Ω)$ be a finite element space defined on a \nref{def:Theory:RegularFamilyMeshes} \mesh. Then, for all $h > 0$ and for any $K ∈ \mesh$ the following holds: \[ \int_K \abs{∇v_h}^2 ≤ \frac{C}{h_K^2} \int_K v_h^2 \]
+\end{prop}
+
+\begin{proof}
+\end{proof}
+
+\begin{proof}[\Fref{prop:PDE:BoundsMatrix}] First, by using \nref{thm:Fund:PoincareInequality}, we know that there exists a constant $C_p > 0$ such that $\norm{v}_{L^2} ≤ C_p \norm{∇v}_{L^2}$ which gives us the bound \[ \vv^T \mM \vv ≤ C_p^2 \vv^T \mA \vv \]
+
+For the other bound, we use the \nref{prop:PDE:InverseInequality} summing over all mesh elements $K ∈ \mesh$ and using the inverse assumption that $Ch ≤ h_k ≤ h$, so that \[ \int_Ω \abs{∇v_h}^2 ≤ \frac{C}{h^2} \int_Ω v_h^2 \] which gives directly the matrix bound.
+\end{proof}
+
+As discussed in \fref{sec:Theory:ConditioningNumber}, the numerical method to solve these problems will be preconditioned conjugate gradient to avoid memory storage problems. This method has the following property:
+
+\begin{prop} Let $\vu^k$ be the approximation obtained by the preconditioned conjugate gradient method of the porblem $\mA \vu = \vf$ after $k$ steps, with $\mM$ as a preconditioner. Then, the following error estimate holds: \[ \norm{\vu - \vu^k}_{CG} ≤ 2 \norm{\vu - \vu^0}_{CG} \left(\frac{\sqrt{K(\inv{\mM}\mA)} - 1}{\sqrt{K(\inv{\mM}\mA)} + 1}\right)^k\] with $\norm{·}_{CG}$ defined as follows: \[ \norm{\vv}_{CG} = \]
+\end{prop}
+
+With the bounds explained in \fref{prop:PDE:BoundsMatrix} we can bound the condition number: \[ C_1 ≤ \inf_{\vv ∈ ℝ^N \setminus\set{0}} \frac{\vv^T \mA \vv}{\vv \mM \vv} ≤ λ_j = \frac{\vx_j^T \mA \vx_j}{\vx_j^T \mM \vx_j} ≤ \sup_{\vv ∈ ℝ^N \setminus\set{0}} ≤ \frac{C_2}{h^2}\] so that $K(\inv{\mM} \mA) ≤ \frac{C_2}{C_1h^2}$.
+
+Thus, in order to reduce the initial error by a factor of $ε$, we see that \[ ε\norm{\vu - \vu^0}_{CG} = \norm{\vu - \vu^k}_{CG} ≤ 2 \norm{\vu - \vu^0}_{CG} \left(\frac{\sqrt{K(\inv{\mM}\mA)} - 1}{\sqrt{K(\inv{\mM}\mA)} + 1}\right)^k = 2 \norm{\vu - \vu^0}_{CG} ( 1 - \mathcal{O}(kh))\] so that the number $k$ of iterations is $k = \mathcal{O}(\sfrac{1}{h})$.
+
 \subsection{A priori error estimates}
+
+This section is nothing specially new, as it is just applying the results of \fref{sec:Theory:ApproxResults}.
+
+\begin{prop} Given a \nref{def:Theory:RegularFamilyMeshes} with aspect ratio bounded by $γ ∈ ℝ^+$ for a convex polygon, then there exists a constant $C >0$ independent of $h$ and $u$ such that \[ \norm{u - u_h}_{L^2} + h \norm{∇(u - u_h)}_{L^2} ≤ Ch^2 \norm{∇^2 u}_{L^2} \]
+\end{prop}
+
+\begin{proof} We will prove separately the two estimates.
+
+\proofpart{Bound for $\norm{∇u - ∇u_h}_{L^2}$}
+
+By definition, we know that $\norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h)$. By \nref{def:Theory:GalerkinOrthog}, we know that, for any $v_h ∈ V_h$,  $\int_{Ω} ∇(u - u_h) · ∇v_h a(u - u_h, v_h) = 0$ so that \[ \norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h) ≤ \norm{∇(u - u_h)}_{L^2} \norm{∇(u - v_h)}_{L^2}\]
+
+The trick is now choosing the correct $v_h$, and we will select the Lagrange interpolant given by \[ v_h = I_h u = \sum_{j=1}^N u(p_j) φ_j \]
+
+Since $Ω$ is a convex polygon, $u ∈ H^2(Ω)$  and therefore for $u ∈ C^0(\adh{Ω})$ we choose $v_h = I_h u$. Then we can use the \nref{thm:Theory:InterpErrorSmooth} and finally $\norm{∇(u - u_h)}_{L^2} ≤ \norm{∇(u - I_hu)}_{L^2} ≤ Ch \norm{∇^2 u}_{L^2}$.
+\end{proof}
+
 \subsection{A posteriori error estimates}
+
+The a posteriori error estimates will give us error estimates after the approximate solution has been computed.
+
+\begin{prop}[A posteriori error\IS for the Poisson problem] Given a shape regular mesh then there exists a constant $C_1 > 0$ independent of $h,u,f$ but depending on the mesh aspect ratio such that \( \norm{∇(u - u_h)}_{L^2(Ω)}^2 ≤ C_1 \sum_{K ∈ \mesh} η_K^2 \label{eq:PDE:APostGradError} \) where $η_K = h_K \norm{Δu_h + f}_{L^2(K)} + h_K^{\sfrac{1}{2}} \norm{[∇u_h]}_{L^2(∂K)}$ and $[∇u_h]$ is the jump of $∇u_h$ in the boundary between two mesh elements $K$ and $K'$ given by $[∇u_h] = \restr{∇u_h}{K} - \restr{∇u_h}{K'}$
+
+Moreover, if $Ω$ is a convex polygon then there exists another constant $C_2$ independent of $h,u,f$ but depending on the mesh aspect ratio such that \( \norm{u - u_h}_{L^2(Ω)^2} ≤ C_2 \sum_{K ∈ \mesh} h_K^2 η_K^2 \label{eq:PDE:APostError} \)
+\end{prop}
+
+\begin{proof}
+
+\proofpart{\eqref{eq:PDE:APostGradError}}
+% TODO: Fix this crappy proof.
+
+So something something \[ \norm{∇(u - u_h)}_{L^2}^2 = \int_Ω ∇(u - u_h) ∇(u - u_h) = \int_Ω f(u - u_h) - ∇u_h ∇(u - u_h)\] where the last part is $\dualp{\mop{Residual}\, u_h, u - u_h}$. We can substract any test function $v_h ∈ V_h$ so that everything is still the same in \[ \sum_{K ∈ \mesh} \int_K f(u - u_h - v_h) - ∇u_h ∇(u - u_h - v_h)\]
+
+Integrating by parts, we are left with \[ \int_K f(u - u_h - v_h) - ∇u_h ∇(u - u_h - v_h) = \int_K (f + Δu_h)(u - u_h - v_h) - \int_{∂K} ∇u_h · \vn (u - u_h - v_h) \] and now the trick is noticing something and other thing and using Cauchy-Scharwz we have that \begin{multline*}
+\int_K (f + Δu_h)(u - u_h - v_h) - \int_{∂K} ∇u_h · \vn (u - u_h - v_h) ≤ \\ ≤ \norm{f + Δu_h}_{L^2(K)} \norm{u - u_h - v_h}_{L^2(K)} + \frac{1}{2} \norm{[∇u_h · \vn]}_{L^2(∂K)} \end{multline*}
+
+We use the Clément interpolant so that $v_h = R_h(u - u_h)$, which will gives us $\norm{v - R_h v}_{L^2(Ω)} ≤ Ch \norm{∇v}_{L^2(Ω)}$ which does not hold for the Lagrange interpolant in dimensions greater than 1.
+
+The only issue here is that we have a function $v ∈ H_0^1$ so we don't have a point value for the interpolant $v(p_j)$. Luckily, we can average so that \[ R_h v(p_j) = \sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \fint_K v \]
+
+Then the interpolation result is \[ \frac{1}{h_k^2} \norm{v - R_hv}^2_{L^2(K)} + \norm{∇(v - R_hv)}_{L^2(K)} + \frac{1}{h_K} \norm{v - R_hv}_{L^2(∂K)} ≤ \norm{∇v}_{L^2(ΔK)} \]
+
+\proofpart{\eqref{eq:PDE:APostError}}
+
+\end{proof}
+
+% TODO
+Some explanation of $η_K$ and more things.
+
 \subsection{Adaptive algorithm}
 
