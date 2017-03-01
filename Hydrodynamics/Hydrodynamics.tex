@@ -1,0 +1,79 @@
+\documentclass[palatino]{epflnotes}
+
+\title{Hydrodynamics}
+\author{}
+\date{16/17 - Spring semester}
+
+% Additional packages
+
+% --------------------
+
+\begin{document}
+\frontmatter
+\pagestyle{plain}
+\maketitle
+
+\tableofcontents
+\mainmatter
+% Content
+
+\chapter{Introduction to hydrodynamics}
+
+\section{Fundamental laws}
+
+\subsection{Transport theorem and conservation of mass}
+
+The transport theorem models the change of a certain quantity enclosed in a volume $Ω$. That change responds to changes in the quantity to measure and in the shape of Ω.
+
+\begin{theorem}[Transport\IS theorem] Let $Ω(t) ∈ ℝ^3$ be a volume shape, with its shape change modeled by the velocity field $\appl{\vu}{ℝ^3 × ℝ}{ℝ}$ and $\appl{b}{ℝ^3×ℝ}{ℝ}$ the quantity being modeled. Then, the change over time of the total flux can be expressed as \( \od{}{t} \int_{Ω(t)} b(\vx, t) \dif V_t = \int_{Ω(t)} \dpd{b}{t} \dif V_t + \int_{∂Ω(t)} (\vu · \vn) b(\vx, t) \dif A_t \label{eq:TransportTheorem} \) where $\vn$ is the normal to $Ω(t)$, and $V_t, A_t$ are the volume and are elements of $Ω(t)$.
+\end{theorem}
+
+Basically, this theorem says that the change is accounted for by the change of the quantity itself plus the change of the flux exiting or entering the volume.
+
+There are several expressions for conservation of mass based on \eqref{eq:TransportTheorem}:
+\begin{align*}
+\od{}{t}\iiint_Ω ρ \dif V + \iint_{∂Ω} ρ\vu \dif A &\qquad \text{Integral conservation form}\\
+\frac{\Dif}{\Dif t} \iiint_V ρ \dif V = 0 &\qquad \text{Integral nonconservation form}\\
+\dpd{ρ}{t} + \dv (ρ \vu) = 0 &\qquad \text{Differential conservation} \\
+\frac{\Dif ρ}{\Dif t} + ρ \dv \vu = 0 &\qquad \text{Differential nonconservation}
+\end{align*} where $ρ$ is the density of the fluid.
+
+For an incompressible flow, we have $ρ$ constant and then we have $\dv \vu = 0$, which is usually called the \concept{Continuity\IS equation}.
+
+\subsection{Stress modeling and momentum conservation}
+
+Then some equation \[ ρ \od{b}{t} = Q + \dv A\] where $A$ are volume sources and $A$ surface fluxes.
+
+For the surface forces, we can use a theorem due to Cauchy that shows that the surface force can be represented by a stress tensor\footnote{Also known in this context as a $3 × 3$ matrix.}, so the force is $\vt = σ \vn$.
+
+We will divide the stresses in the fluid in two parts: one static, existing even in the abscene of motion (that is, pressure); and another one related to motion.
+
+Pressure exerts a force normal to the surface, that is, $\vf(x) = -p(x) \vn(x)$ and the stress tensor is $σ = -p(x) I $ with $I$ the identity matrix.
+
+For stresses in a moving fluid, we add forces tangential to the surface that are represented by a second part of the stress tensor, $τ(\vx)$, that is called the viscous stress tensor.
+
+The viscous stress tensor has two group of components, $τ_{xx}, τ_{yy}, τ_{zz}$ which are the stretching terms; and the other ones (symmetric) which are the shear terms. Thus conservation of momentum is given by \[ ρ \frac{\Dif \vu}{\Dif t} = \dv σ + ρ \vf \]
+
+
+\subsection{Navier-Stokes for incompressible fluids}
+
+In our incompressible flow, we have that the viscous tensor is the symmetric part of the velocity so that $D = \frac{\trans{∇u} + ∇u}{2}$ and $ σ = - pI + 2μD$ and thus putting everything together the results is \begin{align*}
+ρ \frac{\Dif \vu}{\Dif t} &= - ∇p + μΔ\vu + ρ \vf \\
+\dv \vu &= 0
+\end{align*}
+
+In order to solve these equations, boundary conditions will be set at time $t = 0$ (initial conditions); and also at the interfaces.
+
+For example, for liquid/solid interfaces, we will use either no-slip boundary conditions ($\vu_\text{liquid} = \vu_\text{solid}$ at the interface) or non-penetration ($\vu_\text{liquid} · \vn = \vu_\text{solid} · \vn$).
+
+For liquid/liquid interfaces, we will have continuity of velocity $\vu_1 = \vu_2$, free-slip conditions ($\vu_{1} · \vn = \vu_{2} · \vn = \vv_\text{interface}$) or continuity of stress ($σ_1 · \vn = σ_2 · \vn$).
+
+Finally, for liquid/gas interfaces (free surfaces), we have either no-slip or no-stress ($σ·\vn = 0$).
+
+We will also non-dimensional equation in which we use gauges to measure the quantities of interest for the problem.
+
+\appendix
+
+\backmatter
+\printindex
+\end{document}
