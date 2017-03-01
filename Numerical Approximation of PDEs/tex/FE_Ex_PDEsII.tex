@@ -56,9 +56,30 @@ The finite elements method implies searching in a finite space $V_h$, so that $a
 \end{problem}
 
 
-\begin{problem}
+\begin{problem} Let $Ω = (0,1)$ and consider the nodes $x_i = ih$ for $i = 0, \dotsc, N + 1$ with $h = \frac{1}{N+1}$. Let $V_h$ be the finite dimensional space $V_h = \spn\set{φ_i}_{i=1}^N$ spanned by the $N$ affine shape functions defined by \[ φ_i(x) ≝ \begin{cases}
+\frac{x - x_{i-1}}{x_i - x_{i-1}} & x ∈ [x_{i-1}, x_i] \\
+\frac{x_{i+1} - x}{x_{i+1} - x_{i}} & x ∈ [x_{i}, x_{i + 1}] \\
+0 & \text{otherwise}
+\end{cases}\]
+
+\ppart Show that there exists a constant $C > 0$ such that for all $h > 0$, for all $v_h ∈ V_h$ and for all $i = 0, \dotsc, N$, we have \( \int_{x_i}^{x_{i+1}} (v_h'(x))^2 \dif x ≤ Ch^{-2} \int_{x_i}^{x_{i+1}} v_h^2(x) \dif x \)
 
 \solution
+
+\spart
+
+First, we see that the derivative of $φ_i$ is defined by \[ φ_i'(x) =\begin{cases}
+\frac{1}{x_i - x_{i-1}} & x ∈ [x_{i-1}, x_i] \\
+\frac{-1}{x_{i+1} - x_{i}} & x ∈ [x_{i}, x_{i + 1}] \\
+0 & \text{otherwise} \end{cases} \] and then we can compute both integrals:
+\begin{align*}
+\int_{x_i}^{x_{i+1}} (v_h'(x))^2 \dif x &= \int_{x_i}^{x_{i+1}} (v_i φ_i' + v_{i+1}φ_{i+1}')^2 \dif x = \\
+&= \frac{(v_{i+1} - v_i)^2}{h}
+\int_{x_i}^{x_{i+1}} v_h^2(x) \dif x &= \int_{x_i}^{x_{i+1}} (v_i φ_i + v_{i+1}φ_{i+1})^2 \dif x = \\
+&=\frac{h}{6}(v_i^2 + (v_{i} + v_{i+1})^2 + v_{i+1}^2)
+\end{align*}
+
+Then we apply Cauchy-Schwarz and we have it.
 
 \end{problem}
 
