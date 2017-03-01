@@ -138,6 +138,7 @@
 \vec{arg0}#m
 \mtr{arg0}#m
 \pesc{arg0}#m
+\dualp{arg0}#m
 \md{arg0}#m
 \vx#m
 \vy#m
