@@ -51,6 +51,8 @@ output/
 *.ign.*
 _test.*
 *.synctex.*
+*.ptc*
+*.mtc*
 
 # Archivos a ignorar de tikzgen
 !.keep
