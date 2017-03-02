@@ -6,6 +6,7 @@
 
 % Additional packages
 
+\precompileTikz
 % --------------------
 
 \begin{document}
@@ -40,7 +41,7 @@ With this, one can see the relationship between the convolution and the Fourier 
 \begin{proof} % TODO
 \end{proof}
 
-\subsection{Convergence of the Fourier series}
+\subsection{Convergence for continuous functions}
 
 The first real interesting question in this topic is, of course, when is the serie defined in \eqref{eq:FourierSeries} is convergent and, moreover, when does it converge to the original function. The first one is easy and direct computation:
 
@@ -60,7 +61,14 @@ Then, $S_Nf$ converges to $f$ in the $L^2$ norm: \[ \norm{S_Nf - f}_{L^2(\crc[1]
 \begin{proof} % TODO
 \end{proof}
 
-For a deeper study of the Fourier series, we have to turn to the Dirichlet kernel, defined as \( \label{eq:DirichletKernel} D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \), mainly because it has the interesting property that $S_Nf = D_N \ast f$, which allows a better treatment of the Fourier series. With a little bit of calculations (see \cite[Exercise 2.4]{ApuntesAnalisisFunc}) one can also show that \( \label{eq:DirichletKernelNormL1} \norm{D_N}_{L^1(\crc[1])} = C \log N + \mathcal{O}(1) \) so that the Dirichlet kernel is unbounded.
+\begin{figure}[hbtp]
+\centering
+\inputtikz{DirichletKernel}
+\caption{Dirichlet kernel for different values of $N$.}
+\label{fig:DirichletKernel}
+\end{figure}
+
+For a deeper study of the Fourier series, we have to turn to the \concept[Kernel\IS Dirichlet]{Dirichlet kernel}, defined as \( \label{eq:DirichletKernel} D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \), mainly because it has the interesting property that $S_Nf = D_N \ast f$, which allows a better treatment of the Fourier series. With a little bit of calculations (see \cite[Exercise 2.4]{ApuntesAnalisisFunc}) one can also show that \( \label{eq:DirichletKernelNormL1} \norm{D_N}_{L^1(\crc[1])} = C \log N + \mathcal{O}(1) \) so that the Dirichlet kernel is unbounded.
 
 This allows\footnote{This is a summary of \cite[Exercise 2.4]{ApuntesAnalisisFunc}.} us to define the operator $λ_{D_N}(f) = S_Nf(0)$ on the space of continuous functions $X =(C^0(\crc[1]), \norm{·}_∞)$, which is Banach. Each of the operators are bounded with $\norm{λ_{D_N}}_{\linapp[X][ℝ]} = \norm{D_N}_{L^1(\crc[1])}$. However, this family of operators is not uniformly bounded so the Banach-Steinhaus uniform boundedness theorem \citep[Theorem II.8]{ApuntesAnalisisFunc} says that there exists a set $B$ dense in $X$ such that \[ \sup_{N ≥ 1} \norm{λ_{D_N} (f)}_{ℝ} = \sup_{N ≥ 1} \norm{S_N f(0)}_{ℝ} = ∞ \quad ∀f ∈ B\] and thus $\norm{S_Nf(0)}_{ℝ}$ is divergent for those $f ∈ B$.
 
@@ -95,15 +103,75 @@ For the estimate of $A$ we use the Hölder continuity:
 	&\eqexpl[≤]{\eqref{eq:DirichletKernelNormL1}} Cδ^α \log N
 \end{align*}
 
+% TODO: Fix and end this proof
 \end{proof}
 
+\subsubsection{Césaro sums - Pointwise convergence for $C^0$ functions}
 
+In the previous sections we have shown that, while the Fourier series is convergent pointwise for Hölder functions, it can even be divergent for general $C^0$ functions. However, we can recover pointwise values using averages over the coefficients, by means of the Césaro sum.
 
+\begin{defn}[Césaro\IS means] Given $f ∈ C^0(\crc)$, we define the Césaro mean as \[ σ_N f(x) ≝ \frac{1}{N} \sum_{n = 0}^{N-1} S_n f(x) = \frac{1}{N} \int_0^1 \underbracket{\left(\sum_{n = - (N-1)}^{N-1} (N - \abs{n}) e^{2π\imath nx}\right)}_{K_N(x)} f(y) \dif y \]
+\end{defn}
 
+That expression $K_N$ is what we will call the \concept[Kernel\IS Féjer]{Féjer kernel}, and has the following expression: \[ K_N(x) = \frac{1}{N} \left(\frac{\sin πNx}{\sin πx}\right)^2\]
 
+\begin{figure}[hbtp]
+\centering
+\inputtikz{FejerKernel}
+\caption{Fejer kernel for several values of $N$.}
+\label{fig:FejerKernel}
+\end{figure}
 
-Dirichlet kernel. Trigonometric thing and you end up with only some terms.
+As opposed to the Dirichlet kernel, the Féjer kernel is positive and bounded in norm, forming what we call an approximate identity\footnote{Verification left to the untrusting reader.}. As it can be seen in \fref{fig:FejerKernel}, its supports tends to be smaller and smaller while maintaining area, which is the main property of these approximations.
 
+\begin{defn}[Approximate\IS identity] \label{def:ApproximateIdentity} A family of functions $\set{φ_N}_{N ≥ 0} ⊂ L^∞(Ω)$ is called a family of approximate identities if and only if:
+\begin{enumerate}
+	\item $\int_Ω φ_N = 1$.
+	\item $\sup_{N ≥ 0} \norm{φ_N}_{L^1} < ∞$.
+	\item Their support goes to zero. That is, for any $δ > 0$ the following holds: \[ \lim_{N \to ∞} \int_{\abs{x} > δ} \abs{φ_N} = 0\]
+\end{enumerate}
+\end{defn}
+
+The name ``approximate identity'' is not casual, as these functions are approximations for the identity element in the convolution. We will prove it now for $C^0(\crc)$ functions although a more general result holds for $L^p$ functions.
+
+\begin{prop} \label{prop:ApproximateIdentity} Let $\set{φ_N}_{N ≥ 0}$ be a family of approximate identities, and let $f ∈ C^0(\crc)$. Then, \[ \lim_{N \to ∞} (φ_N \ast f)(x) = f(x) \]
+\end{prop}
+
+\begin{proof} We proceed to estimate $(φ_N * f)(x) - f(x)$, separating it in two integrals:
+\begin{align*}
+(φ_N * f)(x) - f(x)
+	&= \int_0^1 φ_N(x-y) (f(y) - f(x)) \dif y = \\
+	&= \underbracket{\int\limits_{\abs{x-y} < δ} φ_N(x-y) (f(y) - f(x)) \dif y}_{A}
+	 + \underbracket{\int\limits_{\abs{x-y} > δ} φ_N(x-y) (f(y) - f(x)) \dif y}_{B}
+\end{align*} for some $δ > 0$.
+
+For the first integral, say $\sup_{N ≥ 0} \norm{φ_N}_{L^1} = M < ∞$. Fixing $ε > 0$ and by continuity of $f$, we know that we can select a $δ > 0$ such that $\abs{f(x) -f(y)} < \sfrac{ε}{2M}$, so that \begin{align*}
+\abs{A}
+	&≤ \sup_{N > 0} \int_{\abs{x-y} < δ} φ_N(x-y) (f(y) - f(x)) \dif y ≤ \\
+	&≤ \frac{ε}{2M} \int_{\abs{x-y} < δ} φ_N(x-y) \dif y ≤ \frac{ε}{2}
+\end{align*}
+
+For $B$, we know that $\abs{f(y) - f(x)} < m$ by continuity, so applying the ``support goes to zero'' property of the approximate identities, we have that \begin{align*}
+\lim_{N \to ∞} \abs{B}
+	&≤ \lim_{N \to ∞} \int_{\abs{x-y} > δ} \abs{φ_N(x-y)} \abs{f(y) - f(x)} \dif y ≤ \\
+	&≤ m  \lim_{N \to ∞} \int_{\abs{x-y} > δ} \abs{φ_N(x-y)} \dif y = 0
+\end{align*} which completes the proof.
+\end{proof}
+
+With this proof we can show that the Césaro means actually converge to the value of the function.
+
+\begin{corol} Let $f ∈ C^0(\crc)$. Then, the Césaro means (that is, the averages of its Fourier coefficients) converge pointwise to the function: \[ \lim_{N \to ∞} σ_N f(x) = f(x)\]
+\end{corol}
+
+\begin{proof} As we saw previously, the Césaro means can be expressed as $σ_N f = K_N * f$, and as $K_N$ is an \nlref{def:ApproximateIdentity} we can apply \fref{prop:ApproximateIdentity} to have the result.
+\end{proof}
+
+\subsection{General convergence results}
+
+In the more general framework of $L^p$ functions we can still prove interesting results about the Fourier series. The most important is the fact that the functions $\set{e^{2π\imath nx}}$ are dense in $L^p(\crc)$ for $1 ≤ p < ∞$. In the specific case of $p = 2$, which is a Hilbert space, that will imply that they are a basis of the space, thanks to the fact that the functions are orthonormal\footnote{Recall the inner product is defined as $\pesc{f,g} = \int_0^1 f \conj{g}$.}.
+
+\begin{prop} The trigonometric family of functions $\set{e^{2π \imath nx}}_{n ∈ ℤ}$ is dense in $L^p(\crc)$ for $1 ≤ p < ∞$.
+\end{prop}
 
 \section{Fourier transform}
 
