@@ -33,6 +33,7 @@
 \epsilon#m
 \bigzero#m
 \tlps#m
+\oof{arg0}#m
 \invers{arg0}#m
 \f#m
 \F#m
@@ -313,3 +314,4 @@
 \pspace#m
 \pspace[r]#m
 \linop#m
+\gradop#m
