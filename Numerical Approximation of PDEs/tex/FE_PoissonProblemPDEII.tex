@@ -80,10 +80,46 @@ Then the interpolation result is \[ \frac{1}{h_k^2} \norm{v - R_hv}^2_{L^2(K)} +
 
 \proofpart{\eqref{eq:PDE:APostError}}
 
+We define $\appl{φ}{Ω}{ℝ}$ such that \[ \begin{cases} -Δφ = u - u_h & \text{in } Ω \\ φ = 0 & \text{on } ∂Ω \end{cases} \]
+
+This is a PDE problem that can be translated to a weakform, so that \[ \int_Ω ∇φ ∇v = \int_Ω (u - u_h) v \qquad ∀v ∈ H_0^1(Ω)\]
+
+Since $Ω$ is convex, then $φ ∈ H^2(Ω)$ and $\norm{φ}_{H^2(Ω)} ≤ C\norm{u-u_h}_{L^2}$. We can then calculate \begin{align*} \int_Ω (u - u_h)^2 &= \int_Ω ∇φ∇(u - u_h) = \int_Ω fφ - ∇u_h ∇h = \dualp{\mop{residual}(u_h), φ} \\
+&= \int_Ω (φ - v_h) - ∇u_h ∇ (φ - v_h) \qquad ∇v_h ∈ V_h \\
+&= \sum_{K ∈ \mesh} \int_K (f + Δu_h)(φ - v_h) + \frac{1}{2} \int_{∂K} [∇u_h · \vn] (φ - v_h)
+\end{align*}
+
+Now we have to choose $v_h$, and we will use $v_h = R_h φ$ as $φ ∈ C^0(Ω)$ because it is in $H^2(Ω)$. Then we can continue bounding by Cauchy-Scharwz:
+\begin{align*}
+\int_Ω (u - u_h)^2 &≤ C \sum_{K ∈ \mesh} \left(h_k^2 \norm{f + Δu_h}_{L^2(K)} + \frac{1}{2} h_k^{\sfrac{3}{2}} \norm{[∇u_h · \vn]}_{L^2(∂K)} \right) \norm{∇^2 φ}_{L^2(K)} \\
+	&≤ C\left(\sum_{K ∈ \mesh} h_k^2 η_K^2\right)^{\sfrac{1}{2}} \norm{u - u_h}_{L^2(Ω)}
+\end{align*} obtaining thus the result.
+
 \end{proof}
 
 % TODO
 Some explanation of $η_K$ and more things.
+
+The idea of the following proposition is that we can compute a gradient operator and we will have guarantees that it converges to the real error (which we cannot compute).
+
+\begin{prop} Assumme that there is a \concept[Gradient!post-processed]{post-processed gradient} $\appl{\gradop }{V_h}{V_h}$, two constants $C_1, C_2 > 0$  and two exponents $0 < α < β ≤ 2$ such that for all $h > 0$ we have \begin{align*}
+\norm{∇u - \gradop u_h}_{L^2(Ω)} &≤ C_1 h^β \\
+\norm{∇u - ∇u_h}_{L^2(Ω)} &≥ C_2 h^α
+\end{align*}
+
+Then, $\norm{∇u - \gradop u_h}_{L^2(Ω)} \convs[][h][0] \norm{∇u - ∇u_h}_{L^2(Ω)}$.
+\end{prop}
+
+\begin{proof} By using the triangle inequality, we can see that $\norm{∇u_h - \gradop u_h}_{L^2} ≤ \norm{∇u - ∇u_h}_{L^2} + \norm{∇u - \gradop u_h}_{L^2}$ so that \[ \frac{\norm{∇u_h - \gradop u_h}}{\norm{∇u - ∇u_h}} ≤ 1 + \frac{C_1}{C_2} h^{β - α} \convs[][h][0] 1\]
+
+On the other hand, we have that \[ \frac{\norm{\gradop  u_h - ∇u_h}}{\norm{∇u - u_h}} ≥ 1 - \frac{\norm{∇u - \gradop u_h}}{\norm{∇u - ∇u_h}} ≥ 1 - \frac{C_1}{C_2} h^{β - α} \convs[][h][0] 1\]
+\end{proof}
+
+The interesting question is how to build the better gradient operator $\gradop $. The idea is to use the Clément interpolant of $∇u_h$, so that $\gradop  u_h(x) = \sum_{j = 1}^N \gradop u_h(p_j) φ_j(x)$ with \[ \gradop u_h (p_j) = \frac{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K ∇u_h}{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K 1} \] as the averages of the values in the point $p_j$ evaluated on all the mesh elements $K$ containing $p_j$.
+
+On parallel meshes\footnote{Drawing of a mesh with rectangular triangle mesh elements.} it can be proved that if $u ∈ H^3(Ω)$ then $\norm{∇u - G u_h}_{L^2} = \oof{h^2}$ (superconvergence). On structured meshes\footnote{I think he said paralel meshes with small modifications, such a bending or something like that.} we hate $\norm{∇u - Gu_h} = \oof{h^β}$ with $1 < β ≤ 2$.
+
+Proofs of these facts are terribly tedious.
 
 \subsection{Adaptive algorithm}
 
