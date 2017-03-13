@@ -20,6 +20,97 @@
 
 \chapter{Fourier analysis}
 
+\section{Basic structures in Banach and Hilbert spaces}
+
+Fourier analysis is the study of how Fourier series and Fourier transforms work, and these are esentially a ``change of basis'' in the space of functions. In order to study them correctly, we will first review some facts of the structure of functions in Banach and Hilbert spaces. Just remember that the $L_p$ spaces defined by \[ L_p(Ω) = \set{\appl{f}{Ω}{ℝ} \st \norm{f}_{L^p} ≝ \left(\int_{Ω} \abs{f}^{p} \dif μ\right)^{\sfrac{1}{p}} < ∞ } \] for $1≤ p ≤ ∞$, $Ω ⊂ ℝ^d$ and μ a corresponding measure for Ω, are Banach spaces. In the particlar case of $p = 2$ we have a Hilbert space with the scalar product defined as \[ \pesc{f,g} = \int_Ω f \conj{g} \dif μ \]
+
+In these spaces we can define an operation, the convolution, which will become useful in the analysis of Fourier series.
+
+\subsection{Convolution and approximate identities}
+
+\begin{defn}[Convolution] \label{def:Convolution} Given two functions $f ∈ L^p(Ω)$ and $g ∈ L^q(Ω)$, the convolution of both is defined as \[ (f \ast g) (x) ≝ \int_Ω f(x-y) g(y) \dif y\]
+\end{defn}
+
+The convolution is an operation that ``plays nicely''. It has the follwing result giving a bound on the norm of the convolution.
+
+\begin{prop} \label{prop:YoungInequality} Let $1 ≤ p,q,r ≤ ∞$, and let $f ∈ L^p(Ω)$, $g ∈ L^q(Ω)$. Then, \[ \norm{f*g}_r≤ \norm{f}_p \norm{g}_q \] and so $f \ast g ∈ L^r(Ω)$ when $1 + \frac{1}{r} = \frac{1}{p} + \frac{1}{q}$.
+
+In particular, if $g ∈ L^1$ and $f ∈ L^p$, then $f * g ∈ L^p$.
+\end{prop}
+
+It also goes well with continuous functions.
+
+\begin{prop} \label{prop:ConvolutionContinuous} Let $f ∈ C^0(Ω)$ and $g ∈ L^1(Ω)$. Then $f * g ∈ C^0(Ω)$.
+\end{prop}
+
+\begin{proof} Let $y ∈ Ω$ such that $\abs{x - y} < δ$. We can try and bound so that \begin{align*}
+\abs{(f*g)(x) - (f*g)(y)}
+	&= \abs{\int_Ω f(x - t) g(t) \dif t - \int_Ω f(y - t) g(t) \dif t} = \\
+	&= \abs{\int_Ω f(x - t) - f(y - t) g(t) \dif t } ≤ \\
+	&≤ \int_Ω \abs{f(x - t) - f(y - t)} \abs{g(t)} \dif t ≤ \\
+	&≤ ε \int_Ω \abs{g(t)} \dif t ≤ ε \norm{g(t)}
+\end{align*} and we have it.
+\end{proof}
+
+The convolution does not have an identity in the space of functions, as there is no function $φ$ such that $φ * f = f$. However, we can construct approximations:
+
+\begin{defn}[Approximate\IS identity] \label{def:ApproximateIdentity} A family of functions $\set{φ_N}_{N ≥ 0} ⊂ L^∞(Ω)$ is called a family of approximate identities if and only if:
+\begin{enumerate}
+	\item $\int_Ω φ_N = 1$.
+	\item $\sup_{N ≥ 0} \norm{φ_N}_{L^1} < ∞$.
+	\item Their support goes to zero. That is, for any $δ > 0$ the following holds: \[ \lim_{N \to ∞} \int_{\abs{x} > δ} \abs{φ_N} = 0\]
+\end{enumerate}
+\end{defn}
+
+The main property of these functions is that they are indeed approximations of the identity element for the convolution:
+
+\begin{prop} \label{prop:ApproximateIdentity} Let $\set{φ_N}_{N ≥ 0}$ be a family of approximate identities, and let $f ∈ L^p(Ω)$ for $1 ≤ p < ∞$. Then, \[ \lim_{N \to ∞} \norm{φ_N * f - f}_p = 0 \]
+\end{prop}
+
+\begin{proof}
+
+\proofpart{$p = 1$}
+
+We prove it first for $p = 1$. There, operating we have
+\begin{align*}
+\norm{φ_N * f - f}_1
+	&= \int_Ω \abs{(φ_N * f)(x) - f(x)} \dif x = \\
+	&= \int_Ω \abs{\int_Ω φ_N(y) f(x - y) \dif y - f(x) \underbracket{\norm{φ_N}_1}_{=1}} \dif x ≤ \\
+	&≤ \int_Ω \int_Ω \abs{φ_N(y)} \abs{f(x-y) - f(x)} \dif y \dif x = \\
+	&= \int_Ω \abs{φ_N(y)} \int_Ω \abs{f(x-y) - f(x)} \dif x \dif y = \\
+	&= \int_Ω \abs{φ_N(y)} \norm[0]{T_yf - f}_1 \dif y
+\end{align*} where $T_y f(x) ≝ f(x - y)$ is the translation operator, and where we have used Fubini's theorem to interchange the order of the integrals.
+
+Now we will use the ``support goes to zero'' property of the approximate identity to separate the integral in two parts: one where the approximate identity goes to zero ($\abs{y} > δ$ for some $δ > 0$) and other where we will use properties of the translation operator.
+
+So, for the first part we have \begin{align*}
+\int_{\abs{y} > δ} \abs{φ_N(y)} \norm[0]{T_yf - T_0 f}_1 \dif y
+	&≤ \int_{\abs{y} > δ} \abs{φ_N(y)} \left(\norm[0]{T_y f}_1 + \norm[0]{T_0 f}_1\right) \dif y \\
+	&≤ 2\norm{f}_1 \int_{\abs{y} > δ} \abs{φ_N(y)} \dif y \convs[][N][∞] 0
+\end{align*}
+
+The second is a little bit more complex. As $C^∞(Ω) \densein L^p(Ω)$, choose a $g ∈ C^∞(Ω)$ such that $\norm{f - g}_1 < ε$ for any $ε < 0$. Now, adding and substracting $T_yg$ and $g$ we have that \begin{align*}
+\norm[0]{T_y f - f}_1 &= \norm[0]{T_y f - T_y g + T_yg - g + g - f} ≤ \\
+	&≤ \norm[0]{T_y f - T_y g}_1 + \norm{T_y g - g}_1 + \norm{g - f} ≤ \\
+	&≤ (\norm[0]{T_y} + 1)\norm{f - g} + \norm[0]{T_y g - g}_1 \convs[][y][0] 0
+\end{align*} as $\norm[0]{T_y g - g} = \int_Ω g(x - y) - g(x) \dif x$ goes to zero because we chose $g ∈ C^∞$. With that, we complete the proof for $p = 1$.
+
+\proofpart{$1 < p < ∞$}
+
+In \fref{prop:YoungInequality} we proved that if $φ_N ∈ L^1$ and $f ∈ L^p$, then $φ_N * f ∈ L^p$. Then, it makes sense to compute the $p$-norm of $φ_N * f - f$ as that is in $L^p$, and we can bound it as $\norm{φ_N * f - f}_p ≤ \norm{φ_N * f - f}_1$.
+
+\end{proof}
+
+If we ask for a little bit more of regularity, we have even uniform convergence.
+
+\begin{prop} \label{prop:ApproximateIdentityUnif} Let $f ∈ C_0(Ω)$ and $\set{φ_N}_{N > 0}$ a family of approximate identities. Then, $φ_N * f \to f$ uniformly.
+\end{prop}
+
+\begin{proof} We will proceed to prove convergence in $L^∞(Ω)$, and that together with \fref{prop:ConvolutionContinuous} (the convolution of $L^1$ functions with a continuous function is continuous) will prove uniform convergence.
+
+The proof is not difficult as it is just repeating the previous arguments, interchanging integrals and then using ``support goes to zero'' to bound for $\abs{y} > δ$ and continuity of $f$ when $\abs{y} < δ$.
+\end{proof}
+
 \section{Fourier series}
 
 The first tool in harmonic analysis will be the Fourier series, which allows representation of a function as a trigonometric polynomial.
@@ -30,8 +121,6 @@ The first tool in harmonic analysis will be the Fourier series, which allows rep
 
 In our case, we will consider $\crc[1]$ as the space of periodic functions, so equivalently $\crc[1] \cong \quot{ℝ}{ℤ}$. One interesting property of the Fourier series is its relation to the convolution.
 
-\begin{defn}[Convolution] Given two functions $f, g ∈ L^1(Ω)$, the convolution of both is defined as \[ (f \ast g) (x) ≝ \int_Ω f(x-y) g(y) \dif y\] which is itself an $L^1(Ω)$ function.
-\end{defn}
 
 With this, one can see the relationship between the convolution and the Fourier transform.
 
@@ -43,24 +132,6 @@ With this, one can see the relationship between the convolution and the Fourier 
 
 \subsection{Convergence for continuous functions}
 
-The first real interesting question in this topic is, of course, when is the serie defined in \eqref{eq:FourierSeries} is convergent and, moreover, when does it converge to the original function. The first one is easy and direct computation:
-
-\begin{prop}[Parseval\IS identity] Let $f ∈ L^2(\crc[1])$. Then, its Fourier series $\{\hat{f}(n)\}$ is absolutely summable (that is, $\{\hat{f}(n)\} ∈ \ell^2(ℤ)$) and $\norm{\hat{f}}_{\ell^2(ℤ)} = \norm{f}_{L^2(\crc[1])}$.
-\end{prop}
-
-\begin{proof} % TODO
-\end{proof}
-
-Now, whether the Fourier series converges to its original function is another question, fairly interesting. A fact that should assureus that we are not working in some crazy world is that we have at least convergence in the $L^2$ norm.
-
-\begin{theorem}[Riesz–Fischer\IS theorem] Let $f ∈ L^2(\crc[1])$ and define its partial Fourier series as \( \label{eq:PartialFourier} S_Nf(x) = \sum_{ \abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} \)
-
-Then, $S_Nf$ converges to $f$ in the $L^2$ norm: \[ \norm{S_Nf - f}_{L^2(\crc[1])} = 0 \]
-\end{theorem}
-
-\begin{proof} % TODO
-\end{proof}
-
 \begin{figure}[hbtp]
 \centering
 \inputtikz{DirichletKernel}
@@ -68,7 +139,7 @@ Then, $S_Nf$ converges to $f$ in the $L^2$ norm: \[ \norm{S_Nf - f}_{L^2(\crc[1]
 \label{fig:DirichletKernel}
 \end{figure}
 
-For a deeper study of the Fourier series, we have to turn to the \concept[Kernel\IS Dirichlet]{Dirichlet kernel}, defined as \( \label{eq:DirichletKernel} D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \), mainly because it has the interesting property that $S_Nf = D_N \ast f$, which allows a better treatment of the Fourier series. With a little bit of calculations (see \cite[Exercise 2.4]{ApuntesAnalisisFunc}) one can also show that \( \label{eq:DirichletKernelNormL1} \norm{D_N}_{L^1(\crc[1])} = C \log N + \mathcal{O}(1) \) so that the Dirichlet kernel is unbounded.
+We will start off trying to prove convergence in ``easy'' situations, that is, those with continuous functions. We will have to turn to the \concept[Kernel\IS Dirichlet]{Dirichlet kernel}, defined as \( \label{eq:DirichletKernel} D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \), mainly because it has the interesting property that $S_Nf = D_N \ast f$, which allows a better treatment of the Fourier series. With a little bit of calculations (see \cite[Exercise 2.4]{ApuntesAnalisisFunc}) one can also show that \( \label{eq:DirichletKernelNormL1} \norm{D_N}_{L^1(\crc[1])} = C \log N + \mathcal{O}(1) \) so that the Dirichlet kernel is unbounded.
 
 This allows\footnote{This is a summary of \cite[Exercise 2.4]{ApuntesAnalisisFunc}.} us to define the operator $λ_{D_N}(f) = S_Nf(0)$ on the space of continuous functions $X =(C^0(\crc[1]), \norm{·}_∞)$, which is Banach. Each of the operators are bounded with $\norm{λ_{D_N}}_{\linapp[X][ℝ]} = \norm{D_N}_{L^1(\crc[1])}$. However, this family of operators is not uniformly bounded so the Banach-Steinhaus uniform boundedness theorem \citep[Theorem II.8]{ApuntesAnalisisFunc} says that there exists a set $B$ dense in $X$ such that \[ \sup_{N ≥ 1} \norm{λ_{D_N} (f)}_{ℝ} = \sup_{N ≥ 1} \norm{S_N f(0)}_{ℝ} = ∞ \quad ∀f ∈ B\] and thus $\norm{S_Nf(0)}_{ℝ}$ is divergent for those $f ∈ B$.
 
@@ -113,7 +184,7 @@ In the previous sections we have shown that, while the Fourier series is converg
 \begin{defn}[Césaro\IS means] Given $f ∈ C^0(\crc)$, we define the Césaro mean as \[ σ_N f(x) ≝ \frac{1}{N} \sum_{n = 0}^{N-1} S_n f(x) = \frac{1}{N} \int_0^1 \underbracket{\left(\sum_{n = - (N-1)}^{N-1} (N - \abs{n}) e^{2π\imath nx}\right)}_{K_N(x)} f(y) \dif y \]
 \end{defn}
 
-That expression $K_N$ is what we will call the \concept[Kernel\IS Féjer]{Féjer kernel}, and has the following expression: \[ K_N(x) = \frac{1}{N} \left(\frac{\sin πNx}{\sin πx}\right)^2\]
+That expression $K_N$ is what we will call the \concept[Kernel\IS Féjer]{Féjer kernel}, and has the following expression: \( \label{eq:FejerKernel} K_N(x) = \frac{1}{N} \left(\frac{\sin πNx}{\sin πx}\right)^2 \)
 
 \begin{figure}[hbtp]
 \centering
@@ -122,56 +193,36 @@ That expression $K_N$ is what we will call the \concept[Kernel\IS Féjer]{Féjer
 \label{fig:FejerKernel}
 \end{figure}
 
-As opposed to the Dirichlet kernel, the Féjer kernel is positive and bounded in norm, forming what we call an approximate identity\footnote{Verification left to the untrusting reader.}. As it can be seen in \fref{fig:FejerKernel}, its supports tends to be smaller and smaller while maintaining area, which is the main property of these approximations.
+As opposed to the Dirichlet kernel, the Féjer kernel is positive and bounded in norm, forming what we call an \nlref{def:ApproximateIdentity}\footnote{Verification left to the untrusting reader.}. As it can be seen in \fref{fig:FejerKernel}, its supports tends to be smaller and smaller while maintaining area, which is the main property of these approximations.
 
-\begin{defn}[Approximate\IS identity] \label{def:ApproximateIdentity} A family of functions $\set{φ_N}_{N ≥ 0} ⊂ L^∞(Ω)$ is called a family of approximate identities if and only if:
-\begin{enumerate}
-	\item $\int_Ω φ_N = 1$.
-	\item $\sup_{N ≥ 0} \norm{φ_N}_{L^1} < ∞$.
-	\item Their support goes to zero. That is, for any $δ > 0$ the following holds: \[ \lim_{N \to ∞} \int_{\abs{x} > δ} \abs{φ_N} = 0\]
-\end{enumerate}
-\end{defn}
-
-The name ``approximate identity'' is not casual, as these functions are approximations for the identity element in the convolution. We will prove it now for $C^0(\crc)$ functions although a more general result holds for $L^p$ functions.
-
-\begin{prop} \label{prop:ApproximateIdentity} Let $\set{φ_N}_{N ≥ 0}$ be a family of approximate identities, and let $f ∈ C^0(\crc)$. Then, \[ \lim_{N \to ∞} (φ_N \ast f)(x) = f(x) \]
-\end{prop}
-
-\begin{proof} We proceed to estimate $(φ_N * f)(x) - f(x)$, separating it in two integrals:
-\begin{align*}
-(φ_N * f)(x) - f(x)
-	&= \int_0^1 φ_N(x-y) (f(y) - f(x)) \dif y = \\
-	&= \underbracket{\int\limits_{\abs{x-y} < δ} φ_N(x-y) (f(y) - f(x)) \dif y}_{A}
-	 + \underbracket{\int\limits_{\abs{x-y} > δ} φ_N(x-y) (f(y) - f(x)) \dif y}_{B}
-\end{align*} for some $δ > 0$.
-
-For the first integral, say $\sup_{N ≥ 0} \norm{φ_N}_{L^1} = M < ∞$. Fixing $ε > 0$ and by continuity of $f$, we know that we can select a $δ > 0$ such that $\abs{f(x) -f(y)} < \sfrac{ε}{2M}$, so that \begin{align*}
-\abs{A}
-	&≤ \sup_{N > 0} \int_{\abs{x-y} < δ} φ_N(x-y) (f(y) - f(x)) \dif y ≤ \\
-	&≤ \frac{ε}{2M} \int_{\abs{x-y} < δ} φ_N(x-y) \dif y ≤ \frac{ε}{2}
-\end{align*}
-
-For $B$, we know that $\abs{f(y) - f(x)} < m$ by continuity, so applying the ``support goes to zero'' property of the approximate identities, we have that \begin{align*}
-\lim_{N \to ∞} \abs{B}
-	&≤ \lim_{N \to ∞} \int_{\abs{x-y} > δ} \abs{φ_N(x-y)} \abs{f(y) - f(x)} \dif y ≤ \\
-	&≤ m  \lim_{N \to ∞} \int_{\abs{x-y} > δ} \abs{φ_N(x-y)} \dif y = 0
-\end{align*} which completes the proof.
-\end{proof}
 
 With this proof we can show that the Césaro means actually converge to the value of the function.
 
 \begin{corol} Let $f ∈ C^0(\crc)$. Then, the Césaro means (that is, the averages of its Fourier coefficients) converge pointwise to the function: \[ \lim_{N \to ∞} σ_N f(x) = f(x)\]
 \end{corol}
 
-\begin{proof} As we saw previously, the Césaro means can be expressed as $σ_N f = K_N * f$, and as $K_N$ is an \nlref{def:ApproximateIdentity} we can apply \fref{prop:ApproximateIdentity} to have the result.
+\begin{proof} As we saw previously, the Césaro means can be expressed as $σ_N f = K_N * f$, and as $K_N$ is an \nlref{def:ApproximateIdentity} we can apply \fref{prop:ApproximateIdentityUnif} to have the result.
 \end{proof}
 
 \subsection{General convergence results}
 
 In the more general framework of $L^p$ functions we can still prove interesting results about the Fourier series. The most important is the fact that the functions $\set{e^{2π\imath nx}}$ are dense in $L^p(\crc)$ for $1 ≤ p < ∞$. In the specific case of $p = 2$, which is a Hilbert space, that will imply that they are a basis of the space, thanks to the fact that the functions are orthonormal\footnote{Recall the inner product is defined as $\pesc{f,g} = \int_0^1 f \conj{g}$.}.
 
-\begin{prop} The trigonometric family of functions $\set{e^{2π \imath nx}}_{n ∈ ℤ}$ is dense in $L^p(\crc)$ for $1 ≤ p < ∞$.
+\begin{prop} \label{prop:TrigoPolyDense} The trigonometric family of functions $\set{e^{2π \imath nx}}_{n ∈ ℤ}$ is dense in $L^p(\crc)$ for $1 ≤ p < ∞$.
 \end{prop}
+
+\begin{proof} Using the Féjer kernel, as $K_N * f$ is a trigonometric polynomial we can just apply \fref{prop:ApproximateIdentity}.
+\end{proof}
+
+This allows us to prove in a very straightforward way the following theorem:
+
+\begin{theorem}[Riesz–Fischer\IS theorem] Let $f ∈ L^2(\crc[1])$ and define its partial Fourier series as \( \label{eq:PartialFourier} S_Nf(x) = \sum_{ \abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} \)
+
+Then, $S_Nf$ converges to $f$ in the $L^2$ norm: \[ \norm{S_Nf - f}_{L^2(\crc[1])} = 0 \]
+\end{theorem}
+
+\begin{proof} Just apply \fref{prop:TrigoPolyDense}.
+\end{proof}
 
 \section{Fourier transform}
 
