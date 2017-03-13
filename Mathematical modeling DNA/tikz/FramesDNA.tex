@@ -1,0 +1,41 @@
+\makeatletter
+\pgfkeys{
+	/framedpoint/.is family, /framedpoint,
+	node style/.store in = \@framedpoint@nodestyle,
+	node name/.store in = \@framedpoint@nodecoord,
+	base style/.store in = \@framedpoint@basestyle,
+	default/.style = {node style = {}, node name = C, base style = {}}
+}
+
+\pgfkeys{/framedpoint, default}
+
+\newcommand{\framedpoint}[5][]{
+	\pgfkeys{/framedpoint, #1}
+
+	\coordinate  (\@framedpoint@nodecoord) at #2;
+	\coordinate (Corner1) at ($(\@framedpoint@nodecoord) + #3 + #4$);
+	\coordinate (Corner2) at ($(\@framedpoint@nodecoord) + #3 - #4$);
+	\coordinate (Corner3) at ($(\@framedpoint@nodecoord) - #3 - #4$);
+	\coordinate (Corner4) at ($(\@framedpoint@nodecoord) - #3 + #4$);
+
+	\draw[thick, \@framedpoint@basestyle, fill = \@framedpoint@basestyle!20!white]
+		($(\@framedpoint@nodecoord)!1.2!(Corner1)$) --
+		($(\@framedpoint@nodecoord)!1.2!(Corner2)$) --
+		($(\@framedpoint@nodecoord)!1.2!(Corner3)$) --
+		($(\@framedpoint@nodecoord)!1.2!(Corner4)$) --
+		cycle;
+
+	\node[nodepoint, \@framedpoint@nodestyle] at (\@framedpoint@nodecoord) {};
+	\draw[->] (\@framedpoint@nodecoord) -- ($(\@framedpoint@nodecoord) + #3$);
+	\draw[->] (\@framedpoint@nodecoord) -- ($(\@framedpoint@nodecoord) + #4$);
+	\draw[->] (\@framedpoint@nodecoord) -- ($(\@framedpoint@nodecoord) + #5$);
+
+}
+\makeatother
+
+\begin{tikzpicture}
+
+\framedpoint[base style = gray, node name = A1]{(0,0,0)}{(1,0,0)}{(0,0,1)}{(0,1,0)}
+\framedpoint[base style = gray, node name = A2]{(4,0,0)}{(1,0,0)}{(0,0.1,1)}{(0,1,-0.1)}
+
+\end{tikzpicture}

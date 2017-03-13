@@ -1,0 +1,10 @@
+\begin{tikzpicture}[scale = 0.8]
+\draw[thick, ->] (0,0) node[left] {$5'$} -- node[midway, below] {Watson strand} (10, 0) node[right] {$3'$};
+\draw[thick, <-] (0,3) node[left] {$3'$} -- node[midway, above] {Crick strand} (10, 3) node[right] {$5'$};
+
+\foreach \x in {1, 2, ..., 9} {
+	\draw (\x, 0) -- (\x, 0.6) node[above] {$X_\x$};
+	\draw (\x, 3) -- (\x, 2.4) node[below] {$\conj{X}_\x$};
+}
+
+\end{tikzpicture}

@@ -18,16 +18,23 @@
 \mainmatter
 % Content
 
-\chapter{Introduction}
+\chapter{Introduction and overview}
 
-\section{Basics of dna}
+\section{Basics of \sectioncaps{DNA}}
+
+\begin{wrapfigure}[12]{R}{0.4\textwidth}
+\centering
+\includegraphics[width = 0.4\textwidth]{img/DNA-structure-and-bases.png}
+\caption{Molecular structure of DNA}
+\label{fig:DNA}
+\end{wrapfigure}
 
 The bases of DNA are denoted by $\mathcal{L} = \set{A,T,C,G}$ with a complementary  rule, where \begin{align*}
 \conj{A} &= T &\conj{C} &= G \\
 \conj{T} &= A &\conj{G} &= C
 \end{align*}
 
-An interesting? fact: the base of the DNA are antiparallel (orientation given by the orientation of the phosphate molecule).
+A somewhat interesting fact: the base of the DNA are antiparallel (orientation given by the orientation of the phosphate molecule).
 
 The study of DNA can be separated in its three structures:
 \begin{enumerate}
@@ -40,17 +47,15 @@ Molecular Dynamics simulations of the atoms in DNA and their surrounding medium 
 
 The course-grained model implies simulating not all the atoms but only blocks (sugar, phosphate or whatever is a group for chemists), reducing thus the amount of degrees of freedom.
 
-\section{Course-grained dna modeling}
+\section{Course-grained \sectioncaps{DNA} modeling}
 
-We will be interested in models that predict the sequence ground-state structure and flexibility of a sequence. Each configuration space is a vector $w ∈ ℝ^N$ and the probability density function $ρ(w)$ depends on spome constants $Z,β$ and the free energy $U(w)$, so that \[ ρ(w) = \frac{1}{Z} e^{-βU(w)} \]
+We will be interested in models that predict the sequence ground-state structure and flexibility of a sequence. Each configuration space is a vector $\vw ∈ ℝ^N$ and the probability density function $ρ(\vw)$ depends on some constants $Z,β$ and the free energy $U(\vw)$, so that \[ ρ(\vw) = \frac{1}{Z} e^{-βU(\vw)} \]
 
-One special thing is four bases and not consider base pairs. ¿?
+As the conjugates for each base are clearly defined, we can worry just about the sequence of bases and not the full base pairs. The set of parameters being modeled will by $6n$ intra-basepair and $6(n-1)$ inter-basepair degrees of freedom (see \fref{fig:MovementsDNA}), so a total of $N = 12n - 6$ degrees of freedom for a sequence of $n$ basepairs.
 
-The set of parameters being modeled will by $6n$ intra-basepair and $6(n-1)$ inter-basepair degrees of freedom, so a total of $N = 12n - 6$ degrees of freedom.
+For the cgDNA model, the free energy is approximated as a quadratic form \[ U(\vw)= \frac{1}{2} (\vw - μ) · \mK · (\vw -μ)\] with $μ = μ(S) ∈ ℝ^N$ being the ground state configuration and $\mK = \mK(S) ∈ ℝ^{N×N}$ being the ground-state stiffness, represented by a symmetric and positive-definite matrix.
 
-For the cgDNA model, the free energy is approximated as a quadratic form \[ U(w)= \frac{1}{2} (w - μ) · K(w -μ)\] with $μ = μ(S) ∈ ℝ^N$ being the ground state configuration and $K = K(S) ∈ ℝ^{N×N}$ being the ground-state stiffness, symmetric and positive-definite.
-
-Of course, the question is how to get those ground states $μ, K$ from the sequence $S$ you are studying. The main assumption is junction and intra-basepair interaction energies, as shown in \fref{fig:MovementsDNA}.
+Of course, the question is how to get those ground states $μ, \mK$ from the sequence $S$ you are studying. The main assumption is that those states are only affected by junction and intra-basepair interaction energies, as shown in \fref{fig:MovementsDNA}, and that the groudn state is the one with minimum energy. During these lectures we will introduce this model and do more things.
 
 \begin{figure}[tbp]
 \centering
@@ -59,62 +64,69 @@ Of course, the question is how to get those ground states $μ, K$ from the seque
 \label{fig:MovementsDNA}
 \end{figure}
 
-\seprule[Missing week 2 and week 3 material]
+\chapter{cgDNA model}
 
-I'm not sure of what I am writing but $(R_i, \vr_i)$ is the mid frame (base pair frame) between $(R_i^-, \vr_i^-)$ and $(R_i^+, \vr_i^+)$ and $\vr_i = \frac{1}{2} (\vr_i^- + \vr_i^+)$ with $R_i = R_i^-\sqrt{Q_i}$ and $Q_i = \trans{(R_i^{-})} R_i^+$ being half rotation and the relative rotation between bases.. This is a sensible notion of average in $SO(3)$. The junction frame is \[ j_i = \frac{1}{2}(\vr_i + \vr_{i+1}) \qquad i = 1, \dotsc, N\] and $J_i = R_i \sqrt{P_i}$ with $P_i = \trans{R_i} R_{i+1}$ being the relative rotation between base-pair frames.
+We will consider the coarse-grain model of DNA in which each base on each strand is modeled as an independent rigid body. First, we will define what we mean by an independent rigid body and what mathematical tools do we need to deal with them, and then we will go straight to the modeling.
 
-Note: take all square root matrix multiplications on the right. We could change it to the left with no consequences\footnote{We are in $SO(3)$ so all works out. Transposes are inverses and yay.}.
+\section{Rigid body framings: $SE(3)$}
 
-We also introduce the following $4×4$ matrix representation of $SE(3)$, so that a matrix and a vector are represented by \[ \left(\begin{array}{ccc|c}
- & & &  \\
- & \mR_i& & \vec{r_i} \\
- & & &  \\ \hline
- & \vec{0} & & 1
-\end{array}\right) \] and so \[ w \log \left(\begin{array}{ccc|c}
- & & &  \\
- & \mR_1 & & \vec{r_1} \\
- & & &  \\ \hline
- & \vec{0} & & 1
-\end{array}\right) = \left(\begin{array}{ccc|c}
- & & &  \\
- & \mop{Id}_{3 × 3} & & \vec{0} \\
- & & &  \\ \hline
- & \vec{0} & & 1
-\end{array}\right)\]
+\section{Modeling of \sectioncaps{DNA} sequences}
 
-If we then know $(\mQ_i, \vq_i)$ for $i = 1,\dotsc, N$ and $(\mP_i, \vp_i)$ for $i = 1, \dotsc, N_1$ we can compute $(\mR_i^{\pm}, \vr_i^{\pm})$ or recursion \[ \begin{pmatrix} \mR_{i+1} & \vr_{i+1} \\ 0 & 1 \end{pmatrix} = \begin{pmatrix}\mR_i & \vr_i \\ 0 & 1 \end{pmatrix} \begin{pmatrix} \mP_i & \sqrt{\mP_i} \vp_i \\ 0 & 1 \end{pmatrix} \]
-and at level $i$ \[ \begin{pmatrix} \mR_i^+ & \vr_i^+ \\ 0 & 1 \end{pmatrix} = \begin{pmatrix} \mR_i^{-} & \vr_i^- \\ 0 & 1 \end{pmatrix} \begin{pmatrix} \mQ_i & \sqrt{\mQ_i} \vq_i \\ 0 & 1 \end{pmatrix} \]
+\subsection{Framing of the base pairs}
 
-So it seems that what we are doing is to define the positions $(R_i, \vr_i)$ of each base pair and the positions $\pm$ of the left and right sides
-.
+\begin{figure}[hbtp]
+\centering
+\inputtikz{WatsonCrickModel}
+\caption{Basic nomenclature in DNA sequences, with $X_i ∈ \set{T,A,C,G}.$}
+\label{fig:WatsonCrickStrand}
+\end{figure}
 
-The thing above with the $w\log$ seems to be just the initial condition with ``wlog'' beind some kind of abbreviature I don't know. It says that we eliminate overall translation and rotation of DNA so that must be it.
+We consider a DNA molecule to be identified, as seen in \fref{fig:WatsonCrickStrand}, with a sequence of bases $\set{X_1, \dotsc, X_n}$ along one strand (one side of the helix for us non-biologists), listed in the $5'$ to $3'$ direction (that is, bottom to top). Each base pair is denoted by $(X, \conj{X})_i$, and we will ignore the atoms forming the sugar-phosphate backbones.
 
-Then this set of equations:
-\begin{gather*}
-\mR_{i+1} = \mR_i \mP_i \\
-\vr_{i+1} = \vr_i + \mR_i \sqrt{\mP_i} \vp_i \\
-\mP_i = \trans{\mR_i}\mR_{i+1} \\
-\sqrt{\mP_i} \vp_i = \trans{\mR_i} (\vr_{i+1} - \vr_{i})
-\end{gather*}
 
-So the thing is that $\vr_{i+1} - \vr_i ≝ Δ\vr_i$ is the difference between components in a fixed basis, and then writing it in the basis of the $\vr_i$ which is $\mR_{i+1}$. Here we have the weird-ass drawing of rectangles and the delta thing is the arrow.
+For each one of the base pairs we will consider two rigid body motions. One will be referring to the movement between one base and its corresponding one in the other strand, and the other one will model the rigid body motion from one strand to the next one.
 
-Then coming back to $J_i = \mR_i \sqrt{\mP_i}$ and doing transposes everywhere we have that \[ \vp_i = \trans{\sqrt{\mP_i}} \trans{\mR_i} (\vr_{i+1} - \vr_{i}) = \trans{\mJ} (\vr_{i+1} - \vr_{i})\] so that $\vp_i$ is the components of $Δ\vr$ in the junction frame $\mJ$. The junction is the green thing in the drawing.
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/CrickWatson.png}
+\caption{A schematic illustration of the base (red), base-pair (blue), and junction (green) frames for an isolated base-pair step.}
+\end{figure}
 
-The addition of the $\sqrt{\mP_i}$ seems an unnecessary complication. But we want a simple transformation when roles of Crick and Watson strands are reversed and $\sqrt{\mP_i}$ gives a simpler transformation. That means when for some reason they want to reverse the order of the indexes, so that the $\mJ_i$ is ``like a central finite difference''.
+% Missing some week 2 and week 3 material here
 
-Similarly for the base frames $\mR_i^{\pm}$, once you know the base-pair frame $(\mR_i, \vr_i)$ we have that \begin{gather*}
-\mR_i^+ = \mR_i^- \mQ_i \\
-(\vr_i^+ - \vr_i^-) = \mR^- \sqrt{\mQ_i}\vq_i \\
-\trans{(\mR_i^-)} (\vr_i^+ - \vr_i^-) =\sqrt{\mQ_i} \vq_i
-\end{gather*} where that last thing is the components of $δ\vr_i$ in the frame $\mR_i^-$. And $\vq_i$ are the components of $δ\vr_i$ in base pair frame $\mR_i$. Then more equations
+What we have then is that, for each level $i$ in the sequence, we have the positions and rotations $R_i^+ ≝ (\mR_i^+, \vr_i^+) ∈ SE(3)$ and $R_i^- ≝ (\mR_i^-, \vr_i^-) ∈ SE(3)$ of both bases (Watson and Crick strands respectively). We are interested in simplifying this and having a parametrization in which we can consider separately between the inter and intra basepair motions.
 
-\[ \mR_i^+ = \mR_i^-\mQ_i \implies \sqrt{\mQ_i} = \sqrt{\trans{(\mR_i^-)} \mR_i^+} \] and by definition we recall $\mR_i = \mR_i^- \sqrt{\mQ_i}$ this is the definition of the base-pair frame.
+We will introduce then the position/rotation of the basepair as $R_i ≝ (\mR_i, \vr_i)$ defined as the ``average'' of $R_i^+$ and $R_i^-$. For the rotation that is half the rotation from $\mR_i^+$ to $\mR_i^-$, and for the position that is the midpoint between $\vr_i^+$ and $\vr_i^-$:
+\begin{align*}
+\mR_i &= \mR_i^- \sqrt{\mQ_i} \\
+\vr_i &= \frac{\vr_i^+ + \vr_i^-}{2}
+\end{align*} with $\mQ_i = \trans{(\mR_i^-)} \mR_i^+$ the rotation between bases.
 
-The introduction of the square root helps again when making crick-watson transformation rules.
+In a similar way we can write the displacement between pairs based on the junction frame, defined as \begin{align*}
+\mJ_i &= \mR_i \sqrt{\mP_i} \\
+\vj_i &= \frac{\vr_i + \vr_{i+1}}{2}
+\end{align*} with $\mP_i = \trans{\mR_i} \mR_{i+1}$ being the rotation between base-pair frames.
 
-This all (I suppose ``all'' from the start of the lecture?) implies a set of coordinates for a DNA configuration are the initial point $(\mR_1, \vr_1) = (\mop{Id}, \vec{0})$, the intra-pair deformation $Q_i ≝ (\mQ_i, \vq_i)$ and the inter-pair deformations $P_i ≝ (\mP_i, \vp_i)$. In turn, this allows us to work only with the $P_i, Q_i$ elements. However, $\mQ_i$ and $\mP_i$ are in $SO(3)$, that is, we have 9 entries each but there are only 3 independent entries.
+We can keep on simplifying further: we can get rid of global rotations and translation of the full DNA sequence if we consider not a series of frames and positions but a series of movements and rotations to get from one basepair to another instead.
+
+This leads us to define a set of DNA coordinates starting from an initial assumed configuration $R_1 = (\mop{Id}, \vec{0})$, the intra-pair rigid body motions $Q_i ≝ (\mQ_i, \vq_i)$ and the inter-pair ones $P_i ≝ (\mP_i, \vp_i)$. These allow the calculation of each base position and frame by a recursion relation:
+\begin{align*}
+\begin{pmatrix} \mR_{i+1} & \vr_{i+1} \\ 0 & 1 \end{pmatrix} &=
+	\begin{pmatrix} \mR_i & \vr_i \\ 0 & 1 \end{pmatrix}
+	\begin{pmatrix} \mP_i & \sqrt{\mP_i} \vp_i \\ 0 & 1 \end{pmatrix} \\
+\begin{pmatrix} \mR_i^+ & \vr_i^+ \\ 0 & 1 \end{pmatrix} &=
+	\begin{pmatrix} \mR_i^{-} & \vr_i^- \\ 0 & 1 \end{pmatrix}
+	\begin{pmatrix} \mQ_i & \sqrt{\mQ_i} \vq_i \\ 0 & 1 \end{pmatrix}
+\end{align*}
+
+The displacements $\vp_i$ and $\vq_i$ can be simply calculated from that relation of recurrence as \begin{align*}
+\vp_i &= \trans{\sqrt{\mP_i}} \trans{\mR_i} (\vr_{i+1} - \vr_{i}) = \trans{\mJ} \underbracket{(\vr_{i+1} - \vr_{i})}_{Δ\vr_i} \\
+\vq_i &= \sqrt{\trans{\mQ_i}} \trans{(\mR_i^-)} (\vr_i^+ - \vr_i^-) = \mR_i \underbracket{(\vr_i^+ - \vr_i^-)}_{δ\vr_i}
+\end{align*}
+
+That is, $\vp_i$ and $\vq_i$ are, respectively, the inter-pair and intra-pair displacements $Δ\vr_i$ and $δ\vr_i$ in the corresponding frames $\mJ_i$ and $\mR_i$. This definition will also be helpful if at some point in the future we want to ``reverse'' the sequences, as we are setting reference frames that will not depend on the direction we traverse the sequence in.
+
+We can improve this a little bit more. Both $\mQ_i$ and $\mP_i$ are in $SO(3)$, that is, we have 9 entries each but there are only 3 independent parameters for each rotation (the ones described in \fref{fig:MovementsDNA}).
 
 So, we need to get to a minimal set of coordinates by introducing the Cayley transform. Provided that neither $\mP_i$ or $\mQ_i$ are close to rotations by π, there exists an unique mapping \begin{align*}
 \appl{\cayley}{SO(3) & }{ℝ^3} \\
@@ -122,33 +134,31 @@ So, we need to get to a minimal set of coordinates by introducing the Cayley tra
 \mQ_i &\longmapsto \veta_i
 \end{align*}
 
-Now questions: What frame are the components of $\vu_i$? There we have in $\mR_i, \mJ_i$ or $\mR_{i+1}$?
+The question is, however, in which frame are the components of $\vu_i$. The available optionsare $\mR_i, \mJ_i$ or $\mR_{i+1}$. Similarly, we need to know in which frame are the components of $\veta_i$, as we can have $\mR_i^-$ or $\mR_i$ or $\mR_i^+$.
 
-In which frame are the components of $\veta_i$? We can have $\mR_i^-$ or $\mR_i$ or $\mR_i^+$.
-
-A nice property of Cayley vector is that it has the same coordinates along all the frames between I don't know what because it is the axis of rotation. That applies both Cayley vectors. So it doesn't change.
-
-Also $\mR_{i+1} = \mR_i · \cayley(\vc_i)$ where $\vc_i$ is an absolute mess of twiddles, bars and vectors with extra structure and basis and I am really tired of that.
+A nice property of Cayley vector is that it has the same coordinates for all the frames along the rotation, so the answer is that the components of $\vu_i$ are the same in $\mR_i, \mJ_i$ and $\mR_{i+1}$ as it represents the rotation from $\mR_i$ to $\mR_{i+1}$ with $\mJ_i$ being the rotation at the midpoint. The same applies to $\veta_i$.
 
 Finally, we can explain the cgDNA model configuration coordinates. This has, for $N$ base pair ligomer a vector $\vw ∈ ℝ^{12N - 6}$ as $\vw = (\vy_1, \vz_1, \dotsc, \vz_{N-1}, \vy_N)$ where $\vz_i ∈ ℝ^6$ are the inter pair rotations and translations and $\vy_i ∈ ℝ^6$ are the intra pair rotations and translations with the rotations as a Cayley vector.
 
-Now we worry about units. Convenient scales for translations are angstroms or nanometers, but rotations do not have dimensions. We'll see later that we need a good scaling between both for reasons yet unknown so that the units for the Cayley vector are fifths of a radian but we will see it later so then why does he mention it now.
+\subsubsection{Inversion of sequences}
 
-Find names of the rotations in the PDF.
+We briefly consider here the transformation rule for inversion of a sequence. We will prove later in detail, but if $\vw$ are the coordinates for a specific configuration of the DNA fragment for one choice of the Watson strand then the coordinates $\bar{\vw}$ for the configuration in the reverse sense are $\bar{\vw} = \mE_{2N - 1} \vw$ where \[ \mE_{2N-1} = \begin{pmatrix} 0 & \cdots & \mE \\ \vdots &\iddots & \vdots \\ \mE & \cdots & 0 \end{pmatrix} \] with $\mE ∈ ℝ^{6×6}$ just $-1, +1, +1, -1, +1, +1$ on the leading diagonal.
 
-Now we omething something transformation rule. Will prove later but if $\vw$ are the coordinates for a specific configuration of the DNA fragment for one choice of the Watson strand\footnote{Define what is a strand, pls.} then the coordinates $\bar{\vw}$\footnote{In the blackboard this is $w$ with under and overbar. Such a good notation.}  are $\bar{\vw} = \mE_{2N - 1} \vw$ where \[ \mE_{2N-1} = \begin{pmatrix} 0 & \cdots & \mE \\ \vdots &\iddots & \vdots \\ \mE & \cdots & 0 \end{pmatrix} \] with $\mE ∈ ℝ^{6×6}$ just $-1, +1, +1, -1, +1, +1$ on the leading diagonal.
+\subsection{Energy of the DNA sequence configuration}
 
-So the thing is the cgDNA model predicts a PDF $ρ(\vw; S, P)$ with $\vw$ the coordinates, $S$ the sequence and $P$ the parameter set. We usually suppress $S, P$ in notation. The PDF is going to work like \[ ρ(\vw) = \frac{1}{z} e^{- U(\vw)} \] where $z$ is the normalizing constant and $U$ is a quadratic polynomial in $\vw$.
+The cgDNA model predicts a probability density function $ρ(\vw; S, P)$ for each configuration $\vw$, depending on the sequence $S$ and the parameter set $P$. For convenience, $S$ and $P$ may be suppressed anywhere in notation.
 
-We are going to do a lot of assumptions not justified and then later on we will see that they work.
+The assumption is that the PDF is going to be related to an energy distribution, with lower energy states being more probable. Thus, the formula will be something like \[ ρ(\vw; S, P) = \frac{1}{Z} e^{- U(\vw; S, P)} \] where $Z$ is the normalizing constant and $U$ will be quadratic polynomial in $\vw$.
 
-So $U$ is going to look like \[ U(\vw) = \frac{1}{2} (\vw - μ(S)) \mK(S) (\vw - μ(S)) \] so we need a rule to get from $S$ to $\mK(S)$ and $μ(S)$, where $\mK(S) ∈ ℝ^{(12N - 6) × (12N - 6)}$ where $\mK(S)$ will be symmetric and positive-definite matrix. Also, $μ(S) ∈ ℝ^{12N-6}$.
 
-We start from the formula that \[ 2U(\vw) = \sum_{i = 1}^N (\vy_i - \hat{\vy}_i) · \mK_{i}^{BP} (\vy_i - \hat{\vy}_i) + \sum_{j=1}^{N-1} (\vx_j - \hat{\vx}_j) \mK^J_j (\vx_j - \hat{\vx}_j)\] which represent respectively the sum of something over basepairs and sum over junctions, where $\vx_j = (\vy_j, \vz_i, \vy_{i+1})$. Also $\mK_i^{BP} ∈ ℝ^{6×6}$ and $\mK_{j}^J ∈ ℝ^{18 × 18}$ are symmetric.
+So $U$ is going to look like
 
-What this means is that there is an energy term of the energy between bases in a pair which is a quadratic polynomial (assumption) with $\hat{\vy}_i$ the minimum energy position more or less. So we do a nearest-neighbor rigid base mode so now we have base to partner in base pair. Then we need to compute the energy with the other base pairs. Cross-junction interaction energies. Gross assumption that all those interaction energies are quadratic and we end with the second matrix stiffness matrix $\mK_j^J$  with $\hat{\vx}_j$ is the minimum energy configuration.
+In order to derive the expression for the energy, we assume that the energy of a DNA configuration depends on the energy between bases in a pair and on the cross-junction interaction energies. We assume that all those interactions are quadratic and have minimum-energy states $\hat{\vy}_i$ and $\hat{\vx}_j$ so the energy takes on a form like this: \[ 2U(\vw) = \sum_{i = 1}^N (\vy_i - \hat{\vy}_i) · \mK_{i}^{BP} (\vy_i - \hat{\vy}_i) + \sum_{j=1}^{N-1} (\vx_j - \hat{\vx}_j) \mK^J_j (\vx_j - \hat{\vx}_j)\] which represent respectively the sum of something over basepairs and sum over junctions, and where where $\vx_j = (\vy_j, \vz_i, \vy_{i+1})$. Also $\mK_i^{BP} ∈ ℝ^{6×6}$ and $\mK_{j}^J ∈ ℝ^{18 × 18}$ are symmetric.
 
-After that we do a cool linear algebra proof\footnote{That does not exist.} where we do computations\footnote{See?} where we have a vector $\vx ∈ ℝ^M$ and \[ \frac{1}{2}(\vx - \va) \mA (\vx - \va) = \frac{1}{2} ( \vx - \vb) \mB (\vx - \vb) = \frac{1}{2}( \vx - \vc) \mC (\vx - \vc)\]  with $\mA, \mB$ symmetric and positive definites. We would need a constant term (the second part is zero when $\vx = \vc$ but the first part doesn't) but this is an energy so we don't care about constants. IF you do computations then $\mC = \mA + \mB$. If you do more computations with the linear cmponents you get $\vc = \inv{\mC}(\mA \va + \mB \vb)$. We have to pad with zero because matrices are of different dimensions but everything works out. Drawings of a matrix. And in the end local sequence dependence implies non-local sequence dependence because inverses and sparses and magic.
+It can be shown that this expression is simplifiable to a single quadratic form if we get rid of constant terms. This expression is
+\[ U(\vw) = \frac{1}{2} (\vw - \vmu(S)) \mK(S) (\vw - \vmu(S)) \] where $\mK(S) ∈ ℝ^{(12N - 6) × (12N - 6)}$ is a symmetric and positive-definite matrix. Also, $\vmu(S) ∈ ℝ^{12N-6}$ will be the ground-state vector.
+
+An interesting thing about this expression is that, while we have built a model based on local interactions, the ``competition'' between ground stats $\hat{\vy}_i$ and $\hat{\vx}_i$ for each of the different energies will imply non-local sequence dependence\footnote{One can show it doing some computations and linear algebra. But it's not interesting.}.
 
 \appendix
 

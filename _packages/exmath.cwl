@@ -162,8 +162,10 @@
 \vt#m
 \vp#m
 \vq#m
+\vj#m
 \vw#m
 \veta#m
+\vmu#m
 \mA#m
 \mB#m
 \mD#m
