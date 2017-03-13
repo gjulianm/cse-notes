@@ -23,6 +23,7 @@
 \tq#m
 \st#m
 \wtf#m
+\iddots#m
 \deriv{f}{arg1}#m
 \dpa{arg0}{arg1}#m
 \rot#m
@@ -160,6 +161,9 @@
 \vz#m
 \vt#m
 \vp#m
+\vq#m
+\vw#m
+\veta#m
 \mA#m
 \mB#m
 \mD#m
@@ -167,9 +171,12 @@
 \mM#m
 \mU#m
 \mP#m
+\mQ#m
 \mR#m
 \mK#m
 \mJ#m
+\mE#m
+\mC#m
 \ctrig{angulo}#m
 \ceul{mod}{angulo}#m
 \i#m
@@ -309,6 +316,7 @@
 \fcurv#m
 \fcurv[\tau]#m
 \lk#m
+\cayley#m
 \mesh#m
 \mesh[h]#m
 \pspace#m

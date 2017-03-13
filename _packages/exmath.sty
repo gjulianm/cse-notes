@@ -105,6 +105,8 @@
 \newcommand{\st}{\tq} % Porque cuando escribo en inglés es un peñazo.
 \newcommand{\wtf}{(?)}
 
+\newcommand{\iddots}{\reflectbox{$\ddots$}}
+
 % Calculo
 \newcommand{\deriv}[2]{\frac{\dif #1}{\dif #2}} % 1: f; 2: var
 \let\iod\od
@@ -277,6 +279,9 @@
 \newcommand{\vz}{\vec{z}}
 \newcommand{\vt}{\vec{t}}
 \newcommand{\vp}{\vec{p}}
+\newcommand{\vq}{\vec{q}}
+\newcommand{\vw}{\vec{w}}
+\newcommand{\veta}{\vec{\eta}} % How can we have so many friggin vectors
 
 % Usual matrixes
 \newcommand{\mA}{\mtr{A}}
@@ -286,9 +291,12 @@
 \newcommand{\mM}{\mtr{M}}
 \newcommand{\mU}{\mtr{U}}
 \newcommand{\mP}{\mtr{P}}
+\newcommand{\mQ}{\mtr{Q}}
 \newcommand{\mR}{\mtr{R}}
 \newcommand{\mK}{\mtr{K}}
 \newcommand{\mJ}{\mtr{J}}
+\newcommand{\mE}{\mtr{E}}
+\newcommand{\mC}{\mtr{C}}
 
 % Complejos
 \newcommand{\ctrig}[1]{\cos \left(#1\right) + i \sin \left(#1\right)} % 1: angulo;
@@ -442,9 +450,11 @@
 % Differential geometry of framed curves
 \newcommand{\fcurv}[1][\tau]{\ensuremath{\mathcal{F}(#1)}}
 \newcommand{\lk}{\mathrm{Lk}}
+\newcommand{\cayley}{\ensuremath{\mathcal{C}}}
 
 % NAPDE
 \newcommand{\mesh}[1][h]{\ensuremath{\mathcal{T}_{#1}}\xspace}
 \newcommand{\pspace}[1][r]{\ensuremath{\mathbb{P}_{#1}}\xspace}
 \newcommand{\linop}{\ensuremath{\mathcal{L}}\xspace}
 \newcommand{\gradop}{\ensuremath{\mathcal{G}}\xspace}
+
