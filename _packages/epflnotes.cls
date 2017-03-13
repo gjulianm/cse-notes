@@ -212,7 +212,11 @@
 \headstyles{memman}
 \chapterstyle{ell}
 
-\setsecheadstyle{\scshape\large}
+\newif\if@insectionstyle
+\@insectionstylefalse
+
+\newcommand{\sectioncaps}[1]{\if@insectionstyle\lowercase{#1}\else#1\fi}
+\setsecheadstyle{\@insectionstyletrue\scshape\large}
 \setsubsecheadstyle{\sffamily\bfseries}
 \setparaheadstyle{\sffamily\bfseries}
 
