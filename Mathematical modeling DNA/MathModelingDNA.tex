@@ -150,9 +150,6 @@ The cgDNA model predicts a probability density function $ρ(\vw; S, P)$ for each
 
 The assumption is that the PDF is going to be related to an energy distribution, with lower energy states being more probable. Thus, the formula will be something like \[ ρ(\vw; S, P) = \frac{1}{Z} e^{- U(\vw; S, P)} \] where $Z$ is the normalizing constant and $U$ will be quadratic polynomial in $\vw$.
 
-
-So $U$ is going to look like
-
 In order to derive the expression for the energy, we assume that the energy of a DNA configuration depends on the energy between bases in a pair and on the cross-junction interaction energies. We assume that all those interactions are quadratic and have minimum-energy states $\hat{\vy}_i$ and $\hat{\vx}_j$ so the energy takes on a form like this: \[ 2U(\vw) = \sum_{i = 1}^N (\vy_i - \hat{\vy}_i) · \mK_{i}^{BP} (\vy_i - \hat{\vy}_i) + \sum_{j=1}^{N-1} (\vx_j - \hat{\vx}_j) \mK^J_j (\vx_j - \hat{\vx}_j)\] which represent respectively the sum of something over basepairs and sum over junctions, and where where $\vx_j = (\vy_j, \vz_i, \vy_{i+1})$. Also $\mK_i^{BP} ∈ ℝ^{6×6}$ and $\mK_{j}^J ∈ ℝ^{18 × 18}$ are symmetric.
 
 It can be shown that this expression is simplifiable to a single quadratic form if we get rid of constant terms. This expression is
