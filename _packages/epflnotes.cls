@@ -82,6 +82,7 @@
 \RequirePackage{fastbuild}
 \RequirePackage{tikztools}
 \RequirePackage{mathenvs}
+\RequirePackage{algorithm,algpseudocode}
 
 %% Some configurations and adjustements
 
