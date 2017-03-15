@@ -1,15 +1,15 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
 \section{Advection-diffusion-reaction}
 
-A more complex form of elliptic problems are advection-diffusion-reaction, where the differential operator is \[ Lu = - \sum_{i,j=1}^d \dpd{}{x_i} \left(a_{ij}\dpd{u}{x_j}\right) + \sum_{i=1}^d b_i \dpd{u}{x_i} + c u = - \dv (A(x) \grad u) + \vb(x) \grad u + c u\] with $A(x) ∈ ℝ^{d×d}, \vb(x) ∈ ℝ^d, c ∈ ℝ$. Our problem, as usual, is $Lu = f$.
+A more complex form of elliptic problems are advection-diffusion-reaction, where the differential operator is \[ Lu = - \sum_{i,j=1}^d \dpd{}{x_i} \left(a_{ij}\dpd{u}{x_j}\right) + \sum_{i=1}^d b_i \dpd{u}{x_i} + c u = - \dv (A(x) \grad u) + \vb(x) \grad u + c u\] with $\mA(x) ∈ ℝ^{d×d},\, \vb(x) ∈ ℝ^d,\, c ∈ ℝ$. Our problem, as usual, is $Lu = f$.
 
 These three terms model respectively diffusion, with $A$ being the matrix of coefficients that depend on the axis (the material is not uniform), the transport term along the vector field, and the reaction (for example, a chemical that reacts and its concentration decreases)
 
-In order for the problem to remain elliptic, we require $A(x)$ to be positive definite for all $x ∈ ℝ^d$.
+In order for the problem to remain elliptic, we require $\mA(x)$ to be positive definite for all $x ∈ ℝ^d$.
 
-As in previous cases, we can have Dirichlet boundary conditions $\restr{u}{Γ_D} = g$ and Neumann boundary conditions (which are a little bit more complicated): \[ A \grad u · \vn - (b \vn) u = h \quad\text{ on } Γ_N \]
+As in previous cases, we can have Dirichlet boundary conditions $\restr{u}{Γ_D} = g$ and Neumann boundary conditions (which are a little bit more complicated): \[ \mA \grad u · \vn - (b \vn) u = h \quad\text{ on } Γ_N \]
 
-We will want to do a weak formulation where the boundary terms of the problem appear naturally. As always, we multiply by a test function and integrate by parts the divergence and possibly the $b \grad u$ depending on the boundary conditions. Without doing the computations, the weak formulation will end up being \( \int_Ω A \grad u \grad v + b \grad u v + c u v = \int_Ω fv + \int_{Γ_N} h v \label{eq:Elliptic:ADRProblemWeak} \) with $u ∈ H^1$, $\restr{u}{Γ_D} = g$.
+We will want to do a weak formulation where the boundary terms of the problem appear naturally. As always, we multiply by a test function and integrate by parts the divergence and possibly the $b \grad u$ depending on the boundary conditions. Without doing the computations, the weak formulation will end up being \( \int_Ω \mA \grad u \grad v + \vb \grad u v + c u v = \int_Ω fv + \int_{Γ_N} h v \label{eq:Elliptic:ADRProblemWeak} \) with $u ∈ H^1$, $\restr{u}{Γ_D} = g$.
 
 This has the same structure as in previous cases, so we are in the conditions of the \nref{thm:Theory:LaxMilgram} and there exists a unique solution. Coercivity would need a little bit of work, and may present problems with mixed boundary conditions. Enforcing Neumann conditions on boundaries with incoming flow may cause problems with coercivity.
 

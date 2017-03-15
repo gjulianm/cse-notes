@@ -1,0 +1,38 @@
+\begin{tikzpicture}[scale = 0.9]
+\begin{scope}
+\draw (0,0) -- (1,3) -- (-1, 3) -- cycle;
+\draw[palette1, fill = palette1!20!white] (1,3) -- (-1,3) -- (0, 4) -- cycle;
+\draw[->] (1.5, 2) -- (2.5, 2);
+\end{scope}
+
+\begin{scope}[xshift = 4cm]
+\draw[palette1, fill = palette1!20!white] (0,0) -- (1,3) -- (-1, 3) -- cycle;
+\draw (1,3) -- (-1,3) -- (0, 4) -- cycle;
+\draw (0,4) -- (0,3);
+\node[circle, draw, red, thick, inner sep = 3pt, outer sep = 2pt] (NC) at (0,3) {};
+\node[anchor = south west, red!80!black] (NCT) at (0.5, 4) {\small Non-conformal};
+\draw[->, red!80!black] (NC) to (NCT.south west);
+\draw[->] (1.5, 2) -- (2.5, 2);
+\end{scope}
+
+
+\begin{scope}[xshift = 8cm]
+\draw (0,0) -- (1,3) -- (-1, 3) -- cycle;
+\draw (1,3) -- (-1,3) -- (0, 4) -- cycle;
+\draw (0,4) -- (0,3);
+\draw[palette1, fill = palette1!20!white] (1, 3) -- ($(-1,3)!0.5!(0,0)$) -- (-1, 3) -- cycle;
+\node[circle, draw, red, thick, inner sep = 3pt, outer sep = 2pt] (NC) at (0,3) {};
+\draw[->, red!80!black] (NC) to (NCT.south east);
+\draw[->] (1.5, 2) -- (2.5, 2);
+\end{scope}
+
+
+\begin{scope}[xshift = 12cm]
+\draw (0,0) -- (1,3) -- (-1, 3) -- cycle;
+\draw (1,3) -- (-1,3) -- (0, 4) -- cycle;
+\draw (0,4) -- (0,3);
+\draw (1, 3) -- ($(-1,3)!0.5!(0,0)$);
+\draw ($(-1,3)!0.5!(0,0)$) -- (0,3);
+\end{scope}
+
+\end{tikzpicture}

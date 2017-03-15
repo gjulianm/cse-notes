@@ -100,6 +100,9 @@ Now we have to choose $v_h$, and we will use $v_h = R_h φ$ as $φ ∈ C^0(Ω)$ 
 % TODO
 Some explanation of $η_K$ and more things.
 
+\subsubsection{Gradient a posteriori error}
+\label{sec:PDE:GradientAPosterioriElliptic}
+
 The idea of the following proposition is that we can compute a gradient operator and we will have guarantees that it converges to the real error (which we cannot compute).
 
 \begin{prop} Assumme that there is a \concept[Gradient!post-processed]{post-processed gradient} $\appl{\gradop }{V_h}{V_h}$, two constants $C_1, C_2 > 0$  and two exponents $0 < α < β ≤ 2$ such that for all $h > 0$ we have \begin{align*}
@@ -121,5 +124,106 @@ On parallel meshes\footnote{Drawing of a mesh with rectangular triangle mesh ele
 
 Proofs of these facts are terribly tedious.
 
+\subsubsection{Goal-oriented estimations}
+
+In some cases we will be interested in computing not the approximation error but another quantity depending on the error, such as $\int ρ (u - u_h) $ for some function ρ. For example, this could be an indicator function so that we measure the error only in a region of interest.
+
+In order to perform this estimation, we consider generally a functional $J(v) = \int_Ω ρ v$, so that we want to estimate $J(u - u_h)$. We will introduce a \textit{dual problem}, that of finding $\appl{φ}{Ω}{ℝ}$ such that \[ \begin{cases} -Δφ = ρ & \text{in } Ω \\ φ = 0 & \text{on } ∂Ω \end{cases} \]
+
+This problem has a solution $φ ∈ H_0^1(Ω)$ such that \[ \int_Ω ∇φ ∇v = \underbracket{\int_Ω ρv}_{ = J(v)} \quad ∀v ∈ H_0^1(Ω)\]
+
+Thus, we have that \[ J(u - u_h) = \int_Ω ∇φ ∇(u - u_h) = \int_Ω fφ - ∇u_h ∇φ = \dualp{\mop{residual}(u_h), φ} \]
+
+By using the \nref{def:Theory:GalerkinOrthog}, we can substract any $v_h ∈ V_h$ to $φ$ and the result holds:
+\begin{align*}
+J(u - u_h) &= \int_Ω \left[f (φ - v_h) - ∇u_h ∇(φ - v_h)\right] = \\
+	&= \sum_{K ∈ \mesh} \int_K (f + Δu_h)(φ - v_h) + \underbracket{\frac{1}{2} \int_K [∇u_h · \vn](φ - v_h)}_{= 0 \text{ because reasons}}
+\end{align*}
+
+Now the issue is to choose a correct test function $v_h$. Let $φ_h ∈ V_h$ be a finite element approximation to $φ$ (that is, $\int_Ω ∇φ_h ∇v_h = \int_Ω ρ v_h$ for all $v_h ∈ V_h$), so that then we choose $v_h = φ_h - R_h(φ - φ_h)$ where $R_h$ is the Clément interpolant operator. With this, we can finally give a bound, using Cauchy-Schwarz and interpolation results
+\begin{align*}
+J(u - u_h)
+	&≤ \sum_{K ∈ \mesh} \norm{f + Δu_h}_{L^2(K)} \norm{φ - φ_h - R_h(φ - φ_h)}_{L^2(K)} \\
+	&\qquad + \frac{1}{2}\norm{[∇u_h· \vn]}_{L^2(∂K)}\norm{φ - φ_h - R_h(φ - φ_h)}_{L^2(∂K)} \\
+ 	&≤ C \sum_{K ∈ \mesh} \left( h_K \norm{f + Δu_h}_{L^2(K)} + \sqrt{h_K} \norm{[∇u_h·\vn]}_{L^2(∂K)}\right) \norm{∇(φ - φ_h)}_{L^2(ΔK)}
+ \end{align*} which finally gives a convergence rate $J(u - u_h) = \oof{h^2}$.
+
+The only problem is that we have to guess $\norm{∇(φ - φ_h)}_{L^2(ΔK)}$. Luckily, we can use the post-processed \gradop we defined in \fref{sec:PDE:GradientAPosterioriElliptic} and then compute $\norm{\gradop φ_h - ∇φ_h}_{L^2(ΔK)}$. Under some conditions, this will be a good enough appxorimation. Another option would be to compute a quadratic approximation of $φ$ and use its gradient for the approximation of $∇φ$.
+
 \subsection{Adaptive algorithm}
 
+The idea of adaptive algorithms is to build a mesh \mesh such that the relative error is close to a preset tolerance $\text{Tol}$ (usually $10\%$ error) so that \[ \frac{\norm{∇(u - u_h)}_{L^2(Ω)}}{\norm{∇u_h}_{L^2(Ω)}} \approx \text{Tol} \]
+
+Of course, that is not computable so we will use an approximation by using the interpolation constant. Also, we will specify what we mean by ``close to the tolerance''. Thus, the goal is to estimate \( 0.5 · \text{Tol} ≤ \frac{\left(\sum_{K ∈ \mesh} η_K^2\right)^{\sfrac{1}{2}}}{\norm{∇u_h}_{L^2(Ω)}} ≤ 1.5 · \text{Tol} \) and, in order to make things easier, we will just try to satisfy \( \frac{0.5^2 · \text{Tol}^2 \norm{∇u_h}^2_{L^2(Ω)}}{N_k} ≤ η_K^2 ≤ \frac{1.5^2 · \text{Tol}^2 \norm{∇u_h}^2_{L^2(Ω)}}{N_k} \qquad ∀K ∈ \mesh \label{eq:PDE:AdaptiveErrorCond} \) with $N_k$ being the number of triangles in the mesh.
+
+\begin{algorithm}[hbtp]
+\begin{algorithmic}
+\Function{RefineMesh}{$\mesh^0$}
+\State stop $\gets$ False
+\State $\mesh \gets \mesh^0$
+\While{stop == False}
+	\State stop $\gets$ True
+	\State lowerBound $\gets \frac{0.5^2 · \text{Tol}^2 \norm{∇u_h}^2_{L^2(Ω)}}{N_k}$
+	\State upperBound $\gets \frac{1.5^2 · \text{Tol}^2 \norm{∇u_h}^2_{L^2(Ω)}}{N_k}$
+	\For{$K ∈ \mesh$}
+		\If{$η_K^2 < \text{lowerBound}$}
+			\State $\mesh \gets$ \Call{Coarsen}{$K,\, \mesh$}
+			\State stop $\gets$ False
+		\ElsIf{$η_K^2 > \text{upperBound}$}
+			\State $\mesh \gets$ \Call{Refine}{$K,\, \mesh$}
+			\State stop $\gets$ False
+		\EndIf
+	\EndFor
+\EndWhile
+\State \Return $\mesh$
+\EndFunction
+\end{algorithmic}
+\caption{Refinement algorithm for adaptive meshes.}
+\label{lst:RefinementAlgorithm}
+\end{algorithm}
+
+We are going to present one possible algorithm (see \fref{lst:RefinementAlgorithm}), but there are many other in the literature. We will generate a series $\set{\mesh^n}_{n ∈ ℕ}$ of meshes starting from an initial one $\mesh^0$. We will compute $u_h^n$ on each mesh $\mesh^n$ and $η_K$ for each element of the mesh $\mesh^n$. We will check whether \eqref{eq:PDE:AdaptiveErrorCond} holds for each element $K ∈ \mesh^n$. If it doesn't hold, the mesh should be refined in the neighbourhood of $K$. If, on the other hand, $η_K$ is too small, the mesh should be coarsened.
+
+Note that this algorithm is not guaranteed to reach the goal. There is a theory about adaptive mesh convergence starting from a coarse mesh and only performing refinements.
+
+\begin{figure}[hbtp]
+\centering
+\inputtikz{MeshRefinement}
+\caption{Mesh refinement procedure. The highlighted triangle is the one due to be refined in each stage.}
+\label{fig:MeshRefinement}
+\end{figure}
+
+\begin{figure}[hbtp]
+\centering
+\inputtikz{MeshCoarsening}
+\caption{Mesh coarsening procedure. The highlighted triangles are the ones going to be coarsened.}
+\label{fig:MeshCoarsening}
+\end{figure}
+
+For the refinement process, there are several possibilities. For refinement, we bisect the triangle to refine by the largest edge. Then, if the mesh is not acceptable, we refine neighbouring mesh elements until the mesh becomes conformal again. An example procedure can be seen in \fref{fig:MeshRefinement}.
+
+For coarsening, we remove the vertex and the corresponding edges which produces the largest angles as can be seen in \fref{fig:MeshCoarsening}.
+
+\begin{defn}[Delaunay\IS property] A triangulation $\mesh$ satisfies the Delaunay property if $∀K ∈ \mesh$ its circumscribed circle tontains no vertex in its interior.
+
+An equivalent statement (only in 2D) is that a triangulation is Delaunay if for any internal edge, the sum of the two opposite angles is less or equal than π.
+\end{defn}
+
+\begin{corol} Given a set of points in $ℝ^2$, consider all the conformal triangulations of the convex hull. Then a Delaunay triangulation will maximize the smallest angle.
+\end{corol}
+
+\begin{prop} Let $\mA$ be the stiffness matrix given by $A_{ij} = \int_Ω ∇φ_i ∇φ_j \dif x$. If the mesh \mesh is of Delaunay type, then $\mA$ is monotone: if $\mA \vx ≥ \vec{0}$ (that is, all components are positive) then $\vx ≥ \vec{0}$.
+\end{prop}
+
+This is important if we have, for example, a Laplace equation $\mA \vx = \vf$. If the force is positive, we want to ensure that the deformation is also positive.
+
+This is also usually called the maximum principle. However, we cannot guarantee that once we go to the finite element method we are going to have the same property.
+
+\begin{figure}[hbtp]
+\centering
+\inputtikz{MeshRefinementDelaunay}
+\caption{Delaunay triangulation refinement procedure. In this case we add two vertices, with the new edges highlighted in green, and the ones removed in red.}
+\label{fig:MeshRefinementDelaunay}
+\end{figure}
+
+If we want to add a vertex $P$ to a Delaunay triangulation maintaining that property, we have to do it with care. We will consider all the triangles whose circumscribed circle contains $P$. We take the union of all those triangles and remove the internal edges.  Then we link the vertex to the vertices of the polygon.
