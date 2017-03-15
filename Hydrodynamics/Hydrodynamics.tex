@@ -72,6 +72,82 @@ Finally, for liquid/gas interfaces (free surfaces), we have either no-slip or no
 
 We will also non-dimensional equation in which we use gauges to measure the quantities of interest for the problem.
 
+\seprule[Missing weeks 2 and 3]
+
+\chapter{Stokes flow}
+
+In this chapter we will consider Stokes flow, also called creeping flow. First, we will need to introduce the streamfunction, which greatly simplifies the study of this flow.
+
+\section{Streamfunction}
+
+\begin{defn}[Streamfunction] \label{def:Streamfunction} For a given 2-dimensional incompressible flow, the streamfunction $ψ(x,y,t)$ is defined as the volume flux through a curve from $A_0$ (a reference point) to the point $(x,y)$. This gives the following expressions for velocity $\vU = (u, v, 0)$ of the flow (in cartesian coordinates):
+\( u = \dpd{ψ}{y} \qquad v = - \dpd{ψ}{x} \label{eq:StreamfunctionCartesian}\)
+\end{defn}
+
+The interesting thing about the streamfunction is that by its definition it can only applied to incompressible fluids. Indeed, if we calculate the divergence of the flow we have \[ \dv \vU = \dpd{u}{x} + \dpd{v}{y} = \mder{ψ}{2}{x}{}{y}{} -\mder{ψ}{2}{y}{}{x}{} = 0 \]
+
+If we change to cylindrical coordinates with axisymmetry (remember that streamfunction model 2D flows), the equations change to \( \label{eq:StreamfunctionCylindricalAxisym} u = \frac{1}{r} \dpd{ψ}{r} \qquad v = - \frac{1}{r} \dpd{ψ}{z} \) and one can check that we still have conservation of mass.
+
+\subsection{Relation to vorticity}
+
+Remember that the vorticity of a flow is defined as $\vec{ω} = \rot \vU$. If we use the streamfunction formulation, we end up with the following short expression:
+\[ \vec{ω} = - Δψ \ve_z\] which is incredibly convenient. Using this expressions in Navier-Stokes equations we would end up with advection-diffusion forms:
+\[ \dpd{ω}{t} + u \dpd{ω}{x} + v \dpd{ω}{y} = ν Δω \]
+
+\section{Stokes equation}
+
+In order to derive the Stokes equation, we start off from Newton incompressible flow equations:
+\[ ρ \frac{\Dif \vU}{\Dif t} = - ∇ p + μ Δ \vU + ρ\vf \]
+
+Assuming no external forces ($\vf \equiv 0$) and steady flow, we have the following simplification:
+\( \begin{aligned}
+ηΔ\vU &= ∇p \\
+\dv \vU &= 0
+\end{aligned} \label{eq:StokesFlow} \)
+
+We can derive that to other formulations:
+\begin{gather*}
+Δp = 0 \\
+Δω = 0
+\end{gather*}
+
+The last one gives rise to the biharmonic equation: \[ ∇^4 ψ = Δ(Δψ) = 0 \] which is a fully determined equation once we put in boundary conditions.
+
+An interesting fact from the linearity of the equations is that the flow is reversible: if we change the sign we have still a solution.
+
+Additionally, the unique solution of the Stokes equations with suitable boundary conditions is the divergence free flow field that minimizes viscous dissipation, which is given by \[ φ = 2 μ \int e_{ij} e_{ij} \dif V \]
+
+\subsection{Flow along a sphere}
+
+We are going to study the flow along a sphere of radius $a$, in order to see why the falling. In this case, the Stokes streamfunction in spherical coordinates is given by
+\( \label{eq:FlowSphereStokes}\begin{aligned}
+U_r(r,θ) &= \frac{1}{r^2 \sin θ} \dpd{ψ}{θ} \\
+U_θ(r,θ) &= -\frac{1}{r \sin θ} \dpd{ψ}{r}
+\end{aligned} \)
+
+We can also look at the rotational in spherical coordinates, which is \[ \vec{ω} = \rot \vU = \frac{1}{r} \left( \dpd{rU_θ}{r} - \dpd{U_r}{θ}\right)\ve_φ = - \frac{1}{r\sin θ} \left(\dpd[2]{ψ}{r} + \frac{1}{r^2} \dpd[2]{ψ}{θ} - \frac{\cot θ}{r^2} \dpd{ψ}{θ}\right) \ve_ψ \] and therefore we have the final equation of the bilaplacian as \( Δ^2_s ψ ≝ \left(\dpd[2]{}{r} + \frac{1}{r^2} \dpd[2]{}{θ} - \frac{\cot θ}{r^2} \dpd{}{θ}\right)^2 ψ = 0 \label{eq:BilaplacianSphereFlow} \)
+
+For the boundary conditions, in the frame of the sphere we have no-slip and thus $u_r(a, θ) = u_θ(a, θ) = 0$. By plugging this into the expression of the flow from \eqref{eq:FlowSphereStokes}, we find the following restriction on the streamfunction: \[ ψ(a, θ) = \dpd{ψ}{r}(a, θ) = 0 \]
+
+We also need far-field boundary conditions. When $r \to ∞$, we want $\vU(r, θ) \to U_∞ \ve_z$, so that we need \[ U_r \sim U_∞ \cos θ \qquad U_θ \sim -U_∞ \sin θ \quad\text{when } r \to ∞\]
+
+Plugging that in \eqref{eq:FlowSphereStokes}, we have that \begin{align*}
+\frac{1}{r^2 \sinθ} \dpd{ψ}{θ} &\convs[][r][∞] U_∞ \cos θ \\
+\dpd{ψ}{θ} &\convs[][r][∞] U_∞ r^2 \cos θ \sin θ \\
+ψ &\convs[][r][∞] \frac{U_∞r^2 \sin^2 θ}{2}
+\end{align*} and doing that with $U_θ$ yields the same result. We are using, though, a very informal definition of convergence of functions.
+
+We are going to suppose that the solution is of the form $ψ = f(r) \sin^2 θ$. We can compute the derivatives of this thing:
+\begin{align*}
+\dpd{ψ}{θ} &=  2 f(r) \sin θ \cos θ \\
+\dpd[2]{ψ}{θ} &= 2 f(r) (\cos^2 θ - \sin^2 θ)
+\end{align*}
+
+Putting that in the equation of the bilaplacian \eqref{eq:BilaplacianSphereFlow}, we will have that \[Δ_s ψ = f'' \sin^2 θ + \frac{2f}{r^2} (\cos^2 θ  - \sin^2 θ) - \frac{\cos θ}{r^2 \sin θ} 2f(r) \sin θ \cos θ  \]
+
+Computing the laplacian again we end up with \[ Δ_s^2 ψ = \left(\dod[2]{}{r} - \frac{2}{r^2}\right)^2 f \]
+
+
 \appendix
 
 \backmatter
