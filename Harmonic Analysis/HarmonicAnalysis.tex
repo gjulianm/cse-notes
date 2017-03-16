@@ -1,7 +1,7 @@
 \documentclass[palatino]{epflnotes}
 
 \title{Harmonic Analysis}
-\author{}
+\author{Guillermo Julián Moreno}
 \date{16/17 - Spring semester}
 
 % Additional packages
@@ -131,6 +131,7 @@ With this, one can see the relationship between the convolution and the Fourier 
 \end{proof}
 
 \subsection{Convergence for continuous functions}
+\label{sec:Fourier:ConvergenceContinuous}
 
 \begin{figure}[hbtp]
 \centering
@@ -141,7 +142,14 @@ With this, one can see the relationship between the convolution and the Fourier 
 
 We will start off trying to prove convergence in ``easy'' situations, that is, those with continuous functions. We will have to turn to the \concept[Kernel\IS Dirichlet]{Dirichlet kernel}, defined as \( \label{eq:DirichletKernel} D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \), mainly because it has the interesting property that $S_Nf = D_N \ast f$, which allows a better treatment of the Fourier series. With a little bit of calculations (see \cite[Exercise 2.4]{ApuntesAnalisisFunc}) one can also show that \( \label{eq:DirichletKernelNormL1} \norm{D_N}_{L^1(\crc[1])} = C \log N + \mathcal{O}(1) \) so that the Dirichlet kernel is unbounded.
 
-This allows\footnote{This is a summary of \cite[Exercise 2.4]{ApuntesAnalisisFunc}.} us to define the operator $λ_{D_N}(f) = S_Nf(0)$ on the space of continuous functions $X =(C^0(\crc[1]), \norm{·}_∞)$, which is Banach. Each of the operators are bounded with $\norm{λ_{D_N}}_{\linapp[X][ℝ]} = \norm{D_N}_{L^1(\crc[1])}$. However, this family of operators is not uniformly bounded so the Banach-Steinhaus uniform boundedness theorem \citep[Theorem II.8]{ApuntesAnalisisFunc} says that there exists a set $B$ dense in $X$ such that \[ \sup_{N ≥ 1} \norm{λ_{D_N} (f)}_{ℝ} = \sup_{N ≥ 1} \norm{S_N f(0)}_{ℝ} = ∞ \quad ∀f ∈ B\] and thus $\norm{S_Nf(0)}_{ℝ}$ is divergent for those $f ∈ B$.
+This allows us to prove the following proposition of non-convergence of the Fourier series for continuous functions.
+
+\begin{prop} \label{prop:ConvergenceFourierCont} There exists at least a function $f ∈ C^0(\crc[1])$ for which the Fourier series does not converge pointwise. That is, such that \[ \lim_{N \to ∞} \abs{S_Nf(0) - f(0)} = ∞ \]
+\end{prop}
+
+\begin{proof}
+The proof here is a summary of \cite[Exercise 2.4]{ApuntesAnalisisFunc}. Define the operator $λ_{D_N}(f) = S_Nf(0)$ on the space of continuous functions $X =(C^0(\crc[1]), \norm{·}_∞)$, which is Banach. Each of the operators are bounded with $\norm{λ_{D_N}}_{\linapp[X][ℝ]} = \norm{D_N}_{L^1(\crc[1])}$. However, this family of operators is not uniformly bounded so the \nref{thm:BanachSteinhaus} says that there exists a set $B$ dense in $X$ such that \[ \sup_{N ≥ 1} \norm{λ_{D_N} (f)}_{ℝ} = \sup_{N ≥ 1} \norm{S_N f(0)}_{ℝ} = ∞ \quad ∀f ∈ B\] and thus $\norm{S_Nf(0)}_{ℝ}$ is divergent for those $f ∈ B$.
+\end{proof}
 
 So, in general, the Fourier series does not necessarily converge pointwise for $C^0$ functions. We will be able, however, to prove pointwise convergence asking just for a little bit of regularity.
 
@@ -154,7 +162,7 @@ Luckily for us, we can have pointwise convergence just by asking a little bit of
 
 Obviously, if $α = 0$ we have boundedness, for $α > 0$ continuity and for $α = 1$
 
-\begin{prop} If $f ∈ C^0(\crc[1])$ is Hölder continuous, then the Fourier series of a function is equal to the same function.
+\begin{prop} \label{prop:FourierConvHolder} If $f ∈ C^0(\crc[1])$ is Hölder continuous, then the Fourier series of a function is equal to the same function.
 \end{prop}
 
 \begin{proof} We want to prove that, $∀x ∈ \crc$, the following limit is null: \[ \lim_{N \to ∞} S_Nf(x) -f(x) = 0\]
@@ -216,13 +224,61 @@ In the more general framework of $L^p$ functions we can still prove interesting 
 
 This allows us to prove in a very straightforward way the following theorem:
 
-\begin{theorem}[Riesz–Fischer\IS theorem] Let $f ∈ L^2(\crc[1])$ and define its partial Fourier series as \( \label{eq:PartialFourier} S_Nf(x) = \sum_{ \abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} \)
+\begin{theorem}[Riesz–Fischer\IS theorem]\label{thm:RieszFischer} Let $f ∈ L^2(\crc[1])$ and define its partial Fourier series as \( \label{eq:PartialFourier} S_Nf(x) = \sum_{ \abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} \)
 
 Then, $S_Nf$ converges to $f$ in the $L^2$ norm: \[ \norm{S_Nf - f}_{L^2(\crc[1])} = 0 \]
 \end{theorem}
 
 \begin{proof} Just apply \fref{prop:TrigoPolyDense}.
 \end{proof}
+
+The question is what happens in the general case $1 ≤ p ≤ ∞$. We have the following proposition which answer it partially:
+
+\begin{prop} \label{prop:FourierSeriesConvLp} Let $1 ≤ p ≤ ∞$. Then we have convergence of the Fourier series in $L^p$ norm if and only if $\norm{S_N}_{\linapp[L^p(\crc)][L^p(\crc)]}$ is uniformly bounded. That is,
+\[ \lim_{N \to ∞} \norm{S_N f - f}_{L^p(\crc)} = 0 \iff \sup_{N > 0} \norm{S_N}_{\linapp[L^p(\crc)][L^p(\crc)]} < ∞ \] for all $f ∈ L^p(\crc)$ and where, as a reminder, we define the operator norm as \[ \norm{S_N}_{\linapp[L^p(\crc)][L^p(\crc)]} ≝ \sup_{\substack{f ∈ L^p(\crc) \\ \norm{f} ≤ 1}} \norm{S_N f}_{L^p(\crc)}\]
+\end{prop}
+
+\begin{proof} We will separate the proofs in the if and only if parts. For convenience, we will drop the subscripts for the norms where its meaning is clear.
+
+\proofpart{If: $\sup_{N > 0} \norm{S_N} <∞ \implies \lim_{N \to ∞} \norm{S_N f - f} = 0$}
+
+Say $M ≝ \sup_{N > 0} \norm{S_N}$. As $C^∞(\crc) \densein L^p(Ω)$, we can choose a $g ∈ C^∞(\crc[1])$ such that $\norm{f - g} < ε$. Adding and substracting it in the norm, we can bound it:
+\begin{align*}
+\norm{S_Nf - f}
+	&= \norm{S_Nf - f + g - g + S_N g - S_N g} = \\
+	&= \norm{S_N(f - g) + (g - f) + (S_N g - g)} ≤ \\
+	&≤ \norm{S_N(f -g)} + \norm{g -f} + \norm{S_N g - g} ≤ \\
+	&≤ M ε + ε + ε
+\end{align*} where we use, in order, the fact that $S_N$ is uniformly bounded, the approximation $g \to f$ and the fact that $S_N g \to g$ for smooth functions (\fref{prop:FourierConvHolder}, smooth functions are Hölder continuous).
+
+\proofpart{Only if: $\lim_{N \to ∞} \norm{S_N f - f} = 0 \implies \sup_{N > 0} \norm{S_N} <∞$}
+
+We will do this proof by contradiction: assume that $\lim_{N \to ∞} \norm{S_N f - f} = 0$ but $S_N$ are not uniformly bounded. By the \nref{thm:BanachSteinhaus}, we have that there exists a $G_δ$ set $B \densein L^p(\crc[1])$ such that $\sup_{N > 0} \norm{S_Nf} = ∞$ for all $f ∈ B$, and as $\norm{S_Nf -f } ≥ \norm{S_N f} - \norm{f}$ we have the contradiction.
+
+\end{proof}
+
+This gives us the following result for $p = 1$ and $p = ∞$:
+
+\begin{prop} For $p = 1, ∞$, there exists at least a $f ∈ \crc$ such that \[ \lim_{N \to ∞} \norm{S_N f - f}_{L^p(\crc)} ≠ 0 \]
+\end{prop}
+
+\begin{proof} Simply use \fref{prop:FourierSeriesConvLp} knowing that $S_N f = D_N * f$ and that $\norm{D_N}_p \convs[][N][∞] ∞$ for $p = 1, ∞$.
+\end{proof}
+
+
+So, we proved non-convergence for $p = 1, ∞$ (in fact we even proved non-pointwise convergence in the case of continuous functions in \fref{prop:ConvergenceFourierCont}) and convergence for $p = 2$ (\fref{thm:RieszFischer}). For the other cases we will have convergence although we will see it later with a little bit more of work.
+
+\subsection{Regularity and decay of Fourier coefficients}
+
+One of the most useful aspects of the Fourier transform is the translation of derivation in the function space to multiplication in the Fourier coefficients. Indeed, one can compute and see that \[ \widehat{f'}(n) = \int_0^1 f'(x) e^{-2π\imath n x} \dif x = \eval[1]{f(x) e^{2π\imath nx}}_{x = 0}^1 + \int_0^1 2π\imath n f(x) e^{-2π\imath nx} \dif x = 2π\imath n \hat{f} (n) \]
+
+Furthermore, if we have a previous bound on $\abs{\widehat{f'}(n)} < C$, then we can bound $\hat{f}(n)$ which will decay as \[ \abs{\hat{f}(n)} ≤ \frac{C}{2πn} \]
+
+We will also be able to do the converse: control in the decay of the Fourier coeffiencts gives us control in the smoothness of $f$.
+
+% TODO: there is a theorem here but it is sincerely shitty so I am not going to copy it until we need it.
+
+% I also did not want to copy Lecture3.pdf.
 
 \section{Fourier transform}
 
@@ -235,6 +291,14 @@ Then, $S_Nf$ converges to $f$ in the $L^2$ norm: \[ \norm{S_Nf - f}_{L^2(\crc[1]
 \chapter{Fourier multipliers}
 
 \appendix
+
+\chapter{Functional analysis theorems}
+
+\section{Banach spaces and linear applications}
+
+\begin{theorem}[Banach-Steinhaus\IS uniform boundedness theorem] \citep[Theorem II.8]{ApuntesAnalisisFunc} \label{thm:BanachSteinhaus} Let $\set{T_α}_{α ∈ A}$ a subset of the space of continuous linear applications $\linapp$ between $X$ and $Y$, where $X$ is a Banach space and $Y$ is a normed space. Then, either the linear applications $T_α$ are uniformly bounded (that is, $∃ C < ∞$ such that $\norm{T_α}_{\linapp} ≤ C$ for all $α ∈ A$) or either there is a certain $G_δ$ set\footnote{Countable intersection of open set} dense in $X$, denoted by $B$, such that \[ \sup_{α ∈ A} \norm{T_α(x)}_Y = ∞ \quad ∀x ∈ B\]
+\end{theorem}
+
 
 \chapter{Exercises}
 \input{tex/HarmonicAnalysis_Exerc.tex}
