@@ -138,7 +138,7 @@ The question is, however, in which frame are the components of $\vu_i$. The avai
 
 A nice property of Cayley vector is that it has the same coordinates for all the frames along the rotation, so the answer is that the components of $\vu_i$ are the same in $\mR_i, \mJ_i$ and $\mR_{i+1}$ as it represents the rotation from $\mR_i$ to $\mR_{i+1}$ with $\mJ_i$ being the rotation at the midpoint. The same applies to $\veta_i$.
 
-Finally, we can explain the cgDNA model configuration coordinates. This has, for $N$ base pair ligomer a vector $\vw ∈ ℝ^{12N - 6}$ as $\vw = (\vy_1, \vz_1, \dotsc, \vz_{N-1}, \vy_N)$ where $\vz_i ∈ ℝ^6$ are the inter pair rotations and translations and $\vy_i ∈ ℝ^6$ are the intra pair rotations and translations with the rotations as a Cayley vector.
+Finally, we can explain the cgDNA model configuration coordinates. This has, for a $N$ base pair ligomer, a vector $\vw ∈ ℝ^{12N - 6}$ given by $\vw = (\vy_1, \vz_1, \dotsc, \vz_{N-1}, \vy_N)$ where $\vz_i ∈ ℝ^6$ are the inter pair rotations and translations and $\vy_i ∈ ℝ^6$ are the intra pair rotations and translations with the rotations as a Cayley vector. We will sometimes be also interested in vectors $\vx_i = \left(\vy_i, \vz_i, \vy_{i+1}\right) ∈ ℝ^{18}$ for modeling the overlapping of the junctions.
 
 \subsubsection{Inversion of sequences}
 
@@ -150,12 +150,64 @@ The cgDNA model predicts a probability density function $ρ(\vw; S, P)$ for each
 
 The assumption is that the PDF is going to be related to an energy distribution, with lower energy states being more probable. Thus, the formula will be something like \[ ρ(\vw; S, P) = \frac{1}{Z} e^{- U(\vw; S, P)} \] where $Z$ is the normalizing constant and $U$ will be quadratic polynomial in $\vw$.
 
-In order to derive the expression for the energy, we assume that the energy of a DNA configuration depends on the energy between bases in a pair and on the cross-junction interaction energies. We assume that all those interactions are quadratic and have minimum-energy states $\hat{\vy}_i$ and $\hat{\vx}_j$ so the energy takes on a form like this: \[ 2U(\vw) = \sum_{i = 1}^N (\vy_i - \hat{\vy}_i) · \mK_{i}^{BP} (\vy_i - \hat{\vy}_i) + \sum_{j=1}^{N-1} (\vx_j - \hat{\vx}_j) \mK^J_j (\vx_j - \hat{\vx}_j)\] which represent respectively the sum of something over basepairs and sum over junctions, and where where $\vx_j = (\vy_j, \vz_i, \vy_{i+1})$. Also $\mK_i^{BP} ∈ ℝ^{6×6}$ and $\mK_{j}^J ∈ ℝ^{18 × 18}$ are symmetric.
+In order to derive the expression for the energy, we assume that the energy of a DNA configuration depends on the energy between bases in a pair and on the cross-junction interaction energies. We assume that all those interactions are quadratic and have minimum-energy states $\hat{\vy}_i$ and $\hat{\vx}_j$ so the energy takes on a form like this: \( \label{eq:ExplicitEnergy} 2U(\vw) = \sum_{i = 1}^N (\vy_i - \hat{\vy}_i) · \mK_{i}^\text{BP} · (\vy_i - \hat{\vy}_i) + \sum_{j=1}^{N-1} (\vx_j - \hat{\vx}_j) \mK^\text{J}_j (\vx_j - \hat{\vx}_j)\) which represent respectively the sum of something over basepairs and sum over junctions, and where where $\vx_j = (\vy_j, \vz_i, \vy_{i+1})$ as defined previously. Also $\mK_i^\text{BP} ∈ ℝ^{6×6}$ and $\mK_{j}^\text{J} ∈ ℝ^{18 × 18}$ are symmetric.
 
 It can be shown that this expression is simplifiable to a single quadratic form if we get rid of constant terms. This expression is
-\[ U(\vw) = \frac{1}{2} (\vw - \vmu(S)) \mK(S) (\vw - \vmu(S)) \] where $\mK(S) ∈ ℝ^{(12N - 6) × (12N - 6)}$ is a symmetric and positive-definite matrix. Also, $\vmu(S) ∈ ℝ^{12N-6}$ will be the ground-state vector.
+\( \label{eq:SingleQuadraticEnergy} U(\vw) = \frac{1}{2} (\vw - \vmu(S)) · \mK(S) · (\vw - \vmu(S)) \) where $\mK(S) ∈ ℝ^{(12N - 6) × (12N - 6)}$ is a symmetric and positive-definite matrix. Also, $\vmu(S) ∈ ℝ^{12N-6}$ will be the ground-state vector.
 
-An interesting thing about this expression is that, while we have built a model based on local interactions, the ``competition'' between ground stats $\hat{\vy}_i$ and $\hat{\vx}_i$ for each of the different energies will imply non-local sequence dependence\footnote{One can show it doing some computations and linear algebra. But it's not interesting.}.
+An interesting thing about this expression is that, while we have built a model based on local interactions, the ``competition'' between ground states $\hat{\vy}_i$ and $\hat{\vx}_i$ for each of the different energies will imply non-local sequence dependence\footnote{One can show it doing some computations and linear algebra. But it's not interesting.}.
+
+Both the energy matrix $\mK$ and the ground state will have a dependence on both the sequence $S$ and the parameter set $\mathcal{P}$. For now we will not define the parameter set as it is \textit{a lot} of work\footnote{Probably weeks 8-13 of the course.} and we will just assume it given as it changes only rarely.
+
+\subsubsection{Sequence dependence}
+
+We need to detail from there are the matrices and ground states coming from. Given a sequence of bases $S = \set{x_1, x_2, \dotsc, x_N}$, we will first select the stiffness matrix $i$ as $\mK_i^\text{BP} = \mK^{x_i}$, where $\mK^A, \mK^T, \mK^C, \mK^G ∈ \mathcal{P}$ are given matrices in the parameter set.
+
+That is, we make the assumption that $\mK_i^\text{BP}$ depends only on the composition of the basepair $i$ (that is, the bases) and not on the order of that basepair in the sequence. Similarly assume that $\hat{\vy}_i = \hat{\vy}_{x_i}$ depends only on the bases and not on the position.
+
+The matrices for the junctions are obtained with an analogous assumption: they only depend on the composition of the bases of the junction, so that $\mK_j^\text{J} = \mK^{x_j, x_j+1}$ with $\mK^\text{AA}, \mK^\text{AT}, \dotsc, \mK^{\text{CC}}, \mK^\text{CG} ∈ \mathcal{P}$. We will force these matrices to be symmetric and as we did previously, force $\hat{\vx}_i$ to depend only on the bases and not on their positions.
+
+It is important to see that, for now, we have introduced only local dependence of parameters on the sequence.
+
+Another interesting question is to see why have we chosen quadratic forms for energy. The answer is that it seems to fit with experimental data. It is, however, a big approximation.
+
+We will assess the validity of these assumptions later in the course. For example, there are complications in the first and last junctions and base-pairs, and this is a current research topic.
+
+\subsubsection{Connection between explicit equation and single quadratic form and conditions on stiffness matrices}
+
+We are going to explore a little bit more the connection between the explicit equation of energy \eqref{eq:ExplicitEnergy} and the single quadratic form \eqref{eq:SingleQuadraticEnergy}. By doing a bit of linear algebra, we can show that \[ (\vx - \va) \mA (\vx - \va) + (\vx - \vb) \mB (\vx - \vb) = (\vx - \vc) \mC (\vx - \vc) + \text{constant} \] where $\mC = \mA + \mB$ and $\vc = \inv{\mC}(\mA \va + \mB \vb)$. We can use this to express the sums of \eqref{eq:ExplicitEnergy} in a single quadratic form, getting rid of the constant which is not relevant for energy-minimization purposes.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=\textwidth]{img/StiffnessBuilding.png}
+\caption{Gray matrices represent basepair matrices, white represent junction matrices and the numbers define the index of the corresponding basepairs.}
+\label{fig:StiffnessBuilding}
+\end{figure}
+
+In our case, for the summation of two matrices of different dimension we will have to ``pad'' with zeros and build the corresponding matrix, as can be seen in \fref{fig:StiffnessBuilding}.
+
+Based on this formulation, we can infer some properties of the resulting stiffness matrix $\mK$ that are valid for any sequence. First, as all junction and basepair matrices are symmetric, $\mK$ is symmetric too.
+
+A second property is that $\mK$ is banded. Particularly, the sparsity pattern is overlapping $18 × 18$ blocks. This is \textit{a big assumption} that will play a big part in estimating parameter sets. Physically, this means that the interactions modeled are only corresponding to the nearest neighbors of each base.
+
+Finally, we want to see when is $\mK$ positive definite. Recall that a symmetric matrix is positive-definite if and only if $\trans{\vx}\mA \vx > 0$ for all $\vx ≠ 0$. Assume all the junction and basepair matrices $\mK^α, \mK^{α,β}$ are positive definite ($α,β ∈ \set{C,G,A,T}$). Then, $\mK$ must be positive definite because of its definition as $\trans{\vx} \mK \vx = \sum \vy \mK^α \vy + \sum \vz \mK^{α,β} \vz$.
+
+However, this condition is too strong and can lead to indefinite matrices with eigenvalues too close to zero. A weaker sufficient condition is just to have \begin{align*}
+\mK^α + \mK^{α,β} + \frac{1}{2} \mK^β &> 0 \\
+\frac{1}{2} \mK^α + \mK^{α,β} +  \frac{1}{2} \mK^β &> 0
+\end{align*} which allows us to have negative eigenvalues on $\mK^α$ for some values.
+
+In order to prove this, one has to ``expand'' the stiffness matrix so that no overlaps occur, in a way that all the blocks are of the two forms presented above. One can prove that, if $\vx = (x_1, x_2, \dotsc, x_N)$ and $\mC$ is the ``expanded'' matrix form of $\mK$, then $\trans{\vx} \mK \vx = \trans{\vz} \mC \vz$ with $\vz = (x_1, x_2, x_3, x_3, x_4, x_5, x_5, \dotsc)$. So, if $\mC$ is positive definite, $\mK$ is positive definite too.
+
+An interesting issue arising from this is that basepair matrices having negative eigenvalues imply that some pairs do not have minimum ground-states and then may blow apart. Turns out that it is actually something that happens in reality: short DNA polymers ($N < 5$) disintegrate.
+
+\subsubsection{Conditions on shifts $\vec{μ}(S)$ and non-local dependence}
+
+As we explained previously, we assumed that the ground state vectors $\hat{\vy}_i = \hat{\vy}^α$ and $\hat{\vx}_i = \hat{\vy}^{α,β}$ are given in the parameter set and depend only on the bases $α,β ∈ \set{C,G,A,T}$.
+
+Thus, the calculation of $\vec{μ}$ simply implies solving the linear system: \[ \mK \vec{μ} = \sum_{i=1}^N \mK_i^\text{BP} \hat{\vy}_i + \sum_{j=1}^{N-1} \mK_j^\text{J} \hat{\vx}_i \]
+
+A remark is that naked values of $\hat{\vy}^α$ and $\hat{\vx}^{α,β}$ never appear so the parameter set only stores the values of $\vec{σ}^α = \mK^α \hat{\vy}^α$ and $\vec{σ}^{α,β} = \mK^{α,β} \hat{\vx}^{α,β}$. This also works pretty well with the calculations of matrix overlapping, as we can define \[ \vec{σ}(S) = \sum \vec{σ}_i^\text{BP} + \sum \vec{σ}_j^\text{J}\] and \[ \mK \vec{μ} = \vec{σ} \iff \vec{μ} = \inv{\mK} \vec{σ} \] which gives non-local sequence dependence of $\vec{μ}$, as the inverse matrix $\inv{\mK}$ is dense.
 
 \appendix
 
