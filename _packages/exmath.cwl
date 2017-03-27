@@ -180,6 +180,8 @@
 \mJ#m
 \mE#m
 \mC#m
+\mX#m
+\mY#m
 \ctrig{angulo}#m
 \ceul{mod}{angulo}#m
 \i#m
