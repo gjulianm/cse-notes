@@ -209,6 +209,59 @@ Thus, the calculation of $\vec{μ}$ simply implies solving the linear system: \[
 
 A remark is that naked values of $\hat{\vy}^α$ and $\hat{\vx}^{α,β}$ never appear so the parameter set only stores the values of $\vec{σ}^α = \mK^α \hat{\vy}^α$ and $\vec{σ}^{α,β} = \mK^{α,β} \hat{\vx}^{α,β}$. This also works pretty well with the calculations of matrix overlapping, as we can define \[ \vec{σ}(S) = \sum \vec{σ}_i^\text{BP} + \sum \vec{σ}_j^\text{J}\] and \[ \mK \vec{μ} = \vec{σ} \iff \vec{μ} = \inv{\mK} \vec{σ} \] which gives non-local sequence dependence of $\vec{μ}$, as the inverse matrix $\inv{\mK}$ is dense.
 
+\subsubsection{Some extra remarks on the cgDNA model}
+
+Recall that the energy is \( ρ(\vw; S, P) = \frac{1}{Z} e^{ - \frac{1}{2} (\vw - \vmu(S)) · \mK(S) · (\vw - \vmu(S))} \label{eq:EnergyPDF} \) which we can regard as a Gaussian PDF. Despite the fact that we have vectors in specific spaces (specially the Cayley vectors) we will use the usual Lebesgue measure in $ℝ^{12N - 6}$ when we perform integrals, as that will allow us to use the regular formulas for Gaussian functions in multiple dimensions.
+
+We also recall from the last exercise session\footnote{TODO: Actually do these exercises. Week 5 session.} that the PDF of a sequence $S$ defines exactly the PDF of the complementary $\conj{S}$, with \begin{align*}
+\conj{\vec{μ}} &= \mE_n \vec{μ} \\
+\conj{\mK} &= \mE_n · \mK · \mE_n
+\end{align*}
+
+In the specific case of palindromic sequences, we have as expected $\conj{S} = S$ which implies constraints on the cgDNA ground state, namely $\vmu = \mE_n \vmu$ and similarly for $\mK$. These will be considerably important later for parameter estimation.
+
+Yet another unrelated remark is that we need a discussion of the units of entries in $\vmu$ and $\mK$, and we will discuss those later again.
+
+\chapter{cgDNA experiments}
+
+Once we know the model, we can start performing experiments with it. We have as discussed previously a Gaussian probability density function, and we will use it to calculate certain expectations and probabilities. In particular, we will look at two experiments: the first will look at the probability of configurations with two fixed ends, and the second something spaghetti.
+
+These experiments require a minimum of one hundred basepairs, and are thus way beyond the capabilities of molecular dynamics simulations.
+
+For experiments with fewer basepairs such as NMR (Nuclear Magnetic Resonance) and X-Ray crystal structures, the reports are that the shapes are a function of sequences, so those results are used for estimation of parameters for the cgDNA model.
+
+For NMR and X-Ray crystal experiments, the rigid base movements can be observed and the full vector $\vw ∈ ℝ^{12N - 6}$ can be computed. For the two experiments that we will look at below (looping and persistence length), the length of the strand implies that it is impossible to get those intra base-pair parameters and thus we will only see the shapes parametrized by the inter base-pair rigid body motions.
+
+Therefore, we will compute expectations and probabilities on the base pair frames $(\mR_i, \vr_i)$ and we won't need the intra basepair frames (although they will play an important role in the computation later on). Also, those frames $(\mR_i, \vr_i)$ are a complicated, nonlinear function of the inter variables in junctions $1, 2, \dotsc, i - 1$, and even when we have a Gaussian we will not be able to easily compute expectations and probabilities of $(\mR_i, \vr_i)$.
+
+The main advantage, however, is that it is very easy and efficient to sample random numbers with a normal distribution so Monte Carlo techniques will be very well suited for our purposes. Using the cgDNAmc software, based on a sequence and parameters $\set{S, \mathcal{P}}$ we will get a set $\set{\vw^j}_{j = 1}^M$ of $M$ possible positions\footnote{For us, $M \sim 10^6$. With HPC techniques you can get to $10^{14}$.} and then we can approximate moments $\pesc{φ(\vw)}$ as \[ \pesc{φ(\vw)} = \frac{1}{Z} \idotsint\limits_{ℝ^{12N - 6}} φ(\vw) ρ(\vw) \dif \vw \approx \frac{1}{M} \sum_{j=1}^M φ(\vw^j) \]
+
+\section{Persistence length experiments}
+
+As discussed above, for persistence length experiments we will be interested in computing the expectations of two specific functions, pretty common in polymer physics. First,
+\(φ_n(\vw) = \mR_1^T (\vr_n - \vr_1) ∈ ℝ^3, \; n = 2, \dotsc, N \label{eq:FloryVector} \)
+which is the end to end chord vector in components of the first base pair frame. This is sometimes called the \concept{Flory\IS vector}. It is important to fix the coordinates to avoid having a zero average because of symmetry.
+
+The second choice of function to study is \( \label{eq:RotationMatrixPerslength} γ_n(\vw) = \mR_1^T \mR_n ∈ SO(3),\; n = 2, \dotsc, N \) which is the relative rotation of the orientation between the first and the $n$th basepairs.
+
+The point is that given a configuration $\vw$ in the internal cgDNA coordinates, we can compute both $φ_n$ and $γ_n$ as a function of $\vw$ with a horrible but explicit function.
+
+To define correctly all those transformations, we define $\mX_n = (\mR_n, \vr_n) ∈ SO(3)$ as the usual matrix representation. We also have the recursion \[ \mX_n = \mX_{n-1} \left(\mQ_{n-1}, \vq_{n-1}\right) \] where $(\mQ_{n-1}$, $\vq_{n-1})$ is the $n-1$ junction rigid body motion. We also know that $\mQ_{n-1} = \mop{Cayley}(\vu_{n-1})$ so that we can reconstruct everything.
+
+What we will do is to plot $\log γ_n$ and $φ_n$ with respect to $n$ and what we will observe is that $\log γ_n$ is close to linear but with different slopes for each sequence, and that $φ_n$ tends to a single point for different sequences.
+
+We don't actually know how to prove that behavior with the cgDNA model. However, we will be able to do it for simpler rigid base-pairs with nearest-neighbor rigid base interactions and an uniform chain.
+
+A simple proof is the following. We have the recursion $\mX_n = \mX_{n-1} \mA_{n-1}$ with $\mA_{n-1} ≝ (\mQ_{n-1}, \vq_{n-1}) ∈ SE(3)$, so that $\mX_n = \mX_1 \mA_1 \dotsb \mA_{n-1}$ so that \[ \inv{\mX_{1}} \mX_n = \prod_{k = 1}^{n - 1} \mA_k\]
+
+We also know that $\inv{\mX_1} = (\trans{\mR_1}, - \trans{\mR_1}\vr_1)$ and then \[ \prod_{k = 1}^{n - 1} \mA_k = ( \trans{\mR_1} \mR_n, \trans{\mR_1}(\vr_n - \vr_1))\] which are , by no accident, the choices we made for $φ_n$ and $γ_n$. This implies that the expectation \[ \pesc{\mX_1^{-1} \mX_n} = \pesc{\prod_{k=1}^{n-1} \mA_k} = \prod_{k=1}^{n-1} \pesc{\mA_k} = \left(\pesc{\mQ_k}, \pesc{\vq_k}\right)  \]
+assuming nearest-neighbor rigid base pair functions (not true for cgDNA). Thus, if the chain is uniform\footnote{?¿?¿?¿} we have $(\pesc{\mQ}, \pesc{\vq}) ≝ (\mY, \vy)$ with $\norm{\mY} < 1$ and then \[ \pesc{\inv{\mX_1} \mX_n} = (\mY, \vy)^{n-1}= (\mY^{n-1}, (I + \mY + \mY^2 + \dotsb + \mY^{n-1})\vy))\]  which is why it goes down exponentially, with $\mY^{n-1} \to 0$. Additionally, we have that $(I + \mY + \mY^2 + \dotsb + \mY^{n-1})\vy) \to (I - Y)^{-1} \vy$.
+
+Despite having made assumptions that are not valid for the cgDNA model, these results will be valid for those simulations.
+
+\section{Looping or cyclization experiments}
+
+
 \appendix
 
 \chapter{Exercises}
