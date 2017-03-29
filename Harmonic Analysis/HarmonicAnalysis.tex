@@ -276,11 +276,108 @@ Furthermore, if we have a previous bound on $\abs{\widehat{f'}(n)} < C$, then we
 
 We will also be able to do the converse: control in the decay of the Fourier coeffiencts gives us control in the smoothness of $f$.
 
-% TODO: there is a theorem here but it is sincerely shitty so I am not going to copy it until we need it.
+\begin{theorem} Assume $\hat{f}(k) = 0$ for all $\abs{k} > n$. Then, for any $1 ≤ p ≤ ∞$ we have there exists a constant $C > 0$ such that \[ \norm{f'}_p ≤ Cn \norm{f}_p \]
+\end{theorem}
 
-% I also did not want to copy Lecture3.pdf.
+% Lecture3.pdf is not copied because I don't really now why is it done.
 
 \section{Fourier transform}
+
+Now we can move to the Fourier transform on a general space $ℝ^n$. We will start defining it for a class of ``good functions'' and then start working our way up from there.
+
+\subsection{Fourier transform on Schwartz spaces}
+
+This class of very nice functions will be the Schwartz space:
+
+\begin{defn}[Schwartz space][Space!Schwartz] The Schwartz space is defined as \[ \schwartz = \set{ f ∈ C^∞(ℝ^n) \st \sup_{x ∈ ℝ^n} \abs{(1 + \abs{x}^N) ∂_x^α f(x)} < ∞ } \] for any $N ∈ ℕ$ and any multiindex $α ∈ ℕ^n$.
+\end{defn}
+
+\begin{figure}[hbtp]
+\inputtikz{SchwartzFunctions}
+\caption{Some examples of Schwartz functions ($f_n$) and functions that are not in \schwartz ($g_n$) despite decaying to zero.}
+\label{fig:SchwartzFunctions}
+\end{figure}
+
+This space contains ``rapidly decreasing functions'' (see \fref{fig:SchwartzFunctions} for some examples). It contains smooth functions with compact support (very useful for mollifiers), is an algebra (vector space invariant under multiplication of functions), invariant under differentiation and under multiplication with polynomials.
+
+Now we can study what is the effect of the Fourier transform on this space. First, the definition of the transform:
+
+\begin{defn}[Fourier\IS transform] For a given function $\appl{f}{ℝ^n}{ℝ}$, we define its Fourier transform as \( \fourier(f)(ξ) = \hat{f}(ξ) ≝ \int_{ℝ^n} f(x) · e^{-2πix · ξ} \dif x \qquad ξ ∈ ℝ^n \)
+\end{defn}
+
+It is easy to see that the integral converges absolutely if $f ∈ \schwartz$. Additionally, we have the following result:
+
+\begin{prop} The Fourier transform maps \schwartz onto itself. That is, $\fourier(\schwartz) ⊆ \schwartz$.
+\end{prop}
+
+\begin{proof} We need to prove that the Fourier transform of a Schwartz function is itself Schwartz. We can start by calculating the derivative of the function:
+\begin{align*}
+∂_ξ^α \hat{f}(ξ)
+	&= \int_{ℝ^n} f(x) \left(∂_ξ^αe^{-2π\imath x·ξ}\right)\dif x = \\
+	&= \int_{ℝ^n} (-2π\imath x)^α f(x) e^{-2π \imath x·ξ} \dif x = \\
+	&= \fourier\left((-2π\imath x)^α f(x)\right)
+\end{align*}
+
+Now we recall that we can derivate by multiplying in Fourier space (that is, $\fourier(∂_x^βf) = (2π\imath ξ)^β \fourier(f)$), so that
+\begin{align*}
+(2π\imath ξ)^β · ∂_ξ^α \hat{f}(ξ)
+	&= \fourier\left(∂_x^β \left[(-2π\imath x)^α f(x)\right]\right)
+\end{align*} which is again absolutely convergent (Schwartz space is invariant under polynomial multiplication and derivation) and so we have our result.
+\end{proof}
+
+In fact we have a bijection, so that the Fourier transform operator is invertible.
+
+\begin{theorem}[Fourier\IS inversion] Let $f ∈ \schwartz$ and $\hat{f}$ its Fourier transform. Then, the inversion formula holds: \( f(x) = \int_{ℝ^n} \hat{f}(ξ) e^{2π\imath x · ξ} \dif ξ \)
+\end{theorem}
+
+\begin{proof} We can start by expanding the definition of the Fourier transform:
+\begin{align*}
+f(x)
+	&= \int_{ℝ^n} \hat{f}(ξ) e^{2π\imath x · ξ} \dif ξ =  \\
+ 	&= \int_{ℝ^n} \int_{ℝ^n} f(y) · e^{-2πiy · ξ} · e^{2π\imath x · ξ} \dif y \dif ξ
+\end{align*}
+
+We cannot, however, switch the order of integration because $\int e^{2π\imath (x-y) ξ} \dif ξ$ does not converge. We can introduce a damping factor and consider instead the function \[ \hat{f_ε}(ξ) ≝ \int_{ℝ^n} f(y) e^{-2π\imath y ξ - ε\abs{ξ}^2} \dif y = \hat{f}(ξ) e^{-ε\abs{ξ}^2} \] for $ε > 0$. It can be seen that $f_ε \convs[][ε][0] f$ and that $\abs{f_ε} ≤ f$ for all $ε > 0$, so that we can use the \nref{thm:DominatedConvergence} to switch the integral and the limit so that \[ \int_{ℝ^n} \hat{f}(ξ) e^{2π\imath x· ξ} \dif ξ = \lim_{ε \to 0} \int_{ℝ^n} \hat{f}_ε(ξ) e^{2π\imath x · ξ} \] and in the latter integral we will be able to interchange the order of integration as the integral converges absolutely.
+
+% TODO: Complete this
+
+\end{proof}
+
+\subsection{Plancherel theorem and extension to $L^2(ℝ^n)$}
+
+The Fourier inversion theorem allows us to prove the following theorem, which in turns allows the extension of the Fourier transform to $L^2$.
+
+\begin{theorem}[Plancherel\IS theorem] \label{thm:Plancherel} The Fourier transform on \schwartz is an $L^2$ isometry. More precisely, for any $f,g ∈ \schwartz$ we have that \begin{align*}
+\pesc{f, g} &= \pesc{\hat{f}, \hat{g}} \\
+\int_{ℝ^n} f(x) \conj{g(x)} \dif x &= \int_{ℝ^n} \hat{f}(ξ) \conj{\hat{g} (ξ)} \dif ξ
+\end{align*}
+\end{theorem}
+
+\begin{proof}
+% TODO
+\end{proof}
+
+We need one extra step to prove the extension of the Fourier transform to $L^2$, and that is the density of $\schwartz$ in $L^p$ spaces.
+
+\begin{prop} The space $\schwartz$ is dense in $L^p(ℝ^n)$ for $1 ≤ p < ∞$\footnote{I don't know if this is provable for $p = 1, ∞$}.
+\end{prop}
+
+\begin{proof} First, see that if $f ∈ L^p$, for every $ε > 0$ we can find a $r > 0$ such that \[ \norm{f - \ind_{\bola_r(0)} f}_p < ε \]
+
+In other words, we can approximate $f$ by itself supported only on a compact set. Now the problem is that $f_r ≝ \ind_{\bola_r(0)} f $ is not necessarily continuous. However, we can just pick a mollifier $φ_t$ such that $φ_t * f_r \to f_r$ and $φ_t * f_r ∈ \schwartz$. Combine these two approximations to see that we can indeed approximate any $f ∈ L^p$ by functions of \schwartz as good as we want.
+\end{proof}
+
+Now we can define the extended Fourier transform.
+
+\begin{prop}[Fourier\IS transform on $L^2(ℝ^n)$] The Fourier transform is well defined on $L^2(ℝ^n)$.
+\end{prop}
+
+\begin{proof} Consider the integral \[ \hat{f}(ξ) = \int_{ℝ^n} f(x) e^{-2π\imath x · ξ} \dif x\] of the Fourier transform. We have two options: it can be well defined and converging, in which case there's nothing to prove, or it can not converge.
+
+In the second case, as $\schwartz \densein L^2(ℝ^n)$, pick a Cauchy sequence $\set{f_n} ⊂ \schwartz$ such that $f_n \to f$. Now $\set{\hat{f_n}} ⊂ L^2(ℝ^n)$ is going to be Cauchy too by \nref{thm:Plancherel}, and as $L^2(ℝ^n)$ is complete it converges to a certain $\hat{f} ∈ L^2(ℝ^n)$. Thus, we need only to define \[ \hat{f} ≝ \lim_{n \to ∞} \hat{f_n} \]
+
+\end{proof}
+
 
 \chapter{Hilbert transform}
 
@@ -292,9 +389,14 @@ We will also be able to do the converse: control in the decay of the Fourier coe
 
 \appendix
 
-\chapter{Functional analysis theorems}
+\chapter{Useful theorems}
 
-\section{Banach spaces and linear applications}
+\section{Measure theory}
+
+\begin{theorem}[Dominated convergence\IS theorem] \label{thm:DominatedConvergence} Let $\set{f_n}_{n ∈ ℕ}$ be a series of functions such that $f_n \convs f$ almost everywhere. If there exists an integrable, non-negative function $g$ such that $\abs{f_n} ≤ g$, then \[ \int \lim_{n \to ∞} f_n \dif μ = \lim_{n \to ∞} \int f_n \dif μ\]
+\end{theorem}
+
+\section{Functional analysis}
 
 \begin{theorem}[Banach-Steinhaus\IS uniform boundedness theorem] \citep[Theorem II.8]{ApuntesAnalisisFunc} \label{thm:BanachSteinhaus} Let $\set{T_α}_{α ∈ A}$ a subset of the space of continuous linear applications $\linapp$ between $X$ and $Y$, where $X$ is a Banach space and $Y$ is a normed space. Then, either the linear applications $T_α$ are uniformly bounded (that is, $∃ C < ∞$ such that $\norm{T_α}_{\linapp} ≤ C$ for all $α ∈ A$) or either there is a certain $G_δ$ set\footnote{Countable intersection of open set} dense in $X$, denoted by $B$, such that \[ \sup_{α ∈ A} \norm{T_α(x)}_Y = ∞ \quad ∀x ∈ B\]
 \end{theorem}

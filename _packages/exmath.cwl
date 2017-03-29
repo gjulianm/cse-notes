@@ -318,6 +318,8 @@
 \ddual#m
 \ddual[X]#m
 \dstr#m
+\schwartz#m
+\schwartz[\real^n]#m
 \fcurv#m
 \fcurv[\tau]#m
 \lk#m
