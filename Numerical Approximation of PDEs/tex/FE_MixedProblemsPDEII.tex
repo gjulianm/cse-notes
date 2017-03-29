@@ -1,0 +1,127 @@
+% -*- root: ../NumericalApproximationofPDEs.tex -*-
+\section{Stokes problem}
+
+Once we know the theory, we are going to apply it to the study of the Stokes problem and its error estimates. Recall that the Stokes problem is the following:
+\(
+\begin{cases}
+-Δ \vu + \grad p = \vf & \text{in } Ω \\
+\dv \vu = 0 & \text{in } Ω \\
+\vu = 0 & \text{on } ∂Ω
+\end{cases} \label{eq:PDE:StokesProblem} \)
+
+The weak formulation of this is finding $u ∈ H_0^1(Ω)^2$, $p ∈ L_0^2(Ω)$ such that
+\( \int_Ω ∇\vu : ∇\vv - p \dv \vu - \dv \vu q  = \int_Ω \vf \vv \) for all functions $\vv ∈ H_0^1(Ω)^2$ and $q ∈ L_0^2(Ω)$ and we can prove the inf-sup condition \eqref{eq:PDE:InfSup}.
+
+\subsection{Finite element approximation}
+
+As discussed in \fref{sec:PDE:NumericalApproximationMixedProblems}, we need to tweak a little bit the numerical approximation by finite elements to get a stable method, adding the term \( - \sum_{K ∈ \mesh} α h_k^2 \int_K (- Δ\vu_h + ∇p_h -f )(-Δ\vv_h + ∇q_h) \) with $α > 0$.
+
+\subsection{A priori error estimates}
+
+\seprule[Missing lecture here]
+
+\subsection{A posteriori error estimates}
+
+\begin{prop} \label{eq:PDE:APosterioriErrorStokes} For the Stokes problem \eqref{eq:PDE:StokesProblem}, there exists a constant $C > 0$ independent of $f, \vu, p, h$ but dependendent on the mesh aspect ratio such that \( \norm{∇(u - u_h)}^2_{L^2(Ω)} + \norm{p - p_h}_{L^2(Ω)} ≤ C \sum_{K ∈ \mesh} η_K^2 \) for the solutions $u_h, p_h$ of the Galerkin problem, with \[ η_K^2 = \left(h_k \norm{f + Δu_h - ∇p_h}_{L^2(K)} + \frac{1}{2} h_K^{\sfrac{1}{2}} · \norm{[∇\vu_h · \vn]}_{L^2(∂K)}\right)^2 + \norm{\dv u_h}^2_{L^2(K)}\]
+\end{prop}
+
+\begin{proof} We know from a proposition that I did not copy from the previous lecture, that there exists a constant $C$ such that \[ \norm{\vu - \vu_h, p - p_h} ≤ C \sup_{(v,q) ∈ H} \frac{a(u - u_h, p - p_h, v, q)}{\norm{v, q}} \] with $H = V × Q$
+
+We want to prove that $∀(v,q) ∈ H$, $a(u - u_h, p - p_h, v, q) ≤ C_2 \norm{v,q} \left(\sum_{K ∈ \mesh} η_K^2\right)^{\sfrac{1}{2}}$. We will try to do it by relation to the residual.
+
+We have that \begin{align*}
+a(u - u_h, p - p_h, v, q)
+	&= F(v,q) - a(u_h, p_h, v, q) = \\
+	&= F(v,q) - a(u_h, p_h, v, q) + \\
+	&\quad + (F - F_h)(v_h, q_h) - (a - a_h)(u_h, p_h, v, q) = \\
+	&= \int_Ω \left[\vf (\vv - \vv_h) - ∇\vu : ∇(\vv - \vv_h) \right. \\
+	&\qquad \left. + p_h \dv (\vv - \vv_h) + \dv \vu_h (q - q_h)\right] + \\
+	&\quad + \sum_{K ∈ \mesh} α h_k^2 (f + Δ\vu_h - ∇p_h) (-∇\vv_h + ∇q_h)
+\end{align*}
+
+What we have done is that we have used the inf-sup condition to relate the error to the residual, and now we will evaluate it to get to the strong form of the equation by integrating by parts over all elements of the mesh.
+\begin{align*}
+a(u - u_h, p - p_h, v, q) &= \sum_{K ∈ \mesh} \int_K \left[(f + Δ\vu_h - ∇p_h)(v - v_h) + \dv \vu_h (q - q_h)\right] + \\
+	&\quad + \frac{1}{2} \int_{∂K} [∇\vu_h · \vn] (\vv - \vv_h) + \underbracket{[p_h (\vv - \vv_h) · \vn]}_{ = 0} + \\
+	&\quad+ αh_K^2(f + Δ\vu_h - ∇p_h)∇q_h
+\end{align*}
+
+Now we choose $\vv_h = R_h \vv$, the Clément interpolant. For $q_h$ we have to choose $q_h = 0$, and to justify this we would need to prove that the error is bounded above and below by the error estimator we are proving. The proof of that fact is lengthy and technical so we will not do it.
+
+Once the functions are chosen, we use Cauchy-Schwartz so that \begin{align*}
+a(u - u_h, p - p_h, v, q)
+	&≤ C_3 \sum_{K ∈ \mesh} \left(h_K \norm{\vf + Δ\vu_h - ∇p_h}_{L^2(K)} \norm{∇\vv}_{L^2(ΔK)} + \right. \\
+	&\quad+ \left. \frac{1}{2} h_K^{\sfrac{1}{2}} \norm{[∇\vu_h · \vn]}_{L^2(∂K)} + \norm{\dv \vu_h}_{L^2(K)}\norm{q}_{L^2(K)} \right) \\
+	&≤ C_3 \left(\sum_{K ∈ \mesh} \left(h_K \norm{\vf + Δ\vu_h - ∇p_h} + \frac{1}{2}h_K^{\sfrac{1}{2}} \norm{[∇\vu_h · \vn]}\right)^2 \right)^{\sfrac{1}{2}} + \\
+	&\quad
+	+ \left(\sum_{K ∈ \mesh} \norm{∇\vv}_{L^2(ΔK)}^2\right)^{\sfrac{1}{2}}
+	+ \left(\sum_{ K ∈ \mesh} \norm{\dv \vu_h}^2\right)^{\sfrac{1}{2}}
+	· \left(\sum_{K ∈ \mesh} \norm{q}_{L^2(K)}^2\right)^{\sfrac{1}{2}}
+\end{align*} where $ΔK$ is the neighbouring triangles of $K$ and $\dv \vu_h \to 0$ as $h \to 0$.
+
+So it works by using Cauchy-Schwartz once again.
+\end{proof}
+
+\section{Optimal control}
+
+One example of a problem on optimal control is the movement $u$ of a glacier, so that it follows the equation $-Δu = f$. We have two sections of the bedrock: $Γ_1$ where we have no slip (so $u = 0$) and a section $Γ_2$ with a certain sliding $∂_\vn u = q$, with $q$ unknown.
+
+We also have the border $Γ_3$ of the ice with the air, with observations $u_0$ of the displacement and with no force of the air onto the ice (so $∂_\vn u = 0$ there).
+
+We will want to minimize the integral \[ \int_{Γ_3} (u - u_0)^2 \] (that is, we want our model to approximate the observations we have) constrained to $u = 0$ on $Γ_1$ and being a solution of the weak problem \[ \int_Ω ∇u ∇v - fv = \int_Ω q v \qquad ∀v \st \restr{v}{Γ_1} = 0\]
+
+This problem is, however, ill-posed. We will have to actually minimize \[ \frac{1}{2} \int_{Γ_3} (u - u_0)^2 + \frac{α}{2} \int_{Γ_2} q^2\] to have well-posedness.
+
+We will study first a simpler model problem: we have a primal variable $u$ and a control variable $q$ such that $-Δu = f + q$ on $Ω ⊂ ℝ^n$, with observations of $u$ in $Ω_0 ⊂ Ω$ and with $u = 0$ on the boundary $∂Ω$.
+
+The problem will be to find $(u,q) ∈ H_0^1(Ω) × L_2(Ω)$ such that the quantity \[ \frac{1}{2}\int_{Ω_0} (u - u_0)^2 + \frac{α}{2} \int_Ω q^2 \] is minimized under the constraint of the weak formulation of the problem, which is \[ \int_Ω ∇u ∇v = \int_Ω (f + q)v \qquad ∀v ∈ H_0^1(Ω)\]
+
+A small parenthesis: if we were solving this in $ℝ^n$ instead of in a functional environment, we would have to solve \begin{align*} \mA \vu &= \vf \\ \mM_0 \vu &= \mM_0 \vu_0 \end{align*} with $\vu_0$ the vector of observations and $\mM_0$ a matrix selecting the coordinates on which the observations are defined.
+
+In this case, we would define the functional $J(\vv) = \frac{α}{2} \norm{\mA \vv - \vf} + \frac{1}{2} \norm{\mM_0(\vv - \vu_0)}$ (that is, discrepancy with the model and with the observations) and then try to find a $\vv ∈ ℝ^n$ that minimizes it. The solution is given by $J'(\vu) = \vec{0}$, which computed would give \[ J'(\vu) = \trans{\mM_0} \mM_0 (\vu - \vu_0) + α \mA^T (\mA \vu - \vf) = \vec{0} \] which can be written as a system if we define $\vq = \mA \vu - \vf$.
+
+Now we have to translate that to the PDE setting. We introduce the functional to minimize, the Lagrangian \( \linop (u, λ, q) = \frac{1}{2} \int_{Ω_0} (u - u_0)^2 + \frac{α}{2} \int_Ω q^2 + \int_Ω \left(∇u ∇λ - (f + q)λ\right) \label{eq:PDE:Lagrangian} \) with $λ ∈ H_0^1(Ω)$ the Lagrange multiplier corresponding to the constraint, $u ∈ H_0^1(Ω)$ and $q ∈ L^2(Ω)$.
+
+The solution satisfies \[ \dpd{\linop(u,λ,q)}{u} = \dpd{\linop(u,λ,q)}{λ} = \dpd{\linop(u,λ,q)}{q} = 0\] with the derivative understood in the sense of the Gateaux derivative.
+
+\begin{defn}[Gateaux derivative][Derivative!Gateaux] Given a function $\appl{F}{X}{Y}$ between two Banach spaces, we define the Gateaux derivative at $v ∈ X$ in the direction $u ∈ X$ as \( \dualp{\dif F(v), u} = \lim_{ε \to 0} \frac{F(v + εu) - F(v)}{ε} \) where we consider $\dif F(v)  ∈ X'$ as an operator in the dual space.
+\end{defn}
+
+Thus, in this case we can define the derivative of the Lagrangian as \[ \dualp{∂_u \linop(u, λ, q), v} = \lim_{ε \to 0} \frac{\linop(u + εv, λ, q) - \linop(u, λ,q)}{ε} \] and we claim that actually \[ \dualp{∂_u \linop(u, λ, q), v} = \int_{Ω_0} (u - u_0) v + \int_Ω ∇v ∇λ\quad ∀v ∈ H_0^1(Ω) \]
+
+Indeed, computing we have that \begin{align*}
+\linop(u + εv, λ, q) - \linop(u, λ, q)
+	&= \frac{1}{2} \int_{Ω_0} \left((u + εv - u_0) ^ 2 - (u - u_0)^2\right) + \int_Ω ∇(u + εv - u) ∇λ = \\
+	&= \int_{Ω_0} εv(u - u_0) + ε^2 v^2 + \int_Ω ε∇v∇λ
+\end{align*} which when divided by $ε$ and with $ε \to 0$ works as we said. Similarly, we will have that \begin{align*}
+\dualp{∂_λ \linop(u, λ, q), μ} &= \int_Ω ∇u ∇μ - (f+q)μ = 0  & ∀μ ∈ H_0^1(Ω) \\
+\dualp{∂_q \linop(u, λ, q), r} &= α \int_Ω qr - \int_Ω rλ  = 0 & ∀r ∈ L^2(Ω)
+\end{align*}
+
+We can write strong forms of those equations, which gives in order
+\begin{align*}
+-Δλ + \ind_{Ω_0}(u - u_0) &= 0 &\text{(dual problem)}\\
+-Δu = (f + q) &= 0 & \text{(primal problem)} \\
+αq - λ &= 0
+\end{align*}
+
+Sometimes λ is called the dual variable.
+
+With this system we can eliminate $q$ so we get our final problem to solve. We will need to find $(u, λ) ∈ H_0^1(Ω) × H_0^1(Ω)$ such that \( \begin{cases} \int_Ω ∇u ∇μ - \left(f + \frac{1}{α} λ \right)μ = 0 & ∀μ ∈ H_0^1(Ω) \\
+\int_Ω ∇λ ∇v + \int_{Ω_0} (u - u_0) v = 0 & ∀v ∈ H_0^1(Ω) \end{cases} \)
+
+We can formulate this in weak form by calling \begin{align*}
+a(u,λ; μ, v) &= \int_Ω \left(∇u ∇μ - \frac{1}{α}λμ\right) + \int_Ω ∇λ ∇v + \int_{Ω_0} uv \\
+F(μ, v) &=
+\end{align*}
+
+Well-posedness of this problem is a consequence of the inf-sup condition with the space $H ≝ H_0^1(Ω) × H_0^1(Ω)$ and $\norm{u, λ}_H^2 = \norm{∇u}_{L^2} + \norm{∇λ}_{L^2}$.
+
+\begin{prop} For the optimal control problem, for any $α >0$ there exists a constant $C > 0$ such that \[\norm{u, λ}_H ≤ C \sup_{\substack{(μ, v) ∈ H \\ (μ, v) ≠ 0}} \frac{a(u,λ;μ,v)}{\norm{μ, v}_H} \]
+\end{prop}
+
+\begin{proof} As we did for the Stokes problem it will suffice to prove that there exists two constants $C_1, C_2$ such that for any $(u, λ) ∈ H$ there will exist $(μ, v) ∈ H$ such that \begin{align*}
+a(u,λ;μ,v) &≥C_1\norm{u,λ}^2 \\
+\norm{μ, v} &≤ C_2\norm{u, λ}
+\end{align*}
+\end{proof}
