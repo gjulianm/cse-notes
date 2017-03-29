@@ -147,6 +147,58 @@ Putting that in the equation of the bilaplacian \eqref{eq:BilaplacianSphereFlow}
 
 Computing the laplacian again we end up with \[ Δ_s^2 ψ = \left(\dod[2]{}{r} - \frac{2}{r^2}\right)^2 f \]
 
+\seprule[Missing one lecture]
+
+Now we are going to study parallel flows to see things. One example is Pouseille flows.
+
+Another example is Hele-Shaw cell, which is the flow between two plates in a narrow gap. Even though it is a viscous-dominated flow, it will behave like potential flow which is traditionally for high reynolds numbers.
+
+In this case we will use different length gauges for the $x$ and $y$ directions (in-plane) and for the $z$ direction (perpendicular to the plane). That induces different scalings on the velocities and that will change things in the continuity equation:
+\begin{align*}
+\dpd{x}{u} + \dpd{y}{v} + \dpd{z}{w} &= 0 \\
+\frac{U_∞}{L} \dpd{\tilde{u}}{\tilde{x}} + \frac{U_∞}{L} \dpd{\tilde{v}}{\tilde{y}} + \frac{W}{h} \dpd{\tilde{w}}{\tilde{z}} &= 0 \\
+\dpd{\tilde{u}}{\tilde{x}} + \dpd{\tilde{v}}{\tilde{y}} + \frac{WL}{hU_∞} \dpd{\tilde{w}}{\tilde{z}} &= 0
+\end{align*}
+
+Here, for the selection of the gauge $W$ we still cannot neglect anything so we will apply \concept{Dominant balance transport} or principle of least degeneracy: we want to keep things as open as possible. So, we will choose $W$ such that all the derivatives in the continuity equation have the same magnitude: \[ W = \frac{U_∞h}{L} \]
+
+Now we go to the Navier-Stokes equations getting rid of the time derivatives (flow is steady)
+\begin{align*}
+u \dpd{u}{z}  + v \dpd{u}{y} + w \dpd{u}{z} &= - \frac{1}{ρ} \dpd{p}{x} + ν \left(\dpd[2]{u}{x} + \dpd[2]{u}{y} + \dpd[2]{u}{z}\right) \\
+\frac{U_∞^2}{L} u \dpd{\tilde{u}}{\tilde{z}}  + \frac{U_∞^2}{L} v \dpd{\tilde{u}}{\tilde{y}} + \frac{WU_∞}{h} w \dpd{\tilde{u}}{\tilde{z}} &= - \frac{U_∞^2}{L}\frac{1}{ρ} \dpd{p}{x} + \frac{P}{ρL} ν \left(\frac{U_∞}{L^2} \dpd[2]{\tilde{u}}{\tilde{x}} + \frac{U_∞}{L^2} \dpd[2]{\tilde{u}}{\tilde{y}} + \frac{U_∞}{h^2} \dpd[2]{\tilde{u}}{\tilde{z}}\right)
+\end{align*}
+
+In the Laplacian, the term with $\frac{1}{h^2}$ is going to dominate so we can neglect the two other terms of that Laplacian, and that gives us the pressure gauge \[ P = \frac{νU_∞ ρL}{h^2} \] which in turn creates an effective Reynolds number which is considerably lower than the one we would measure with more naive gauges: \[ \rey = \frac{U_∞h^2}{νL} \]
+
+We can do the same for the velocity in the Z direction:
+\begin{align*}
+u \dpd{w}{z}  + v \dpd{w}{y} + w \dpd{w}{z} &= - \frac{1}{ρ} \dpd{p}{z} + ν \left(\dpd[2]{w}{x} + \dpd[2]{w}{y} + \dpd[2]{w}{z}\right) \\
+\frac{U_∞^2h}{L} \left(u \dpd{\tilde{w}}{\tilde{z}}  + v \dpd{\tilde{w}}{\tilde{y}} + w \dpd{\tilde{w}}{\tilde{z}}\right)
+	&= - \frac{P}{ρh} \dpd{p}{z} + \frac{νU_∞}{Lh} \left(\cancelto{0}{\dpd[2]{\tilde{w}}{\tilde{x}} + \dpd[2]{\tilde{w}}{\tilde{y}}} + \dpd[2]{\tilde{w}}{\tilde{z}}\right) \\
+\rey \frac{h^2}{L^2} \left(u \dpd{\tilde{w}}{\tilde{z}}  + v \dpd{\tilde{w}}{\tilde{y}} + w \dpd{\tilde{w}}{\tilde{z}}\right)
+	&= - \frac{L^2}{h^2} \dpd{p}{z} + \dpd[2]{\tilde{w}}{\tilde{z}}
+\end{align*}
+neglecting as previously the $x, y$ derivatives of the laplacian and dividing in the last equation by $\frac{νU_∞}{Lh}$. There, the term that is going to dominate is the pressure one, so we can neglect the others and we have that \[ \dpd{p}{z} = 0\]
+
+Note that had we started in the reverse order, we would have ended with a pressure gauge that would lead to the condition $ν ∂^2_z u = 0$, which gives a linear solution to $u$ that is not going to satisfy the boundary conditions.
+
+That gives the equations that are on the slide and the solutions on the slide too. The solution is then potential flow. Furthermore, if we inject the solutions in the continuity equation we get
+\begin{align*}
+- \frac{1}{2μ}\left(\dpd[2]{p}{x} + \dpd[2]{p}{y}\right) z(z - h) &= - \dpd{w}{z} \\
+\frac{z^3}{3} -  \frac{z^2h}{2} + C &= w
+\end{align*}
+
+To satisfy boundary conditions, we say $w(0) = 0$ so that $C = 0$, but then $w(h) ≠ 0$. The only option is then having \[ - \frac{1}{2μ}\underbracket{\left(\dpd[2]{p}{x} + \dpd[2]{p}{y}\right)}_{Δ_{\parallel} p} = 0 \implies Δ_\parallel p = 0 \] which in turn gives zero vorticity.
+
+Of course all of this is extremely shady and non-mathematical. A validation is something. Intertial terms next slide this is weird. We can see that the flow in a rectangular duct is a good approximation of this. Then we can compute the flux and some weird approximation. Then we compute the flux in the previous flow and it is pretty simplifies \[ Q = \frac{h^3}{12μ} \dpd{p}{x} \] which is compatible with the inexact solution when $h \ll w$ (take $Q$ as the flux over width $w$).
+
+\section{Lubrication}
+
+Duct tape
+
+% This is getting naughty
+
+Slides, we get Pousielle with an equal sign instead of a minus (typo on the slide)
 
 \appendix
 

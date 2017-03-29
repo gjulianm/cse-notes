@@ -330,3 +330,4 @@
 \pspace[r]#m
 \linop#m
 \gradop#m
+\rey#m
