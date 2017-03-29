@@ -13,15 +13,15 @@ function trycopy() {
 }
 
 echo "Creating completion files..."
-cwlpaths="~/.config/texstudio/ ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/cwl/ ~/.config/sublime-text-3/Packages/User/cwl/"
+cwlpaths=(~/.config/texstudio/ ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/cwl/ ~/.config/sublime-text-3/Packages/User/cwl/)
 
 for sty in $(ls *.sty) ; do
 	cwl="${sty/%.sty/.cwl}"
 	echo "$sty -> $cwl"
 	python cwlcreator.py $sty $cwl
 
-	for path in $cwlpaths ; do
-		trycopy $cwl $path
+	for ((i = 0; i < ${#cwlpaths[@]}; i++)); do
+		trycopy "$cwl" "${cwlpaths[i]}"
 	done
 done
 
