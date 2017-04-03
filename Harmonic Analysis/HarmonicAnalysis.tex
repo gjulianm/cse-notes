@@ -307,7 +307,7 @@ Now we can study what is the effect of the Fourier transform on this space. Firs
 
 It is easy to see that the integral converges absolutely if $f ∈ \schwartz$. Additionally, we have the following result:
 
-\begin{prop} The Fourier transform maps \schwartz onto itself. That is, $\fourier(\schwartz) ⊆ \schwartz$.
+\begin{prop} \label{prop:SchwartzFourierItself} The Fourier transform maps \schwartz onto itself. That is, $\fourier(\schwartz) ⊆ \schwartz$.
 \end{prop}
 
 \begin{proof} We need to prove that the Fourier transform of a Schwartz function is itself Schwartz. We can start by calculating the derivative of the function:
@@ -359,7 +359,7 @@ The Fourier inversion theorem allows us to prove the following theorem, which in
 
 We need one extra step to prove the extension of the Fourier transform to $L^2$, and that is the density of $\schwartz$ in $L^p$ spaces.
 
-\begin{prop} The space $\schwartz$ is dense in $L^p(ℝ^n)$ for $1 ≤ p < ∞$\footnote{I don't know if this is provable for $p = 1, ∞$}.
+\begin{prop} \label{prop:SchwartzLpDensity} The space $\schwartz$ is dense in $L^p(ℝ^n)$ for $1 ≤ p < ∞$\footnote{I don't know if this is provable for $p = 1, ∞$}.
 \end{prop}
 
 \begin{proof} First, see that if $f ∈ L^p$, for every $ε > 0$ we can find a $r > 0$ such that \[ \norm{f - \ind_{\bola_r(0)} f}_p < ε \]
@@ -378,8 +378,127 @@ In the second case, as $\schwartz \densein L^2(ℝ^n)$, pick a Cauchy sequence $
 
 \end{proof}
 
+\subsection{Extension to general $L^p(ℝ^n)$ spaces}
 
-\chapter{Hilbert transform}
+Extension of the Fourier transform operator to general $L^p$ spaces. From the definition we can see that having $f ∈ L^1(ℝ^n)$ gives convergence and in fact something more.
+
+\begin{prop} Given $f ∈ L^1(ℝ^n)$, the function \[ \hat{f}(ξ) = \int_{ℝ^n} f(x) e^{-2π\imath x · ξ} \dif x \] is in $C_0^0(ℝ^n)$ (that is, continuous and vanishing at infinity) and we have the pointwise bound \[ \norm{\hat{f}}_{L^∞} ≤ \norm{f}_{L^1} \]
+\end{prop}
+
+\begin{proof}
+
+\proofpart{Continuity}
+
+For the continuity, we can see that for a succession $\set{ξ_n}_{n ∈ ℕ} ⊂ ℝ^n$ with limit $ξ$ we have \[ \lim_{n \to ∞} \hat{f}(ξ_n) = \int_{ℝ^n} \lim_{n \to ∞} f(x) e^{-2π\imath x · ξ_n} \dif x\] where we have used the \nref{thm:DominatedConvergence} ($\abs{f(x) e^{-2π\imath x · ξ}} ≤ \abs{f(x)}$). As the exponential is continuous, $e^{-2π\imath x · ξ_n} \to e^{-2π\imath x · ξ}$ and then $\hat{f}(ξ_n) \to \hat{f}(ξ)$ and thus $\hat{f}$ is continuous.
+
+\proofpart{Vanishing at infinity}
+
+We can approximate $f$ as much as we want by a $g ∈ \schwartz$ (\fref{prop:SchwartzLpDensity}), and then we can use \fref{prop:SchwartzFourierItself} to see that the Fourier transform of $g$ must vanish at infinity. A little bit better: for any $ε > 0$, choose $g ∈ \schwartz$ such that $\norm{f - g}_1 < \sfrac{ε}{2}$ and $r > 0$ such that for $\abs{ξ} > r$ we have $\abs{\hat{g}(ξ)} < \sfrac{ε}{2}$
+\begin{align*}
+\hat{f}(ξ)
+	&= \int_{ℝ^n} (f(x) - g(x) + g(x)) e^{-2π\imath x · ξ} \dif x \\
+	&≤ \int_{ℝ^n} (f(x) - g(x)) e^{-2π\imath x · ξ} \dif x
+		+ \int_{ℝ^n} g(x)e^{-2π\imath x · ξ} \dif x \\
+	&≤ \norm{f(x) - g(x)}_{1} \norm{e^{-2π\imath x · ξ}} + \hat{g}(ξ) \\
+	&≤ ε
+\end{align*} when $\abs{ξ} \to ∞$.
+
+\proofpart{Supremum bound $\norm{\hat{f}}_∞ ≤ \norm{f}_1$}
+
+Just move absolute values inside of the integral.
+\end{proof}
+
+So for now we have proven that the Fourier transform works from $L^1$ to $L^∞$ and from $L^2$ to $L^2$. It seems that it maps $L^p$ spaces to their conjugate exponent ones. For that proof we will use the following theorem.
+
+\begin{theorem}[Riesz-Thorin\IS theorem] \label{thm:RieszThorin} Let $1 ≤ p_0, p_1, q_0, q_1 ≤ ∞$ and assume $\meas$ is a measure space. Assume that $T$ is a linear operator from the simple functions\footnote{Defined as linear combination of indicator functions of measurable sets, that is $f(x) = \sum_{n = 1}^N a_n \ind_{A_n} (x)$ with $A_n ∈ \mathcal{X}$.} on $X$ to measurable functions on $X$, satisfying \begin{align*}
+\norm{T(f)}_{L^{q_0}(X)} ≤ A_0 \norm{f}_{L^{p_0}(X)} \\
+\norm{T(f)}_{L^{q_1}(X)} ≤ A_1 \norm{f}_{L^{p_1}(X)}
+\end{align*} for all simple functions $f$.
+
+Then, for any $p ∈ [p_0, p_1]$ with $\frac{1}{p} = \frac{θ}{p_0} + \frac{1-θ}{p_1}$ with $θ ∈ [0,1]$ we have \[ \norm{T(f)}_{L^q(x)} ≤ A_0^θ A_1^{1-θ} \norm{f}_{L^p(X)}\] with $q$ defined as $\frac{1}{q} = \frac{θ}{q_0} + \frac{1-θ}{q_1}$.
+\end{theorem}
+
+Before going to the proof of this, we will see its application to the Fourier transform.
+
+\begin{corol} \label{crl:FourierTransformP12} The Fourier transform on $ℝ^n$ is a linear operator $\appl{\fourier}{L^p}{L^q}$ with $\frac{1}{q} + \frac{1}{p} = 1$ when $1 ≤ p ≤ 2$. Moreover, we have \[ \norm{\hat{f}}_{L^q} ≤ \norm{f}_{L^p} \quad p ∈ [1,2]\]
+\end{corol}
+
+\begin{proof}
+Apply  \nref{thm:RieszThorin} with $p_0 = 1, q_0 = ∞$ and $p_2 = q_2 = 2$.
+\end{proof}
+
+\subsubsection{Riesz-Thorin theorem proof}
+
+The proof of Riesz-Thorin is not trivial, and we will need some technical ingredients from, surprise, complex analysis.
+
+\begin{lemma}[Hadamard\IS three lines lemma] Let $F$ be a complex analytic function on the strip $S ≝ \set{x ∈ ℂ \tq 0 < \Re z < 1}$ extending continuously and boundedly to the closure $\adh{S}$. Asssume the bounds \begin{align*}
+\Re z = 0 &\implies \abs{F(x)} ≤ B_0 \\
+\Re z = 1 &\implies \abs{F(x)} ≤ B_1
+\end{align*} for two constants $B_0, B_1 > 0$. Then we have \[ \Re z = θ \implies \abs{F(z)} ≤ B_0^{1-θ} B_1^θ \] for any $θ ∈ [0,1]$.
+\end{lemma}
+
+\begin{proof} This is an application of the maximum modulus principle. Define \[ f(z) ≝ F(z) · (B_0^{1-z} B_1^z)^{-1}\]
+
+Observe that $\abs{(B_0^{1-z} B_1^z)^{-1}} ≤ \max \set{\inv{B_0}, \inv{B_1}}$ if $\Re z ∈ [0,1]$ and so $f(z)$ is also bounded on $\adh{S}$.
+
+Moreover, letting $f_ε (z) ≝ f(z) e^{ε(z^2 - 1)}$ for small $ε > 0$ and assuming $z = x + \imath y$, then \[ \abs{f_ε(z)} = \abs{f(z)} e^{ε(x^2 - y^2 - 1)}\] which converges to zero as $\abs{y} \to ∞$ while $x ∈ [0,1]$. We also have $\abs{f_ε(z)} ≤ 1$ if $x = 0,1$. Now, pick $y_0 > 0$ large enough so that $\abs{f_ε(z)} ≤ 1$ when $\abs{y} ≥ y_0$.
+
+Then, by the maximum modulus principle and since the boundary values on the rectangular box $0 ≤ x ≤ 1, \abs{y} ≤ y_0$ are at most 1, we infer $\abs{f(z)} ≤ 1$ for any $z ∈ \adh{S}$ when $ε \to 0$.
+\end{proof}
+
+Now we can go on to the proof of Riesz-Thorin.
+
+\begin{proof}[\nref{thm:RieszThorin}] First, define $p$ and $q$ as in the theorem:
+\begin{align*}
+\frac{1}{p} &= \frac{θ}{p_0} + \frac{1-θ}{p_1} \\
+\frac{1}{q} &= \frac{θ}{q_0} + \frac{1-θ}{q_1}
+\end{align*} with $θ ∈ (0,1)$.
+
+We will separate the proof in two cases: first, when $p_0, p_1, q_0, q_1$ are strictly between $1$ and $∞$, and a second case when they are not.
+
+\proofpart{$p_0, \dotsc, q_1 ≠ 1, ∞$}
+
+Let's consider a simple function of the form \[ f(x) = \sum_{k = 1}^M a_k e^{\imath α_k} \ind_{A_k} (x)\] with $A_k ∈ \mathcal{X}$ disjoint sets and $a_k ∈ ℝ^+$.
+
+% TODO: Complete this. Try to see some proof that is more clear than the crap on the lecture.
+
+\end{proof}
+
+\subsection{Convergence of the Fourier transform}
+
+We have not answered yet the question of convergence of the Fourier transform. We saw with the \fref{crl:FourierTransformP12} that if we have $f ∈ L^p$ with $1 ≤ p ≤ 2$, its Fourier transform is well defined and the integrals have bounded. We can try to see if the integral converges in the $L^p$ sense. That is, whether
+\[ \lim_{N \to ∞} \norm{\int_{\abs{ξ} ≤ N} \hat{f}(ξ) e^{2π\imath x · ξ} \dif ξ - f(x) }_{L^p(ℝ^n)} \qeq 0 \]
+
+For that we would need to have that the function \[ \inv{\fourier}_N(f) (x) = \int_{\abs{ξ} ≤ N} \hat{f}(ξ) e^{2π\imath x · ξ} \dif ξ \] is of class $L^p$, which for now we have only assured for $p = 2$. Turns out that the answer depends crucially on the dimension, and we will only have good results for $n = 1$:
+
+\subsubsection{Case $ℝ^1$, Hilbert transform}
+
+For answering this question, we will introduce the Hilbert transform.
+
+\begin{defn}[Hilbert\IS transform] Let $f ∈ C_0^∞(ℝ)$ and $ε > 0$. The, we can define \( \label{eq:HilbertTransEpsilon} H_ε f(x) ≝ \int_{-∞}^{-ε} \frac{f(x-y)}{y} \dif y + \int_ε^∞ \frac{f(x)-y}{y} \dif y = \int_ε^∞ \frac{f(x-y) - f(x + y)}{y} \dif y \) and \[ Hf(x) ≝ \lim_{ε \to 0} H_ε f(x) \]
+\end{defn}
+
+The Hilbert transform is specially interesting for its relations to the Fourier transform, specifically the following one.
+
+\begin{lemma} Let $f ∈ C_0^∞(ℝ)$. Then we have\footnote{Recall that $\sign(ξ) = \begin{cases} 1 & ξ > 0 \\ 0 & ξ = 0 \\ -1 & ξ < 0\end{cases}.$} \[ \widehat{Hf}(ξ) = \int_ℝ Hf(x) e^{-2π\imath x · ξ} \dif x = -\imath π \sign(ξ) \hat{f}(ξ)\]
+\end{lemma}
+
+\begin{proof} Honestly I'm not sure about the $P.V.$ integral thing.
+\end{proof}
+
+\begin{corol} The Hilbert transform preserves the $L^2$ norm up to a constant multiple: \[ \norm{Hf}_{L^2(ℝ)} = π \norm{f}_{L^2(ℝ)}\]
+\end{corol}
+
+\begin{proof} Use \nref{thm:Plancherel} in conjuction wiht the previous lemma.
+\end{proof}
+
+Why is this interesting? We can see that we can express the indicator function as \[ \ind_{[-N, N]} (ξ) = \frac{1}{4} \left(\sign(N-ξ) + 1\right) · \left(\sign(N + ξ) + 1\right) \qquad ξ ∉ \set{\pm N} \] and furthermore
+\begin{align*}
+\sign(ξ - N) \hat{f}(ξ) &= \fourier\left(\frac{\imath e^{\imath N x}}{π} H(e^{-\imath Nx} f)\right) (ξ) \\
+\sign(ξ + N) \hat{f}(ξ) &= \fourier\left(\frac{\imath e^{-\imath N x}}{π} H(e^{\imath Nx} f)\right) (ξ) \\
+\end{align*} so that the operator \[ \inv{\fourier}_Nf(x) ≝ \int_{\abs{ξ} ≤ N} \hat{f}(ξ) e^{2π\imath x · ξ} \dif x \] will be $L^p(ℝ)$ bounded uniformly in $N$ if the Hilbert transform is $L^p$ bounded too.
+
+
 
 \chapter{Calderon-Zygmund operator}
 
