@@ -259,6 +259,16 @@ assuming nearest-neighbor rigid base pair functions (not true for cgDNA). Thus, 
 
 Despite having made assumptions that are not valid for the cgDNA model, these results will be valid for those simulations.
 
+We are going to tle bit on the specifics of all of this. We will start by the proof that $\pesc{\mR_1^T \mR_n} = \pesc{\cos θ_{1,n}} \to 0$.
+
+Assume that the matrix $A_n = (\mQ(\vu), \vq)$ are i.i.d junctions displacements, with $\vq$ constant and $\mQ(\vu)$ given as the matrix associated to the Cayley vector $\vu ∈ ℝ^3$ as \[ \mQ(\vu) = \frac{1 - \norm{\vu}^2}{1 + \norm{\vu}^2} I + \frac{1}{1 + \norm{\vu}^2} \vu^× + \frac{2}{1 + \norm{u}^2} \vu \otimes \vu \]
+
+We can assume that the PDF has then the form \[ ρ(\vu) = \frac{1}{Z} e^{- \frac{1}{2}\left(K_1u_1^2 + K_2 u_2^2 + K_3 (u_3 - \hat{u}_3)^2\right)} \] and then we can try and compute $\pesc{\mQ(\vu)}$.
+
+Computations and I'm not going to copy that.
+
+Second observation.
+
 \section{Looping or cyclization experiments}
 
 
