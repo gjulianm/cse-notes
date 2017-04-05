@@ -183,7 +183,7 @@ There are two main methods that we will study, which use the symmetric and skew-
 \) where $L$ is the linear operator of the original equation.
 \end{defn}
 
-\begin{defn}[Galerkin Least Squares] This method is given by the stabilization terms \( \label{eq:ODE:GLS} \begin{aligned}
+\begin{defn}[Galerkin\IS Least Squares] This method is given by the stabilization terms \( \label{eq:ODE:GLS} \begin{aligned}
 \linop_h^\text{GLS} (u,v) &= \sum_{K ∈ \mesh} \pesc{Lu, τ_K L v}_K \\
 Ψ_h^\text{GLS} &= \sum_{K ∈ \mesh} \pesc{f, τ_K L v}_K
 \end{aligned}
@@ -358,7 +358,7 @@ u(α, t) = φ(t) & t > 0
 \dod{x}{t} = a(x,t) & t > 0 \\
 x(0) = x_0 \end{cases} \)
 
-This is the motivation for the \concept{Method\IS of characteristics}, in which we will solve a differential equation along each characteristic curve. We can easily give an a-priori estimate under the assumptions that $a$ is differentiable with \[ a_0 - \frac{1}{2} \dod{a}{x} ≥ μ_0 > 0 \quad ∀x ∈ [α, β]\]
+This is the motivation for the \concept[Characteristics]{Method\IS of characteristics}, in which we will solve a differential equation along each characteristic curve. We can easily give an a-priori estimate under the assumptions that $a$ is differentiable with \[ a_0 - \frac{1}{2} \dod{a}{x} ≥ μ_0 > 0 \quad ∀x ∈ [α, β]\]
 
 The estimate is then \begin{multline*} \norm{u(t)}_{L^2}^2 + μ_0 \int_0^t \norm{u(s)}^2_{L^2} \dif s + a(β) \int_0^t u^2(β, s) \dif s ≤ \\ ≤ \norm{u_0}^2_{L^2} + a(α) \int_0^t φ^2(s) \dif s + \frac{1}{μ_0} \int_0^t \norm{f}^2_{L^2} \dif s
 \end{multline*}

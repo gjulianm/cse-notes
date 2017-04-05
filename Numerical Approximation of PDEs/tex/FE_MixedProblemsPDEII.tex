@@ -117,11 +117,107 @@ F(μ, v) &=
 
 Well-posedness of this problem is a consequence of the inf-sup condition with the space $H ≝ H_0^1(Ω) × H_0^1(Ω)$ and $\norm{u, λ}_H^2 = \norm{∇u}_{L^2} + \norm{∇λ}_{L^2}$.
 
-\begin{prop} For the optimal control problem, for any $α >0$ there exists a constant $C > 0$ such that \[\norm{u, λ}_H ≤ C \sup_{\substack{(μ, v) ∈ H \\ (μ, v) ≠ 0}} \frac{a(u,λ;μ,v)}{\norm{μ, v}_H} \]
+\begin{prop} \label{prop:PDE:OptimalControlInfsup} For the optimal control problem, for any $α >0$ there exists a constant $C > 0$ such that \[\norm{u, λ}_H ≤ C \sup_{\substack{(μ, v) ∈ H \\ (μ, v) ≠ 0}} \frac{a(u,λ;μ,v)}{\norm{μ, v}_H} \]
 \end{prop}
 
 \begin{proof} As we did for the Stokes problem it will suffice to prove that there exists two constants $C_1, C_2$ such that for any $(u, λ) ∈ H$ there will exist $(μ, v) ∈ H$ such that \begin{align*}
 a(u,λ;μ,v) &≥C_1\norm{u,λ}^2 \\
 \norm{μ, v} &≤ C_2\norm{u, λ}
 \end{align*}
+
+\proofpart{Lower bound}
+
+We will start selecting $(μ, v) = (u, λ)$ to have some ``good terms'' with the squares of the gradients. Thus, we would have
+\[
+a(u,λ; u, λ) = \int_Ω \abs{∇u}^2 + \abs{∇λ}^2 - \frac{1}{α}λu + \ind_{Ω_0} u λ
+\]
+
+We still have some ``bad terms'' that we cannot bound, so we will compute \[ a(u,λ; -λ, u) = \int_Ω \frac{1}{α} λ^2 + \ind_{Ω_0} u^2 \]
+and then try to substract the second equation weighted by some coefficent $β$ from the first one. Thus, we are choosing $(μ, v) = (u - βλ, λ + βu)$ and
+\[
+a(u,λ; u - βλ, λ + βu) = \int_Ω \abs{∇u}^2 + \abs{∇λ}^2 + \frac{β}{α} λ^2 + β \ind_{Ω_0} u^2- \frac{1}{α} λu + \ind_{Ω_0} uλ
+\]
+
+Now we can start bounding different terms. For $\frac{1}{α} λu$ we use Cauchy-Scharwz so that \[ \int_Ω \frac{1}{α} λu ≤ \frac{1}{α} \norm{λ}_2 \norm{u}_u ≤ \frac{β}{2α} \int_Ω λ^2 + \frac{1}{2αβ} \int_Ω u^2 \] and similarly \[ \int_{Ω_0} uλ ≤ \frac{β}{2} \int_{Ω_0} u^2 + \frac{1}{2β} \int_Ω λ^2 \]
+
+Introducing those in the equation, we have
+\[
+a(u,λ; u - βλ, λ + βu) = \int_Ω \left(\abs{∇u}^2 + \abs{∇λ}^2\right) + \underbracket{\frac{β}{2α} \int_Ω λ^2 + \frac{β}{2} \int_{Ω_0} u^2}_{≥ 0} - \frac{1}{2β} \int_Ω λ^2 - \frac{1}{2αβ} \int_Ω u^2
+\]
+
+We will throw out the positive terms (we want to bound $a$ from below), and using \nref{thm:Fund:PoincareInequality}, we can bound the negative terms:
+\begin{align*}
+-\int_Ω λ^2 &≥ - C_p^2 \int_Ω \abs{∇λ}^2 \\
+-\int_Ω u^2 &≥ - C_p^2 \int_Ω \abs{∇u}^2 \\
+\end{align*} and so
+\[ a(u,λ; u - βλ, λ + βu) ≥ \left(1 - \frac{C_p^2}{2αβ}\right) \int_Ω \abs{∇u}^2 + \left(1 - \frac{C_p^2}{2β}\right) \int_Ω \abs{∇λ}^2 \]
+
+That quantity is greater than $\frac{1}{2} \norm{u,λ}^2$ if we have
+\[ 1 - \frac{C_p^2}{2αβ} ≥ \frac{1}{2} \quad \text{and} \quad 1 - \frac{C_p^2}{2β} ≥ \frac{1}{2} \] so that our $β$ is defined as \[ β = C_p^2 \max \set{1, \frac{1}{α}} \]
+
+\proofpart{Lower bound}
+
+With the election of $(μ, v)$ from the previous part of the proof we have directly the lower bound $\norm{μ, v} ≤ C_2\norm{u, λ}$.
+\end{proof}
+
+This proposition gives us existence and unicity of the solution for the problem.
+
+\subsection{Finite element approximation}
+
+For a given mesh size $h > 0$, we will construct the mesh \mesh of triangles or tetrahedrons $K$ with $\mathop{diam}\, h_K ≤ h$, with $P_1, \dotsc, P_N$ the internal vertices and $φ_1, \dotsc, φ_N$ the shape functions associated to those vertices.
+
+Thus, our space of finite elements is $V_h = \spn \set{φ_1, \dotsc, φ_n} ⊂ H_0^1(Ω)$ and we will search for $(u_h, λ_h) ∈ V_h^2$ such that \[ a(u_h, v_h; μ_h, v_h) = F(μ_h, v_h) \quad ∀ (μ_h, v_h) ∈ V_h^2\]
+
+We could say that existence and uniqueness of the finite element approximation comes from the existence and uniqueness of the original problem, but we will see it using linear algebra and trying to invert the matrix of the system. Our system will be \[ \begin{pmatrix} \mM_0 & \mA \\ \mA & - \frac{1}{α} \mM \end{pmatrix} \begin{pmatrix} \vu \\ \vec{λ} \end{pmatrix} = \begin{pmatrix} \mM_0 \vu_0 \\ \vf \end{pmatrix} \]
+
+We can try to eliminate $\vec{λ}$ from that equation, so that $\vec{λ = α \inv{\mM} (\vf - \mA \vu} $ and then \[ (\mM_0 + α \mA \inv{\mM} \mA) \vu = \]
+
+That matrix is symmetric and positive definite and so invertible. Thus, we can start with the error estimates.
+
+\subsection{A priori error estimates}
+
+\begin{prop} There exists a constant $C > 0$ indepedent of $f, u_0, h$ but dependent on the mesh aspect ratio such that \[ \norm{u - u_h, λ - λ_h}^2 ≤ C \sum_{K ∈ \mesh} η_K^2 \] with
+\begin{multline*}
+η_K^2 =
+	\left(
+		h_K \norm{f + Δu_h + \frac{1}{α} λ_h}_{L^2(K)}
+		+ \frac{1}{2} h_K^{\sfrac{1}{2}} \norm{[∇u_h · \vn]}_{L^2(∂K)}
+	\right)^2 + \\
+	+ \left(
+		h_K \norm{\ind_{Ω_0} (u_0 - u_h) + Δλ_h}_{L^2(K)}
+		+ \frac{1}{2} h_k^{\sfrac{1}{2}} \norm{[λ_h · \vn]}_{L^2(∂K)}
+	\right)^2
+\end{multline*}
+\end{prop}
+
+\begin{proof} By using the inf-sup condition from \fref{prop:PDE:OptimalControlInfsup}, we have a constant $C_1 > 0$ independent of $h$ such that \[ \norm{u - u_h, λ - λ_h} ≤ C_1 \sup _{(μ,v) ∈ H} \frac{a(u - u_h, λ - λ_h; μ,v)}{\norm{μ,v}}\]
+
+In non-mixed problems our strategy to prove these bounds was to use coercivity and then relate it to the residual. Here we will to the same but with the inf-sup condition, using that
+\[ \norm{u - u_h, λ - λ_h} ≤ C_1  \sup _{(μ,v) ∈ H} \frac{F(μ,v) - a(u_h, λ_h; μ,v)}{\norm{μ,v}} \]
+
+We want to prove that for any $(μ,v) ∈ H$ there exists another constant $C_2 > 0$ independent of $f, u_0$ and $h$  such that \[ F(u,v) - a(u_h, λ_h; μ,v) ≤ C_2 \left(\sum_{K ∈ \mesh} η_K\right)^{\sfrac{1}{2}} \norm{μ,v} \]
+
+Indeed,
+\begin{align*}
+& F(μ, v) - a(u_h, λ_h; μ,v)= \\
+	&= \int_Ω \left(\left(f + \frac{1}{α}λ_h\right) μ - ∇u_h ∇μ\right)
+	+ \int_Ω\left(\ind_{Ω_0}(u - u_0) v - ∇λ_h ∇v \right) = \\
+	&=\int_Ω \left(f + \frac{1}{α}λ_h\right) (μ - μ_h) - ∇u_h ∇(μ - μ_h) + \\
+	&\qquad + \int_Ω \ind_{Ω_0} (u_0 - u_h)(v - v_h) - ∇λ_h ∇(v - v_h) = \\
+	&= \sum_{K ∈ \mesh} \int_K (f + \frac{1}{α}λ_h + Δu_h)(μ - μ_h) + \frac{1}{2} \int_{∂K} [∇u_h · \vn](μ - μh) + \\
+	&\qquad + \int_K \ind_{Ω_0} (u_0 - u_h) + Δλ_h)(v - v_h) + \frac{1}{2} \int_{∂K} [∇λ_h · \vn](v - v_h)
+\end{align*} and then we use Cauchy-Schwarz inequality to boud by the norms of everything.
+
+We choose the Clément interpolant for the finite element approximations so that $μ_h = R_h μ$ and $v_h = R_h v$ and we have the bounds \begin{align*}
+\norm{μ - R_h μ}_{L^2(K)} &≤ C_3 h_k \norm{∇v}_{L^2(ΔK)} \\
+\norm{μ - R_h μ}_{L^2(∂K)} &≤ C_3 h_k^{\sfrac{1}{2}} \norm{∇v}_{L^2(ΔK)}
+\end{align*} so that we can continue:
+\begin{gather*}
+F(μ, v) - a(u_h, λ_h; μ,v) ≤ \\
+	≤ C_3 \sum_{K ∈ \mesh} \left(h_K \norm{f +  \frac{1}{α}λ_h + Δ_h}_{L^2(K)} + \frac{1}{2} h_K^{\sfrac{1}{2}} \norm{[∇u_h · \vn]}_{L^2(∂K)}\right) \norm{∇μ}_{L^2(ΔK)} + \\
+	+\quad \sum_{K ∈ \mesh} \left(h_K \norm{\ind_{Ω_0} (u_0 - u_h) + Δλ_h}_{L^2(K)} + \frac{1}{2} h_K^{\sfrac{1}{2}} \norm{[∇λ_h · \vn]}_{L^2(∂K)}\right) \norm{∇λ}_{L^2(ΔK)}
+\end{gather*}
+
+We get the final bound by using the discrete Cauchy-Schwarz inequality\footnote{For any vector $\pesc{\va, \vb} ≤ \norm{\va} + \norm{\vb}$ so in particular $a_1 b_1 + a_2 b_2 ≤ \sqrt{a_1^2 +a_2^2} + \sqrt{b_1^2 + b_2^2}$}, that will give us a third constant that depends on the angle of the mesh elements and in some way ``measures'' how many times are we counting some terms over the same boundary.
+
 \end{proof}

@@ -1,0 +1,40 @@
+% -*- root: ../NumericalApproximationofPDEs.tex -*-
+\section{Non linear problems}
+
+Our model non-linear problem will the the following: find $\appl{u}{Ω ⊂ ℝ^2}{ℝ}$ such that \(
+\begin{cases}
+- Δu + u^3 = f & \text{in } Ω \\
+u = 0 & \text{on } ∂Ω
+\end{cases} \label{eq:PDE:NonlinearProblem}
+\)
+
+The cube does not have any specific physical significance, but it will be interesting for the mathematics.
+
+The weak formulation of this problem is finding $u ∈ H_0^1(Ω)$ such that \( \int_Ω ∇u ∇v + u^3 v = \int_Ω fv \qquad ∀ v ∈ H_0^1(Ω) \label{eq:PDE:WeakNonlinearProblem} \)
+
+We could have some problems with that term $u^3 v$: we need to ensure that it is bounded. Indeed, it is. We have that $\int_Ω u^3 v ≤ \norm[0]{u^3}_2 \norm{v}_2$. We know that $\norm{v} < ∞$ as $v ∈ H_0^1(Ω)$. For the other norm, we can see that $\norm[0]{u^3}_2 = \norm[0]{u}_6^3$ and by the \nref{thm:SobolevEmbedding}, as we are working in $Ω ⊂ ℝ^2$ and $u ∈ H^1(Ω)$, there is an embedding $H^1(Ω) ⊂ L^q(Ω)$ for $2 ≤ q < ∞$ and in particular $\norm{u}_6 < ∞$.
+
+Thus we can talk about uniqueness and existence.
+
+\begin{prop} For the non-linear problem, if we assume $f ∈ L^2(Ω)$ and $∂Ω ∈ C^2$ (or $Ω$ is a convex polygon), then there exists a unique $u ∈ H^1_0(Ω)$ solution of \eqref{eq:PDE:WeakNonlinearProblem} and $C > 0 $ depending on the domain such that \( \norm{∇u}_{L^2(Ω)} ≤ C\norm{f}_{L^2(Ω)} \label{eq:PDE:NonLinearBound} \)
+\end{prop}
+
+\begin{proof} Uniqueness and the bound are not difficult. For the existence problem we will need an extra problem.
+
+\proofpart{Bound \eqref{eq:PDE:NonLinearBound}}
+
+Assume that there exists a solution $u$ of the problem. Then \[ \int_Ω \abs{∇u}^2 ≤ \int_Ω \abs{∇u}^2 + \underbracket{\int_Ω u^4}_{ > 0} = \int_Ω fu ≤ C_p \norm{f}_{L^2(Ω)} \norm{∇u}_{L^2(Ω)} \]
+
+\proofpart{Uniqueness}
+
+Let $u_1, u_2 ∈ H_0^1$ be solutions of the problem. Then,
+\[ \int_Ω ∇(u_1 - u_2) ∇v + \int_Ω(u_1^3 - u_2^3) v = 0\]
+
+By using the mean value theorem, we know that $φ(a) - φ(b) = φ'(θa + (1 - θ)b) (a - b)$ for some $θ ∈ (0,1)$. Choosing $φ(u) = u^3$, we can get rid of that substraction $u_1^3 - u_2^3$ and then \[
+\int_Ω ∇(u_1 - u_2) ∇v + \int_Ω 3(θu_1 + (1 - θ)u_2)^2 (u_1 - u_2) v = 0
+\]
+
+Now we take $v = u_1 - u_2$ and we have
+\[ \int_Ω \abs{∇(u_1 - u_2)}^2 + \underbracket{\int_Ω 3(θu_1 + (1 - θ) u_2)^2 (u_1 - u_2)^2}_{ ≥ 0} = 0\] so by some reason I'm not really sure of turns out $u_1 - u_2 = 0$.
+\end{proof}
+

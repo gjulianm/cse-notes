@@ -179,7 +179,7 @@ A \vu &= \vf
 
 Now, on to the quality of the approximation. We will want to ensure that the approximate solution converges in some manner. If our bilinear form is symmetric, we can use Galerkin orthogonality:
 
-\begin{defn}[Galerkin orthogonality][Orthogonality!Galerkin] \label{def:Theory:GalerkinOrthog} Given a bilinear form $a$, we say that a solution $u$ and its approximation $u_h$ fulfill the Galerkin orthogonality condition if and only if \[ a(u - u_h, v_h)= 0 \quad v_h ∈ V_h \]
+\begin{defn}[Galerkin\IS orthogonality] \label{def:Theory:GalerkinOrthog} Given a bilinear form $a$, we say that a solution $u$ and its approximation $u_h$ fulfill the Galerkin orthogonality condition if and only if \[ a(u - u_h, v_h)= 0 \quad v_h ∈ V_h \]
 
 Given that a coercive symmetric bilinear form defines an inner product, Galerkin orthogonality is equivalent to saying that $u - u_h \perp V_h$.
 \end{defn}
