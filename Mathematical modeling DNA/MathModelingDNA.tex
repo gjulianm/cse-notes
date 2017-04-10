@@ -269,8 +269,73 @@ Computations and I'm not going to copy that.
 
 Second observation.
 
+I don't know that but
+\[ \ln \pesc{\mR_1^T \mR_n} \simeq -n α + \oof{\frac{n}{K_m^2}} \]
+
+First term comes from sparstity of $\mQ(\vu)$ and the other from $\mK_i \gg 1$ for $i = 1, 2,3$. All of the above results are proved for Helical Wain Lite Chain\footnote{I do not understand what's written on the blackboard.} \[ ρ_\text{HWLC} = \prod_{i = 1}^{N_1} \frac{1}{Z} e^{- \frac{1}{2}\left(K_1u_1^2 + K_2 u_2^2 + K_3 (u_3 - \hat{u}_3)^2\right)} \] where each $\vu$ is the Cayley vector of the junction. This assumes that the Cayley vectors are indenpendent and identically distributed. The sparsity of $\pesc{\mQ}$ relied on base states of $\hat{u}_1 = \hat{u}_2 = 0$, which corresponds to a straight ground state but maybe twisted.
+
+In the cgDNA model, the expectation $\pesc{\mQ_i}$ is not sparse, as some entries are not zero but are very small, so the approximation is not terribly bad.
+
+SOmething doesn't need stiffness and other thing does not need sparse. These are in the notes in the web.
+
+In the cgDNA model, $\ln \pesc{\vt_1 · \vt_n} \simeq - α n$ plus small wiggles of period 10-11 basepairs.
+
+Some sequences $\mathcal{S}$\footnote{See series 7 of exercises} find that $\ln \pesc{\vt_1 · \vt_n}$ is far from linear, as \[ \pesc{\vt_1 · \vt_n} = \hat{\vt}_1 · \hat{\vt}_n e^{-αn} \]  which is a brilliant fit. I don't know that's the hatty thing. Ok, the hatty thing is the bending of the ground state.
+
+For cgDNA this is just a guess but you can actually derive such formulas for rigid base pair models. So all in all the simple formula works for sequences with ground states that do not bend too much. For other groudn states you have to include the correction factor of the hatty thingies.
+
+\subsection{Flory persistence vector}
+
+Now on to the Flory persistence vector. We will prove that \[ \pesc{φ_n(\vw)} = \pesc{\mR_1^T (\vr_n - \vr_1)} \convs (\mI - \pesc{\mQ})^{-1} \vq\]
+
+We may not be able to invert the matrix but if $\vq = \begin{pmatrix} 0 & 0 & l \end{pmatrix}$ with $l$ being a length given in nanometers, the idea is that we have always the same step between frames. This is not quite compatible with cgDNA but it's a standard model. So the good thig is that if \[ \pesc{\mQ} = \begin{pmatrix} * & * & 0 \\ * & * & 0 \\ 0 & 0 & * \end{pmatrix} \] so the square block gets it by zeros on the inverse and $α = \frac{1}{l_p}$ and in the end the limit is \[ \pesc{\mR_1^T (\vr_n - \vr_1)} \convs \frac{l}{1 - \pesc{\mQ}}  = \begin{pmatrix} 0 \\ 0 \\ l l_p \end{pmatrix} \] where $p$ (or $l_p$?) is the number of basepairs, and $l$ is a length usually about $0.33$ nanometers. So $l_F = l l_p \simeq 50 \si{\nano\metre}$ and this is also on the notes.
+
+This is mentioned because there's a bit of a dichotomy, always tangent-tangent stuff and then you get a decay that gives you a non-dimensional decay length. And miraculously it's the same.
+
+However all of this breaks down for cgDNA, but it's almost exactly the same.
+
 \section{Looping or cyclization experiments}
 
+This experiment is motivated by finding the probability of looping. One end is fixed: if the other end is in a correct position, the DNA binds to the protein. What's the possibility of that thing happening?
+
+We can use cgDNAmc to predict probabilities of looping.
+
+The end position will be given by $(\mR_1^T \mR_N, \mR_1^T (\vr_n - \vr_1)) ∈ SE(3)$, and we want to know the probability of that falling in the set $(B_1, B_2) ⊆ SE(3)$.
+
+Suppose now we have this ensemble $\set{\vw^j}_{j = 1}^M$. Then the probability of $B = (B_1, B_2)$ can be approximated by the number of hits divided by the total samples. In other words. we fix the initial position $(\mR_1, \vr_1)$. Note that the hit must be not only in the good position but also in the good orientation.
+
+In series 6/7 we did clouds of shapes.
+
+The problem with using Monte Carlo for this is that if we try to estimate rare events, ... something
+
+j-factor is the PDF in $SO(3) × ℝ^3$ for fixed start.
+
+One of the classical experiments is DNA closing on its own tail. So $B$ is a neighbourhood of $(\mI, 0)$. Webpage MC simulations with cgDNA of R. Manning. Peaks and periodicity.
+
+So what you say is that \[ P(B_1, B_2) \simeq j(\mR^*, \vr^*) \abs{B_1} \abs{B_2} \] (basically a 1 point quadrature rule as $j$ is a PDF). The idea is the stars are somewhere in the middle.
+
+In MOnteCarlo the idea is to shrink the sets. Is the estimate of $j$ insensitive to choice of $B_1$, $B_2$?
+
+By the way, measure on $SO(3)$ is something weird.
+
+To make these computations you need a number of $10^{14}$ computations. So he's mentioning this just because the lights don't go on. And cgDNAmc is efficient and by various tricks they can do it.
+
+Computing j factor is an important modeling question and also computing j-factors needs {\Huge MUCH} bigger ensembles and then cgDNAmc is very efficient.
+
+Back to mathematics and features of cgDNA and cgDNAmc that allow usage with large ensembles. Put up some \TeX\ notes. Also some remarks in solutions to Series 6 and also supplemental information article web badadadada.
+
+As the matrix $\mK$ is banded with a constant band width. Getting $Z$, $\mK$ and $\vmu$ arenot a problem because it's one time. Problem is with the samples of the pdf $ρ$. Computer scientists know few things but amoong them you can find sampling from $N(0,1)$. Thanks, computer scientists.
+
+We have to diagonalize $\mK$. One idea is to use spectral decomposition wo that $\mK \mP = \mP \mtr{Λ}$ with $\mtr{Λ}$ diagonal with the eigenvalues, because we have symmetric positive definite matrix. You could compute it once. This thing implies that we can do a change of variables so that $\vw - \vmu = \mP \vz $ and then the PDF in $\vz$ is
+\[ ρ(\vz) = \frac{1}{Z^*} e^{- \vz \mtr{Λ} \vz^T} \] which is a fairly simplified formula and one from which we can sample very efficiently. However, to get back the vectors $\vw$ we have to do amultilication by a dense matrix that \textit{kills you}.
+
+The thing is that spectral decomposition did not use bandedness. We can factor $\mK$ as an LU decomposition, and as $\mK$ is symmetric then $\mU = \mL^T$ and $\mK = \mL \mL^T$ and as $\mK$ is banded, that implies that $\mL$ is banded. Things ar ethe same but $\vy = \mL^T \vw - \vmu$ and then similary \[ ρ(\vy) = \frac{1}{Z^{**}} e^{-\sum_{i=1}^{12N - 7} y_i^2} \] so we sampleeach scalar distribution. The advantage is that now to get the $\vw$ we only need to solve a linear system with coefficients being a banded triangular matrix, which is beri izi.
+
+Now what's a hit? a hit is a hit ffs. In particular we also need to do the reconstruction fron $\vw^n$ to $\mR_n$, $\vr_n$ for each $M$. We want to do that efficiently.
+
+We have $SE(3)$ linear algebra (see \TeX\ notes) so we have the magic recursion formula. But we don't need any intras. We can use quaternions which allow faster multiplications in $SO(3)$. GPUS.
+
+If you have a Gaussian on variables $\vw = (\vx, \vy)$ iners and intras so we can compute the marginal distribution now jsut for $ρ(\vx)$ which is also a gaussianianainainainainainaina and $\vx$ is roughly half the dimension so its $\vx ∈ R^{6N - 6}$ and we even can simplify the sampling. But this is a bad idea because $ρ(\vx)$ has $\mK_x$ which is no longer banded.
 
 \appendix
 
