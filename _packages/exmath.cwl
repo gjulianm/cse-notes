@@ -182,6 +182,7 @@
 \mC#m
 \mX#m
 \mY#m
+\mI#m
 \ctrig{angulo}#m
 \ceul{mod}{angulo}#m
 \i#m

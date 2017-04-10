@@ -498,9 +498,121 @@ Why is this interesting? We can see that we can express the indicator function a
 \sign(ξ + N) \hat{f}(ξ) &= \fourier\left(\frac{\imath e^{-\imath N x}}{π} H(e^{\imath Nx} f)\right) (ξ) \\
 \end{align*} so that the operator \[ \inv{\fourier}_Nf(x) ≝ \int_{\abs{ξ} ≤ N} \hat{f}(ξ) e^{2π\imath x · ξ} \dif x \] will be $L^p(ℝ)$ bounded uniformly in $N$ if the Hilbert transform is $L^p$ bounded too.
 
+\chapter{Hilbert transform}
 
+\begin{theorem} If $1 < p < ∞$ and $f ∈ L^p(\crc)$, then \[ \norm{S_N f -f}_{L^p(\crc)} \convs[][N][∞] 0 \]
+\end{theorem}
+
+\begin{proof} Applying \fref{prop:FourierSeriesConvLp}, we only need to prove that the $S_N$ operator is uniformly bounded. We can start by writing
+\[S_Nf = \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{\sin \left((2N + 1) π (x- y)\right)}{\sin \left(π(x - y)\right)} f(y)  \dif y \]
+
+We can consider an alternative operator \[ \tilde{H}_N f ≝ \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{\sin \left((2N + 1) π (x- y)\right)}{π(x - y)} f(y)  \dif y\] and we claim that $\norm[0]{S_N - \tilde{H}_N} ≤ C$, with $C$ independent of $N$.
+
+In order to see that, we can operate
+\[
+S_N - \tilde{H_N})f = \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \underbracket{\sin  \left((2N + 1) π (x- y)\right) · \left(\frac{1}{\sin π(x -y)} - \frac{1}{π(x -y)} \right)}_{L_N} f(y) \dif y
+\] and by Hölder inequality, we see that $\norm[0]{(S_N - \tilde{H}_N)f}_{L^p} ≤ \norm{L_N}_{∞} \norm{f}_p$ so we only need to bound the $L_N$ function. But it is easy to see as $\sin$ is bounded and $\lim_{x\to 0} \frac{1}{\sin x} - \frac{1}{x} = 0$, so everything is bounded (we are in a bounded domain).
+
+Now we need to show $\norm{\tilde{H}_Nf}_p ≤ C \norm{f}_{L^p}$, and we will do it by a density argument. We will choose $f ∈ C_0^∞(\crc)$, bound the integral and then use density to approximate for any given $f ∈ L^p$.
+
+First, we can rewrite the operator as\footnote{In this case $\pm x \equiv + x - x $ to avoid writing too many terms.} \begin{align*}
+\tilde{H}_N f &=
+	\pm \frac{1}{2\imath} \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{e^{\pm \imath (2N + 1) π (x-y)}}{π (x-y)} f(y) \dif y = \\
+	&= \pm \frac{e^{\pm \imath(2N + 1)πx}}{2π \imath} \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{1}{x-y} e^{\mp \imath (2N + 1)πy} f(y) \dif y
+\end{align*}
+
+Now the integrand is the Hilbert transform of $g(y) = e^{\mp \imath (2N + 1)πy} f(y)$, so that $\norm{Hg}_{L^p(ℝ)} ≤ C \norm{g}_{L^p(ℝ)} = C \norm{f}_{L^p(-\sfrac{1}{2}, \sfrac{1}{2})}$.
+
+And this finishes the proof because something I didn't catch. But yes.
+\end{proof}
 
 \chapter{Calderon-Zygmund operator}
+
+The Hilbert transform seemed like a useful thing to have. However, we have only defined it for $ℝ$ and not for $ℝ^n$. It turns out that we can give an ``extension'', which is called the Calderon-Zygmund operator, by using the property of the Hilbert transform on the Fourier side, which was \[ \widehat{Hf}(ξ) = - π\imath \sign (ξ) \hat{f}(ξ) = - π\imath \frac{ξ}{\abs{ξ}} \hat{f}(ξ) \] and then we could define something as \[ \widehat{R_j f} (ξ) ≝ C_n \frac{ξ_j}{\abs{ξ_j}} \hat{f}(ξ) \]
+
+\begin{defn}[Calderon-Zygmund kernel][Kernel\IS Calderon-Zygmund] \label{def:CalderonZygmundKernel} A function $K ∈ C^∞(ℝ^n \setminus\set{0})$ is called a Calderon-Zygmund kernel if $K$ satisfies
+\begin{enumerate}
+\item \label{prp:CZAss1} $\abs{K(x)} ≤ B \abs{x}^{-n} \quad ∀x ∈ ℝ^n, \, B > 0 $
+\item \label{prp:CZAss2} $\abs{∇K(x)} ≤ B \abs{x}^{-n - 1}  \quad ∀x ∈ ℝ^n, \, B > 0$
+\item \label{prp:CZAss3} $\int\limits_{r ≤ \abs{x} ≤ s} K(x) \dif x = 0 \quad  ∀r,s > 0 $
+\end{enumerate}
+\end{defn}
+
+One can see that the Hilbert transform is a case of a Calderon-Zygmund kernel with $K_H(x) = \frac{1}{x}$.
+
+We can also prove a first lemma that will become very useful when proving the boundedness of the operator.
+
+\begin{lemma} The second assumption \eqref{prp:CZAss2} of a \nref{def:CalderonZygmundKernel} implies that \[ \int_{\abs{x} > 2\abs{y}} (K(x) - K(x-y)) \dif x  ≤ CB \quad ∀ y ≠ 0\]
+\end{lemma}
+
+\begin{proof} We can write \[ K(x) - K(x-y) = \int_0^1 ∇K (x - ty) · (-y) \dif t \] so that by \eqref{prp:CZAss2}
+\[ \norm{∇K(x - ty)}_{L^∞} ≤ \frac{B}{\abs{x - ty}^{n+1}} ≤ \frac{B2^{n+1}}{\abs{x}^{n+1}} \] if $\abs{x} ≥ 2\abs{y}$.
+
+Therefore we have \[
+\int_{\abs{x} > 2\abs{y}} (K(x) - K(x-y))
+	≤ \int_{\abs{x} > 2\abs{y}} \abs{y} \frac{B2 ^{n+1}}{\abs{x}^{n+1}} \dif x
+\] which is perefctly bounded.
+\end{proof}
+
+\begin{defn}[Calderon-Zygmund operator][Operator\IS Calderon-Zygmund] Given a \nref{def:CalderonZygmundKernel} $K$, we can define the Calderon-Zygmund operator for $f ∈ \schwartz$ as \[ (Tf) (x) ≝ \lim_{ε \to 0+} \int_{\abs{x - y} ≥ ε} K(x -y) f(y) \dif y \]
+\end{defn}
+
+First question is, of course, whether that limit is well-defined.
+
+\begin{lemma} $T$ is well defined, that is, the limit exists for any fixed $x ∈ ℝ^n$.
+\end{lemma}
+
+\begin{proof} First we do a change of variable \[ \int_{\abs{x - y} ≥ ε} K(x -y) f(y)  = \int_{\abs{y} ≥ ε} K(y) f(x - y) \] and we will separate the domain of integration in two parts: one with $\abs{y} ≥ 1$ (which can cause problems with boundedness of the integral) and $1 ≥ \abs{y}  ≥ ε$ (which can cause problems due to singularities of $K(0)$).
+
+For the first part, we only need to see that $f$ is a Schwartz function and decays fast enough.
+
+For the second part, we can add a constant part (w.r.t $y$) because $\int_{1 ≥ \abs{y} ≥ ε} K(x) \dif x = 0$ \eqref{prp:CZAss3}, so that
+\begin{align*}
+\int\limits_{1 ≥ \abs{y} ≥ ε} K(y) f(x - y) \dif y
+	&= \int\limits_{1 ≥ \abs{y} ≥ ε} K(y) (f(x - y) - f(x)) \dif y = \\
+	&= \int\limits_{1 ≥ \abs{y} ≥ ε} B \abs{y}^{-n} \norm{∇f}_{L^∞} \abs{y} \dif y ≤ \\
+	&≤ C \norm{∇f}_{∞} \int_ε^1 \dif \abs{y} ≤ C
+\end{align*}
+\end{proof}
+
+Now we will be interested in the boundedness of this operator.
+
+\begin{prop} If $T$ is a Calderon-Zygmund operator, then it's bounded in $\linapp[L^2][L^2]$.
+\end{prop}
+
+\begin{proof} Assume $f ∈ \schwartz$. We want to show that \[ \norm{Tf}_{L^2(ℝ^n)} ≤ CB \norm{f}_{L^2(ℝ^n)}\]
+
+We introduce the following ``restricted'' operator:
+\[ T_{r,s} f(x) ≝ \int\limits_{s ≥ \abs{y} ≥ r} K(y) f(x -y) \dif y = f * \left(\ind_{s ≥ \abs{y} ≥ r} · K\right)\]
+
+We will prove that this operator is $L^2$-bounded by a constant independent of $r$ and $s$, so that proves the boundedness of $T$ by taking the limits on both variables.
+
+To prove that bound, we can calculate the Fourier transform of that function:
+\[ \widehat{T_{r,s}f}(ξ) = \hat{f}(ξ) · \fourier\left(\ind_{s ≥ \abs{y} ≥ r}(y) K (y)\right) (ξ)\]
+
+As the Fourier transform is an isometry on $L^2$; we would have the bound \[ \norm{T_{r,s} f}_{L^2} = \norm{\widehat{T_{r,s} f}}_{L^2} ≤ \norm{\hat{f}}_{2} \norm{\fourier\left(\ind_{s ≥ \abs{y} ≥ r} · K \right)}_{∞} \]
+
+The Fourier transform of that thing is perfectly well defined as $\ind_{s ≥ \abs{y} ≥ r} · K$ is smooth and bounded. We will use a trick, which is to divide the integral in two intervals of $\abs{y}$: $[r, η_1]$ and $[η_2, s]$ with $η_1 = \min \set[0]{s, \inv{\abs{ξ}}}$ and $η_2 = \max \set[0]{r, \inv{\abs{ξ}}}$.\footnote{I'm zero sure about this crap.}
+
+Now we estimate the integral in the first interval, using again the trick of adding a constant w.r.t $y$ because the integral of $K$ is zero over that domain (\fref{prp:CZAss3})
+\begin{align*}
+\abs{\int_{r ≤ \abs{y} ≤ η_1} K(y) (e^{-2π\imath y · ξ} - 1) \dif y}
+	&≤ C \int\limits_{r ≤ \abs{y} ≤ η_1}  \abs{K(y)} \abs{y} \abs{ξ} \dif y \\
+	&≤ C \int\limits_{r ≤ \abs{y} ≤ η_1}  \abs{y}^{-n + 1} \abs{ξ} \dif y  \\
+	&≤ C \int_r^{η_1} \abs{ξ} \dif \abs{y} ≤ \\
+	&≤ C \abs{ξ} η_1 ≤ 1
+\end{align*}
+
+For the second interval, we see that
+\begin{align*}
+\int\limits_{η_2 ≤ \abs{y} ≤ s} K(y) e^{-2π\imath y · ξ} \dif y
+	&= - \int_{η_2 ≤ \abs{y} ≤ s} K(y) e^{-2π\imath\left(y + \frac{ξ}{2\abs{ξ}^2}\right) · ξ} \dif y = \\
+	&= \frac{1}{2} \left[ \int_{η_2 ≤ \abs{y} ≤ s} K(y) e^{-2π\imath ξ y} \dif y - \int_{η_2 ≤ \abs{y - \frac{ξ}{2 \abs{ξ}^2}} ≤ s} K\left(y - \frac{ξ}{2 \abs{ξ}^2}\right) e^{-2πξ y} \dif y \right]
+\end{align*}
+
+I'm not copying more of this bullcrap.
+
+\end{proof}
 
 \chapter{BMO functions}
 
