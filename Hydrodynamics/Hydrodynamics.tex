@@ -1,7 +1,7 @@
 \documentclass[palatino]{epflnotes}
 
 \title{Hydrodynamics}
-\author{}
+\author{Guillermo Julián}
 \date{16/17 - Spring semester}
 
 % Additional packages
@@ -199,6 +199,57 @@ Duct tape
 % This is getting naughty
 
 Slides, we get Pousielle with an equal sign instead of a minus (typo on the slide)
+
+\section{Unsteady flows}
+
+Self-similar diffusion.
+
+Unsteady Couette, by separation of variables, linear profile at the end.
+
+In Stokes first problem we have same thing but not boundary at $y = h$, so semi-infinite plane. There's no steady solution. Penetration layer of size $d \sim \sqrt{νt}$ where diffusion has already happened, which is very slow.
+
+Funny thing about vortices (exercises) there are not many mechanisms that can destroy them, such at it happens with other hydrodynamic things (layers, things).
+
+\subsection{Stokes second problem}
+
+We will consider a semi-infinite plane of fluid, with the bottom plate oscillating with velocity $u_p \cos ωt$. We have unidirectional so $v = 0$ (no vertical motion) and then we have the diffusion equation \[ \dpd{u}{t} = ν \dpd[2]{u}{y} \] with some bizarre boundary conditions, $u(0,t) = u_p \cos ωt$ and $u(∞,t) \to 0$.
+
+This is a kind of a harmonically forced problems, which in our case means that the functions are sinusoid oscillations.
+
+We can solve this problem by the ansatz $u = \hat{u}(y) \cos (ωt + φ) = \hat{u}(y) e^{\imath ω t} + c.c.$ (complex conjugate) which is a way of taking into account the phase with $\hat{u}(y)$ being a complex function. Now the equation becomes \begin{align*}
+\imath ω \hat{u} e^{iωt} &= ν \dod[2]{\hat{u}}{y} e^{\imath ω t} \\
+\frac{\imath ω}{ν} \hat{u} &= \dod[2]{\hat{u}}{y}
+\end{align*} so that the solution is \[ \hat{u}(y) = A e^{\sqrt{\frac{\imath ω}{ν}} y} + B e^{-\sqrt{\frac{\imath ω}{ν}} y} = B e^{\frac{1}{2}\sqrt{\frac{2ω}{ν}} y} e^{\frac{\imath}{2}\sqrt{\frac{2ω}{ν}} y} + A e^{- \frac{1}{2}\sqrt{\frac{2ω}{ν}} y} e^{- \frac{\imath}{2}\sqrt{\frac{2ω}{ν}} y} \]
+
+To have $\hat{u}(∞) = 0$ we need $B = 0$, and to have $u(0) = U_p$ we need $A = U_p$. Therefore, the final solution will be \[ u(y,t) = U_p e^{-\sqrt{\frac{ω}{2ν}} y} \cos \left(ωt - \sqrt{\frac{ω}{2ν}} y\right)\]
+
+So we find that we have oscillations with exponentially decaying amplitude and height-dependent phase. For fluid mechanics, the penetration length $δ$ scales like $\sqrt{\frac{ν}{ω}}$. This makes sense as it is simlar to what we had with the Stokes first problem.
+
+% Draw the cone thing.
+
+So, in general, diffusion layers stay very small when $ν$ is small. So, for high Reynolds numbers the moment does not have time to diffuse into the flow. Therefore, we will be able to consider any flow at high Reynolds numbers as flows with vorticity concentrated on special points (vortices), filaments and close to the boundary. Therefore, we will solve for potential flow everywhere except in those special parts.
+
+\section{Boundary layers}
+
+We know that inviscid flow theory does not provide a good prediction of the drag on a flat plane, as that approximation with high Reynolds number kills the second-order derivatives and we lose the possibility to have more boundary conditions. So we can impose no penetration but we cannot enforce no-slip, so we won't see drag.
+
+We have to forget that model, and introduce a boundary layer in which viscous friction is not negligible and where we can impose no-slip condition.
+
+In this layer, the streamwise velocity is much larger than the normal velocities, and also the gradient of the streamwise velocity in the normal direction is going to be really high.
+
+First question is thickness of the boundary layer. Based on the other problems (1st stokes problem) we know that the diffusion goes like $δ \sim \sqrt{νt}$. How does that diffuse in space? We can do dimensional analysis (slides) and then $δ(x) \sim \sqrt{\frac{νx}{U}}$. In the slides $\rey_x = \frac{Ux}{ν}$.
+
+How does the flow look in that boundary layer? For that we need the method of matched asymptotic expansion.
+
+An example problem is Pouseille flow in a channel with a uniform flux through the channel walls. Looking for a streamwise indepedent solution $\vu(x,y,z) = U(y) \ve_x + V(y) \ve_y$. With continuity we have $\pd{v}{y} = 0$ so $V(y) = V_0$.
+
+We have the $y$ momentum equaiton which simplifies to $0 = \pd{p}{y}$ an therefore $p(x) = -k x + P_0$. In the $x$ momentum we find \[ -v_0 \dpd{U}{y} = \frac{k}{ρ} + ν \dpd[2]{U}{y} \] and with the boundary conditions wehave that \[ U(y) = \frac{ka}{ρv_0} \left( - \frac{y}{a} + \frac{1 - e^{-\frac{v_0y}{ν}}}{1 - e^{-\frac{v_0a}{ν}}} \right) \]
+
+I got lost. But solve for different orders of ε (1, ε, $ε^2$, ...) and turns out that it is the same that the asymptotic expansion of the exact solution.
+
+In the other case $\rey \gg 1$ change pressure gauge to have everythin ok. That gives us a singular perturbation because ε is in from of the second derivative and we cannot enforce both boundary conditions. However, $1 - y$ almost the exact solution except for the region near to the lower wall.
+
+We can rescale close to $y = 0$. That gives us a solution $\tilde{U}$. When $\tilde{y}$ goes too high, we are almost out of the boundary layer, so we match there the solutions. There's a typo and $\tilde{U} = A(1 - e^{-\tilde{y}})$.
 
 \appendix
 
