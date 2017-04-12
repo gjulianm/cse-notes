@@ -1,0 +1,168 @@
+\documentclass[palatino, shortheader, notitlepage, nochapters]{reportdoc}
+
+\title{Convex Optimization \\ A quick Summary}
+\author{Guillermo Julián Moreno}
+\date{16/17 - Spring semester}
+
+% Additional packages
+
+% --------------------
+
+\begin{document}
+\maketitle
+
+\section{Linear programming}
+
+The basic idea of linear programming is to maximize a target function $f(\vx)$ subject to certain constraints. The formulation is the following.
+
+\begin{defn}[Linear programming problem][Problem\IS Linear programming] \label{def:LinearProgProb} A Linear Programming problem consists in, given $\vc ∈ ℝ^N$, $\vb ∈ ℝ^M$ and $\mA ∈ ℝ^{M × N}$, finding the value of $\vx ∈ ℝ^N$ that minimizes $\vc^T \vx$ subject to $\mA \vx ≤ \vb$.
+\end{defn}
+
+We will define the \concept{Constraint\IS set} as the set $C = \set{\vx ∈ ℝ^N \st \mA \vx ≤ \vb}$, that is, the points that satisfy the constraints. Of course, we want this to be nonempty and possibly bounded. The solution to a linear problem always lies in the extrema of the constraint set.
+
+\subsection{Duality}
+
+We can also define a dual problem via the Lagrangian.
+
+\begin{defn}[Lagrangian] \label{def:Lagrangian} For the problem of minimizing a function $f_0(\vx)$ subject to
+\begin{align*}
+f_i(\vx) &≤ 0  & i = 1, \dotsc, M \\
+h_i(\vx) &= 0  & i = 1, \dotsc, P
+\end{align*} with $\vx ∈ D ⊆ ℝ^N$, we can define the Lagrangian as
+\begin{align*}
+\appl{L}{D × ℝ^M × ℝ^p&}{ℝ} \\
+\vx, \vec{λ}, \vec{ν} &\longmapsto f_0(\vx) + \sum_{i = 1}^M λ_i f_i(\vx) + \sum_{i = 1}^P ν_i h_i(\vx)
+\end{align*}
+\end{defn}
+
+This function has the following funny property: if $\vx ∈ D$ satisfies the constraints and $\vec{λ} ≥ 0$, then it's clear that $L(\vx, \vec{λ}, \vec{ν}) ≤ f_0(\vx)$. So, it can be said that the lagrangian is an inferior bound of the optimal value of $f_0$. For that, we will introduce the dual function.
+
+\begin{defn}[Dual\IS function] The dual function associated to the \nref{def:Lagrangian} is defined as \begin{align*}
+\appl{g}{ℝ^M× ℝ^P&}{ℝ} \\
+\vec{λ}, \vec{ν} &\longmapsto \inf_{\vx ∈ D} L(\vx, \vec{λ}, \vec{ν})
+\end{align*}
+\end{defn}
+
+If the constraints are linear, we can see that $g(\vx, \vec{λ}, \vec{ν}) = -∞$ unless $f_0(\vx) + \vec{λ} F(\vx) + \vec{ν} H(\vx)$\footnote{I'm using notation $F(\vx) = (f_1(\vx), \dotsc, f_M(\vx))$ for shortness.} does not depend on $\vx$.
+
+In the case of our \nref{def:LinearProgProb}, we have that \begin{align*}
+L(\vx, \vec{λ}) &= \vc^T \vx + \vec{λ}^T (\mA \vx - \vb) \\
+g(\vec{λ}) &= \inf_{x ∈ D} (\vc + \mA^T \vec{λ})^T \vx - \vb^T \vec{λ} = \begin{cases} - \vb^T \vec{λ} & \mA^T \vec{λ} + \vec{c} = 0 \\
+- ∞ & \text{otherwise} \end{cases}
+\end{align*}
+
+As discussed before, we want to maximize that function so that we are as close as possible to that upper bound $f_0(\vx)$. In fact, we have following theorem.
+
+\begin{theorem}[Strong duality theorem] Let $p^* ∈ ℝ$ the optimal value of the target function of a linear programming problem with dual function $g(\vec{λ}, \vec{ν})$. Then, for all $\vec{λ} ≥ 0$ and $∀ \vec{ν}$ we have that $g(\vec{λ}, \vec{ν}) = p^*$ if it is strictly feasible (that is, $f_i(\vx) < 0$).
+\end{theorem}
+
+We can also introduce the dual linear programming problem.
+
+\begin{defn}[Dual\IS linear problem] Given a \nref{def:LinearProgProb}, its dual consists of maximizing $- \vb^T \vec{λ}$ subject to $\mA^T \vec{λ} + \vc = 0$ and $\vec{λ} ≥ 0$.
+\end{defn}
+
+Also, if strong duality holds and $f_0(\vx^*) = g(\vec{λ}^*, \vec{ν}^*) ≤ f_0(\vx^*)$, then we have that $\vx^*$ minimizes $L(\vx, \vec{λ}^*, \vec{ν}^*)$ and $λ_i^* f_i(\vx^*) = 0$ (\concept{Complementary slackness}) so one of the two factors must be zero.
+
+For duality, we can define the following
+
+\begin{defn}[Convex\IS conjugate] Given $\appl{f}{X}{ℝ}$, its convex conjugate is given by
+\begin{align*}
+\appl{f^*}{X^*&}{ℝ} \\
+y &\longmapsto \sup_{x ∈ X} \pesc{y, x} - f(x)
+\end{align*}
+\end{defn}
+
+For example, if $f(x) = - \log x$ then $f^*(y) = -1 - \log (-y)$ when $y < 0$ ($∞$ otherwise). If $f(\vx) = \frac{1}{2} \vx^T \mQ \vx$, then $f^*(\vy) = \frac{1}{2} \vy^T \mQ^{-1} \vy$. If our problem is minimizing $f_0(\vx)$ subject to $\mA \vx ≤ \vb$ and $\mC \vx = \vd$, then
+\[ g(\vec{λ}, \vec{ν}) = \inf_{x ∈ D} f_0(\vx) + (\mA^T \vec{λ} + \mC^T \vec{ν})^T \vx - \vb^T \vec{λ} - \vd^T \vec{ν} = - f_0^*(- \mA^T \vec{λ} - \mC^T \vec{ν}) - \vb^T \vec{λ} - \vd^T \vec{λ} \]
+
+\subsection{Sensitivity}
+
+Suppose we have the problem of minimizing $f_0(\vx)$ such that $F(\vx) ≤ \vu$ and $H(\vx) = \vv$. The dual is maximizing $g(\vec{λ}, \vec{ν}) - \vu^T \vec{λ} - \vv^T \vec{ν}$ such that $\vec{λ} ≥ 0$. If we consider the optimal value $p^*$ as a function of $\vu, \vv$ then $\vec{λ} = - ∇_{\vu} p(0,0)$ and $\vec{ν} = - ∇_{\vv} p(0,0)$.
+
+\subsection{Convexity}
+
+Convex combination of $x_1, \dotsc, x_k$ is any point $x = \sum θ_i x_i$ with $\sum θ_i = 1$ and $θ_1 ≥ 0$. The convex hull of $S$ is all the convex combinations of points in $S$.
+
+We might also study cones, sets $C$such that $λx ∈ C$ for all $λ  >0$, $x ∈ C$. Similarly, a conic combination is any point of the form $x = θ_1 x_1 + θ_2 x_2$ with $θ_1, θ_2 ≥ 0$.
+
+Finite intersections of convex sets are convex. They are preserved under affine functions and their inverses, under perspective functions\footnote{$\appl{P}{ℝ^{N+1}}{ℝ}$ with $P(\vx, t) = \sfrac{\vx}{t}$.} and their inverses and under linear fractional functions and their inverses.
+
+\begin{defn}[Convex function] A function $\appl{f}{D ⊆ ℝ^n}{ℝ}$ is convex if $D$ is convex and \[ f(θx + (1-θ)y) ≤ θf(x) + (1-θ) f(y)\] for any $x,y ∈ D$ and $θ ∈ [0,1]$. A function is strictly convex if the equality is strict.
+\end{defn}
+
+\begin{prop} A function $\appl{f}{X ⊆ ℝ^n}{ℝ}$ is convex if and only if the function \begin{align*}
+\appl{g}{T&}{ℝ}  \\
+t &\longmapsto f(x + tv)
+\end{align*} with $T = \set{t ∈ ℝ \st x + tv ∈ X}$ is convex for any $x ∈ X$ and $v ∈ ℝ^n$.
+\end{prop}
+
+A function will also be convex if its hessian matrix of partial second derivatives is positive semidefinite. If $f$ is only once differentiable, then $f$ is convex if and only if $f(x) > f(y) + f'(y) (x-y)$.
+
+Several combinations of convex functions are also convex. Not necessary to describe them, maybe that pointwise supremum is also convex, and that $f(x,y)$ convex for $(x,y) ∈ C$ convex set, then $g(x) = \inf_C f$ is also convex.
+
+Important things: any locally optimal function of a convex problem is globally optimal.
+
+\subsection{Karush-Kuhn-Tucker conitions}
+
+For a problem with $f_i, h_i$ differentiable, the KKT conditions are the prima constraints $f_i(x) ≤ 0$, $h_i(x) = 0$, the dual constraints $λ ≥ 0$, the complementary slackness $λ_if_i(x) = 0$ and gradient of Lagrangian with respect to $x$ vanishes: \[ ∇_x f_0(x) + \sum λ_i ∇_x f_i(x) + \sum ν_i ∇_x h_i(x) = \]
+
+If strong duality holds and $x, λ, ν$ are optimal, then they must satisfy KKT conditions.
+
+\section{Optimization algorithms}
+
+\subsection{Unconstrained}
+
+There are several possibilities of optimizations algorithms for minimizing a function $f(\vx)$ with $\vx ∈ D$.
+
+\begin{itemize}
+\item \textbf{Line search}: For each step, choose direction $Δ\vx ∈ D$, and from $t = 1$ set $t = βt$ ($β ∈ (0,1)$) until $f(\vx_k + tΔ\vx) < f(\vx) + α t ∇f(\vx) Δ\vx$ with $α ∈ (0,\sfrac{1}{2})$.
+\item \textbf{Gradient descent}: Line search or choose $t$ exact.
+\item \textbf{Steepest descent}: $Δ\vx = \argmin_{\norm{v} = 1} ∇f(\vx) · \vv$. Advantage is that we can select differnt norms.
+\item \textbf{Newton step}: $Δx = - (∇(∇f(\vx)))^{-1} ∇f(x)$ (motivation minimization of second order approximation). We can add the Newton decrement $λ(x) = \sqrt{∇f(\vx) \inv{(∇^2f(\vx))} ∇f(x)}$ which is affine invariant and gives a stopping criterion on $\sfrac{λ^2}{2} ≤ ε$.
+\end{itemize}
+
+\subsection{Interior point methods}
+
+We come back to the problem of minimizing $f_0(\vx)$ subject to $f_i(\vx) ≤ 0$ for $i = 1, \dotsc, m$ and $\mA \vx = \vb$.
+
+We further assume $f_i ∈ C^2$ and convex, $\mA ∈ ℝ^{p×n}$ with full rank $p$, $p^*$ finite and attained and problem strictly feasible (constraints satisfied with strict inequality) so that we have strong duality.
+
+We can approximate it as the problem of minimizing $f_0(\vx) + \sum χ_{ℝ^+} (f_i(\vx))$\footnote{$χ_A (x) = \begin{cases} ∞ & x ∈ A \\ 0 & x ∉ A \end{cases}$} which we can compute as minimizing \[ f_0(\vx) - \frac{1}{t} \sum_{i = 1}^m \log -f_i(\vx)\] subject to $\mA\vx = \vb$ as $- α \log x \convs[][α][0] χ_{ℝ^+}$.
+
+Given the assumptions on $f_i$, the logarithmic barrier $φ(\vx) = - \sum \log -f_i(\vx)$ is convex and $φ ∈ C^2$ with
+\begin{align*}
+∇φ(\vx) &= \sum_{i=1}^m \frac{-1}{f_i(\vx)} ∇f_i(\vx) \\
+∇^2φ(\vx)&= \sum_{i = 1}^m \frac{1}{f_i(\vx)^2} ∇f_i(\vx) \otimes ∇f_i(\vx) - \frac{1}{f_i(\vx)} ∇^2 f_i(\vx)
+\end{align*}
+
+Now we can define $\vx^*(t)$ as the optimal point for minimizing $tf_0(\vx) + φ(\vx)$ and define the central path as $\set{\vx^*(t) \st t > 0}$. This is related to duality:  $x$ is a point in the central path if there exists a $w$ such that \[ t ∇f_0(\vx) + \sum_{i=1}^m \frac{-1}{f_i(\vx)} ∇f_i(\vx) + \mA^T w = 0 \quad \mA \vx = \vb\] and therefore $\vx^*$ minimizes the Lagrangian
+\[ L(\vx, \vec{λ}^*(t), \vec{ν}^*(t)) = f_0(\vx)  + \vec{λ}^* F_i(\vx) + \vec{ν}^*(t)^T(\mA\vx - \vb)\] with $\vec{λ}^*(t) = \frac{1}{-t F(\vx^*(t))}$ and $\vec{ν}^*(t) = w /t$.
+
+This gives us the following steps for the barrier method: given $t_0 > 0$, $μ > 1$ and a tolerance $ε > 0$, we execute for iteration $k$
+\begin{enumerate}
+	\item Compute $\vx^*(t)$ by minimizing $tf_0 + φ$ subject to $\mA\vx = \vb$, usually with Newton's method starting at current $x_k$.
+	\item Set $x_{k + 1} = x^*(t)$.
+	\item Quit if $\frac{m}{t} < ε$.
+	\item Set $t_{k + 1} = μ t_k$.
+\end{enumerate}
+
+The choice of $μ$ involves a tradeoff between outer and Newton iterations, typically $μ = 10-20$.
+
+\subsection{Quadratic programming}
+
+We will minimize here \[ \frac{1}{2} \vx^T \mP_0 \vx + \vq_0^T \vx + \vr_0 \] subject to $\frac{1}{2} \vx^T \mP_i \vx + \vq_i^T \vx + \vr_i ≤ 0$ and $\mA\vx = \vb$ with $\mP_i$ symmetric and positive definite. The feasible region is intersection of $m$ ellipsoids and an affine set.
+
+We can also minimize $f^T \vx$ subject to $\norm{\mA_i \vx + \vb_i}_2 ≤ \vc_i^T \vx + \vd_i$ and $\mtr{F} \vx = \vg$. have second-order SOC constraints, $(\mA_i \vx + \vb_i, \vc_i^T \vx + \vd_i)$ in a second-order cone in $ℝ^{n_i + 1}$. With $n_i = 0$ it's LP, with $c_i = 0$ it's quadratic constrained quadratic programming.
+
+\subsection{Semi-Definite programming}
+
+We have to minimize $\vc^T \vx$ subject to $G + \sum x_i F_i ≤ 0$. The inequality constraint is called LInear Matrix Inequality. The traditional LP problem is the same but constraints $\mop{diag}(\mA \vx - \b) ≤ 0$.
+
+Eigenvalue minimization is equivalent to minimizing $t$ such that $\mA(\vx) ≤ t \mI$ with $\mA = \mA_0 + \vx_1 \mA_1 + \dotsb + \vx_n \mA_n$ with symmetric matrices.
+
+We can also minimize matrix norm, minimizing $t$ such that \[ \begin{pmatrix} t \mI & \mA(\vx) \\ \mA(\vx)^T  & t \mI \end{pmatrix} ≥ 0\]
+
+We can also move the IPM so that the method is \[ t \vc_i - \tr (F_iF(\vx^*(t))^{-1}) = 0\] with dual point $Z^*(t) = - \frac{1}{t} F(\vx^*(t))^{-1}$ is feasible for the problem of maximization $\tr(GZ)$ subject to $\tr(F_iZ) + \vc_i = 0$ and $Z ≥ 0$.
+
+
+\end{document}
