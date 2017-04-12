@@ -16,7 +16,7 @@ We could have some problems with that term $u^3 v$: we need to ensure that it is
 
 Thus we can talk about uniqueness and existence.
 
-\begin{prop} For the non-linear problem, if we assume $f ∈ L^2(Ω)$ and $∂Ω ∈ C^2$ (or $Ω$ is a convex polygon), then there exists a unique $u ∈ H^1_0(Ω)$ solution of \eqref{eq:PDE:WeakNonlinearProblem} and $C > 0 $ depending on the domain such that \( \norm{∇u}_{L^2(Ω)} ≤ C\norm{f}_{L^2(Ω)} \label{eq:PDE:NonLinearBound} \)
+\begin{prop}[Existence and uniqueness\IS for a non-linear elliptic PDE] \label{prop:NonLinearProblemExistenceUniqueness} For the non-linear problem, if we assume $f ∈ L^2(Ω)$ and $∂Ω ∈ C^2$ (or $Ω$ is a convex polygon), then there exists a unique $u ∈ H^1_0(Ω)$ solution of \eqref{eq:PDE:WeakNonlinearProblem} and $C > 0 $ depending on the domain such that \( \norm{∇u}_{L^2(Ω)} ≤ C\norm{f}_{L^2(Ω)} \label{eq:PDE:NonLinearBound} \)
 \end{prop}
 
 \begin{proof} Uniqueness and the bound are not difficult. For the existence problem we will need an extra problem.
@@ -36,5 +36,89 @@ By using the mean value theorem, we know that $φ(a) - φ(b) = φ'(θa + (1 - θ
 
 Now we take $v = u_1 - u_2$ and we have
 \[ \int_Ω \abs{∇(u_1 - u_2)}^2 + \underbracket{\int_Ω 3(θu_1 + (1 - θ) u_2)^2 (u_1 - u_2)^2}_{ ≥ 0} = 0\] so by some reason I'm not really sure of turns out $u_1 - u_2 = 0$.
+
+\proofpart{Existence}
+
+For this part of the proof we will use the \nref{thm:Fund:SchoeferFixedPoint}, with our operator \begin{align*}
+\appl{G}{H_0^1(Ω)&}{H_0^1(Ω)} \\
+u &\longmapsto w \st \int_{Ω} ∇w ∇v = \int_Ω (f - u^3)v \quad ∀v ∈ H_0^1(Ω)
+\end{align*}
+
+That is, $G$ maps $u$ to the weak solution of the problem $- Δw = (f - u^3)$, which is a well posed problem. In particular, if $u$ is a solution we have $G(u) = u$, so the fixed point is a solution of the problem.
+
+We have to prove that $G$ is continuous and compact to apply the theorem. For continuity, let $w_1 = G(u_1)$ and $w_2 = G(u_2)$. We need to prove that $\norm{w_1 - w_2} \to 0$ when $\norm{u_1 - u_2} \to 0$. We can see that \[
+\int_Ω ∇(w_1 - w_2) ∇v = \int_Ω - (u_1^3 -u_2^3)v \\
+	= - \int_Ω (u_1 - u_2)(u_1^2 + u_1 u_2 + u_2^2)v
+\]
+
+Now we can bound the product of three elements by the product of the norms in $L^2$ for one factor and $L^4$ for the others\footnote{If $u,v,w ∈ H_0^1(Ω)$, then $\int uvw ≤ \norm{u}_2 \norm{vw}_2 ≤ \norm{u}_2 \norm{v}_4 \norm{w}_4$}. We apply that to the previous equation and assuming $v = w_1 - w_2$ we haves
+\begin{align*}
+\norm{∇(w_1 - w_2)}^2 &≤ \norm{u_1^2 + u_1u_2 + u_2^2}_{L^2} \norm{u_1 - u_2}_{L^4} \norm{w_1 - w_2}_{L^4} \\
+\norm{∇(w_1 - w_2)} &≤ C_1 \norm{u_1^2 + u_1u_2 + u_2^2}_{L^2} \norm{∇(u_1 - u_2)}_{L^2} \\
+	&≤ C_2 \left(\norm{∇u_1}^2_{L^2} + \norm{∇u_2}^2_{L^2}\right) \norm{∇(u_1 - u_2)}_{L^2}
+\end{align*} so all the factors on the right-hand side are bounded and $\norm{∇(u_1 - u_2)} \to 0$ and $G$ is continuous.
+
+Now we need to prove that $G$ is a \nref{def:Fund:CompactAppSubseq}. We take then $\set{u_n}_{n = 1}^∞  ⊂ H_0^1(Ω)$ a bounded sequence, and we want to prove that for a certain $u_{n_j}$ subsequence then $\set{w_{n_j}}_{j = 1}^∞$ converges, with $w_{n_j} = G(u_{n_j})$.
+
+Since $∂Ω ∈ C^2$, then $w ∈ H^2(Ω) ∩ H_0^1(Ω)$ and indeed $f - u^3 ∈ L^2(Ω)$. We need to use the fact that the immersion from $H^2(Ω)$ to $H^1(Ω)$ is compact (this is also true for $H^1$ to $L^2$). So, if we take a bounded sequence $\set{w_n}$ in $H^2(Ω)$, then there exists a subsequence $\set[0]{w_{n_j}}$ convergent in $H^1(Ω)$. As $G$ is continuous, if $\set{u_n}$ is bounded then $\set{w_n}$ will be bounded too.
+
+Finally, we need the ``a priori estimate'' of the fixed point theorem. But that part is easy: let $u ∈ H_0^1(Ω)$ be such that $u = λG(u) = λw$ with $0 ≤ λ ≤ 1$. In that case $u$, is solution of the problem $- Δu = λ(f - u^3)$ which is a well posed problem and $u$ is bounded.
+
+Therefore, we are in the conditions of the \nref{thm:Fund:SchoeferFixedPoint}, there is a fixed point $u = G(u)$ and our problem has a solution.
+
+\end{proof}
+
+\subsection{Finite element approximation}
+
+As usual, for $h > 0$ we will have our mesh \mesh of $Ω$, which will be a convex polygon domain. Then, we consider our finite element space $V_h = \spn \set{φ_1, \dotsc, φ_N}$ with $φ_i$ the shape functions corresponding to the internal vertices (we want the function to be zero in the boundary).
+
+The Galerkin approximation given by finding $u_h ∈ V_h$ such that \[ \int_Ω (∇u_h ∇v_h + u_h^3 v_h) = \int_Ω f v_h \qquad ∀v_h ∈ V_h\]
+
+Existence and unicity comes directly from the \nref{prop:NonLinearProblemExistenceUniqueness}, so we will not worry about that.
+
+Now the question is how to compute $u_h$. The answer will be to use the Newton method. We want to find the solution $u_h ∈V_h$ such that \[ \dualp{F(u_h), v_h} ≝ \int_Ω ∇u_h ∇v_h + u_h^3 v_h - fv_h = 0\] so we can try to use the Newton method for solving nonlinear equations. Thus, for each step we will get the next iteration of the solution by solving \[ ∇F(u_h^n) (u_h^n - u_h^{n+1}) F(u_h^n)\] for $u_h^{n+1}$ which seems easy enough except for the fact that we do not know exactly what is the gradient of a functional.
+
+For that, we will introduce the Fréchet derivative.
+
+\begin{defn}[Fréchet derivative][Derivative\IS Fréchet] Let $\appl{F}{X}{X^*}$ be an application from a Banach space to its dual. It will be Fréchet differentiable at $u ∈ X$ if there exists a bounded linear operator $\appl{l_u}{X}{X^*}$ such that \[ \lim_{w \to 0} \frac{\norm{F(u + w) - F(u) - l_u(w)}_{X^*}}{\norm{w}_X} = 0\]
+
+We then write $\Dif F(u) (w) = l_u (w)$ as the Fréchet derivative..
+\end{defn}
+
+We can now compute the Fréchet differential of $F$. Let $u,v,w ∈ H_0^1(Ω)$, so we can compute the duality product to see what's linear on $w$: \begin{align*}
+\dualp{F(u+w) - F(u), v}
+	&≝ \int_Ω ∇(u+w) ∇v + (u+w)^3 v - ∇u ∇v - u^3 v \\
+	&= \underbracket{\int_Ω ∇w∇v + 3u^2wv}_{\dualp{l_u(w), v}} + \int_Ω 3uw^2v + w^3v
+\end{align*} and we have a candidate for our differential. We have to check that the limit works.
+
+First, recall that the norm of the dual is defined as $\norm{T}_{X^*} = \sup_{v ∈ X \setminus\set{0}} \frac{\dualp{X,v}}{\norm{v}} $ so that \begin{align*}
+\norm{F(u + w) - F(u) - l_u(w)}_{(H_0^1(Ω))^*}
+	&= \sup_{\substack{v ∈ H_0^1(Ω) \\ v ≠ 0}} \frac{\dualp{F(u+w) - F(u) - l_u(w), w}}{\norm{∇v}_{L^2(Ω)}} = \\
+	&= \sup_{\substack{v ∈ H_0^1(Ω) \\ v ≠ 0}} \frac{\int_Ω 3uw^2v + w^3 v}{\norm{∇v}_{L^2(Ω)}}  \\
+	&≤ \sup_{\substack{v ∈ H_0^1(Ω) \\ v ≠ 0}} \frac{C(3\norm{∇u} \norm{∇w}^2 + \norm{∇w}^3) \norm{∇v}}{\norm{∇v}} \\
+	&≤ C(3\norm{∇u} \norm{∇w}^2 + \norm{∇w}^3) \convs[][w][0] 0
+\end{align*} and therefore our Fréchet derivative is given by $\dualp{l_u(w), v} = \dualp{\Dif F(u)w, v} = \int_Ω ∇w ∇v + 3u^2 w v $.
+
+Back to Newton now, for each step we will solve \[ \dualp{\Dif F(u_h^n) w_h, v_h} = \dualp{F(u_h^n), v_h} \] for $w_h^n$ and then update $u_h^{n+1} = u_h^n - w_h$. Practically, this means computing the linear problem \[ \int_Ω ∇w_h ∇u_h + 3u_h^2 w_h v_h = \int_Ω  ∇u_h^n ∇v_h (u_h^n)^3 v_h - f v_h\]
+
+It can be seen that the left hand side is a coercive bilinear form and therfore the underlying matrix of coefficients of shape functions will be symmetric and positive definite, and this linear problem will be solved.
+
+In practice, this Newton method is quadratic and the error at each stage is bounded by $e_{n+1} ≤ Ce_n^2$. The disadvantage is that the method only converges if the initial guess $u_h^0$is sufficiently close to $u_h$, which is an unknown solution. For this non linear problem it will usually work, but if we were to solve other, more complex nonlinear problems (such as Navier-Stokes with high Reynolds number) we could find that the method diverges or oscillates around a non-solution.
+
+\subsection{A priori error estimates}
+
+\begin{prop} Consider the non-linear problem \eqref{eq:PDE:NonlinearProblem} with the domain $Ω$ a convex polygon, $f ∈ L^2(Ω)$ and a regular mesh $\mesh$ (bounded aspect ratio, $\sfrac{h_K}{ρ_K} ≤ c$). Then, there exists a constant $C >0$ independent  of $h$, $f$ and $u$ but depending on the mesh aspect ratio such that \[ \norm{∇(u - u_h)}^2_{L^2(Ω)} ≤ C \sum_{K ∈ \mesh} η_K^2 \] with \[ η_K = h_K \norm{f + Δu_h - u_h^3}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)} \]
+\end{prop}
+
+\begin{proof} As always, we start from the norm of the error and then add any $v_h ∈ V_h$ by the Galerkin orthogonality \begin{align*}
+\int_Ω \abs{∇(u - u_h)}^2
+	&= \int_Ω f(u - u_h) - u^3(u - u_h) - ∇u_h ∇(u - u_h) \\
+	&= \int_Ω (f - u_h^3)(u - u_h) - ∇u_h ∇(u - u_h) - (u^3 - u_h^3) (u - u_h) \\
+	&= \int_Ω (f - u_h^3)(u - u_h - v_h) - ∇u_h ∇(u - u_h - v_h) - \underbracket{\int_Ω (u^3 - u_h^3) (u - u_h)}_{≥ 0} \\
+	&≤ \sum_{K ∈ \mesh} \left( \int_K (f - u_h^3)(u - u_h -v_h) + \frac{1}{2} \int_{∂K} [∇u_h · \vn] (u - u_h - v_h)\right)
+\end{align*}
+where we already saw the positiveness of $\int_Ω (u^3 - u_h^3)(u - u_h)$ in the uniqueness proof of \fref{prop:NonLinearProblemExistenceUniqueness}, so we can get rid of it and continue as usual.
+
+Now we choose $v_h = R_h(u - u_h)$ the Clément interpolant and we get as always the result.
 \end{proof}
 

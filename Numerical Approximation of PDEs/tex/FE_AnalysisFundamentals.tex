@@ -118,6 +118,18 @@ Note that if $V$ is a Hilbert space, then $V' = V$ and evaluating an element $\l
 
 As it happens with linear algebra matrices, linear operators can always be decomposed in a symmetric and an antisymmetric part. For example, if we take $V = H_0^1(Ω)$ and the general  elliptic operator \[ \linop u = - (αu')' + (βu)' + γu \] with $α, β, γ$ smooth functions, we have the symmetric part as \[ \linop_S = -(αu')' + γu \] and the antisymmetric as \[ \linop_{SS} = (bu)' \]
 
+Sometimes we will be interested in compact operators, mainly because they give us one interesting fixed point theorem.
+
+\begin{defn}[Compact\IS operator] \label{def:Fund:CompactAppSubseq} A linear operator $\appl{T}{X}{Y}$ is compact if for any bounded sequence $\set{u_n}_{n = 1}^∞ ⊂ X$ there exists a subsequence $\set{u_{n_j}}_{j = 1}^∞$ such that $\set{T(u_{n_j})}_{j = 1}^∞$ converges in $Y$.
+
+Another useful characterization is that an operator is compact if and only if the image of any bounded set in $X$ is relatively compact\footnote{That is, with compact closure.} in $Y$. We can prove that a set is relatively compact if it is contained in another compact set.
+\end{defn}
+
+\begin{theorem}[Schoefer's fixed point theorem][Fixed point theorem!Schoefer] \label{thm:Fund:SchoeferFixedPoint} Let $\appl{G}{B}{B}$ be a continuous and compact operator with $B$ a Banach space with norm $\norm{·}$. Assume we have some ``a priori estimate'': there exists a constant $M > 0$ such that for all $λ ∈ [0,1]$ and $u ∈ B$, if $u = λG(u)$ then $\norm{u}_B ≤ M$.
+
+Then, $G$ has a fixed point.
+\end{theorem}
+
 \section{Distributions}
 
 In the previous section we explained how our space is going to be the one of integrable functions. However, we have not acknowledged something that is really important for PDEs: how can we differentiate general integrable functions?
