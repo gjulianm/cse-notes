@@ -108,6 +108,8 @@ For a problem with $f_i, h_i$ differentiable, the KKT conditions are the prima c
 
 If strong duality holds and $x, λ, ν$ are optimal, then they must satisfy KKT conditions.
 
+Normally, for KKT conditions we will consider only complementary slackness, zero gradient and positiveness of the $\vec{λ}$. One can use those conditions to write the system and solve for the solution.
+
 \section{Optimization algorithms}
 
 \subsection{Unconstrained}
@@ -154,6 +156,19 @@ We will minimize here \[ \frac{1}{2} \vx^T \mP_0 \vx + \vq_0^T \vx + \vr_0 \] su
 
 We can also minimize $f^T \vx$ subject to $\norm{\mA_i \vx + \vb_i}_2 ≤ \vc_i^T \vx + \vd_i$ and $\mtr{F} \vx = \vg$. have second-order SOC constraints, $(\mA_i \vx + \vb_i, \vc_i^T \vx + \vd_i)$ in a second-order cone in $ℝ^{n_i + 1}$. With $n_i = 0$ it's LP, with $c_i = 0$ it's quadratic constrained quadratic programming.
 
+The dual of the SOCP can be obtained by changing the variable so the problem becomes minimizing $\vf^T \vx$ subject to \begin{align*}
+\norm{\vy_i}_2 &≤ t_i & i = 1, \dotsc, m \\
+\vy_i &= \mA_i \vx + \vb_i & i = 1, \dotsc, m \\
+t_i &= \vc_i · \vx + d_i & & i = 1, \dotsc, m
+\end{align*} with the lagrangian being
+\begin{align*}
+L(\vx, \vy, t, \vec{λ}, \vec{ν}, \vec{μ}) &= \left(\vc - \sum_{i=1}^m \left(\mA_i^T ν_i - μ_i c_i\right)\right)^T \vx + \sum_{i=1}^m (λ_i \norm{\vy_i}_2 + \vec{ν}_i^T \vy_i) + \sum_{i=1}^m (-λ_i + μ_i) t_i - \sum_{i = 1}^n (\vb_i \vec{ν}_i + d_i μ_i)
+\end{align*} which is bounded below over $x$ if and only if $\sum (\mA_i^T \vec{ν}_i + μ_i \vec{μ}_i \vc_i) = \vc$. To minimize over $y_i$, we note that $\inf_{y_i} λ_i \norm{y_i}_2 + ν_i^T \vy_i$ is 0 only if $\norm{ν_i}_2 ≤ λ_i$ and 0 otherwise. The minimimum over $t_i$ is bounded below if and only if $λ_i = μ_i$ so the Lagrangian is \[ g(λ,ν,μ) = \begin{cases}
+- \sum_{i = 1}^n (b_i^T ν_i + d_i μ_i) & \text{all previous conditions for lower bounds hold} \\
+- ∞ & \text{otherwise}
+\end{cases}\]
+
+
 \subsection{Semi-Definite programming}
 
 We have to minimize $\vc^T \vx$ subject to $G + \sum x_i F_i ≤ 0$. The inequality constraint is called LInear Matrix Inequality. The traditional LP problem is the same but constraints $\mop{diag}(\mA \vx - \b) ≤ 0$.
@@ -164,5 +179,59 @@ We can also minimize matrix norm, minimizing $t$ such that \[ \begin{pmatrix} t 
 
 We can also move the IPM so that the method is \[ t \vc_i - \tr (F_iF(\vx^*(t))^{-1}) = 0\] with dual point $Z^*(t) = - \frac{1}{t} F(\vx^*(t))^{-1}$ is feasible for the problem of maximization $\tr(GZ)$ subject to $\tr(F_iZ) + \vc_i = 0$ and $Z ≥ 0$.
 
+\subsection{CVX}
+
+In MATLAB.
+
+\begin{minipage}{0.5\textwidth}
+\begin{verbatim}
+cvx_begin
+	variable x(n);
+	minimize(norm(A*x - b));
+	subject to
+	C*x == d ;
+	norm(x, Inf) <= 1;
+cvx_end
+\end{verbatim}
+\hrulefill
+\begin{verbatim}
+cvx_begin
+	variable x(n);
+	dual variable y;
+	minimize (c' * x);
+	subject to
+		y : A^* <= b;
+cvx_end
+\end{verbatim}
+\end{minipage}
+~
+\begin{minipage}{0.5\textwidth}
+\begin{verbatim}
+D = [.15 107 45 70; .25 500 40 121; 0.05 0 60 65];
+cvx_begin
+	variable x(3)
+	cost = D(:,1)'*x;
+	vitamin = D(:,2)'*x;
+	sugar = D(:,3)'*x;
+	calories = D(:,4)'*x;
+	minimize
+	( cost )
+	subject to
+	calories <= 2250; calories >= 2000;
+	vitamin >= 5000; vitamin <= 10000;
+	sugar <= 1000;
+	x >= 0;
+	x <= 10;
+cvx_end
+\end{verbatim}
+\end{minipage}
+
+Dual variable relate to the lagrangian, the $:$ signal the constraint to which they are attached.,
+
+\section{Random factoids}
+
+The solution of the least squares minimization $\norm{\mA \vx - \vb}^2 $ is $\vx = (\mA^T \mA)^{-1} \mA^T \vb$. It can also be solved with the pseudo inverse $\vx = \mA^\dagger \vb$, with $\mA = \mU Σ \mV^T$ the singular value decomposition and the pseudoinverse $\mA^{\dagger} = \mV Σ^{-1} \mU^T$.
+
+In MATLAB, \texttt{linprog(f, A, b)} solves linear programming $\vf \vx$ subject to $\mA \vx ≤ \vb$. \texttt{quadprog(H, f, A, b)} solves quadratic programming $\frac{1}{2} \vx \mH \vx + \vf \vx$ subject to $\mA \vx ≤ \vb$.
 
 \end{document}

@@ -173,6 +173,7 @@
 \mL#m
 \mM#m
 \mU#m
+\mV#m
 \mP#m
 \mQ#m
 \mR#m
@@ -182,6 +183,7 @@
 \mC#m
 \mX#m
 \mY#m
+\mH#m
 \mI#m
 \ctrig{angulo}#m
 \ceul{mod}{angulo}#m
