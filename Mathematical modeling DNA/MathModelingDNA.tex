@@ -145,6 +145,7 @@ Finally, we can explain the cgDNA model configuration coordinates. This has, for
 We briefly consider here the transformation rule for inversion of a sequence. We will prove later in detail, but if $\vw$ are the coordinates for a specific configuration of the DNA fragment for one choice of the Watson strand then the coordinates $\bar{\vw}$ for the configuration in the reverse sense are $\bar{\vw} = \mE_{2N - 1} \vw$ where \[ \mE_{2N-1} = \begin{pmatrix} 0 & \cdots & \mE \\ \vdots &\iddots & \vdots \\ \mE & \cdots & 0 \end{pmatrix} \] with $\mE ∈ ℝ^{6×6}$ just $-1, +1, +1, -1, +1, +1$ on the leading diagonal.
 
 \subsection{Energy of the DNA sequence configuration}
+\label{sec:EnergyDNASequence}
 
 The cgDNA model predicts a probability density function $ρ(\vw; S, P)$ for each configuration $\vw$, depending on the sequence $S$ and the parameter set $P$. For convenience, $S$ and $P$ may be suppressed anywhere in notation.
 
@@ -196,6 +197,8 @@ However, this condition is too strong and can lead to indefinite matrices with e
 \mK^α + \mK^{α,β} + \frac{1}{2} \mK^β &> 0 \\
 \frac{1}{2} \mK^α + \mK^{α,β} +  \frac{1}{2} \mK^β &> 0
 \end{align*} which allows us to have negative eigenvalues on $\mK^α$ for some values.
+
+The sum of matrices with different dimensions is done with $\mK^α$ a block in upper left corner and $\mK^β$ in lower right corner (there are $3×3$ blocks of size $\dim \mK^α$ in $\mK^{α,β}$ and I should understand what this is).
 
 In order to prove this, one has to ``expand'' the stiffness matrix so that no overlaps occur, in a way that all the blocks are of the two forms presented above. One can prove that, if $\vx = (x_1, x_2, \dotsc, x_N)$ and $\mC$ is the ``expanded'' matrix form of $\mK$, then $\trans{\vx} \mK \vx = \trans{\vz} \mC \vz$ with $\vz = (x_1, x_2, x_3, x_3, x_4, x_5, x_5, \dotsc)$. So, if $\mC$ is positive definite, $\mK$ is positive definite too.
 
@@ -336,6 +339,75 @@ Now what's a hit? a hit is a hit ffs. In particular we also need to do the recon
 We have $SE(3)$ linear algebra (see \TeX\ notes) so we have the magic recursion formula. But we don't need any intras. We can use quaternions which allow faster multiplications in $SO(3)$. GPUS.
 
 If you have a Gaussian on variables $\vw = (\vx, \vy)$ iners and intras so we can compute the marginal distribution now jsut for $ρ(\vx)$ which is also a gaussianianainainainainainaina and $\vx$ is roughly half the dimension so its $\vx ∈ R^{6N - 6}$ and we even can simplify the sampling. But this is a bad idea because $ρ(\vx)$ has $\mK_x$ which is no longer banded.
+
+\chapter{Parameter estimation}
+
+We recall that our cgDNA model depends not only on the sequence $S$ of DNA, but also on the parameter set $\mathcal{P}$. This gives us a probability distribution on the configuration vector $\vw ∈ ℝ^{12N - 16}$ with PDF \begin{gather*} ρ(\vw; S, \mathcal{P}) = \frac{1}{Z} e^{- U(\vw; S, \mathcal{P})} \\
+U(\vw; {S}, \mathcal{P}) = \frac{1}{2} (\vw - \vmu) \mK(S) (\vw - \vmu) \end{gather*} with $\mK(S)$ the positive-definite and symmetric stiffness matrix. This can be interpreted as $U$ being the energy of that state and $ρ$ the Gaussian associated to that energy. The positive-definiteness is required to have measurability with respect to the measure $\dif \vw$.
+
+We also require Crick-Watson symmetry, that is, if we have a sequence $S = x_1, \dotsc, x_N$ with $x_i ∈ \set{A, T, C, G}$, then the conjugate sequence\footnote{Recall that the conjugates of the bases are $\conj{A} = T$, $\conj{C} = G$.} $\conj{S} = \conj{x}_n, \dotsc, \conj{x}_1$ has the same probability distribution: $ρ(\vw; S, \mathcal{P}) = ρ(\conj{\vw}; \conj{S}, \mathcal{P})$. This is satisfied provided that the ground states and stiffness matrix follow the relation
+\begin{align*}
+\vmu(\conj{S}) &= \mE_{2N - 1} \vmu(S) \\
+\mK(\conj{S}) &= \mE_{2N - 1} \mK(S) \mE_{2N - 1}
+\end{align*} with \[ \mE = \begin{pmatrix}
+ -1 & 0 & 0 & 0 & 0 & 0 \\
+ 0 & +1 & 0 & 0 & 0 & 0 \\
+ 0 & 0 & +1 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & -1 & 0 & 0 \\
+ 0 & 0 & 0 & 0 & +1 & 0 \\
+ 0 & 0 & 0 & 0 & 0 & +1 \\
+\end{pmatrix} \qquad \mE_{2N- 1} = \begin{pmatrix} 0 & & \mE \\ & \iddots & \\ \mE & & 0\end{pmatrix} \] so that $\conj{w} = \mE_{2N - 1}$.
+
+We also assume only nearest neighbor interactions, so that $\mK$ is sparse with overlapping $18 × 18$ blocks. This matrix can be constructed with base blocks $\mK^{α,β}$ and $\mK^{α}$ with $α,β ∈ \set{A,T,C,G}$ as they only depend on the basepairs. To get the ground state $\vmu$, we know that $\mK \vmu = \vec{σ}$ (which is a banded linear solve, very efficient) with building blocks $\vec{σ}^{α,β}$, $\vec{σ}^α$.
+
+Some remarks on this blocks based on the assumptions. The symmetry of the stiffness matrix is given by the symmetry of the blocks $\mK^{α,β}$ and $\mK^{α}$.
+
+This is something we already saw in \fref{sec:EnergyDNASequence}.
+
+The formula for conjugation is given by \begin{align*}
+\mK^{α,β} &= \mE_3 \mK^{\conj{β}, \conj{α}} \mE_3 \\
+\mK^α &= \mE \mK^{\conj{α}} \mE \\
+\vec{σ}^{α,β} &= \mE_3 \vec{σ}^{\conj{β}, \conj{α}} \\
+\vec{σ}^α &= \mE \vec{σ}^{\conj{α}}
+\end{align*} which gives constraints on parameter fitting.
+
+
+These constraints imply that there are only two independent $\mK^α$ and $\vec{σ}^α$. Mehehems. Nowe we are just counting. 6 times 18 entries in $\vec{σ}^{α,β}$ for $α ≠ \conj{β}$ so that's 108. Life gets complicated when we count again things that seem to be absolutely trivial.
+
+Palindromes ($\conj{S} = S$) also give constraints. General palindromic conditions implied by palindromic conditions on $\mK^{α,\conj{α}}$ and $\vec{σ}^{α, \bar{α}}$. For example, if $\vec{σ}^{α, \bar{α}} = (\va, \vb, \vc)$ with $\va,\vb,\vc ∈ ℝ^{6}$ then we have the constraint
+\[ \begin{pmatrix} \va \\ \vb \\ \vc \end{pmatrix} = \begin{pmatrix} 0 & 0 & \mE \\ 0 & \mE & 0 \\ \mE & 0 & 0 \end{pmatrix}  \begin{pmatrix} \va \\ \vb \\ \vc \end{pmatrix}  \] which translates to the conditions
+\begin{align*}
+\va &= \mE \vc \iff \vc = \mE \va \\
+\vb &= \mE \vb \implies b_1 = b_4 = 0
+\end{align*} and the conclusion is that $\vec{σ}^{α, \bar{α}} = (\va^{α,\bar{α}}, \vb^{a,\bar{α}}, \mE \va^{α,\bar{α}})$ with $\vb = (0, *,*,0,*,*)$ so that we have 10 scalar parameters in each $\vec{σ}^{α, \bar{α}}$ (total 40). That makes a total of $148$ scalars for all $\vec{σ}^{α,β}$.
+
+``Shit's gonna hit the fan if we look at bigger matrices''.
+
+So, for $\mK^{α,β}$ with the 6 non palindromic pairs $β ≠ \conj{α}$. That's a shitton. Then we have to calculate the free parameteres of a$\mK^{α,\bar{α}}$ that respect I don't know what. Something like that $\mK^{α, \bar{α}} = \mE_3 \mK^{α,\bar{α}} \mE_3$ and that's a lot.
+
+\textit{Aside because someone had to ask a frigging question.} Why discuss palindromes? Well, we have $4^n$ possible sequences of length $n$, but if $S ≠ \conj{S}$, then there's only $\sfrac{4^n}{2}$ because symmetry and shit and Crick and Watson strands are indistinguishable. When $n$ is even, we have palindromes so we have $\frac{4^n + 4^{\sfrac{n}{2}}}{2}$
+
+So our parameter set is $\mathcal{P} = \set{\vec{σ}^α, \mK^α, \vec{σ}^{α,β}, \mK^{α,β}}$ for independent value sof $α,β$. This comes to a total of 1592 scalars.
+
+Question 1: how good are the assumptions of nearest neighbour and local sequence dependence of $\mK$ and $\vec{σ}$? Also, how do we estimate all of these parameters?
+
+We use big datasets of molecular dynamic simulations to answer. So we use fine-grained model simulations to estimate parameters of coarsegrained simulations. Experiments are better, though, so we use X-Ray crystallography or NMR but both have difficults. The first requires a solid (not compatible if we model DNA in solution) and NMR i don't know what.
+
+For molecular dynamis, we are going to assume that we have an oligomer sequence (a short piece of DNA) library $\set{S_j}_{j = 1}^{J}$ with $J$ between 30 and 70 approximately. The sequences will be of size 12 to 24. How to define the sequences in the library is an issue.
+
+For each one of these simulations, we have a time series of snapshots $\set{\vw^l}_{l = 1}^L$ with $L \sim 10^6, 10^7$ saved each picosecond. Each $\vw^l$ is a nonlinear projection from atomistic coordinates to the coarse grained coordinates. SO we have a lot of parameters to estimate but also a lot of data to fit to.
+
+Question three is magic! Given a sequence $S$ and an ensemble of snapshots for that sequence how to estimate the $\mK$ and $\vmu$. Question four holy crap fixing these notes is going to be hard. Given estimators of $\mK(S^j)$ and $\vmu(S^j)$ for a sequence library, how to estimate the cgDNA parameter set.
+
+Slider (or something like that) approach to question 3. I honestly don't understand a word of what's written on the blackboard. Assume the time series is stationary, a ver good rg property very hard to check. so make subsampling. Palindromes is a good check.
+
+What we actually do is to say that $\vmu(S) \approx \bar{\vw}(S)$ which is the average configuration. You also have that \[ \mK^{-1}(S) \approx \mC(S) ≝ \frac{1}{L} \sum_{l = 1}^L (\vw^l - \bar{\vw}) \otimes (\vw^l - \bar{\vw})  \]
+
+Both are motivated by the exact formulas of Series 1.
+
+Remarks: the inverse is a centered secondmoment, so when the estimate of $\bar{\vw}$ changes then $\mC$ changes.
+
+For the moment, the assumtption that $\mK$ is banded and not estimate is an $\inv{\mK}$ which is not banded even if $\mK$ is. What the heck.
 
 \appendix
 
