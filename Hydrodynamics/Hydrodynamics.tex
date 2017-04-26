@@ -251,6 +251,77 @@ In the other case $\rey \gg 1$ change pressure gauge to have everythin ok. That 
 
 We can rescale close to $y = 0$. That gives us a solution $\tilde{U}$. When $\tilde{y}$ goes too high, we are almost out of the boundary layer, so we match there the solutions. There's a typo and $\tilde{U} = A(1 - e^{-\tilde{y}})$.
 
+
+We will apply this method to 2D flow:
+\begin{align*}
+∂_x u + ∂_y v &= 0 \\
+(u∂_x + v ∂_y)u &= - \frac{1}{ρ} ∂_x p + ν Δu \\
+(u∂_x + v ∂_y)v &= - \frac{1}{ρ} ∂_y p + ν Δv
+\end{align*}
+
+Now we make that non-dimensional. We say that $u = U_∞ \tilde{u}$, $u$ goes at the velocity of the free steam. If the boundary layer is small, there's a lubrication assumption so we set an unknown gauge $v = V \tilde{v}$.  Similary, $x = L \tilde{x}$, $y = δ \tilde{y}$ and $p = p_0 + P \tilde{p}$. The equations then are transformed. For the first, we have
+\[ \frac{U}{L} ∂_{\tilde{x}} \tilde{u} + \frac{V}{δ} ∂_{\tilde{y}} \tilde{v} = 0 \] and applying dominant balance we set both terms to be of the same order, so the gauge $V$ is defined as $V = \frac{Uδ}{L}$.
+
+For the momentum equations, we will have
+\[ \frac{U^2}{L}\left( \tilde{u}∂_{\tilde{x}} \tilde{u} + \tilde{v} ∂_{\tilde{y}}\tilde{u} \right)= - \frac{P}{ρL} ∂_{\tilde{x}} \tilde{p} + ν\left( \frac{U}{L^2} ∂_{\tilde{x}}^2 \tilde{u} + \frac{U}{δ^2} ∂_{\tilde{y}}^2 \tilde{u} \right) \]
+
+In the second derivatives, the $∂_x^2$ term is not going to be significant compared to the other one with $\frac{U}{δ^2}$, so that we find that \[ \frac{δ}{L} \sim \sqrt{\frac{ν}{UL}} = \sqrt{\rey} \] so that the boundary layer will be considerably thin. This is considerably bad for computational methods, as the mesh needs to account for a large $x$ scale but also modeling the behavior on the boundary layer of very small size in the perpendicular direction.
+
+In the meantime, we got the pressure gauge as $P = ρU^2$. For the second momentum equation, we have
+\[\frac{UV}{L}\left(\tilde{u}∂_{\tilde{x}} \tilde{v} + \tilde{v} ∂_{\tilde{y}} \tilde{v} \right) = - \frac{P}{ρδ} ∂_{\tilde{y}} \tilde{p} + ν \left( \frac{V}{L^2} ∂_{\tilde{x}}^2 \tilde{v} + \frac{V}{δ^2} ∂_{\tilde{y}}^2 \tilde{v}  \right)\]
+
+In this case, we cet that the pressure gradient is dominant in the $y$ direction. The final equation system is
+\begin{align*}
+∂_{\tilde{x}} \tilde{u} + ∂_{\tilde{y}} \tilde{v} &= 0 \\
+\tilde{u} ∂_{\tilde{x}} \tilde{u} + \tilde{v} ∂_{\tilde{y}} \tilde{u} &= - ∂_{\tilde{x}} \tilde{p} + ∂^2_{\tilde{y}} \tilde{u} \\
+∂_{\tilde{y}} \tilde{p} &= 0
+\end{align*}
+
+So what we have is almost lubrication, but we also have advection. The important issue is the fact that the pressure does not vary in the boundary layer. For example, in aerodynamics, it allows to compute lift (which depends on pressure) just by using Euler equations: despite the fact that those not work in the boundary layer, the solution for the pressure they give is valid as it does not change along the boundary layer.
+
+We need to impose boundary conditions now. We will focus on boundary layer in a flat plate. The Euler solution is $\vU = U_∞ \ve_x$, with a constant pressure. That kills the pressure gradient in the equation (asymptotic matching: $\tilde{p}(\tilde{y} \to ∞) = \bar{p}(\bar{y} \to 0) = p_\text{atm}$ where $\bar{p}$ is the pressure from the Euler equation).
+
+We also have no-slip and no penetration conditions, so $\tilde{u} = \tilde{v} = 0$ on $\tilde{y} = 0$, and finally the asymptotic matching condition $\tilde{u}(\tilde{y} \to ∞) = \bar{u}(\bar{y} \to 0) = 1$ (we are using the appropriate gauge).
+
+Now we use the self-similar approach to solve the equation. But before that we are going to use a trick for 2D, which is using a streamfunction: there exists a function $ψ$ such that $u = ∂_y ψ$ and $v = - ∂_xψ$. The continuity equation is therefore automatically satisfied and the momentum equation becomes (dropping tildes) \[ \dpd{ψ}{y} \frac{∂^2ψ}{∂x∂y} - \dpd{ψ}{x} \dpd[2]{ψ}{y} = \dpd[3]{ψ}{y} \] with boundary conditions \begin{align*}
+∂_x ψ (y = 0) &= 0 &∀x \\
+∂_y ψ (y = 0) &= 0 \\
+∂_y ψ (y \to ∞) &= 1
+\end{align*}
+
+Integrating the first one, we have $ψ(y = 0) = 0$. With the third one, $ψ(y \to ∞) = y$ forgetting about that thing of having care when integrating limits.
+
+For the self-similar solution, we search for a function $F(ψ,x,y)$. We define $ψ = ψ_* \hat{ψ}$ with $ψ_*$ a dilation coefficient. Similarly, we define $x = x_* \hat{x}$ and $y = y_* y$. Injecting this in the equations we have
+\[ \frac{ψ_*^2}{x_* y_*^2} \dpd{\hat{ψ}}{\hat{y}} \frac{∂^2\hat{ψ}}{∂\hat{x} ∂\hat{y}} - \frac{ψ_*^2}{x_* y_*^2}\dpd{\hat{ψ}}{\hat{x}} \dpd[2]{\hat{ψ}}{\hat{y}} = \frac{ψ_*}{y_*^3} \dpd[3]{\hat{ψ}}{\hat{y}} \] and in the boundary conditions
+\begin{align*}
+ψ_* \hat{ψ} (y_* \hat{y} = 0) &= 0 \\
+\frac{ψ_*}{y_*} \dpd{\hat{ψ}}{\hat{y}} (y_* \hat{y} = 0) &= 0 \\
+ψ_* \hat{ψ}(y_* \hat{y} \to ∞) &= y_* \hat{y}
+\end{align*}
+
+For the hat problem to be the same as the original problem, we needto have $ψ_* = y_*$ and $\frac{ψ_*^2}{x_*y_*^2} = \frac{ψ_*}{y_*^3}$ so that $x_* = y_*^2$. So we will consider the equation $G(\sfrac{ψ}{\sqrt{x}}, x, \sfrac{y}{\sqrt{x}}) = 0$. I am hungry. Changing that we have that $G(\sfrac{\hat{ψ}}{\sqrt{\hat{x}}},x_* \hat{x}, \sfrac{\hat{y}}{\sqrt{\hat{x}}})$ and therefore $ψ = \sqrt{x} f(\sfrac{y}{\sqrt{x}})$. We will call $η ≝ \sfrac{y}{\sqrt{x}}$. This is more or less like a separation of variables but more general.
+
+Now we need to rephrase that equation with our new set of variables. Please god no. All the coefficients disappear and we will drop the hats. First we solve the derivatives separately:
+\begin{align*}
+\dpd{η}{y} &= \frac{1}{\sqrt{x}} \\
+\dpd{η}{x} &= - \frac{1}{2} \frac{y}{x \sqrt{x}} = - \frac{η}{2x} \\
+\dpd{ψ}{y} &= \sqrt{x} f'(η) \dpd{η}{y} = f' \\
+\frac{∂^2ψ}{∂x∂y} &= f''(η) \dpd{η}{x} = - \frac{ηf''}{2x} \\
+\dpd{ψ}{x} &= \frac{1}{2\sqrt{x}} f + f'(η) \dpd{η}{x} = \frac{1}{2\sqrt{x}}( f -ηf') \\
+\dpd[2]{ψ}{y} &= \frac{f''(η) }{\sqrt{x}} \\
+\dpd[3]{ψ}{y} &= \frac{f'''(η)}{x}
+\end{align*} and then the equation becomes
+\begin{align*}
+ - \frac{f'ηf''}{2x} - \frac{1}{2 x} (f - η f')f'' &= \frac{f'''}{x} \\
+ -ff'' &= 2f'''
+ \end{align*}
+
+This is called the Blasius equation. We need boundary conditions, and when $y = 0$ $η = 0$, and same with $y = ∞ \implies η = ∞$, so that $f(0) = 0$, $f'(0) = 0$ and $f \to η$ when $y \to ∞$.
+
+The solution is an exponential relaxation on $u = f'$.
+
+On the practical level, we have to define the layer thickness. There's no unique definition.  Slides. Displacement thickness making the flux equal in both displaced and flat probdiles. Last one is momentum, but isntead of conserving mass flux you consider momentum flux.
+
 \appendix
 
 \backmatter
