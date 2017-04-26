@@ -103,7 +103,7 @@ This allows us to define the test function space $V_g = \set{\vv ∈ H(\dv, Ω) 
 
 So, after the examples, we will define the theorem that gives us the sufficient conditions for well-posedness of the mixed problem.
 
-\begin{theorem}[Theorem\IS of existence and uniqueness for the mixed PDE problem][Existence and unicity\IS for mixed PDEs] \label{thm:PDE:WellPosednessMixedProb} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
+\begin{theorem}[Theorem\IS of existence and uniqueness for the mixed PDE problem][Existence and uniqueness\IS for mixed PDEs] \label{thm:PDE:WellPosednessMixedProb} Let $V,Q$ be two Hilbert spaces and $V_0 = \set{v ∈ V \tq b(v,q) = 0 \; ∀q ∈ Q}$. Assume that:
 \begin{itemize}
 \item $\appl{a}{V×V}{ℝ}$ is a continuous (continuity bounding constant $M$) and coercive on $V_0$ ($∃ α > 0$ s.t. $a(u, u) ≥ α \norm{u}_V^2$ for any $v ∈ V_0$) bilinear form.
 \item $\appl{b}{V×Q}{ℝ}$ is a continuous (continuity bounding constant $γ$) bilinear form and with an inf-sup condition: $∃β > 0$ such that \( \inf_{q∈Q}\sup_{v∈V} \frac{b(v,q)}{\norm{v}_V \norm{q}_Q} ≥ β > 0 \label{eq:PDE:InfSup} \) which is equivalent to saying that for any $q ∈ Q$ we have \[ \norm{q}_Q ≤ \frac{1}{β} \sup_{v ∈ V} \frac{b(v,q)}{\norm{\vv}_V} \]

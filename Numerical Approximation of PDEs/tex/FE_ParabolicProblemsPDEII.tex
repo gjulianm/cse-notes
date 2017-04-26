@@ -1,1 +1,83 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
+
+\section{The heat equation}
+
+The first equation that we will be studying will be the heat equation. We will search for a function in space and time $u$ \begin{align*}
+\appl{u}{Ω×[0,T]&}{ℝ} \\
+(x,t) &\longmapsto u(x,t)
+\end{align*} that will model the temperature defined on a domain $Ω ⊂ ℝ^2$ (or $ℝ^3$ too) such that
+\( \begin{cases}
+\dpd{u}{t} - Δu = f & \text{in } Ω × (0,T) \\
+u = 0 & \text{on } ∂Ω × (0,T) \\
+u(x,0) = u_0(x) & ∀x ∈ Ω
+\end{cases} \label{eq:PDE:HeatEquation} \)
+
+This comes from an energy conservation principle of thermodynamics: for any domain $D ⊂ Ω$, the time variation of the thermal energy contained in $D$ must be equal to the heat that ``goes out'' through the boundary of the domain plus the energy due to the source term $f$. This translates to the following equation:
+\( \od{}{t} \int_D ρ c_p u \dif x - \int_{∂D} k ∇u \vn \dif s = \int_D f \dif x \label{eq:PDE:ThermoConservation} \) which can be transformed into the differential equation \eqref{eq:PDE:HeatEquation} using the divergence theorem\footnote{$\int_D \dv \va = \int_{∂D} \va \vn$}, putting the derivative inside of the integral and getting rid of the constants and integrals.
+
+The first remark is that we can get a first a priori error estimate.
+
+\begin{prop}[A priori estimate\IS for the heat equation] \label{prop:PDE:APrioriHeatEq} If $u$ is a solution of the heat equation \eqref{eq:PDE:HeatEquation}, then the following a priori estimate holds:
+\( \label{eq:PDE:APrioriHeatEq} \int_0^T \norm{u}_{H^1(Ω)}^2 \dif t ≤ \int_Ω u_0^2 \dif x + C_p^2 \int_0^T \norm{f}^2 \dif t \)
+\end{prop}
+
+\begin{proof} Multiplying the heat equation by $u$ and operating, we have it directly.
+\begin{align*}
+\int_Ω \dpd{u}{t} u - Δu u \dif x &= \int_Ω fu \dif x \\
+\frac{1}{2} \dod{}{t} \int_Ω u^2 \dif x + \frac{1}{2} \int_Ω \abs{∇u}^2 \dif x - \cancelwhy{\int_{∂Ω} (∇u \vn)u \dif s}{\restr{u}{∂Ω} = 0} &= \int_Ω fu \dif x \\ &≤ C_p \norm{f}_{L^2(Ω)} \norm{∇u}_{L^2(Ω)} \\
+\frac{1}{2} \od{}{t} \int_Ω u^2 + \abs{∇u}^2 &≤ \frac{C_p}{2} \norm{f}^2 + \frac{1}{2} \norm{∇u}^2 \\
+\int_0^T \norm{u}_{H^1(Ω)}^2 \dif t &≤ \int_Ω u_0^2 \dif x + C_p^2 \int_0^T \norm{f}^2 \dif t
+\end{align*}
+\end{proof}
+
+This estimate gives us uniqueness: if there are two solutions $u_1, u_2$, we can substract one from another and $u_1 - u_2$ satisfies the heat equation with source term $f = 0$ and initial condition $u_0 = 0$, and by the a priori estimate we have $\norm{u_1 - u_2 }= 0$. It also gives us a very natural consequence: the maximum principle.
+
+\begin{prop}[Maximum\IS principle] If $f ≥ 0$ and $u_0 ≥ 0$, then the solution $u ≥ 0$.
+\end{prop}
+
+\begin{proof} We can decompose $u = u^+ - u_-$ with $u^+ = \sup (u, 0)$ and $u^- = \sup -u, 0$. Therefore, we can see that
+\begin{align*}
+\int_Ω \dpd{u}{t} u^- + ∇u ∇u^- &= \int_Ω f u^- \\
+\int_Ω \dpd{u^-}{t} u^- + \abs{∇u^-}^2 &= \int_Ω - f u^- \\
+\frac{1}{2} \od{}{t} \int_Ω (u^-)^2 + \int_Ω \abs{∇u^-}^2 &≤ 0
+\end{align*}
+
+Integrating between $0$ and $T$, we have
+\[\frac{1}{2} \int_Ω u^-(x,T)^2 + \int_0^T \int_Ω \abs{∇u^-}^2 ≤ \frac{1}{2} (u_0^-)^2 \]
+
+As $u_0 ≥ 0$, $u_0^- = 0$ so the left hand side must be less or equal than zero. The only possibility is $u^- = 0$ and therefore $u ≥ 0$.
+\end{proof}
+
+We also have an interesting property of the solution: for positive time, the solution is smooth even when the initial function $u_0$ is not.
+
+Now we will see the existence of the solution.
+
+\begin{prop}[Existence and uniqueness\IS for the heat equation solution] For all $T > 0$, for any source term $f ∈ L^2(0,T; L^2(Ω))$ and for any initial distribution $u_0 ∈ L^2(Ω)$, there exists a unique solution $u ∈ L^2(0,T; H_0^1(Ω))$ for the heat equation with $\pd{u}{t} ∈ L^2(0,T; (H_0^1(Ω)')$ such that \[ \dualp[(H_0^1(Ω))'][H_0^1(Ω)]{\pd{u}{t}, v} + \int_Ω ∇u ∇v = \int_Ω fv \dif x \qquad ∀ v ∈ H_0^1(Ω)\] for $0 ≤ t ≤ T$ and with $u(x,0) = u_0(x)$ almost everywhere.
+\end{prop}
+
+Before going into the proof, we need to define those weird spaces. We will say that $v(x,t) ∈ L^2(0,T; X)$ with $X$ a Banach space if $v$ is strongly measurable\footnote{Basically, measurable in a way that we can integrate it over a Banach space.} and $\int_0^T \norm{v}_X < ∞$. This is valid for $X = L^2(Ω)$ (space of the source term $f$) and $X = H^1(Ω)$ (for the solution $u$). For the dual $X = (H_0^1(Ω))'$ (the space of $∂_t u$) recall the definition of the \nref{def:Fund:NormOperator}.
+% TODO: Define better these spaces
+
+Now, if $u ∈ L^2(0,T; H_0^1(Ω))$ and $∂_t u ∈ L^2(0,T; (H_0^1(Ω))')$, then it can be proved that $u ∈ C^0([0,T]; L^2(Ω))$: we start from
+\begin{align*}
+\frac{1}{2} \od{}{t}  \int_Ω u^2 &= \dualp{∂_t u, u} \\
+\frac{1}{2} \int_Ω u(x,T)^2 \dif x - \frac{1}{2} \int_Ω u(x,0)^2 \dif x &= \int_0^T \dualp{∂_t u, u} \dif t \\
+&≤ \int_0^T \norm{∂_t u} \norm{∇u} \dif t \\
+&≤ \left(\int_0^T \norm{∂_t u}^2\right)^{\sfrac{1}{2}} \left(\int_0^T \norm{∇u}^2\right)^{\sfrac{1}{2}}
+\end{align*}
+
+Now regularity (¿?). If $∂Ω$ is $C^2$ or $Ω$ is a convex polygon and $u_0 ∈ H_0^1(Ω)$, then $u ∈ L^2(0,T; H^2(Ω))$ and $∂_t u ∈ L^2(0,T; L^2(Ω))$. This can be seen formally from taking $v =∂_t u$ as a test function.
+
+\subsection{Finite element approximation}
+
+For a step size $h > 0$ and the domain $Ω$ a polygon, we can define a regular mesh \mesh with the regularity assumption that $\frac{h_K}{ρ_K} ≤ C$. Consider the internal vertices $P_1, P_2, \dotsc, P_N$ (external vertices do not matter much, as the function is zero on the boundary), we will be interested in finding the shape function for those vertices.
+
+As usual, we will consider the space $V_h = \spn \set{φ_1, \dotsc, φ_N}$ and will search for the solution $u_h ∈ V_h$ such that \[ \int_Ω \dpd{u_h}{t} + ∇u_h ∇v_h = \int_Ω f v_h \qquad ∀v_h ∈ V_h\]
+
+A small remark: as the solution depends on tie the coefficients of the shape functions must depend on time.
+
+
+If we take $v_h = φ_i$ for $i = 1, \dotsc, N$, we must have
+\[ \sum_{j = 1} u_j'(t) \underbracket{\int_Ω φ_i φ_j}_{M_{ij}} + \sum_{j = 1}^N u_j(t) \underbracket{\int_Ω ∇φ_i ∇φ_j}_{A_{ij}} = \underbracket{\int_Ω f φ_i }_{f_i}\] which translates to the differential system \[ \mM \vu'(t) + \mA \vu(t) = \vf(t) \]
+
+We also need to include the initial condition of $u(x,0) = u_0(x)$. For that, we will enforce a weak equality: $\int_Ω u_h(0) v_h = \int_Ω u_0 v_h \dif x $ for any $v_h ∈ V_h$ or in other words $u_h(0) = Π_h u_0$ where \[ Π_h w(x) = \sum_{j = 1}^N w_j φ_j(x) \] which can be solved in matrix form as $\mM \vw = \vec{W}$ where $W_i = \int_Ω w(x) φ_i(x) \dif x$.

@@ -103,7 +103,14 @@ We will usually be interested in considering linear operators between Banach and
 
 In infinite dimensional spaces, linear operators are not necessarily continuous. We will be interested in those, so we give the formal definition.
 
-\begin{defn}[Continous operator][Continuity!of an operator] \index{Operator!continuous} \label{def:Fund:ContinuousOp} Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $(φ_n)_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \pesc{T,φ_n} = \pesc{T, φ}\]
+\begin{defn}[Continous operator][Continuity!of an operator] \index{Operator!continuous} \label{def:Fund:ContinuousOp} Given a Banach space $V$ and a linear operator $T$ on $V$, we say that it is continuous if and only if for every Cauchy sequence $\set{φ_n}_{n ≥ 1} ⊂ V$ with $φ_n \to φ$ we have that \[ \lim_{n\to ∞} \dualp{T,φ_n} = \dualp{T, φ}\]
+
+Just recall that $\dualp{T,φ} = T(φ)$, it is just a notation.
+\end{defn}
+
+The space of linear continuous operators is what is called the \concept{Dual\IS space} (denoted by $V'$). This is a Banach space with the following norm:
+
+\begin{defn}[Norm\IS of an operator] \label{def:Fund:NormOperator} Given $V$ a Banach space and a linear operator $T ∈ V'$, its norm is defined as \[ \norm{T}_{V'} = \sup_{v ∈ V} \frac{T(v)}{\norm{v}_V} \]
 \end{defn}
 
 Some other properties of these operators:
