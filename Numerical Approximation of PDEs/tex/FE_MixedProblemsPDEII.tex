@@ -64,6 +64,13 @@ So it works by using Cauchy-Schwartz once again.
 
 \section{Optimal control}
 
+\begin{wrapfigure}{R}{0.4\textwidth}
+\centering
+\inputtikz{Glacier}
+\caption{Model of the movement of a glacier with three different boundaries.}
+\label{fig:PDE:Glacier}
+\end{wrapfigure}
+
 One example of a problem on optimal control is the movement $u$ of a glacier, so that it follows the equation $-Δu = f$. We have two sections of the bedrock: $Γ_1$ where we have no slip (so $u = 0$) and a section $Γ_2$ with a certain sliding $∂_\vn u = q$, with $q$ unknown.
 
 We also have the border $Γ_3$ of the ice with the air, with observations $u_0$ of the displacement and with no force of the air onto the ice (so $∂_\vn u = 0$ there).

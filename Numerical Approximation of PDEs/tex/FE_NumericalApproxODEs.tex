@@ -117,7 +117,7 @@ As it can be seen on \fref{fig:ODE:DiffusionTransportSolution}, when $b \ll μ$ 
 
 The weak formulation of this problem is that of finding a solution $u ∈ H^1_Γ(0,1) = \set{u ∈ H^1(0,1) \tq u(0) = 1,\, u(1) = 1}$ such that \[ a(u,v) ≝ \int_0^1 μu'v' + \int_0^1 bu'v = 0 \quad ∀v ∈ H_0^1(0,1)\]
 
-We need $v ∈ H_0^1$ to get rid of the border term when integrating by parts, and that leaves us with different solution and test function spaces, something that is not covered by the Lax-Milgram theorem. To solve this, we can use the \concept{Lifting tecnique}: we find a lift function $R(x)$ such that $\restr{R}{∂Ω} = \restr{u}{∂Ω}$ (in our case, $Ω = (0,1)$ and $R(x)  x$ simply), so we can decompose our solution as $u = R + \tilde{u}$ with $\tilde{u} ∈ H_0^1$. The weak formulation is then transformed: \begin{align*}
+We need $v ∈ H_0^1$ to get rid of the border term when integrating by parts, and that leaves us with different solution and test function spaces, something that is not covered by the Lax-Milgram theorem. To solve this, we can use the \concept{Lifting\IS technique}: we find a lift function $R(x)$ such that $\restr{R}{∂Ω} = \restr{u}{∂Ω}$ (in our case, $Ω = (0,1)$ and $R(x)  x$ simply), so we can decompose our solution as $u = R + \tilde{u}$ with $\tilde{u} ∈ H_0^1$. The weak formulation is then transformed: \begin{align*}
 a(u,v) &= 0 \\
 a(R + \tilde{u}, v) &= 0 \\
 a(\tilde{u}, v) &= - a(R, v) ≝ F(v)
@@ -259,7 +259,7 @@ u(x,0) = u_0(x) & 0 < x < L \\
 u(0,t) = u(L,t) = 0 & t > 0
 \end{cases}\) which describes the evolution of temperature $u(x,t)$ at point $x$ in time $t$ of a rod of length $L$ and thermal conductivity $μ$ with a temperature of $0$ degrees at the boundaries. The function $u_0$ represents the initial temperature distribution and $f$ is the heat source per unit length being supplied.
 
-The general weak formulation of a parabolic problem will be given by the problem of finding $u(t) ∈ V$ such that \[ \pesc{∂_tu(t), v} + a(u(t), v) = F(v) \qquad ∀v ∈ V,\, ∀ t > 0\] where $a$ is the bilinear form associated with the operator \linop and $F$ the linear functional dependent on $f$ and the boundary conditions. We will also denote for convenience \begin{align*}
+The general weak formulation of a parabolic problem will be given by the problem of finding $u(t) ∈ V$ such that \[ \pesc{∂_tu(t), v} + a(u(t), v) = F(v) \qquad ∀v ∈ V,\, ∀ t > 0\] where $a$ is the bilinear form associated with the operator \linop and $F$ the linear functional dependent on $f$ and the boundary conditions. We will also denote for convenience\footnote{Technically, these are Bochner spaces as defined in \fref{sec:Fund:BochnerSpaces} but we don't need that theory so we will ignore it for now.} \begin{align*}
 L^2(ℝ^+; V) &= \set{\appl{v}{ℝ^+}{V} \st \int_{ℝ^+} \norm{v(t)}^2_V \dif t < ∞ } \\
 C^0(ℝ^+; V) &= \set{\appl{v}{ℝ^+}{V} \st t \longmapsto \norm{v(t)}_W \text{ is continuous}}
 \end{align*}

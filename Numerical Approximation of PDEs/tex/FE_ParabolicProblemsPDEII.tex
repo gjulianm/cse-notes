@@ -52,13 +52,12 @@ We also have an interesting property of the solution: for positive time, the sol
 
 Now we will see the existence of the solution.
 
-\begin{prop}[Existence and uniqueness\IS for the heat equation solution] For all $T > 0$, for any source term $f ∈ L^2(0,T; L^2(Ω))$ and for any initial distribution $u_0 ∈ L^2(Ω)$, there exists a unique solution $u ∈ L^2(0,T; H_0^1(Ω))$ for the heat equation with $\pd{u}{t} ∈ L^2(0,T; (H_0^1(Ω)')$ such that \[ \dualp[(H_0^1(Ω))'][H_0^1(Ω)]{\pd{u}{t}, v} + \int_Ω ∇u ∇v = \int_Ω fv \dif x \qquad ∀ v ∈ H_0^1(Ω)\] for $0 ≤ t ≤ T$ and with $u(x,0) = u_0(x)$ almost everywhere.
+\begin{prop}[Existence and uniqueness\IS for the heat equation solution] For all $T > 0$, for any source term $f ∈ L^2(T; L^2(Ω))$ and for any initial distribution $u_0 ∈ L^2(Ω)$, there exists a unique solution $u ∈ L^2(T; H_0^1(Ω))$ for the heat equation with $\pd{u}{t} ∈ L^2(T; H_0^1(Ω)')$ such that \[ \dualp[H_0^1(Ω)'][H_0^1(Ω)]{\pd{u}{t}, v} + \int_Ω ∇u ∇v = \int_Ω fv \dif x \qquad ∀ v ∈ H_0^1(Ω)\] for $0 ≤ t ≤ T$ and with $u(x,0) = u_0(x)$ almost everywhere.
 \end{prop}
 
-Before going into the proof, we need to define those weird spaces. We will say that $v(x,t) ∈ L^2(0,T; X)$ with $X$ a Banach space if $v$ is strongly measurable\footnote{Basically, measurable in a way that we can integrate it over a Banach space.} and $\int_0^T \norm{v}_X < ∞$. This is valid for $X = L^2(Ω)$ (space of the source term $f$) and $X = H^1(Ω)$ (for the solution $u$). For the dual $X = (H_0^1(Ω))'$ (the space of $∂_t u$) recall the definition of the \nref{def:Fund:NormOperator}.
-% TODO: Define better these spaces
+Before going into the proof, a small remark on the spaces: we are using \nref{def:Fund:BochnerSpace} with the convention $L^p(T; X) \equiv L^p((0, T); X)$, that is, the ``time space'' is the interval $(0,T)$. Given that $L^2(Ω)$, $H^1_0(Ω)$ and $H_0^1(Ω)'$ are all Banach spaces, we can just use those as the image spaces of the function depending on time. For the dual $H_0^1(Ω)'$ (the space of $\pd{u}{t}$) recall the definition of the \nref{def:Fund:NormOperator}.
 
-Now, if $u ∈ L^2(0,T; H_0^1(Ω))$ and $∂_t u ∈ L^2(0,T; (H_0^1(Ω))')$, then it can be proved that $u ∈ C^0([0,T]; L^2(Ω))$: we start from
+Some quick results on regularity: if $u ∈ L^2(T; H_0^1(Ω))$ and $∂_t u ∈ L^2(T; H_0^1(Ω)')$ then $u$ is continuous on time $u ∈ C^0([0, T]; L^2(Ω))$. We can see it as
 \begin{align*}
 \frac{1}{2} \od{}{t}  \int_Ω u^2 &= \dualp{∂_t u, u} \\
 \frac{1}{2} \int_Ω u(x,T)^2 \dif x - \frac{1}{2} \int_Ω u(x,0)^2 \dif x &= \int_0^T \dualp{∂_t u, u} \dif t \\
@@ -66,7 +65,7 @@ Now, if $u ∈ L^2(0,T; H_0^1(Ω))$ and $∂_t u ∈ L^2(0,T; (H_0^1(Ω))')$, th
 &≤ \left(\int_0^T \norm{∂_t u}^2\right)^{\sfrac{1}{2}} \left(\int_0^T \norm{∇u}^2\right)^{\sfrac{1}{2}}
 \end{align*}
 
-Now regularity (¿?). If $∂Ω$ is $C^2$ or $Ω$ is a convex polygon and $u_0 ∈ H_0^1(Ω)$, then $u ∈ L^2(0,T; H^2(Ω))$ and $∂_t u ∈ L^2(0,T; L^2(Ω))$. This can be seen formally from taking $v =∂_t u$ as a test function.
+Additionally, if $∂Ω$ is $C^2$ (or $Ω$ is a convex polygon) and $u_0 ∈ H_0^1(Ω)$, then $u ∈ L^2(T; H^2(Ω))$ and $∂_t u ∈ L^2(T; L^2(Ω))$. This can be seen formally from taking $v =∂_t u$ as a test function.
 
 \subsection{Finite element approximation}
 
