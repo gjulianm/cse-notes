@@ -393,7 +393,7 @@ Question 1: how good are the assumptions of nearest neighbour and local sequence
 
 We use big datasets of molecular dynamic simulations to answer. So we use fine-grained model simulations to estimate parameters of coarsegrained simulations. Experiments are better, though, so we use X-Ray crystallography or NMR but both have difficults. The first requires a solid (not compatible if we model DNA in solution) and NMR i don't know what.
 
-For molecular dynamis, we are going to assume that we have an oligomer sequence (a short piece of DNA) library $\set{S_j}_{j = 1}^{J}$ with $J$ between 30 and 70 approximately. The sequences will be of size 12 to 24. How to define the sequences in the library is an issue.
+For molecular dynamics, we are going to assume that we have an oligomer sequence (a short piece of DNA) library $\set{S_j}_{j = 1}^{J}$ with $J$ between 30 and 70 approximately. The sequences will be of size 12 to 24. How to define the sequences in the library is an issue.
 
 For each one of these simulations, we have a time series of snapshots $\set{\vw^l}_{l = 1}^L$ with $L \sim 10^6, 10^7$ saved each picosecond. Each $\vw^l$ is a nonlinear projection from atomistic coordinates to the coarse grained coordinates. SO we have a lot of parameters to estimate but also a lot of data to fit to.
 
@@ -401,13 +401,58 @@ Question three is magic! Given a sequence $S$ and an ensemble of snapshots for t
 
 Slider (or something like that) approach to question 3. I honestly don't understand a word of what's written on the blackboard. Assume the time series is stationary, a ver good rg property very hard to check. so make subsampling. Palindromes is a good check.
 
-What we actually do is to say that $\vmu(S) \approx \bar{\vw}(S)$ which is the average configuration. You also have that \[ \mK^{-1}(S) \approx \mC(S) ≝ \frac{1}{L} \sum_{l = 1}^L (\vw^l - \bar{\vw}) \otimes (\vw^l - \bar{\vw})  \]
+What we actually do is to say that $\vmu(S) \approx \bar{\vw}(S)$ which is the average configuration extracted from the sampled things sampled. You also have that \[ \mK^{-1}(S) \approx \mC(S) ≝ \frac{1}{L} \sum_{l = 1}^L (\vw^l - \bar{\vw}) \otimes (\vw^l - \bar{\vw})  \]
 
 Both are motivated by the exact formulas of Series 1.
 
-Remarks: the inverse is a centered secondmoment, so when the estimate of $\bar{\vw}$ changes then $\mC$ changes.
+Remarks: the inverse is a centered second moment, so when the estimate of $\bar{\vw}$ changes then $\mC$ changes.
 
-For the moment, the assumtption that $\mK$ is banded and not estimate is an $\inv{\mK}$ which is not banded even if $\mK$ is. What the heck.
+For the moment, the assumption that $\mK$ is banded and not estimate is an $\inv{\mK}$ which is not banded even if $\mK$ is. What the heck.
+
+\section{Parameter fitting}
+
+So now we will have to match a set of estimations to a certain model. This is a very general problem and not at all specific to DNA, so we will give it a mathematical, general treatment.
+
+We will have two questions\footnote{Or maybe these questions do not pertain here. Whatever.}. First, how to justify the approximations $\vmu \approx \bar{\vw}$, $\inv{\mK}\approx \mC$; and second, how to best approximate $\mK$ if we restrict it to be banded.
+
+For question one we have two answers: maximum likelihood and maximum entropy.
+
+\subsection{Maximum likelihood}
+
+Honestly the structure of this is utter crap.
+
+We assume a functional form for $ρ(\vw;Θ)$ where $Θ$ is a set of fitting parameters. The idea is that the best fit $Θ$ is exactly equal $Θ = \argmax \prod_l ρ(\vw^l)$ with $\vw^l$ the observations. We maximize the probability that the data ensemble is drawn from $ρ(\vw; Θ)$.
+
+In our case, we assume that ρ is Gaussian with respect to $\dif \vw$ and that $Θ = (\vmu, \mK)$ and so we will consider the log-likelihood and we have just to get \[ Θ^* = \argmax_Θ \underbracket{\left[\left(\sum_{l = 1}^L - \frac{1}{2} (\vw^l - \vmu) \mK (\vw^l - \vmu)\right) - L \log Z\right]}_{≝ λ(Θ)} \] with $Z ≝ \int_{ℝ^{n}} \exp(- \frac{1}{2}(\vw- \vmu) \mK (\vw - \vmu) ) \dif \vw$.
+.
+A necessary condition is therefore to have $∇λ(Θ^*) = 0$. In this case, we just have \[ \dpd{λ}{\vmu} = \mK \sum_{l = 1}^L (\vw^l - \vmu) - L \frac{1}{Z} \cancelwhy{\dpd{Z}{\vmu}}{} = 0 \] with the derivative of $Z$ being zero because the integral is invariant to translation. Therefore and as $\mK$ is positive-definite, the first-order conditions with respect to $\vmu$ are \[ \sum_{l=1}^L (\vw^l - \vmu) = 0 \implies \vmu = \frac{1}{L} \sum_{l=1}^L \vw^l \] which is the guess we had.
+
+Now we get something more interesting when differentiating wrt $\mK$. And it just comes out that \[ \dpd{λ}{\mK} = \mK : (\vw - \vmu) \otimes (\vw - \vmu) + \frac{L}{Z} \dpd{Z}{\mK} \] where we have that $\otimes$ is the tensor product\footnote{The $i,j$ element in $\va \otimes \vb$ is $a_i b_j$.}, $:$ is the inner product between matrices\footnote{Given as $\mA : \mB = \sum_{i,j} A_{ij} B_{ij} = \tr \trans{\mB} \mA$, that is, the sum of the product of the entries.} and $\pd{Z}{\mK} = - \frac{1}{2} Z \inv{\mK} $ as we saw in series and therefore we have again the guess we made. Surprise, we are not doing useless things!
+
+Remarks: this is made easier because we have a Gaussian (in other distributions we cannot take log-likelihood because I don't know and I'm not sure about it). It's also made easier by the fact that we have a flat measure so that we can compute things.
+
+Another remark is that we if we restrict the model parameters to be banded, we have that $\pd{λ}{\mK}$ has fewer conditions. Therefore we only set the entries in the stencil (nonzero entries, entries in the band). So we need to find a banded $\mK$ with $[\mK]' = 0$ where $[\mK]$ are the entries in the stencil and $[\mK]'$ the entries not in the stencil. There is a cool solution for this which is something that we will consider later. WHY THE JUMPS, WHY.
+
+\subsection{Maximum entropy}
+
+An alternative estimation principle is minimum entropy. If you have a pdf $ρ(\vw)$ with respect to the the measure $\dif \vw)$ we\footnote{We is mathematicians. Physicists put a minus sign.} define the entropy as \[ S(ρ)  ≝ \int_{ℝ^n} ρ(\vw) \log ρ(\vw) \dif ω \]
+
+Will also need relative entropy or Kullback-Leibler divergence between two PDFs $ρ_1, ρ_2$ defined as \[ \mop{KL}(ρ_1, ρ_2) ≝ \int_{ℝ^N} ρ_1(\vw) \log \frac{ρ_1(\vw)}{ρ_2(\vw)} \dif \vw \equiv \int_{ℝ^N} \frac{ρ_1(\vw)}{ρ_2(\vw)} \log \frac{ρ_1(\vw)}{ρ_2(\vw)} \underbracket{ ρ_2(\vw) \dif \vw}_{\dif σ(\vw)} = \int_{ℝ^N} c(\vw) \log c(\vw) \dif σ(\vw)\] where $\dif σ(\vw)$ is a non-flat measure.
+
+Now we are talking about Jensen's inequality.
+
+\begin{theorem}[Jensen's inequality] Let \meas be a measure space, $\appl{φ}{ℝ}{ℝ}$ be a convex function and $\appl{f}{X}{ℝ}$ be $μ$-measurable and assume that $X$ is μ-finite. Then \[ \fint φ(f) \dif μ ≥ φ\left(\fint f \dif μ\right)\] where $\fint f \dif μ ≝ \frac{1}{μ(X)} \int f \dif μ$.
+
+If $φ$ is strictly convex, there is equality if and only if $f$ is constant.
+\end{theorem}
+
+So now we can apply it with $φ(u) = u \log u$ and $\dif μ = \dif σ(\vw) = ρ_2(\vw) \dif \vw$ so that $μ(ℝ^N) = 1$ and therefore as $\fint c(\vw) ρ_2(\vw) \dif \vw = 1$ we have that \[ \mop{KL}(ρ_1, ρ_2) = \int_{ℝ^N} c(\vw) \log c(\vw) \dif σ(\vw) ≥ 0 \] and additionally we have that $\mop{KL}(ρ_1, ρ_2) = 0$ (this is the case in which $c(\vw)$ is constantly 1).
+
+This makes it a little bit like a distance, except for the fact that it is not symmetric and does not satisfy the triangle inequality.
+
+Now we can try to solve maximum entropy fitting in PDFs. You have a set $\mathcal{C}$ of PDFs and $f_i$ which are known functions, and $c_i$ which are known values so that $\pesc{f_i} = \int_Ω f_i(\vw) ρ(\vw) \dif σ = c_i$ for any PDF $ρ ∈ \mathcal{C}$ and $i = 1, \dotsc, k$. So it's a set of PDFs with expectations constrained. Then the PDF maximizing entropy is \[ ρ_\text{max} = \argmin_{ρ ∈ \mathcal{C}} \int_Ω ρ \log  \dif σ\] and if $ρ_\text{max}$ exists, then it is Boltzmann with respect to $\dif σ$ of the form \[ ρ_\text{max} = \frac{1}{Z} \exp\left(\sum_{i = 1}^k λ_i f_i(x) \right)\] where $Z$ will be the normalization constant and $λ_i$ the Lagrange multipliers associated with the constraints of the expectations $\pesc{f_i}$.
+
+We need to prove that the ffirst-order necessary conditions are actually sufficient, andalso that if $f_i)(x) $12312jnsdaasd are $x_1, \dotsc, x_N$ ie all first moments plus all $x_ix_j$ all secondray moments you can solve the first order conditions and the max entropy fit is a gaussian and the parameter values as of first order.,
 
 \appendix
 
