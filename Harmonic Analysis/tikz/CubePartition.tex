@@ -1,0 +1,31 @@
+\begin{tikzpicture}
+
+\draw[->] (-0, 0, 0) -- (2.5,0,0);
+\draw[->] (0, -0, 0) -- (0,2.5,0);
+\draw[->] (0, 0, -0) -- (0,0,2.5);
+
+\foreach \x in {0, 1} {
+	\foreach \y in {0, 1} {
+		\foreach \z in {0, 1, 2} {
+			\draw[palette1, thin, fill = palette1, fill opacity = 0.2] (\x,\y,\z) -- (\x + 1,\y,\z) -- (\x + 1,\y + 1,\z) -- (\x,\y + 1,\z) -- cycle;
+		}
+	}
+
+	\foreach \z in {1, 2} {
+		\foreach \y in {0, 1, 2} {
+			\draw[palette1, thin, fill = palette1, fill opacity = 0.2] (\x,\y,\z) -- (\x,\y,\z - 1) -- (\x+1,\y,\z - 1) -- (\x+1,\y,\z) -- cycle;
+		}
+	}
+}
+
+\foreach \x in {0,1,2} {
+	\foreach \y in {0,1} {
+		\foreach \z in {0,1} {
+			\draw[palette1, thin, fill = palette1,fill opacity = 0.2]
+				(\x,\y,\z) -- (\x, \y + 1, \z) -- (\x, \y + 1, \z + 1) -- (\x, \y, \z + 1) -- cycle;
+		}
+	}
+}
+
+
+\end{tikzpicture}

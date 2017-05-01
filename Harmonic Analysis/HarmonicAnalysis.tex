@@ -542,7 +542,7 @@ One can see that the Hilbert transform is a case of a Calderon-Zygmund kernel wi
 
 We can also prove a first lemma that will become very useful when proving the boundedness of the operator.
 
-\begin{lemma} The second assumption \eqref{prp:CZAss2} of a \nref{def:CalderonZygmundKernel} implies that \[ \int_{\abs{x} > 2\abs{y}} (K(x) - K(x-y)) \dif x  ≤ CB \quad ∀ y ≠ 0\]
+\begin{lemma}[Hormander\IS condition] \label{lem:HormanderCond} The second assumption \eqref{prp:CZAss2} of a \nref{def:CalderonZygmundKernel} implies that \[ \int_{\abs{x} > 2\abs{y}} (K(x) - K(x-y)) \dif x  ≤ CB \quad ∀ y ≠ 0\]
 \end{lemma}
 
 \begin{proof} We can write \[ K(x) - K(x-y) = \int_0^1 ∇K (x - ty) · (-y) \dif t \] so that by \eqref{prp:CZAss2}
@@ -554,7 +554,7 @@ Therefore we have \[
 \] which is perefctly bounded.
 \end{proof}
 
-\begin{defn}[Calderon-Zygmund operator][Operator\IS Calderon-Zygmund] Given a \nref{def:CalderonZygmundKernel} $K$, we can define the Calderon-Zygmund operator for $f ∈ \schwartz$ as \[ (Tf) (x) ≝ \lim_{ε \to 0+} \int_{\abs{x - y} ≥ ε} K(x -y) f(y) \dif y \]
+\begin{defn}[Calderon-Zygmund operator][Operator\IS Calderon-Zygmund] \label{def:CalderonZygmundOperator} Given a \nref{def:CalderonZygmundKernel} $K$, we can define the Calderon-Zygmund operator for $f ∈ \schwartz$ as \[ (Tf) (x) ≝ \lim_{ε \to 0+} \int_{\abs{x - y} ≥ ε} K(x -y) f(y) \dif y \]
 \end{defn}
 
 First question is, of course, whether that limit is well-defined.
@@ -577,40 +577,95 @@ For the second part, we can add a constant part (w.r.t $y$) because $\int_{1 ≥
 
 Now we will be interested in the boundedness of this operator.
 
-\begin{prop} If $T$ is a Calderon-Zygmund operator, then it's bounded in $\linapp[L^2][L^2]$.
+\begin{prop} \label{prop:CaldZygL2Bound} If $T$ is a Calderon-Zygmund operator, then it's bounded in $\linapp[L^2][L^2]$.
 \end{prop}
 
 \begin{proof} Assume $f ∈ \schwartz$. We want to show that \[ \norm{Tf}_{L^2(ℝ^n)} ≤ CB \norm{f}_{L^2(ℝ^n)}\]
 
-We introduce the following ``restricted'' operator:
-\[ T_{r,s} f(x) ≝ \int\limits_{s ≥ \abs{y} ≥ r} K(y) f(x -y) \dif y = f * \left(\ind_{s ≥ \abs{y} ≥ r} · K\right)\]
+We introduce the following ``restricted'' operator
+\[ T_{r,s} f(x) ≝ \int_{\bola_{r,s}} K(y) f(x -y) \dif y = f * \left(\ind_{\bola_{r,s}} · K\right)\] where $\bola_{r,s} ≝ \bola_s(0) \setminus \bola_r (0) \equiv \set{y ∈ ℝ^n \st s ≥ \abs{y} ≥ r}$.
 
 We will prove that this operator is $L^2$-bounded by a constant independent of $r$ and $s$, so that proves the boundedness of $T$ by taking the limits on both variables.
 
-To prove that bound, we can calculate the Fourier transform of that function:
-\[ \widehat{T_{r,s}f}(ξ) = \hat{f}(ξ) · \fourier\left(\ind_{s ≥ \abs{y} ≥ r}(y) K (y)\right) (ξ)\]
+As the Fourier transform is an isometry on $L^2$, we can calculate the norm there to have the bound \[ \norm{T_{r,s} f}_{L^2} = \norm{\widehat{T_{r,s} f}}_{L^2} ≤ \norm{\hat{f}}_{2} \norm{\fourier\left(\ind_{\bola_{s,r}} · K \right)}_{∞} \]
 
-As the Fourier transform is an isometry on $L^2$; we would have the bound \[ \norm{T_{r,s} f}_{L^2} = \norm{\widehat{T_{r,s} f}}_{L^2} ≤ \norm{\hat{f}}_{2} \norm{\fourier\left(\ind_{s ≥ \abs{y} ≥ r} · K \right)}_{∞} \]
+In this case, the Fourier transform will be defined as \[ \widehat{T_{r,s}f}(ξ) = \hat{f}(ξ) · \fourier\left(\ind_{\bola_{r,s}}(y) K (y)\right) (ξ)\] which is well-defined because $\ind_{\bola_{r,s}} · K$ is smooth enough and bounded.
 
-The Fourier transform of that thing is perfectly well defined as $\ind_{s ≥ \abs{y} ≥ r} · K$ is smooth and bounded. We will use a trick, which is to divide the integral in two intervals of $\abs{y}$: $[r, η_1]$ and $[η_2, s]$ with $η_1 = \min \set[0]{s, \inv{\abs{ξ}}}$ and $η_2 = \max \set[0]{r, \inv{\abs{ξ}}}$.\footnote{I'm zero sure about this crap.}
+We therefore need to compute the $L^∞$ norm of $\fourier(\ind_{\bola_{s,r}} K)$. Now we can divide the integral of the Fourier transform in two intervals of $\abs{y}$: $I_1 = [r, η_1]$ and $I_2 = [η_2, s]$ with $η_1 = \min \set[0]{s, \inv{\abs{ξ}}}$ and $η_2 = \max \set[0]{r, \inv{\abs{ξ}}}$.
 
 Now we estimate the integral in the first interval, using again the trick of adding a constant w.r.t $y$ because the integral of $K$ is zero over that domain (\fref{prp:CZAss3})
 \begin{align*}
-\abs{\int_{r ≤ \abs{y} ≤ η_1} K(y) (e^{-2π\imath y · ξ} - 1) \dif y}
-	&≤ C \int\limits_{r ≤ \abs{y} ≤ η_1}  \abs{K(y)} \abs{y} \abs{ξ} \dif y \\
-	&≤ C \int\limits_{r ≤ \abs{y} ≤ η_1}  \abs{y}^{-n + 1} \abs{ξ} \dif y  \\
+\abs{\int_{I_1} K(y) (e^{-2π\imath y · ξ} - 1) \dif y}
+	&≤ C \int_{I_1}  \abs{K(y)} \abs{y} \abs{ξ} \dif y \\
+	&≤ C \int_{I_1}  \abs{y}^{-n + 1} \abs{ξ} \dif y  \\
 	&≤ C \int_r^{η_1} \abs{ξ} \dif \abs{y} ≤ \\
 	&≤ C \abs{ξ} η_1 ≤ 1
 \end{align*}
 
-For the second interval, we see that
+For the second interval we will exploit the \nref{lem:HormanderCond}.
 \begin{align*}
 \int\limits_{η_2 ≤ \abs{y} ≤ s} K(y) e^{-2π\imath y · ξ} \dif y
 	&= - \int_{η_2 ≤ \abs{y} ≤ s} K(y) e^{-2π\imath\left(y + \frac{ξ}{2\abs{ξ}^2}\right) · ξ} \dif y = \\
-	&= \frac{1}{2} \left[ \int_{η_2 ≤ \abs{y} ≤ s} K(y) e^{-2π\imath ξ y} \dif y - \int_{η_2 ≤ \abs{y - \frac{ξ}{2 \abs{ξ}^2}} ≤ s} K\left(y - \frac{ξ}{2 \abs{ξ}^2}\right) e^{-2πξ y} \dif y \right]
+	&= \frac{1}{2} \left[ \int_{η_2 ≤ \abs{y} ≤ s} K(y) e^{-2π\imath ξ y} \dif y - \int\limits_{η_2 ≤ \abs{y - \frac{ξ}{2 \abs{ξ}^2}} ≤ s} K\left(y - \frac{ξ}{2 \abs{ξ}^2}\right) e^{-2πξ y} \dif y \right]
 \end{align*}
 
 I'm not copying more of this bullcrap.
+
+\end{proof}
+
+
+\section{Calderon-Zygmund decomposition of a function}
+
+In this section we will introduce a fundamental tool in harmonic analysis, which will allow us to decompose general functions $f ∈ L^1(ℝ^n)$ in ``good parts'' (bounded) and ``bad parts'' restricted to a controlled, small set.
+
+\begin{theorem}[Calderon-Zygmund\IS theorem] Let $f ∈ L^1(ℝ^n)$ and fix $λ > 0$. Then we can write \[ f = g + b \] wth $\abs{g} ≤ λ$ almost everywhere and $b = \sum_{Q ∈ \mathcal{Q}} \ind_Q f$ with $\mathcal{Q}$ a disjoint collection of cubes $Q ⊂ ℝ^n$ and such that \[ λ < \fint_Q \abs{f(x)} \dif x < 2^n λ \] where $μ$ is the measure on $ℝ^n$.
+
+Moreover, we can bound the support of $b$ by \[ \left|\bigcup_{Q ∈ \mathcal{Q}} Q\right| ≤ \inv{λ} \norm{f}_{L^1(ℝ^n)} \]
+\end{theorem}
+
+\begin{proof}
+\begin{wrapfigure}[10]{R}{0.4\textwidth}
+\centering
+\vspace{-5pt}
+\inputtikz{CubePartition}
+\caption{A partition of $ℝ^n$ in cubes with edge length $2^l$.}
+\label{fig:CubePartition}
+\end{wrapfigure}
+
+The proof is a constructive-inductive process to build the collection of ``bad cubes''. Denote by $\mathcal{D}_l$ the set of cubes of length $2^l$ that partition $ℝ^n$, with edges parallel to the coordinate axes as seen in \fref{fig:CubePartition}.
+
+We start by choosing $l_* ∈ ℤ$ large enough such that \[ 2^{-nl_*} \int_ℝ^n \abs{f} \dif x ≤ λ\] and therefore $\fint_Q \abs{f} ≤ λ$ for any cube $Q ∈ \mathcal{D}_{l_*}$.
+
+Now, for each of those cube we look at its children, that is, those cubes $Q' ∈ \mathcal{D}_{l_* - 1}$ with length $l_* - 1$ such that $Q' ⊂ Q$. For those children $Q'$ we have two options: either $\fint_{Q'} \abs{f} > λ$ or it's $≤ λ$. In the first case we have a ``bad cube'', so we add it to the collection $\mathcal{Q}$. In the second case, we continue with the children of $Q'$ with length $l_* - 2$.
+
+Now set the decomposition as $b$ taking the values of $f$ on the ``bad cubes'' where the process stopped, so that \[ b ≝ \sum_{Q ∈ \mathcal{Q}} \ind_Q f\] and $g$ as the remaining part: $g = f - b$.
+
+Now we start with the proofs of the bounds. If $x ∈ ℝ^n \setminus ∪_\mathcal{Q} Q$, then by construction there is a sequence of shrinking cubes $Q_i \to \set{x}$ that satisfy $\fint_{Q_i} \abs{f} ≤ λ$. By the \nref{thm:DiffLebesgue}, we have that $\lim_{i \to ∞} \fint_{Q_i} \abs{f} = \abs{f(x)}$ for almost every $x ∈ ℝ^n$ and therefore we have our first bound $\abs{g(x)} ≤ λ$ almost everywhere.
+
+For the bound on the measure of the cubes, we note that if $Q ∈ \mathcal{Q}$ is a ``bad cube'', then its parent $\tilde{Q}$ that contains it and has twice the edge length is, by definition, such that $\fint_{\tilde{Q}} \abs{f} ≤ λ$ and so we have \[ \fint_Q \abs{f} ≤ 2^n \fint_{\tilde{Q}} \abs{f} ≤ 2^n λ \] and therefore we have that
+\end{proof}
+
+This theorem allows the proof of a proof on a weak $L^1$ bound for the Calderon-Zygmund operator.
+
+\begin{theorem} Let $T$ be a \nref{def:CalderonZygmundOperator} given by \[ Tf(x) = \int_{ℝ^n} K(x -y) f(y) \dif y \] for $f ∈ \schwartz$. Then we have the weak $L^1$ bound \[ \abs{\set{x ∈ ℝ^n \st \abs{Tf(x)} > λ}} ≤ CB \inv{λ} \norm{f}_{L^1(ℝ^n)} \quad ∀λ > 0 \] for a suitable universal constant $C$ and $B$ as in the definition of the Calderon-Zygmund kernel.
+\end{theorem}
+
+\begin{proof} We can assume without loss of generality that $B = 1$ (if not, replace $T$ by $\inv{B}T$). Given a fixed $λ > 0$ and $f ∈ \schwartz$, we consider the Calderon-Zygmund decomposition of $f = g + b$ associated to λ and will modify it a bit. Define \[ φ ≝ \sum_{Q ∈ \mathcal{Q}} \ind_Q(x) \fint_Q f(y) \dif y \] so that $f = f_1 + f_2$ with $f_1 = g + φ$, $f_2 = b - φ$.
+
+From here we can make several observations. As $g$, $b$ and $φ$ are bounded in $L^1(ℝ^n)$, we have that $\norm{f_1}_{L^1} ≤ \norm{f}_{L^1}$ and $\norm{f_2}_{L^1} ≤ 2 \norm{f}_{L^1}$. Finally, $f_2$ has vanishing average over each ``bad cube'' $Q ∈ \mathcal{Q}$: \[ \int_Q f_2(x) \dif x = \int_Q \left(f(x) - \fint_Q f(y) \dif y \right) \dif x = \int_Q f(x) \dif x - \abs{Q} \fint_Q f(y) \dif y = 0 \]
+
+Now, as the Calderon-Zygmund operator is linear we can consider the decomposition $Tf = Tf_1 + Tf_2$, and therefore \[ \set{x ∈ ℝ^n \st \abs{Tf(x)} > λ} ⊂ \set{x ∈ ℝ^n \st \abs{Tf_1(x)} > \sfrac{λ}{2}} ∪ \set{x ∈ ℝ^n \st \abs{Tf_2(x)} > \sfrac{λ}{2}}\] and so it will suffice to bound only each set for the components as \[ \abs{\set{x ∈ ℝ^n \st \abs{T f_j(x)} > λ}} ≤ C \inv{λ} \norm{f}_{L^1} \quad j = 1,2\]
+
+\proofpart{Bound for $f_1$}
+
+We will use the fact that $T$ is an $L^2$ bounded operator (\fref{prop:CaldZygL2Bound}). First, observe that if $\abs{T f_1(x)} > λ$ then $(Tf_1(x))^2 > λ^2$ and then we can apply \nref{thm:MarkovIneq}:
+\begin{multline*} \abs{\set{x ∈ ℝ^n \st \abs{T f_1(x)} > λ}} = \abs{\set{x ∈ ℝ^n \st (T f_1(x))^2 > λ^2}} ≤ \\ ≤ λ^{-2} \int_{ℝ^n} (Tf_1)^2 = λ^{-2} \norm{Tf_1}^2_{L^2} ≤  λ^{-2} C\norm{f_1}^2_{L^2} \end{multline*}
+
+We only need to pass from the $L^2$ norm to the $L^1$. Observe that $f_1$ is bounded as \[ \abs{f_1} ≤ \max \set{\abs{g}, \sup_{Q ∈ \mathcal{Q}} \fint_Q \abs{f}} ≤ 2^n λ\] and therefore \[ \norm{f_1}^2_{L^2} = \int_{ℝ^n} \abs{f_1} · \abs{f_1} ≤ 2^nλ \int_{ℝ^n} \abs{f_1} ≤ 2^nλ \norm{f}_{L^1} \] and so we get as desired \[\abs{\set{x ∈ ℝ^n \st \abs{T f_1(x)} > λ}} ≤ C_1 \inv{λ} \norm{f}_{L^1} \]
+
+\proofpart{Bound for $f_2$}
+
+This one gets a little bit more complicated.
 
 \end{proof}
 
@@ -622,10 +677,23 @@ I'm not copying more of this bullcrap.
 
 \chapter{Useful theorems}
 
-\section{Measure theory}
+\section{Measure theory and real analysis}
 
 \begin{theorem}[Dominated convergence\IS theorem] \label{thm:DominatedConvergence} Let $\set{f_n}_{n ∈ ℕ}$ be a series of functions such that $f_n \convs f$ almost everywhere. If there exists an integrable, non-negative function $g$ such that $\abs{f_n} ≤ g$, then \[ \int \lim_{n \to ∞} f_n \dif μ = \lim_{n \to ∞} \int f_n \dif μ\]
 \end{theorem}
+
+\begin{theorem}[Markov inequality][Inequality\IS Markov] \label{thm:MarkovIneq} Let \meas be a measure space and $\appl{f}{X}{ℝ}$ a measurable function. Then, for any $ε > 0$ we have that \[ μ\left(\set{x ∈ X \st \abs{(x)} ≥ ε}\right) ≤ \frac{1}{ε} \int_X \abs{f} \dif μ \] or, in other words, the set of points where $f$ has high values gets smaller the higher that value is.
+\end{theorem}
+
+\begin{theorem}[Lebesgue\IS differentiation theorem] \label{thm:DiffLebesgue} \citep[Theorem II.22]{ApuntesVariableReal} Let $\appl{f}{ℝ^N}{ℝ}$ be a locally integrable function. Then, for almost every $x ∈ ℝ^N$, we have that \[ \lim_{r \to 0} \fint_{E_r(x)} f(y) \dif y = f(x) \] for every family of sets $\set{E_r}$ that shrinks nicely to $x$.
+\end{theorem}
+
+Note that we use the notation $\fint_A f ≝ \frac{1}{\abs{A}} \int_A f$. For the ``shrinks nicely'', we give the following technical definition:
+
+\begin{defn}[Nicely shrinking sets] A family of sets $\set{E_r}_{r > 0}$ is said to shrink nicely to $x$ if and only if $E_r ⊂ \bola_r(x)$ and there exists a constant $α > 0$ independent of $r$ such that $\abs{E_r} > α\abs{\bola_r}$.
+\end{defn}
+
+In other words, this allows to take into account not only balls of radius $r$ but other shrinking sets that behave more or less in the same way.
 
 \section{Functional analysis}
 
