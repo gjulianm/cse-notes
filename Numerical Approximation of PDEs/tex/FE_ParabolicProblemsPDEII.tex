@@ -17,7 +17,7 @@ This comes from an energy conservation principle of thermodynamics: for any doma
 
 The first remark is that we can get a first a priori error estimate.
 
-\begin{prop}[A priori estimate\IS for the heat equation] \label{prop:PDE:APrioriHeatEq} If $u$ is a solution of the heat equation \eqref{eq:PDE:HeatEquation}, then the following a priori estimate holds:
+\begin{prop}[A priori error\IS for the heat equation] \label{prop:PDE:APrioriHeatEq} If $u$ is a solution of the heat equation \eqref{eq:PDE:HeatEquation}, then the following a priori estimate holds:
 \( \label{eq:PDE:APrioriHeatEq} \int_0^T \norm{u}_{H^1(Ω)}^2 \dif t ≤ \int_Ω u_0^2 \dif x + C_p^2 \int_0^T \norm{f}^2 \dif t \)
 \end{prop}
 
@@ -52,7 +52,8 @@ We also have an interesting property of the solution: for positive time, the sol
 
 Now we will see the existence of the solution.
 
-\begin{prop}[Existence and uniqueness\IS for the heat equation solution] For all $T > 0$, for any source term $f ∈ L^2(T; L^2(Ω))$ and for any initial distribution $u_0 ∈ L^2(Ω)$, there exists a unique solution $u ∈ L^2(T; H_0^1(Ω))$ for the heat equation with $\pd{u}{t} ∈ L^2(T; H_0^1(Ω)')$ such that \[ \dualp[H_0^1(Ω)'][H_0^1(Ω)]{\pd{u}{t}, v} + \int_Ω ∇u ∇v = \int_Ω fv \dif x \qquad ∀ v ∈ H_0^1(Ω)\] for $0 ≤ t ≤ T$ and with $u(x,0) = u_0(x)$ almost everywhere.
+\begin{prop}[Existence and uniqueness\IS for the heat equation solution] \label{prop:PDE:ExistUniqHeat} For all $T > 0$, for any source term $f ∈ L^2(T; L^2(Ω))$ and for any initial distribution $u_0 ∈ L^2(Ω)$, there exists a unique solution $u ∈ L^2(T; H_0^1(Ω))$ for the heat equation with $\pd{u}{t} ∈ L^2(T; H_0^1(Ω)')$ such that \( \dualp[H_0^1(Ω)'][H_0^1(Ω)]{\pd{u}{t}, v} + \int_Ω ∇u ∇v = \int_Ω fv \dif x \qquad ∀ v ∈ H_0^1(Ω) \label{eq:PDE:ExtUniqHeatBound} \) for $0 ≤ t ≤ T$ and with $u(x,0) = u_0(x)$ almost everywhere, and where $\dualp[H_0^1(Ω)'][H_0^1(Ω)]{·,·}$ is the duality product of $H_0^1(Ω)$. Therefore, we have the following estimate for the solution:
+\[ \frac{1}{2} \od{}{t} \int_Ω (u(x,t))^2 \dif x + \int_Ω \abs{∇u(x,t)}^2 \dif x = \int_Ω f(x,t) u(x,t) \dif x \]
 \end{prop}
 
 Before going into the proof, a small remark on the spaces: we are using \nref{def:Fund:BochnerSpace} with the convention $L^p(T; X) \equiv L^p((0, T); X)$, that is, the ``time space'' is the interval $(0,T)$. Given that $L^2(Ω)$, $H^1_0(Ω)$ and $H_0^1(Ω)'$ are all Banach spaces, we can just use those as the image spaces of the function depending on time. For the dual $H_0^1(Ω)'$ (the space of $\pd{u}{t}$) recall the definition of the \nref{def:Fund:NormOperator}.
@@ -67,11 +68,11 @@ Some quick results on regularity: if $u ∈ L^2(T; H_0^1(Ω))$ and $∂_t u ∈ 
 
 Additionally, if $∂Ω$ is $C^2$ (or $Ω$ is a convex polygon) and $u_0 ∈ H_0^1(Ω)$, then $u ∈ L^2(T; H^2(Ω))$ and $∂_t u ∈ L^2(T; L^2(Ω))$. This can be seen formally from taking $v =∂_t u$ as a test function.
 
-\subsection{Finite element approximation}
+\subsection{Space discretization: Finite element approximation}
 
 For a step size $h > 0$ and the domain $Ω$ a polygon, we can define a regular mesh \mesh with the regularity assumption that $\frac{h_K}{ρ_K} ≤ C$. Consider the internal vertices $P_1, P_2, \dotsc, P_N$ (external vertices do not matter much, as the function is zero on the boundary), we will be interested in finding the shape function for those vertices.
 
-As usual, we will consider the space $V_h = \spn \set{φ_1, \dotsc, φ_N}$ and will search for the solution $u_h ∈ V_h$ such that \[ \int_Ω \dpd{u_h}{t} + ∇u_h ∇v_h = \int_Ω f v_h \qquad ∀v_h ∈ V_h\]
+As usual, we will consider the space $V_h = \spn \set{φ_1, \dotsc, φ_N}$ and will search for the solution $u_h ∈ V_h$ such that \( \int_Ω \dpd{u_h}{t} + ∇u_h ∇v_h = \int_Ω f v_h \qquad ∀v_h ∈ V_h \label{eq:PDE:HeatEqFEApprox} \)
 
 A small remark: as the solution depends on tie the coefficients of the shape functions must depend on time.
 
@@ -80,3 +81,66 @@ If we take $v_h = φ_i$ for $i = 1, \dotsc, N$, we must have
 \[ \sum_{j = 1} u_j'(t) \underbracket{\int_Ω φ_i φ_j}_{M_{ij}} + \sum_{j = 1}^N u_j(t) \underbracket{\int_Ω ∇φ_i ∇φ_j}_{A_{ij}} = \underbracket{\int_Ω f φ_i }_{f_i}\] which translates to the differential system \[ \mM \vu'(t) + \mA \vu(t) = \vf(t) \]
 
 We also need to include the initial condition of $u(x,0) = u_0(x)$. For that, we will enforce a weak equality: $\int_Ω u_h(0) v_h = \int_Ω u_0 v_h \dif x $ for any $v_h ∈ V_h$ or in other words $u_h(0) = Π_h u_0$ where \[ Π_h w(x) = \sum_{j = 1}^N w_j φ_j(x) \] which can be solved in matrix form as $\mM \vw = \vec{W}$ where $W_i = \int_Ω w(x) φ_i(x) \dif x$.
+
+\begin{prop} Let $Ω$ be a convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$. Then, there exists a constant $C > 0$ independendent of $h$ but dependent on the mesh aspect ratio such that \[ \int_0^T \int_Ω (∇(u - u_h))^2 ≤ Ch^2\]
+\end{prop}
+
+\begin{proof} With the assumptions of $Ω$ convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$, \fref{prop:PDE:ExistUniqHeat} tells us that $u ∈ L^2(T; H^2(Ω))$. We will consider the following norm: $\norm{v}^2 = \int_0^T \int_Ω \abs{∇v}^2$. By using the triangle equality, we can see that \[\norm{u - u_h} ≤ \norm{u - Π_h u} + \norm{Π_h u - u_h} \] where $\appl{Π_h}{L^2(Ω)}{V_h}$ is an interpolation operator that we will define later.
+
+The first norm will come from an interpolation estimate, and it does not have anything to do with the heat equation. For the other term, we will use \eqref{eq:PDE:ExtUniqHeatBound} with $v_h$ and then taking the difference with the equation for the finite elements \eqref{eq:PDE:HeatEqFEApprox}, so that for any $v_h ∈ V_h$ we have \[
+I = \int_Ω \dpd{}{t} (u - u_h) v_h + \int_Ω ∇(u - u_h)∇v_h \] and in particular for $v_h = Π_h u - u_h$ and using the orthogonality condition we have \[I = \int_Ω \dpd{}{t}(Π_h u - u + u - u_h)(Π_h u - u_h) + \int_Ω ∇(Π_h u - u + u - u_h) ∇(Π_h u - u_h)
+\]
+
+We have that $u - u_h$ cancels because I don't know why, and we will define $Π_h$ such that $Π_hu - u$ cancels too. Therefore, we will say that $Π_h w$ for $w ∈ L^2(Ω)$ satisfies that $\int_Ω Π_h w v_h = \int_Ω w v_h$ for any $v_h ∈ V_h$, which corresponds to solving a linear system and therefore is well defined.
+
+We can prove that if $w ∈ H^2(Ω)$, then $\norm{w - Π_hw}_{L^2(Ω)} + h\norm{∇(w - Π_hw)} ≤Ch^2 \norm{w}_{H^2(Ω)}$. This was an exercise question, but with the definition of the interpolation operator we see that $\int (Π_h - w) Π_h w$ is zero and therefore we can replace $Π_h w$ with the Lagrange interpolant $r_h w$ because it will still be zero, and thefore it works because reasons.
+
+We can permute derivative and $Π_h$ and $Π_hu - u$ will go away because reasons agains and this is the most shady proof of this course. Finally, \[ I = \int_Ω ∇(Π_hu - u) ∇(Π_hu-u_h)\] that is, \[ \frac{1}{2} \od{}{t} \norm{Π_hu - u_h}_{L^2(Ω)}^2  + \norm{∇(Π_h u -  u_h)}^2_{L^2(Ω)} ≤ \norm{∇(Π_h u -u_h)} \norm{∇(Π_hu - u_h)} \] and with \nref{prop:Fund:Young} and integrating over time we have \begin{align*}
+\frac{1}{2} \od{}{t} \norm{Π_hu - u_h}_{L^2(Ω)}^2  + \frac{1}{2} \norm{∇(Π_h u -  u_h)}^2_{L^2(Ω)} &≤ \frac{1}{2} \norm{∇(Π_h u -u)}^2 \\
+\int_Ω \left((Π_h -u_h)(x,T)\right)^2 \dif x + \int_0^T \int_Ω \abs{∇(Π_hu - u_h)}^2 \dif x \dif t &≤ \underbracket{\int_Ω \left((Π_h u - u_h)(x,0)\right)^2}_{= 0} + \\ &\quad + \int_0^T \int_Ω \abs{∇(Π_hu - u)}^2 \dif x \dif t
+\end{align*} where the term is zero because it's the initial interpolant and that is zero because again reasons. And all of that is bounded by \textit{big underline} $C h^2 \int_0^T \norm{u}^2_{H^2(Ω)}$.
+
+So the keys for the proof is to start from \[ I = \int_Ω \dpd{}{t} (Π_h u - u_h)(Π_hu - u_h) + \int_Ω ∇(Π_hu - u_h)∇(Π_hu - u_h)\] and then use an interpolant that kills the terms that we don't want.
+\end{proof}
+
+\begin{prop} If $u ∈ L^∞(T; H^2(Ω))$ and $\pd{u}{t} ∈ L^2(T; H^2(Ω))$ then there exists $C > 0$ independent of $h$ but depending on the mesh aspect ratio such that \[ \norm{(u - u_h)(T)}_{L^2(Ω)} ≤ Ch^2 \]
+\end{prop}
+
+\begin{proof} Exercise session. It's the same proof as the previous one but we kill the gradient term with the interpolant so that $\int_Ω ∇R_h w ∇v_h = \int_Ω ∇w ∇v_h$ for any $v_h ∈ V_h$, which is again perfectly computable.
+\end{proof}
+
+One of the exam questions will be heat equation, a priori estimate, finite elements, prove a posteriori estimate.
+
+\begin{prop}[A posteriori error\IS for the heat equation] Assume that $u_0 ∈ H^2(Ω)$. Then there exists a constant $C> 0$ independent of $h, f, u_0$ and $u$ but dependent on the mesh aspect ratio such that \[ \int_0^T \int_Ω \abs{∇(u - u_h)}^2 ≤  C \int_0^T \sum_{K ∈ \mesh} η_K^2 + \text{higher order terms}  \] with \[ η_K^2 = \left(h^2_K\norm{f+ Δu_h - \pd{u_h}{t}} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)} \right)^2 \]
+\end{prop}
+
+\begin{proof} We start from the integral \[ I = \int_Ω \dpd{}{t} (u - u_h) (u - u_h) + \int_Ω ∇(u - u_h) ∇(u - u_h) \] and we want to relate it to the residual which in our case is defined as \[ \dualp{\mop{Residual}(v), u_h} = \int_Ω \dpd{u_h}{t} v + \int_Ω ∇u_h ∇v - \int_Ω f v \]
+
+Then we do an extremely weird replacement $u$ by $f - u_h$ so that we have \begin{align*} I &= \int_Ω (f - \pd{u_h}{t}) (u - u_h) - \int_Ω ∇u_h ∇(u - u_h)\\
+&= \int_Ω \left(f - \dpd{u_h}{t} \right)(u - u_h - v_h) - \int_Ω ∇u_h ∇(u - u_h - v_h) \quad ∀ v_ ∈ V_h \\
+&= \sum_{K ∈ \mesh} \int_K \left(f - \dpd{u_h}{t} + Δu_h\right) (u - u_h - v_h) + \frac{1}{2} \int_{∂K} [∇u_h · \vn] (u - u_h - v_h)
+\end{align*}
+
+Choosing $v_h(x) = R_h \left((u - u_h)(x,t)\right)$ with $R_h$ the Clément interpolant almost everywhere for $0 ≤ t ≤ T$. Also \[ \norm{v}_{L^2(K)} + \sqrt{h_K} \norm{v}_{L^2(∂K)} ≤ Ch_K \norm{∇v}_{L^2(ΔK)} \] so that we can use Cauchy-Schwartz inequality \begin{align*}
+I &≤ C\sum_{K ∈ \mesh}\left( h_K \norm{f - \dpd{u_h}{t} + Δu_h}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)}\right) \norm{∇(u - u_h)}_{L^2(ΔK)} \\
+&≤ C \left(\sum_{K ∈ \mesh} η_K^2\right)^{\sfrac{1}{2}} \left(\sum_{K ∈ \mesh} \norm{∇(u - u_h)}_{L^2(ΔK)}^2 \right)^{\sfrac{1}{2}} ≤ \tilde{C} \left(\sum_{K ∈ \mesh} η_K^2\right)^{\sfrac{1}{2}} \norm{∇(u - u_h)}_{L^2(Ω)} \end{align*}
+so that finally we have \[ I = \frac{1}{2} \od{}{t} \norm{u - u_h}_{L^2(Ω)}^2  + \frac{1}{2} \norm{∇(u - u_h)}^2_{L^2(Ω)} ≤ \frac{1}{2} \tilde{C}\sum_{K ∈ \mesh} η_K^2
+\] and now integrating in time \[ \underbracket{\norm{(u - u_h)(T)}^2_{L^2(Ω)}}_{\sim h^4} + \underbracket{\int_0^T \int_Ω \abs{∇(u - u_h)}^2}_{\sim h^2} ≤ \underbracket{\tilde{C} \int_0^T}_{\sim h^2} + \underbracket{\int_Ω (u -u_h)^2(0)}_{≤ \tilde{C}h^4} \] so we can discard the left term with $\sim h^4$.
+\end{proof}
+
+\subsection{Time and space discretization}
+
+Now we will also discretize time with a time step $τ ≝ \frac{T}{M}$, with steps $t_n = τn$, $n = 0, \dotsc, M$. $u_h^n$ will the approximation of $u_h(t_n)$.
+
+We will consider the implicit Euler scheme, so that for each step we have to solve the equation \( \int_Ω \frac{u_h^{n+1} - u_h^n}{τ} v_h + \int_Ω ∇u_h^{n+1} ∇v_h = \int_Ω f(t_{n+1}) v_h\qquad ∀v_h ∈ V_h \label{eq:PDE:ImplicitEulerHeat} \) and with $u_h^0 = Π_h u_0$ (the $L^2$ projection). But we could use the Lagrange interpolant too. We use the implicit scheme because it works with high order finite elements. The explicit scheme does not work well except for discontinuous finite elements.
+
+\begin{prop}[Stability\IS of the Euler scheme for the heat equation] If $f = 0$, the implicit scheme is $L^2(Ω)$ is stable for all steps $h > 0$, $τ > 0$. That is, $\norm{u_h^{n+1}}_{L^2(Ω)} ≤ \norm{u_h^n}_{L^2(Ω)}$ for all $n = 0, M$.
+\end{prop}
+
+\begin{proof} Set $v_h = u_h^{n+1}$ in \eqref{eq:PDE:ImplicitEulerHeat} so that we have \[ \int_Ω \left(\frac{u_h^{n+1} - u_h^n}{τ} u_h^{n + 1} + \abs{∇u_h^{n+1}}^2 \right) = 0 \] and using the trick $(a - b)a = \frac{a^2}{2} - \frac{b^2}{2} + \frac{1}{2}(a-b)^2$ we have that the previous thing is equal to \[ \frac{1}{2} \int_Ω (u_h^{n+1})^2 - \frac{1}{2} \int_Ω (u_h^n)^2 + \frac{1}{2} \int_Ω (u_h^{n+1} - u_h^n)^2 + \int_Ω τ \abs{∇u_h^{n+1}}^2 = 0 \] and we have it.
+\end{proof}
+
+A remark: the explicit Euler scheme is $L^2(Ω)$ is stable provided that $τ ≤ C h^2$ where $C$ is the constant arising from the inverse inequality. Left as an exercise.
+
+Also, \eqref{eq:PDE:ImplicitEulerHeat} is equivalent to solving a linear system as we saw in
+\fref{sec:ODE:ParabolicProblemDiscrSpace}.

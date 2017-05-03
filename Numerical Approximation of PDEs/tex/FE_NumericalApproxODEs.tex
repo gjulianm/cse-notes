@@ -274,6 +274,7 @@ If $a$ is continuous and weakly coercive then the weak problem admits a solution
 The numerical approximation is however not that easy and we will require a little bit more of work.
 
 \section{Semi-discretization in space}
+\label{sec:ODE:ParabolicProblemDiscrSpace}
 
 For $t > 0$ we will approximate the weak problem by a family of subspaces of finite dimension $\set{V_h}_{h > 0}$ for $V$. The semi-discrete problem in space is then finding $u_h(t) ∈ V_h$ such that \( \begin{cases}
 \pesc{∂_t u_h(t), v_h} + a(u_h(t), v_h) = F(v_h) \quad ∀v_h ∈ V_h,\, ∀ t > 0 \\
