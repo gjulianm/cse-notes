@@ -322,6 +322,40 @@ The solution is an exponential relaxation on $u = f'$.
 
 On the practical level, we have to define the layer thickness. There's no unique definition.  Slides. Displacement thickness making the flux equal in both displaced and flat probdiles. Last one is momentum, but isntead of conserving mass flux you consider momentum flux.
 
+\section{Inviscid fluid - Bernoulli potential}
+
+We review this to have better understanding of boundary layers.
+
+To solve we use Biot-Savart but numerically it is complicated. TWo vortexs with different sign travel with the same velocity, depending on their separation (closer imply faster). Two vortexes of same sign will rotate around the center and merge eventually.
+
+When there's shear and vorticity, the vorticity is tilted towards the direction of the shear.Also, if there is convergence in a plane of flows, it goes upwards (stretching). There is also a term $\frac{1}{ρ} \od{ρ}{t}$ which is barocycaslkdas dependence and very important in metereology but not so much for us.
+
+SPecial propertites on vorticity fields because they have $\dv \vec{ω} = 0$. Vortex lines needs to be either closed, infinite or touch the boundaries. In circulation, we integrate tarngential velocity along the contour, and that's equal to the flux of vorticity. But very difficult to use this.
+
+NOw we look at circulation produced due to the viscous stress in the Stokes problem.
+
+Kelving theorem. The variation of a circulation of  a flow around a countour that follows the i don't know what it is zero.
+
+Then you get Lagrange that says that if the derivative is zero then $ω(x,0) = 0 \implies ω(x, t) = 0$.
+
+Read Ryhming PPUR book for vorticity theorems.
+
+Now inviscid flow. Reynods zero in NSE gives Stokes equations, Reynolds infinity gives Euler. Euler flow must be vorticity free, and that's the step to go to potential flow.
+
+If we assume a conservative force (such a gravity), we have Euler equations slides.
+
+1st bernoulli,from loi fondamentale we get that $∂_t = 0$ and $ω × \vU$ is perpendicular to $\vU$, so integrating along a streamline we get the enthalpy thing.
+
+Fort the second assume unsteady flow but irrotational, replace and integrate.
+
+Two counter examples: we cannot apply bernoulli on a field vorticity-free almost everywhere. The second example has the constant but we cannot apply  ernoulli.
+
+The main idea of Bernoulli is that something.
+
+Different here than in viscous dominated flows: there you flow from high to low pressure. Here there is no link between direction and pressure, only in velocity magnitude.
+
+Potential flow. Vorticity almost everywhere zero. If we use streamfunction (for incompresisiblitlityasda0das) ψ we have $Δψ = 0$ and flow is irrotational. if we use potential φ we have $\rot \vU = 0$ and if if we have incompressible flow thereofre $Δφ = 0$.
+
 \appendix
 
 \backmatter
