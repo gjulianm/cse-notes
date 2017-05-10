@@ -82,7 +82,7 @@ If we take $v_h = φ_i$ for $i = 1, \dotsc, N$, we must have
 
 We also need to include the initial condition of $u(x,0) = u_0(x)$. For that, we will enforce a weak equality: $\int_Ω u_h(0) v_h = \int_Ω u_0 v_h \dif x $ for any $v_h ∈ V_h$ or in other words $u_h(0) = Π_h u_0$ where \[ Π_h w(x) = \sum_{j = 1}^N w_j φ_j(x) \] which can be solved in matrix form as $\mM \vw = \vec{W}$ where $W_i = \int_Ω w(x) φ_i(x) \dif x$.
 
-\begin{prop} Let $Ω$ be a convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$. Then, there exists a constant $C > 0$ independendent of $h$ but dependent on the mesh aspect ratio such that \[ \int_0^T \int_Ω (∇(u - u_h))^2 ≤ Ch^2\]
+\begin{prop}[A priori error\IS for the heat equation (space discretizacion)] \label{prop:PDE:APrioriHeatSpace} Let $Ω$ be a convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$. Then, there exists a constant $C > 0$ independendent of $h$ but dependent on the mesh aspect ratio such that \[ \int_0^T \int_Ω (∇(u - u_h))^2 ≤ Ch^2\]
 \end{prop}
 
 \begin{proof} With the assumptions of $Ω$ convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$, \fref{prop:PDE:ExistUniqHeat} tells us that $u ∈ L^2(T; H^2(Ω))$. We will consider the following norm: $\norm{v}^2 = \int_0^T \int_Ω \abs{∇v}^2$. By using the triangle equality, we can see that \[\norm{u - u_h} ≤ \norm{u - Π_h u} + \norm{Π_h u - u_h} \] where $\appl{Π_h}{L^2(Ω)}{V_h}$ is an interpolation operator that we will define later.
@@ -144,3 +144,72 @@ A remark: the explicit Euler scheme is $L^2(Ω)$ is stable provided that $τ ≤
 
 Also, \eqref{eq:PDE:ImplicitEulerHeat} is equivalent to solving a linear system as we saw in
 \fref{sec:ODE:ParabolicProblemDiscrSpace}.
+
+\begin{prop}[A priori error\IS for the heat equation (time-space discretization)] Assume that we have $u ∈ L^∞(T; H^2(Ω))$ and $\pd[2]{u}{t} ∈ L^2(T; H^2(Ω))$. Then there exists $C$ independent of both discretization steps $τ$ and $h$ such that \[ \sum_{m = 1}^M τ \norm{∇u(t_n) - ∇u_h^n}_{L^2(Ω)}^2 ≤ C (h^2 + τ^2) \] where $t_M = M τ = T$.
+\end{prop}
+
+Basically, this proposition is just the discrete counterpart of the integral of \fref{prop:PDE:APrioriHeatSpace} and accordingly the proof is very similar.
+
+\begin{proof} We just have to plug the exact solution into the numerical scheme \eqref{eq:PDE:ImplicitEulerHeat}. We will write the heat equation and then use Taylor expansion to approximate the derivative: \begin{align*}
+u(t_n) &= u(t_{n+1}) + \int_{t_{n}}^{t_{n+1}} \dpd{u}{t}(t) \dif t \\
+\dpd{u}{t}(t) &= \dpd{u}{t}(t_{n+1}) + \int_{t_{n+1}}^t \dpd[2]{u}{t} (s) \dif s = \\
+&= \frac{u(t_{n+1}) - u(t_n)}{τ} - \dpd{u}{t}(t_{n+1}) + \frac{1}{τ} \int_{t_n}^{t_{n+1}} \int_{t_{n+1}}^t \dpd[2]{u}{t} (s) \dif s \dif t
+\end{align*} and therefore $u$ satisfies \begin{multline*}
+\int_Ω \frac{u(t_{n+1}) - u(t_n)}{τ} v_h + \int_Ω ∇u(t_{n+1}) ∇v_h =\\ = \int_Ω f(t_{n+1}) v_h - \frac{1}{τ} \int_Ω \int_{t_{n+1}}^{t_n} \int_{t_{n+1}}^t \dpd[2]{u}{t}(s) v_h \dif s \dif t \qquad ∀v_h ∈ V_h
+\end{multline*}
+
+Now let $e^{n+1}(x) ≝ u(t_{n+1}) - u_h^{n+1}(x)$. Then we have \[ \int_Ω \frac{e^{n+1} - e^n}{τ} v_h + \int_Ω ∇e^{n+1} ∇v_h = - \frac{1}{τ} \int_Ω \int_{t_{n+1}}^{t_n} \int_{t_{n+1}}^t \dpd[2]{u}{t}(s) v_h \dif s \dif t  \qquad ∀v_h ∈ V_h\] (which is some kind of orthogonality property).
+
+Adding and removing the $L^2$ projection of $u$, we have \[ e^{n+1} = \underbracket{u(t_{n+1}) - Π_hu(t_{n+1})}_{\text{Interpolation error}} + \underbracket{Π_hu(t_{n+1}) - u_h^{n+1}}_{e_h^{n+1}} \]
+
+We know that the interpolation error is going to zero if $u$ is smooth enough. The question is what happens with $e_h^{n+1}$. We start from \begin{gather*}
+\int_Ω\left( \frac{e^{n+1}_h - e_h^n}{τ} e_h^{n+1} + \abs{∇e_h^{n+1}}^2 \right) = \\
+= \int_Ω \frac{Π_hu(t_{n+1}) - u(t_{n+1}) + \overbracket{u(t_{n+1}) - u_h^{n+1}}^{e^{n+1}} - (Π_hu(t_n) -u(t_n) + \overbracket{u(t_n) - u_h^n}^{e^n})}{τ} e_h^{n+1} \\
+\quad + \int_Ω ∇(Π_h u(t_{n+1}) - u(t_{n+1}) + \overbracket{u(t_{n+1}) - u_h^{n+1}}^{e^{n+1}})∇e_h^n = \\
+= \underbracket{\int_Ω \frac{Π_hu(t_{n+1}) - u(t_{n+1}) + Π_hu(t_n) - u(t_n)}{τ}e_h^{n+1}}_{\to 0 } + \int_Ω ∇(Π_hu(t_{n+1}) - u(t_{n+1}))∇e_h^{n+1} \\ \quad - \frac{1}{τ} \int_Ω \int_{t_{n+1}}^{t_n} \int_{t_{n+1}}^t \dpd[2]{u}{t}(s) e_h^{n+1} \dif s \dif t
+\end{gather*}
+
+As the first integral goes to zero because of the definition of the projection operator, so we are left with the error due to the space and time discretization. Now we have to conclude, using $(a-b)a = \frac{1}{2}a^2 - \frac{1}{2} b^2 + \frac{1}{2}(a-b)^2$ and Poincaré inequality to bound the norm of $e_h^{n+1}$ by that of its gradient, so therefore we have \begin{multline*}
+\frac{1}{2τ} \int_Ω (e_h^{n+1})^2 - \frac{1}{2τ} \int_Ω (e_h^n)^2 + \frac{1}{2τ} (e_h^{n+1} - e_h^n)^2 + \int_Ω \abs{∇e_h^{n+1}}^2 ≤ \\ ≤ \norm{∇(u(t_{n+1}) - Π_h u(t_{n+1}))}_{L^2} \norm{∇e_h^{n+1}}_{L^2} + \norm{\frac{1}{τ}\int_Ω \int_{t_{n+1}}^{t_n} \int_{t_{n+1}}^t \dpd[2]{u}{t}(s)}_{L^2}C_p \norm{∇e_h^{n+1}}_{L^2}
+\end{multline*}
+and by using Young's inequality we know that \[ \norm{\frac{1}{τ}\int_Ω \int_{t_{n+1}}^{t_n} \int_{t_{n+1}}^t \dpd[2]{u}{t}(s)}_{L^2}C_p \norm{∇e_h^{n+1}}_{L^2} ≤ \frac{1}{4} \norm{\frac{1}{τ}\int_Ω \int_{t_{n+1}}^{t_n} \int_{t_{n+1}}^t \dpd[2]{u}{t}(s)}_{L^2}^2  + C_p^2 \norm{∇e_h^{n+1}}_{L^2}^2 \] and putting everything together it works. Trust me.
+
+We have just to be sure that weird integral goes with $τ^2$, so \begin{multline*}
+\int_Ω \left(\frac{1}{τ}\int_{t_{n+1}}^{t_n} \int_{t_{n+1}}^t \dpd[2]{u}{t}(s))\right)  ≤ \frac{1}{τ^2} \int_Ω \int^{t_{n+1}}_{t_n} \int_{t_{n+1}}^t τ^2 \left(\dpd[2]{u}{t}(s)\right)^2 ≤ \\  ≤ τ^2 \int_Ω \int_{t_n}^{t_{n+1}} \left(\dpd[2]{u}{t}\right)^2 ≤ τ \int_Ω \int_{t_n}^{t_{n+1}} \left(\dpd[2]{u}{t}\right)^2
+\end{multline*}
+
+This proof was doomed from the start. Fix it later.
+
+Prof said that this is not going to be on the exam so ok.
+\end{proof}
+
+For the a posteriori error estimate, we are going to do the opposite: we will plug $u_h^n$ into the PDE.  In order to plug discrete solutions into a derivative, we will just consider $u_{hτ}(x,t)$ as the continuous piecewise linear interpolator of the discrete solutions, so that \[ u_{hτ}(x, t) = u_h^n(x) + (t - t_n) \frac{u_h^{n+1} - u_h^n}{τ} \] and we will have that $\pd{u_{hτ}}{t} = \frac{u_h^{n+1} - u_h^n}{τ}$. Therefore, $u_{hτ}$ satisfies that \( \label{eq:PDE:Killmenow}
+\int_Ω \dpd{u_{hτ}}{t} v_h + \int_Ω ∇u_{hτ} ∇v_h = \int_Ω f(t) v_h
++ \int_Ω \left(f(t_{n+1}) - f(t)\right)v_h + \int_Ω ∇(u_{hτ} - u_h^{n+1}) ∇v_h
+\)
+
+Now we can word I can't recall the proposition.
+
+\begin{prop}[A posteriori error\IS for the heat equation (time-space discretization)] There exists a constant $C > 0$ depending only on the mesh aspect ratio such that \[ \norm{(u - u_{hτ})(t_{n+1})}_{L^2}^2 + \int_{t_n}^{t_{n+1}} \norm{∇(u - u_{hτ})}^2_{L^2(Ω)} ≤ \norm{(u - u_{hτ})(t_n)}^2_{L^2} + C \int_{t_n}^{t_{n+1}} \sum_{K ∈ \mesh} η_K^2 \] with \[ η_K = h_K \norm{f - \dpd{u_{hτ}}{t} + Δu_{hτ}}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[u_{hτ} · \vn]}_{L^2(∂K)} + \norm{f(t) - f(t_{n+1})}_{L^2(K)} + \norm{∇(u_{hτ} - u_h^{n+1})}_{L^2(K)} \]
+\end{prop}
+
+\begin{proof} Set $e ≝ u - u_{hτ}$, and we start from \begin{align*}
+I = \int_Ω \dpd{e}{t} e + \int_Ω \abs{∇e}^2 &= \int_Ω \left(\dpd{u}{t} - \dpd{u_{hτ}}{t}\right) e + \int_Ω ∇(u - u_{hτ}) ∇e = \\
+&= \int_Ω \left(f - \dpd{u_{hτ}}{t} \right) e - \int_Ω ∇u_{hτ} ∇ e \\
+&= \int_Ω \left(f - \dpd{u_{hτ}}{t}\right) ( e - v_h) - \int_Ω ∇u_{hτ} ∇(e - v_h) + \\
+&\qquad + \int_Ω \left(f(t) - f(t_{n+1}) \right) v_h + \int_Ω ∇(u_{hτ} - u_{h}^{n+1})∇v_h
+\end{align*} which is the residual and later we use \eqref{eq:PDE:Killmenow}.
+
+The classical thing we do in space is to choose the Clèment interpolant for $v_h$ and then do things. But Here we can integrate by parts over all triangles so that is equal to
+\begin{multline*}
+\sum_{K ∈ \mesh} \left(\int_K \left(f - \dpd{u_{hτ}}{t} + Δu_{hτ}\right)(e - v_h) + \frac{1}{2} \int_{∂K} [∇u_{hτ}· \vn] (e - v_h) \right. + \\ \left. + \int_K (f(t) - f(t_{n+1})) v_h + \int_K ∇(u_{hτ} - u_h^{n+1}) ∇v_h \right)
+\end{multline*}
+
+Now selecting $v_h = R_h e$ the Clément interpolant in space for each $t$, so that we know that \[ \norm{v - R_h v}_{L^2(K)} + \sqrt{h_K} \norm{v - R_h v}_{L^2(∂K)} + h_K \norm{∇(v - R_hv)}_{L^2(K)} ≤ Ch_K\norm{∇v}_{L^2(ΔK)} \] and therefore \begin{align*}
+I &≤ C \sum_{K ∈ \mesh} \left(h_K \norm{f - \dpd{u_{hτ}}{t} + Δu_{hτ}}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_{hτ} · \vn]}_{L^2(∂K)} \right. + \\
+&\qquad \left. \norm{f(t) - f(t_{n+1})}_{L^2(K)} + \norm{∇(u_{hτ} - u_h^{n+1})}_{L^2(K)} \right)\norm{∇e}_{L^2(ΔK)} \\
+&≤ C \left(\sum_{K ∈ \mesh} η_K^2 \right)^{\sfrac{1}{2}} \left(\sum_{K ∈ \mesh} \norm{∇e}_{L^2(ΔK)}^2 \right)^{\sfrac{1}{2}} ≤ \frac{\tilde{C}}{2} \left(\sum_{K ∈ \mesh} η_K^2 \right)^{\sfrac{1}{2}}  + \frac{1}{2} \norm{∇e}^2_{L^2(Ω)}
+\end{align*} and then we have to integrate in time between $t_n$ and $t_{n+1}$.
+\end{proof}
+
+
