@@ -150,6 +150,7 @@
 \vF#m
 \vg#m
 \vG#m
+\vi#m
 \va#m
 \vd#m
 \vA#m
