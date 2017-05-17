@@ -454,6 +454,30 @@ Now we can try to solve maximum entropy fitting in PDFs. You have a set $\mathca
 
 We need to prove that the ffirst-order necessary conditions are actually sufficient, andalso that if $f_i)(x) $12312jnsdaasd are $x_1, \dotsc, x_N$ ie all first moments plus all $x_ix_j$ all secondray moments you can solve the first order conditions and the max entropy fit is a gaussian and the parameter values as of first order.,
 
+\seprule[Lecture missed]
+
+So in the last time we went from a molecular dynamics time series for a given oligomer sequence ${S}$ to an estimate $\vmu (S) ∈ ℝ^{12n - 6}$ and $\mC(S) ∈ ℝ^{12n - 6 × 12n - 6}$ with $\mC$ spd. $\mK(S)$ is the banded stiffness and the PDF for the banded matrix is \[ ρ_b (\vw; S) = \frac{1}{Z} e^{- \frac{1}{2} (\vw - \vmu) \mK (\vw - \vmu)} \] with $[| K|]' = 0$ and $[|\inv{\mK}|] = \mC$ where $ρ_b$ is the max likelihood or max entropy banded Gaussian fit.
+
+Today and next week we are doing the following: for a training library of $ρ_b^i$ for $i = 1, \dotsc, M$ sequences, we want to estimate the cgDNA parameters set $\mathcal{P}$.
+
+Remark, well known that outliers in a time series could strongly affect estimates of the centered covariance, so it is a good idea to filter them out. Not so clear how to identify them.  There is a large theory for that, but in our case we will utilize physical filtering: if the bonds hydrogen in a snapshot is broken, it is not used. Most of the broken bonds appear at the ends (fraying).
+
+GC and GG end bonds are the most stable ends. AA, AT and TA are the more unstable. GC is moreover palindromes, and that opens interesting possibilities: they make possible for the whole polymer to be a palindrome.
+
+Now the question is how to design a good sequence library. One natural guess is having uniform statistics on all mono/di/tri/tetranucleotides. For a $n$-nucleotide, if $n$ is odd you get $4^n / 2$ cases and if it's even it's $(4^n + 4^{n/2})/2$. that's a very big number so it is practically impossible to get more than tetranucleotides.
+
+The sequeence that he copied GCGCATGCATGCATGCGC is one of 39  ABC (Ascena B-DNA Consortium) oligomer, which are always start/end with $GC$. and of the form GC cd abcd abcd abcd GC. Some of the ABC oligomers are palindromic (in fact, 8 are) other 31 ar not. Having all GC steps is very problematic for hestimateing the cgDNA parameter set.
+
+They added 30 other sequences to that dataset to get all ends, which is all 5'-XY with XY bases. Currently using a completely palindromic training set + 15 ends.
+
+The generally optaimal design of sequence os not well understaood. The bruijn sequences are the sorthest sequences with all permitations
+
+Suppose an oligorem $S$ is a palindrome. What is best estimate for $\vmu(S)$? Can use crick-wahatson symmetry as a prior. so IDK but $\vmu(S) = \frac{1}{2} (\vw + \mE \vw)$ (double number of snapshots). Is the time series stationary, ie  conveyed IDK size of IDK ($\vw(S) - E \vw(S) ) ≠ 0$ implies non convergence). Can make similar cmoputations on Crickwatson symmetrical estimates of $\mC(S)$.
+
+What are the units of the data? Lenght in angstroms. Rotations adimensional scale one because of Cayley transfomr. So IDK but things for publish. $Q(\vu) = (I + 0.5 \vu^×) (I - 0.5 \vu^×)^{-1}$. Full dimenssional of $\mK$ is $\frac{1}{k_BT}$ which makes sense asdasd.
+
+Good scaling for angles is to measure in fifths of a radian.
+
 \appendix
 
 \chapter{Exercises}
