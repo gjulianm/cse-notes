@@ -478,6 +478,56 @@ What are the units of the data? Lenght in angstroms. Rotations adimensional scal
 
 Good scaling for angles is to measure in fifths of a radian.
 
+\seprule
+
+So some things about siulation and equilibrum of $N$ particles in $ℝ^3$. In cgDNA we have the same but with our coordinates in $ℝ^3$ and $SO(3)$. But because each base $(\mR_i^{\pm}, \vr_i^\pm) ∈ SE(3)$, it turns aout that $\pd{U}{\vw}$ does not give forces and torques but we need a vonversion. That will be cgDNAeq. But that's for another class.
+
+Today: Last step in parameter estimation. We IDK \( \mathcal{P} = \argmin_{\mathcal{P}} \sum_{i = 1}^M w_i \mop{KL} (ρ_{\text{cgDNA}}(S^i); ρ_{\text{band}}^i) \label{eq:ParamsetArgmin} \) where $\mathcal{P}$ is the parameters set, $\mop{KL}$ is the Kullback-Leiber diveregnce, $w_i ≥ 0$ are confidence weights, and $ρ^i_\text{band}$ is the oligomer based Gaussian with banded $\mK^i$ and mean $\mu^i$ for each training sequence $\mathcal{S}^i$. We could take $w_i$ for exampleto be the relative number of snapshots in each simulation.
+
+Picking $w_i$ is more of an art than a science. Also, picking the entire objective functional is also an art. We take Kullback-Leibler divergence because some people like it, others don't, unclear.
+
+Currently we have access to cgDNA paramset 2, made with the ABC training library. E.g. $S_3 = GCGC ATGC ATGC ATGC GC$. Total of 39 18-mers plus end sequences. How to design a library? 100 ns MD simulations , raw data each 1μs cgDNA is cgDNA parameset2 but with larger MD sims.
+
+In paramset 1, we have $w_i = 1$ because they wanted.
+
+From MDsnapshot timeseries, we got the $ρ_\text{{band}}(S^i)$ for cgDNA paramset 2 with max entropy truncated, equivalent to \[ ρ_\text{band} \argmin_{ρ_\text{band}} \mop{KL}(ρ_\text{aaaa}^i, ρ_\text{band}(S^i))\]  recalling that there are closed form expressions for their KL divergence.
+
+For example, cgDNA persistence lengths are much higher for $\mathcal{P}_1$ than for $\mathcal{P}_2$.
+
+Another question is what is the order. We have a different slot than for full parameter estimation. But this is a philosophy that if you are fitting model to data model should be first and then the data. But here we contradict it.
+
+Next remark is that you can compute $∇_\mathcal{P} ρ_{\text{cgDNA}} ∈ ℝ^{1592}$. We can also compute the gradient of the gradient which is in $ℝ^{1592 × 1592}$. We can then apply gradient flow to the estimation \eqref{eq:ParamsetArgmin} and switch to a Newton-Bryder method. There will be a lot of numbers but all is ok, and we will get a unique $\mathcal{P}$ for an appropriate library. Parameter sets can be reused as initial guesses for other situations (other solutions). How to get the first one?
+
+Also, what is an appropriate training library? We talked about having stable ends to avoid fraying. Each ABC oligomer is reasonably balanced in corrences of mononucleotides, dinucleotides, tri and tetra. In our example sequence $S_3$ we have all mononucleotides. All need to be palindromes though because ABC is only palindromes.
+
+ABC is not like another thing, currently we are using another library palindromic. 136 independent tetranucleotides times 2 instances gives 272 basepairs in total. Can compute $16 × 24$mers all palindromes all frequences of mono, di , tri and tetranucleotiedes almost equal. But all ends are GC and we will see now that is not good enough.
+
+Recall that the cgDNA paramset has the $\mK^X$ for single bases and $\mK^{XY}$ for pairs, and the same with the $\vec{σ}$ (although those are less important). Given a library of simulations truncated to banded stiffness and a good first guess for say $\mK^{AA}_*$ which is the single-overlap part  (the part that does not overlap)  which is symmetric. We approximate the $\mK^{XY}_*$ by the average of all the $\mK^{XY}_*$ for each of the training sequences where we have seen the $XY$ basepairs. If we have designed the library well, the number of samples of each matrix should be similar.
+
+Then we need guesses for the remaining part of two/three overlaps, but the problem is that they don't appear separately. We only observe $\mK_{33}^{XY}  + \mK^Y + \mK_{11}^{YZ} = Γ^{XYZ}$. So we average all observations of $Γ^{XYZ}$ and then we use least squares. We have the linear system $\mA \vx = \vb$ in the least squares sense. We know that it has a solution if $\vb$ is in the range of $\mA$, which will be unique if the $\ker \mA = \set{0}$. You construct the normal equations $\mA^T \mA \vx = \mA \vb$ which is a square linear system with maybe unique solutio if $\ker \mA = \set{0}$ and we cansolve it.
+
+Then, for each entry, we have $k_{33}^{xy} + k^y + k_{11}^{yz} = γ^{xyz}$. So the linear system is $\mA ∈ ℝ^{16 × 9}$ wwith \[ \mA = \scriptsize \begin{pmatrix}
+1 & & & & 1 & 1 & & & \\
+& 1 & & & 1 & 1 & & & \\
+& & 1 & & 1 & 1 & & & \\
+& & & 1 & 1 & 1 & & & \\
+1 & & & & 1 & & 1 & & \\
+& 1 & & & 1 & & 1 & & \\
+& & 1 & & 1 & & 1 & & \\
+& & & 1 & 1 & & 1 & & \\
+1 & & & & 1 & & & 1 & \\
+& 1 & & & 1 & & & 1 & \\
+& & 1 & & 1 & & & 1 & \\
+& & & 1 & 1 & & & 1 & \\
+1 & & & & 1 & & & & 1 \\
+& 1 & & & 1 & & & & 1 \\
+& & 1 & & 1 & & & & 1 \\
+& & & 1 & 1 & & & & 1 \\
+\dotsb
+\end{pmatrix}\] so basically $4×4$ identidies in the left side, a middle colum with ones and then ones in the $i$th column for each block. and there is a copule normal equations for $\mA^T \mA$.
+
+Solution are unique in this case? no because $\ker \mA ≠ \set{0}$ and in fact it's a two-dimensional null-space. Saving grace are last and first blocks with two overlaps. Adding them we get a bigger linear system.
+
 \appendix
 
 \chapter{Exercises}
