@@ -105,7 +105,7 @@ Some explanation of $η_K$ and more things.
 
 The idea of the following proposition is that we can compute a gradient operator and we will have guarantees that it converges to the real error (which we cannot compute).
 
-\begin{prop} Assumme that there is a \concept[Gradient!post-processed]{post-processed gradient} $\appl{\gradop }{V_h}{V_h}$, two constants $C_1, C_2 > 0$  and two exponents $0 < α < β ≤ 2$ such that for all $h > 0$ we have \begin{align*}
+\begin{prop} \label{prop:PostProcGradientConvergence} Assumme that there is a \concept[Gradient!post-processed]{post-processed gradient} $\appl{\gradop }{V_h}{V_h}$, two constants $C_1, C_2 > 0$  and two exponents $0 < α < β ≤ 2$ such that for all $h > 0$ we have \begin{align*}
 \norm{∇u - \gradop u_h}_{L^2(Ω)} &≤ C_1 h^β \\
 \norm{∇u - ∇u_h}_{L^2(Ω)} &≥ C_2 h^α
 \end{align*}
@@ -118,7 +118,7 @@ Then, $\norm{∇u - \gradop u_h}_{L^2(Ω)} \convs[][h][0] \norm{∇u - ∇u_h}_{
 On the other hand, we have that \[ \frac{\norm{\gradop  u_h - ∇u_h}}{\norm{∇u - u_h}} ≥ 1 - \frac{\norm{∇u - \gradop u_h}}{\norm{∇u - ∇u_h}} ≥ 1 - \frac{C_1}{C_2} h^{β - α} \convs[][h][0] 1\]
 \end{proof}
 
-The interesting question is how to build the better gradient operator $\gradop $. The idea is to use the Clément interpolant of $∇u_h$, so that $\gradop  u_h(x) = \sum_{j = 1}^N \gradop u_h(p_j) φ_j(x)$ with \[ \gradop u_h (p_j) = \frac{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K ∇u_h}{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K 1} \] as the averages of the values in the point $p_j$ evaluated on all the mesh elements $K$ containing $p_j$.
+The interesting question is how to build the better gradient operator $\gradop $. The idea is to use the Clément interpolant of $∇u_h$, so that $\gradop  u_h(x) = \sum_{j = 1}^N \gradop u_h(p_j) φ_j(x)$ with \( \gradop u_h (p_j) = \frac{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K ∇u_h}{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K 1} \label{eq:PDE:PostProcGrad} \) as the averages of the values in the point $p_j$ evaluated on all the mesh elements $K$ containing $p_j$.
 
 On parallel meshes\footnote{Drawing of a mesh with rectangular triangle mesh elements.} it can be proved that if $u ∈ H^3(Ω)$ then $\norm{∇u - G u_h}_{L^2} = \oof{h^2}$ (superconvergence). On structured meshes\footnote{I think he said paralel meshes with small modifications, such a bending or something like that.} we hate $\norm{∇u - Gu_h} = \oof{h^β}$ with $1 < β ≤ 2$.
 

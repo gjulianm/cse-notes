@@ -162,7 +162,7 @@ With this we can define in a straightforward way the Bochner spaces of these typ
 
 \begin{defn}[Bochner space][Space!Bochner]\index{Bochner!space}\label{def:Fund:BochnerSpace} Given a measure space \meas[T], a Banach space $(X, \norm{·}_X)$ and $1 ≤ p ≤ ∞$ the Bochner space $L^p(T; X)$ is defined to be the quotient (by equality almost everywhere) of all Bochner measurable functions $\appl{u}{T}{X}$ such that the corresponding norm is finite. The norms are defined as follows:
 \begin{align*}
-\norm{u}_{L^p(T;X)} &≝ \left(\int_T \norm{u(t)}_X^p \dif μ\right)^{\sfrac{1}{p}} & 1 ≤ p < ∞ \\
+\norm{u}_{L^p(T;X)} &≝ \left(\int_T \norm{u(t)}_X^p \dif μ\right)^{\sfrac{1}{p}} \quad 1 ≤ p < ∞ \\
 \norm{u}_{L^∞(T;X)} &≝ \essup_{t ∈ T} \norm{u(t)}_X
 \end{align*}
 \end{defn}
@@ -170,6 +170,8 @@ With this we can define in a straightforward way the Bochner spaces of these typ
 This is exactly the same idea of the definition of \nref{def:Fund:LpSpace} but using Bochner measurability instead.
 
 For convenience of notation, we will sometimes write $L^p(T; X)$ to refer to $L^p((0,T); X)$ instead.
+
+Note that we can do a similar thing with continuous function spaces. For example, we can define the space $C^0(T; X)$ such that the mapping \[ t\longmapsto \int_Ω \norm{u(x,t)}_X \dif x \] is continuous for any $u ∈ C^0(T;X)$. Similarly, for derivable function spaces we will require that \[ t \longmapsto \int_Ω \norm{\dod[N]{u}{t}(x,t)}_{X} \] for all $u ∈ C^N(T; X)$.
 
 \section{Distributions}
 \label{sec:Fund:Distributions}

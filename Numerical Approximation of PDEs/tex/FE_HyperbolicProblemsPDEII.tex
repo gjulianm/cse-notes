@@ -1,1 +1,115 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
+
+\section{Transport equation}
+
+In this chapter we will start studying equations such as the transport equation:
+\( \begin{cases}
+\dpd{u}{t} + \vb ∇u = f & Ω × (0, T) \\
+u(0) = u_0 \\
+u(x,t) = 0 & 0 ≤ t ≤ T, \, x ∈ Γ ≝ \set{ x ∈ ∂Ω \st \vb \vn < 0 }
+\end{cases} \label{eq:PDE:Transport} \)
+
+Then, we will search for a finite element approximation $u_h ∈ V_h = \spn \set{φ_1, \dotsc, φ_N}$ where the vertices are on $Γ_-$ excluded.
+
+The weak formulation will be given by \( \int_Ω \left(\dpd{u_h}{t} + \vb ∇u_h - f\right)(v_h + δ_h \vb ∇v_h) = 0 \quad ∀v_h ∈ V_h\label{eq:PDE:TransportWeakStab} \) where we have added a stabilization term such that $v_h = u_h + δ_h \dpd{u_h}{t}$ to have stability, with $δ_h$ constant.
+
+\begin{prop}[A priori error\IS for the transport equation] With the transport equation \eqref{eq:PDE:Transport} with $\dv \vb = 0$, $\vb(x) ≠ 0$ and $δ_h = \frac{h}{2\norm{\vb}_{L^∞(Ω)}}$, we have that $u, \pd{u}{t} ∈ L^2(0, T; H^2(Ω))$ and there exists a constant $C > 0$ independent of $h$ such that \[ \norm{u(T) - u_h(T)}^2_{L^2(Ω)} ≤ Ch^3 \]
+\end{prop}
+
+\begin{prop}[A posteriori error\IS for the transport equation] With the transport equation \eqref{eq:PDE:Transport} with $\vb ∈ C^1(Ω)$ and $\dv \vb = 0$, using \[ \restr{δ_h}{K} = \frac{h_K}{2 \norm{\vb}_{L^∞(K)}} \quad ∀ K ∈ \mesh \] if $\norm{\vb}_{L^∞(K)} ≠ 0$ (if it is zero, we have $\restr{δ_h}{K} = 0$ as the transport term is zero and we don't need a stabilization term).
+
+Then, if\footnote{Note that if the initial data at $t = 0$ is not smooth, the solution will not be smooth either: it is a transport equation.} $u ∈ L^2(0,T; H^1(Ω))$ there exists a constant $C > 0$ dependent only on the mesh aspect ratio such that \( \norm{u(T) - u_h(T)}_{L^2(Ω)}^2 ≤ \norm{u(0) - u_h(0)}^2_{L^2(Ω)} + C \int_0^T \sum_{K ∈ \mesh} η_K^2 \label{eq:PDE:TransportAPosteriori} \) with \[ η_K^2 ≝ h_K \norm{f - \dpd{u_h}{t} - \vb ∇u_h}_{L^2(K)} \norm{∇(u - u_h)}_{L^2(ΔK)} \]
+
+We will see later how to get someting computable from there because we still have $u$ in the $η_K$ definition.
+\end{prop}
+
+\begin{proof} Set $e = u - u_h$. We already know that \[ \int_Ω (\vb ∇v) v = \int_Ω \dv \left(\vb \frac{v^2}{2}\right) = \int_{∂Ω} \vb \vn \frac{v^2}{2} ≥ 0 \quad ∀v ∈ H^1_{Γ_-}(Ω)\] which corresponds to setting $v = 0$ at the inflow $Γ_-$.
+
+Then we can integrate \begin{multline}
+\frac{1}{2} \dod{}{t} \int_Ω e^2 = \int_Ω \dpd{e}{t} e ≤ \int_Ω \left(\dpd{e}{t} e + (\vb ∇e)e\right) = \\
+= \int_Ω \left(\dpd{}{t}(u - u_h) + \vb ∇(u - u_h)\right)e = \int_Ω \left(f - \dpd{u_h}{t} - \vb ∇u_h\right)e \label{eq:PDE:ProofAPostTransport1}
+\end{multline}
+
+This is valid for any $u_h$ coming off of any numerical scheme, so now we will use that to get an optimal estimate. Using the orthogonality condition, we can subtract $v_h - δ_h \vb ∇u_h$ from $e$ to have
+\[ \int_Ω \left(f - \dpd{u_h}{t} - \vb ∇u_h\right)e = \int_Ω \left(f - \dpd{u_h}{t} - \vb ∇u_h\right)\left(e - v_h - δ_h \vb ∇v_h\right)\] for any $v_h ∈ V_h$. Using $v_h = R_h e$ the Clément interpolant, we can estimate separately \[ \norm{e - v_h}_{L^2(K)} ≤ Ch_K \norm{∇e}_{L^2(ΔK)} \] and that \[ \norm{δ_h \vb ∇R_h e}_{L^2(K)} ≤ \frac{h_K}{2\norm{\vb}_{L^∞(K)}} \norm{\vb}_{L^∞(K)} \norm{∇R_h e}_{L^2(K)} \] and by knowing the estimate $\norm{∇R_h e}_{L^2(K)} ≤ C \norm{∇e}_{L^2(ΔK)}$ we finish using the Cauchy-Schwartz inequality so that \[ \frac{1}{2} \dod{}{t} \int_Ω e^2 ≤ C\sum_{K ∈ \mesh} \norm{f - \dpd{u_h}{t} - \vb ∇u_h}_{L^2(K)} h_K \norm{∇e}_{L^2(ΔK)}\] and then we just integrate on time on the left hand side to get to the estimate \eqref{eq:PDE:TransportAPosteriori}.
+
+\end{proof}
+
+We would like to remark that this is not a classical a posteriori error estimate since $u$ is in the error estimator. However, we can use $ZZ$ post-processing and use the post-processed gradient \eqref{eq:PDE:PostProcGrad} that we discussed in \fref{sec:PDE:GradientAPosterioriElliptic} such that $\norm{∇(u - u_h)} \approx \norm{\gradop u_h - ∇u_h}$ because $\norm{∇u - \gradop u_h}$ was super-convergent (\fref{prop:PostProcGradientConvergence}).
+
+A second remark that we already made is that if $u$ is not smooth and we only have $u ∈ L^2(0,T; L^2(Ω))$, we can go back to \eqref{eq:PDE:ProofAPostTransport1} so that we would have the error estimator with just the residual \[ \norm{e(T)}_{L^2(Ω)} ≤ \norm{e(0)}_{L^2(Ω)} + \int_0^T \left(\sum_{K ∈ \mesh}  \norm{f - \dpd{u_h}{t} - \vb ∇u_h}^2_{L^2(K)} \right)^{\sfrac{1}{2}} \]
+
+\section{Wave equation}
+
+\begin{figure}[hbtp]
+\inputtikz{WaveExample}
+\caption{Example of a wave propagation solution.}
+\label{fig:PDE:WaveExample}
+\end{figure}
+
+We will now study the wave equation given by \( \label{eq:PDE:WaveEq} \begin{cases}
+\dpd[2]{u}{t}(x,t) - Δu(x,t) = f(x,t) & x ∈ Ω, 0 ≤ t ≤ T \\
+u(x,t) = 0 & x ∈ ∂Ω, 0 ≤ t ≤ T \\
+u(x,0) = u_0(x) & x ∈ Ω \\
+\dpd{u}{t}(x,0) = v_0(x) & x ∈ Ω
+\end{cases}\) where $u$ models the vertical deformation of a membrane Ω.
+
+If we were in 1D with $Ω = [0,1]$ and $f = 0$, $v_0 = 0$, the solution to the problem is a traveling wave such as the one from \fref{fig:PDE:WaveExample} because of the D'Alembert solution \[ u(x,t) = \frac{1}{2}\left(u_0(x - t) + u_0(x + t)\right) \] with $u_0$ an odd, periodic extension of $u_0$ over $ℝ$.
+
+We will get the a priori estimate by multiplying the wave equation by $\pd{u}{t}$ and integrating over $Ω$:
+\begin{align*}
+\int_Ω \dpd[2]{u}{t} \dpd{u}{t} + ∇u ∇\dpd{u}{t} &= \int_Ω f \dpd{u}{t} \\
+\frac{1}{2} \dod{}{t} \int_Ω \abs{\dpd{u}{t}}^2 + \abs{∇u}^2 &= \int_Ω f \dpd{u}{t}
+\end{align*} which is a conservation principle, which says that the change on kinetic energy plus deformation energy is the power of external forces, and as everything in the integral is positive and using Cauchy-Schwartz we get that
+\begin{align*}
+\frac{1}{2}\dod{}{t} \underbracket{\int_Ω \abs{\dpd{u}{t}}^2 + \abs{∇u}^2}_{y(t)} &≤ \norm{f} \norm{\dpd{u}{t}} \\
+\frac{1}{2}\dod{}{t} y(t) &≤ \norm{f} \sqrt{y(t)} \\
+\dod{}{t} \sqrt{y(t)} &≤ \norm{f} \\
+\sqrt{y(T)} &≤ \sqrt{y(0)} + \int_0^T \norm{f} \dif t
+\end{align*}
+and if $f = 0$ we have \[ \int_Ω \left( \dpd{u}{t}(x,T)^2 + \abs{∇u(x,T)}^2 \right) = \int_Ω v_0(x)^2 +\abs{∇u_0(x)}^2 \]
+
+\subsection{Space discretization}
+
+As usual, we pick $Ω$ a polygon meshed with $Ω = \bigcup_{K ∈ \mesh} K$ regularly with $h_K ≤ h$, and we consider the finite element space $V_h = \spn \set{φ_1, \dotsc, φ_N}$ with corresponding internal vertices. Then, our approximation will be \[ u_h(x,t) = \sum_{j = 1}^N u_j(t) φ_j(x) ∈ V_h\] that satisfies the weak formulation \( \int_Ω \dpd[2]{u_h}{t} v_h + \int_Ω ∇u_h ∇v_h = \int_Ω f v_h \quad ∀v_h ∈ V_h \label{eq:PDE:WaveEqWeak} \) with $u_h(0)$ being prescribed, for instance $Π_h u_0$ the $L^2$ projection of $u_0$ onto $V_h$, and the same with $\pd{u_h}{t}(0)$.
+
+Finding $u_h$ satisfying \eqref{eq:PDE:WaveEqWeak} is thus equivalent to solving a differential system \[ \mM \vu''(t) + \mA \vu(t) = \vf(t) \] with \[ M_{ij} = \int_Ω φ_j φ_i \dif x \qquad A_{ij} = \int_Ω ∇φ_j ∇φ_i \dif x \] with initial conditions $\vu(0) = \vu_0$ and $\vu'(0) = \vv_0$.
+
+We can see that $u_h$ satisfies the a priori estimate satisfied by $u$ by choosing $v_h = \dpd{u_h}{t}$.
+
+\subsection{Error estimates}
+
+\begin{prop}[A priori error\IS for the wave equation] Assume that $\pd[2]{u}{t} ∈ L^2(0,T; H^2(Ω))$. Then there exists a constant $C > 0$ independent of $h$ such that \begin{align*}
+\norm{\dpd{}{t}(u - u_h)(T)}_{L^2(Ω)} &≤ Ch^2 \\
+ \norm{∇(u - u_h)(T)}_{L^2(Ω)} &≤ Ch
+ \end{align*}
+\end{prop}
+
+Back to the functional setting and thanks to the a priori estimates, the following existence result can be proved:
+
+\begin{prop}[Existence and uniqueness\IS for the wave equation] Assume that $u_0 ∈ H_0^1(Ω)$, $v_0 ∈ L^2(Ω)$ and $f ∈ L^2(0,T; L^2(Ω))$. Then there exists a unique $u ∈ C^1(0,T; L^2(Ω))$ and $u ∈ C^0(0,T; H_0^1(Ω))$ such that \[ \dod[2]{}{t} \int_Ω u(x,t) v(x) \dif x + \int_Ω ∇u∇v = \int_Ω fv \qquad ∀v ∈ H_0^1(Ω)\; \text{, a.e. } 0 ≤ t ≤ T\]
+
+Recall the definition of spaces such as $C^0(0,T; L^2(Ω))$ we gave in \fref{sec:Fund:BochnerSpaces}. In this case, if $u ∈ C^1(0,T; L^2(Ω))$ we require the mapping $t \to \int_Ω \abs{∇u(x,t)}^2$ to be continuous and if $u ∈ C^0(0,T; H_0^1(Ω))$ we need $t \to \int_Ω \abs{\pd{u}{t}(x,t)}^2 $ to be continuous.
+\end{prop}
+
+\subsection{Time discretization}
+
+If we choose a time distrtization $t_n = nτ$ with $n = 0,1,\dotsc, M$ and $τ = \sfrac{T}{M}$, then we can approximate $u_h^n \approx u(x,t_n)$ with $u_h^n = \sum_{j=1}^N u_j^n φ_j(x)$. The implict scheme will be \( \label{eq:PDE:WaveEqTimeDisc} \int_Ω \frac{u_h^{n+1} - 2u_h^n + u_h^{n-1}}{τ^2} v_h + \int_Ω \frac{∇u_h^{n+1} + 2u_h^n + u_h^{n-1}}{4} ∇v_h = \int_Ω f(t_n) v_h \qquad ∀v_h ∈ V_h \)
+
+\begin{prop} If $f = 0$, then the implicit scheme \eqref{eq:PDE:WaveEqTimeDisc} is stable with \[ \int_Ω \abs{\frac{u_h^{n+1} - u_h^n}{τ}}^2 + \int_Ω \abs{\frac{∇u_h^n + u_h^{n+1}}{2}}^2 ≤ \int_Ω \abs{\frac{u_h^n - u_h^{n-1}}{τ}}^2 + \int_Ω \abs{\frac{∇u_h^n + u_h^{n-1}}{2}}^2  \]
+\end{prop}
+
+\begin{proof} Set $v_h = u_h^{n+1} - u_h^{n-1}$ in \eqref{eq:PDE:WaveEqTimeDisc} so that
+\[ \int_Ω \frac{u_h^{n+1} - 2u_h^n + u_h^{n-1}}{τ^2} (u_h^{n+1} - u_h^{n-1}) + \int_Ω \frac{∇u_h^{n+1} + 2u_h^n + u_h^{n-1}}{4} ∇(u_h^{n+1} - u_h^{n-1}) = 0 \]
+
+Adding and removing $u_h^n$ on the $(u_h^{n+1} - u_h^{n-1})$ terms, we can operate on the first term such that
+\begin{multline*}
+\int_Ω \frac{(u_h^{n+1} - u_h^{n}) - (u_h^{n} - u_h^{n-1})}{τ} \frac{u_h^{n+1} - u_h^n + u_h^n - u_h^{n-1}}{τ} = \\ = \int_Ω \abs{\frac{u_h^{n+1} - u_h^n}{τ}}^2 - \int_Ω \abs{\frac{u_h^n - u_h^{n-1}}{τ}}^2
+\end{multline*} and on the second term
+\begin{multline*}
+\int_Ω \frac{∇(u_h^{n+1} + u_h^n + u_h^n + u_h^{n-1})}{2} \frac{∇(u_h^{n+1} + u_h^n - (u_h^n + u_h^{n-1}))}{2} = \\ =
+\int_Ω \abs{\frac{∇(u_h^n + u_h^{n+1})}{2}}^2 - \int_Ω \abs{\frac{∇u_h^n + u_h^{n-1}}{2}}^2
+\end{multline*} and putting everything together we have the estimate.
+\end{proof}
+
+The stability condition for this scheme is that $τ ≤ h$.
