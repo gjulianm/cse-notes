@@ -152,6 +152,7 @@
 \vG#m
 \vi#m
 \va#m
+\vk#m
 \vd#m
 \vA#m
 \vb#m
@@ -300,11 +301,13 @@
 \espLp#m
 \esplp#m
 \pnorm{arg0}#m
+\normc{arg0}#m
 \espell#m
 \espell[2]#m
 \spn#m
 \densein#m
 \fourier#m
+\ifourier#m
 \lapp#m
 \linapp#m
 \linapp[X]#m
@@ -326,6 +329,7 @@
 \dstr#m
 \schwartz#m
 \schwartz[\real^n]#m
+\bmo#m
 \fcurv#m
 \fcurv[\tau]#m
 \lk#m

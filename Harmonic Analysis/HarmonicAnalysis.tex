@@ -526,23 +526,23 @@ Now the integrand is the Hilbert transform of $g(y) = e^{\mp \imath (2N + 1)πy}
 And this finishes the proof because something I didn't catch. But yes.
 \end{proof}
 
-\chapter{Calderon-Zygmund operator}
+\chapter{Calderón-Zygmund operator}
 
-The Hilbert transform seemed like a useful thing to have. However, we have only defined it for $ℝ$ and not for $ℝ^n$. It turns out that we can give an ``extension'', which is called the Calderon-Zygmund operator, by using the property of the Hilbert transform on the Fourier side, which was \[ \widehat{Hf}(ξ) = - π\imath \sign (ξ) \hat{f}(ξ) = - π\imath \frac{ξ}{\abs{ξ}} \hat{f}(ξ) \] and then we could define something as \[ \widehat{R_j f} (ξ) ≝ C_n \frac{ξ_j}{\abs{ξ_j}} \hat{f}(ξ) \]
+The Hilbert transform seemed like a useful thing to have. However, we have only defined it for $ℝ$ and not for $ℝ^n$. It turns out that we can give an ``extension'', which is called the Calderón-Zygmund operator, by using the property of the Hilbert transform on the Fourier side, which was \[ \widehat{Hf}(ξ) = - π\imath \sign (ξ) \hat{f}(ξ) = - π\imath \frac{ξ}{\abs{ξ}} \hat{f}(ξ) \] and then we could define something as \[ \widehat{R_j f} (ξ) ≝ C_n \frac{ξ_j}{\abs{ξ_j}} \hat{f}(ξ) \]
 
-\begin{defn}[Calderon-Zygmund kernel][Kernel\IS Calderon-Zygmund] \label{def:CalderonZygmundKernel} A function $K ∈ C^∞(ℝ^n \setminus\set{0})$ is called a Calderon-Zygmund kernel if $K$ satisfies
+\begin{defn}[Calderón-Zygmund kernel][Kernel\IS Calderón-Zygmund] \label{def:CalderonZygmundKernel} A function $K ∈ C^∞(ℝ^n \setminus\set{0})$ is called a Calderón-Zygmund kernel if $K$ satisfies
 \begin{enumerate}
 \item \label{prp:CZAss1} $\abs{K(x)} ≤ B \abs{x}^{-n} \quad ∀x ∈ ℝ^n, \, B > 0 $
-\item \label{prp:CZAss2} $\abs{∇K(x)} ≤ B \abs{x}^{-n - 1}  \quad ∀x ∈ ℝ^n, \, B > 0$
-\item \label{prp:CZAss3} $\int\limits_{r ≤ \abs{x} ≤ s} K(x) \dif x = 0 \quad  ∀r,s > 0 $
+\item \label{prp:CZAss2} The \concept{Hörmander\IS condition}: \[ \int_{\abs{x} > \abs{2y}} (K(x) - K(x-y) \dif x ≤ CB \quad ∀x ∈ ℝ^n, \, B > 0,\, y ≠ 0 \]
+\item \label{prp:CZAss3} A cancellation property: \[ \int_{r ≤ \abs{x} ≤ s} K(x) \dif x = 0 \quad  ∀r,s > 0 \]
 \end{enumerate}
 \end{defn}
 
-One can see that the Hilbert transform is a case of a Calderon-Zygmund kernel with $K_H(x) = \frac{1}{x}$.
+One can see that the Hilbert transform is a case of a Calderón-Zygmund kernel with $K_H(x) = \frac{1}{x}$.
 
-We can also prove a first lemma that will become very useful when proving the boundedness of the operator.
+The second condition, which is a little bit convoluted, can be ensured by a more elementary condition, namely that $K$ must be differentiable on $ℝ^n \minuszero$ and $\abs{∇K(x)} ≤ B\abs{x}^{-d-1}$ for all $x ≠ 0$. Kernels with this condition are called \concept[Calderón-Zygmund\IS strong kernel]{strong Calderón-Zygmund kernels}, and the following lemma ensures that we indeed have the implication.
 
-\begin{lemma}[Hormander\IS condition] \label{lem:HormanderCond} The second assumption \eqref{prp:CZAss2} of a \nref{def:CalderonZygmundKernel} implies that \[ \int_{\abs{x} > 2\abs{y}} (K(x) - K(x-y)) \dif x  ≤ CB \quad ∀ y ≠ 0\]
+\begin{lemma} \label{lem:HormanderCond} The strong Calderón-Zygmund condition for a \nref{def:CalderonZygmundKernel} implies the Hörmander condition \ref{prp:CZAss2} \[ \int_{\abs{x} > 2\abs{y}} (K(x) - K(x-y)) \dif x  ≤ CB \quad ∀ y ≠ 0\]
 \end{lemma}
 
 \begin{proof} We can write \[ K(x) - K(x-y) = \int_0^1 ∇K (x - ty) · (-y) \dif t \] so that by \eqref{prp:CZAss2}
@@ -554,7 +554,7 @@ Therefore we have \[
 \] which is perefctly bounded.
 \end{proof}
 
-\begin{defn}[Calderon-Zygmund operator][Operator\IS Calderon-Zygmund] \label{def:CalderonZygmundOperator} Given a \nref{def:CalderonZygmundKernel} $K$, we can define the Calderon-Zygmund operator for $f ∈ \schwartz$ as \[ (Tf) (x) ≝ \lim_{ε \to 0+} \int_{\abs{x - y} ≥ ε} K(x -y) f(y) \dif y \]
+\begin{defn}[Calderón-Zygmund operator][Operator\IS Calderón-Zygmund] \label{def:CalderonZygmundOperator} Given a \nref{def:CalderonZygmundKernel} $K$, we can define the Calderón-Zygmund operator for $f ∈ \schwartz$ as \[ (Tf) (x) ≝ \lim_{ε \to 0+} \int_{\abs{x - y} ≥ ε} K(x -y) f(y) \dif y \]
 \end{defn}
 
 First question is, of course, whether that limit is well-defined.
@@ -577,7 +577,7 @@ For the second part, we can add a constant part (w.r.t $y$) because $\int_{1 ≥
 
 Now we will be interested in the boundedness of this operator.
 
-\begin{prop} \label{prop:CaldZygL2Bound} If $T$ is a Calderon-Zygmund operator, then it's bounded in $\linapp[L^2][L^2]$.
+\begin{prop} \label{prop:CaldZygL2Bound} If $T$ is a Calderón-Zygmund operator, then it's bounded in $\linapp[L^2][L^2]$.
 \end{prop}
 
 \begin{proof} Assume $f ∈ \schwartz$. We want to show that \[ \norm{Tf}_{L^2(ℝ^n)} ≤ CB \norm{f}_{L^2(ℝ^n)}\]
@@ -614,11 +614,11 @@ I'm not copying more of this bullcrap.
 \end{proof}
 
 
-\section{Calderon-Zygmund decomposition of a function}
+\section{Calderón-Zygmund decomposition of a function}
 
 In this section we will introduce a fundamental tool in harmonic analysis, which will allow us to decompose general functions $f ∈ L^1(ℝ^n)$ in ``good parts'' (bounded) and ``bad parts'' restricted to a controlled, small set.
 
-\begin{theorem}[Calderon-Zygmund\IS theorem] Let $f ∈ L^1(ℝ^n)$ and fix $λ > 0$. Then we can write \[ f = g + b \] wth $\abs{g} ≤ λ$ almost everywhere and $b = \sum_{Q ∈ \mathcal{Q}} \ind_Q f$ with $\mathcal{Q}$ a disjoint collection of cubes $Q ⊂ ℝ^n$ and such that \[ λ < \fint_Q \abs{f(x)} \dif x < 2^n λ \] where $μ$ is the measure on $ℝ^n$.
+\begin{theorem}[Calderón-Zygmund\IS theorem] Let $f ∈ L^1(ℝ^n)$ and fix $λ > 0$. Then we can write \[ f = g + b \] wth $\abs{g} ≤ λ$ almost everywhere and $b = \sum_{Q ∈ \mathcal{Q}} \ind_Q f$ with $\mathcal{Q}$ a disjoint collection of cubes $Q ⊂ ℝ^n$ and such that \[ λ < \fint_Q \abs{f(x)} \dif x < 2^n λ \] where $μ$ is the measure on $ℝ^n$.
 
 Moreover, we can bound the support of $b$ by \[ \left|\bigcup_{Q ∈ \mathcal{Q}} Q\right| ≤ \inv{λ} \norm{f}_{L^1(ℝ^n)} \]
 \end{theorem}
@@ -645,16 +645,20 @@ Now we start with the proofs of the bounds. If $x ∈ ℝ^n \setminus ∪_\mathc
 For the bound on the measure of the cubes, we note that if $Q ∈ \mathcal{Q}$ is a ``bad cube'', then its parent $\tilde{Q}$ that contains it and has twice the edge length is, by definition, such that $\fint_{\tilde{Q}} \abs{f} ≤ λ$ and so we have \[ \fint_Q \abs{f} ≤ 2^n \fint_{\tilde{Q}} \abs{f} ≤ 2^n λ \] and therefore we have that
 \end{proof}
 
-This theorem allows the proof of a proof on a weak $L^1$ bound for the Calderon-Zygmund operator.
+\section{Bounds on the Calderón-Zygmund operator}
 
-\begin{theorem} Let $T$ be a \nref{def:CalderonZygmundOperator} given by \[ Tf(x) = \int_{ℝ^n} K(x -y) f(y) \dif y \] for $f ∈ \schwartz$. Then we have the weak $L^1$ bound \[ \abs{\set{x ∈ ℝ^n \st \abs{Tf(x)} > λ}} ≤ CB \inv{λ} \norm{f}_{L^1(ℝ^n)} \quad ∀λ > 0 \] for a suitable universal constant $C$ and $B$ as in the definition of the Calderon-Zygmund kernel.
+\subsection{Bounds on $L^1$ spaces}
+
+This theorem allows the proof of a proof on a weak $L^1$ bound for the Calderón-Zygmund operator.
+
+\begin{theorem} Let $T$ be a \nref{def:CalderonZygmundOperator} given by \[ Tf(x) = \int_{ℝ^n} K(x -y) f(y) \dif y \] for $f ∈ \schwartz$. Then we have the weak $L^1$ bound \[ \abs{\set{x ∈ ℝ^n \st \abs{Tf(x)} > λ}} ≤ CB \inv{λ} \norm{f}_{L^1(ℝ^n)} \quad ∀λ > 0 \] for a suitable universal constant $C$ and $B$ as in the definition of the Calderón-Zygmund kernel.
 \end{theorem}
 
-\begin{proof} We can assume without loss of generality that $B = 1$ (if not, replace $T$ by $\inv{B}T$). Given a fixed $λ > 0$ and $f ∈ \schwartz$, we consider the Calderon-Zygmund decomposition of $f = g + b$ associated to λ and will modify it a bit. Define \[ φ ≝ \sum_{Q ∈ \mathcal{Q}} \ind_Q(x) \fint_Q f(y) \dif y \] so that $f = f_1 + f_2$ with $f_1 = g + φ$, $f_2 = b - φ$.
+\begin{proof} We can assume without loss of generality that $B = 1$ (if not, replace $T$ by $\inv{B}T$). Given a fixed $λ > 0$ and $f ∈ \schwartz$, we consider the Calderón-Zygmund decomposition of $f = g + b$ associated to λ and will modify it a bit. Define \[ φ ≝ \sum_{Q ∈ \mathcal{Q}} \ind_Q(x) \fint_Q f(y) \dif y \] so that $f = f_1 + f_2$ with $f_1 = g + φ$, $f_2 = b - φ$.
 
 From here we can make several observations. As $g$, $b$ and $φ$ are bounded in $L^1(ℝ^n)$, we have that $\norm{f_1}_{L^1} ≤ \norm{f}_{L^1}$ and $\norm{f_2}_{L^1} ≤ 2 \norm{f}_{L^1}$. Finally, $f_2$ has vanishing average over each ``bad cube'' $Q ∈ \mathcal{Q}$: \[ \int_Q f_2(x) \dif x = \int_Q \left(f(x) - \fint_Q f(y) \dif y \right) \dif x = \int_Q f(x) \dif x - \abs{Q} \fint_Q f(y) \dif y = 0 \]
 
-Now, as the Calderon-Zygmund operator is linear we can consider the decomposition $Tf = Tf_1 + Tf_2$, and therefore \[ \set{x ∈ ℝ^n \st \abs{Tf(x)} > λ} ⊂ \set{x ∈ ℝ^n \st \abs{Tf_1(x)} > \sfrac{λ}{2}} ∪ \set{x ∈ ℝ^n \st \abs{Tf_2(x)} > \sfrac{λ}{2}}\] and so it will suffice to bound only each set for the components as \[ \abs{\set{x ∈ ℝ^n \st \abs{T f_j(x)} > λ}} ≤ C \inv{λ} \norm{f}_{L^1} \quad j = 1,2\]
+Now, as the Calderón-Zygmund operator is linear we can consider the decomposition $Tf = Tf_1 + Tf_2$, and therefore \[ \set{x ∈ ℝ^n \st \abs{Tf(x)} > λ} ⊂ \set{x ∈ ℝ^n \st \abs{Tf_1(x)} > \sfrac{λ}{2}} ∪ \set{x ∈ ℝ^n \st \abs{Tf_2(x)} > \sfrac{λ}{2}}\] and so it will suffice to bound only each set for the components as \[ \abs{\set{x ∈ ℝ^n \st \abs{T f_j(x)} > λ}} ≤ C \inv{λ} \norm{f}_{L^1} \quad j = 1,2\]
 
 \proofpart{Bound for $f_1$}
 
@@ -666,12 +670,111 @@ We only need to pass from the $L^2$ norm to the $L^1$. Observe that $f_1$ is bou
 \proofpart{Bound for $f_2$}
 
 This one gets a little bit more complicated.
-
 \end{proof}
+
+\subsection{Boundedness in Hölder spaces}
+
+Now we can ask ourselves whether Calderon-Zygmund operators are compatible not only with $L^p$ functions but with Hölder-continuous functions. First, recall that in the space $C^α(ℝ^n)$ of Hölder continuous functions with $α ∈ (0,1)$ we define the norm $\norm{f}_{C^α} ≝ \norm{f}_{L^∞} + \normc{f}_α$ with \[ \normc{f}_α ≝ \sup_{x ≠ y} \frac{\abs{f(y) - f(x)}}{\abs{x-y}^α} \]
+
+Then we can state the theorem, of course taking care of the fact that we are integrating over all $ℝ^n$. We will restrict the application to functions of compact support.
+
+\begin{theorem} Let $T$ be a strong Calderón-Zygmund operator, and assume $f ∈C^α(ℝ^n)$ with $\sop f ⊆ \bola_1(0)$. Then we have the Hölder bound \[ \norm{T(f)}_{C^α(ℝ^n)} ≤ C_{n,α} B \norm{f}_{C^α(ℝ^n)}\]
+\end{theorem}
+
+\section{Pointwise convergence}
+
+For the study of the pointwise convergence properties of CZ kernels we will introduce the Hardy-Littlewood maximal function.
+
+\subsection{Hardy-Littlewood maximal function}
+
+\begin{defn}[Hardy-Littlewood\IS maximal function] For $f ∈ \espLloc$ we define its Hardy-Littlewood maximal function as \[ Mf(x) ≝ \sup_{B \st x ∈ B} \fint_B \abs{f}\] with the supremum running over all balls containing $x$.
+\end{defn}
+
+It is immediate that $Mf(x) ≤ f(x)$ for any $x$. Less so is the following theorem:
+
+\begin{theorem}\label{thm:L1BoundHLMax} We have the weak $L^1$ bound \[ \norm{Mf}_{L^{1,∞}} ≤ \norm{f}_{L^∞} \]
+\end{theorem}
+
+This implies directly via Marcinkiewicz interpolation the following bound:
+
+\begin{corol} For any $p ∈ (1, ∞]$, we have the bound \[ \norm{Mf}_{L^p(ℝ^n)} ≤ C_p \norm{f}_{L^p(ℝ^n)}\]
+\end{corol}
+
+% TODO Lecture9 proof of theorem and helper lemma.
+
+The good thing about this Hardy-Littlewood maximal function is that it allows us to perform proofs with other general maximal functions of the form \[ M_1 f ≝ \sup_{ε > 0} \abs{ρ_ε * f} \] with $ρ_ε$ a family of approximate identities, via the following lemma.
+
+\begin{lemma} Let $\set{ρ_ε}_{ε > 0}$ be a family of \nlref{def:ApproximateIdentity} functions. Then we have \[ M_1 f(x) ≤ C Mf(x) \] for a suitable constant $C$. Moreover, if $K ∈ C^1(ℝ^n)$ is radial $K(x) = h(\abs{x})$ and decays with $h' < 0$ and further we have $\abs{h'(r)} ≤ Cr^{-n-2}$ then we also have \[ \sup_{ε > 0} \abs{K_ε * f(x)} ≤ CMf(x) \]
+\end{lemma}
+
+\begin{proof}
+% TODO
+\end{proof}
+
+\subsection{Pointwise convergence of Calderón-Zygmund operators}
+
+Now we go into the question of whether \[ \lim_{ε \to 0} \int_{\abs{x-y} > ε} K(x-y) f(y) \dif y \] exists almost everywhere for $f ∈ L^p(ℝ^n)$ with $1 < p < ∞$. We can establish this for a more special class of operators with kernels of the form \[ K(x) = \frac{Ω\left(\frac{x}{\abs{x}}\right)}{\abs{x}^n} \] with $Ω ∈ C^1(\crc[n-1])$ and such that $\int_{\crc[n-1]} Ω = 0$. It is straightforward to see that these are indeed CZ operators. For those, the corresponding maximal function \[ T_* f(x) ≝ \sup_{ε > 0} \abs{\int_{\abs{x-y} > ε} K(x-y) f(y) \dif y }\] is a bounded operator on $L^p$ for $1 < p < ∞$, and pointwise convergence will be a simple consequence of this.
 
 \chapter{BMO functions}
 
+Up until know, we have established a satisfactory theory of $L^p$ boundedness for CZ operators for $1 < p < ∞$ and we have seen that for $L^1$ their image is $L^{1,∞}$. We still need to know, however, where do these operator send $L^∞$. We have seen that they do not preserve the space: in this chapter we will see that the image is actually a new space of functions of bounded mean oscillation (BMO).
+
+\begin{defn}[BMO\IS function] Let $f ∈ \espLloc$. Then we say that $f$ is a BMO function if we have \[ \norm{f^\sharp}_{L^∞(ℝ^n)} < ∞ \] where \[ f^\sharp(x) ≝ \sup_{x ∈ B} \fint_B \abs{f(y) - f_B} \dif y \] with $f_B = \fint_B f$ the average of $f$ over $B$. We then write the norm as \[ \norm{f}_\bmo ≝ \norm{f^\sharp}_{L^∞(ℝ^n)} \]
+\end{defn}
+
+This gives also a closely related second definition of the space
+
+% Missing rest of lecture 10
+
 \chapter{Fourier multipliers}
+
+% Lecture 11
+
+\begin{defn}[Fourier multiplier] GIven $f ∈ \schwartz$ \[  Tf ≝ \inv{\fourier}(m(ξ) \hat{f}(ξ))\]
+\end{defn}
+
+\begin{theorem} If $\appl{m}{ℝ^n \minuszero}{ℂ}$ satisfies \[ \abs{∂^\vec{γ }m(ξ)} ≤ B \abs{ξ}^{-\abs{\vec{γ}}} \quad \abs{\vec{γ}} ∈ [0, n+2] \], then the Fourier multiplier introduced by $m$ is $L^p$ bounded with \[ \norm{ \inv{\fourier}(m(ξ) \hat{f}(ξ))}_{L^p} ≤ C_{n,p} B\norm{f}_{L^p} \] with $1 < p < ∞$.
+\end{theorem}
+
+\begin{proof} We will first try to prove $L^2$ boundedness. In fact, $\norm{m}_{L^∞} < ∞$ by Plancherel theorem so $\norm{\inv{\fourier}(m(ξ) \hat{f}(ξ))}_{L^2} ≤ \norm{m}_{L^∞} \norm{f}_{L^2}$.
+
+Now we can prove weak $L^1$ boundedness. If $K$ is the kernel of the operator\footnote{BEcause it seems that an operator given as a Fourier multiplier can be expressed as a CZ operator too. Convolution and such.}, we want to show that \[ \abs{K(x)} ≤ B\abs{K(x)}^{-n} \] and that $K$ satisfies the Hörmander condition $\int_{\abs{x} > \abs{2y}} (K(x) - K(x-y) \dif x ≤ ∞$. We don't need to prove the full conditions of a CZ operator because we don't need them for the proof of the weak $L^1$ bound. Recall that for the Hörmander condition we can also prove $\abs{∇K(x)} ≤ B\abs{x}^{-n-1}$.
+
+We know that $2π\imath ξ_j \hat{f}(ξ) = \widehat{∂x_j f}(ξ)$ and $∂_{ξ_j} \hat{f}(ξ) = - 2π \imath \widehat{{x_j} f}(x)$.
+
+Now we can try to bound \[ \abs{x^\vec{γ} K(x)} ≤ \abs{\inv{\fourier} (∂_ξ^\vec{γ} m)} ≤ \norm{∂_ξ^\vec{γ} m}_{L^1}\]  with $\vec{γ}$ a multiindex.
+
+We introduce the kernel $K_j (x) ≝ \ifourier(ψ_j(ξ) m(ξ))$ where $\sop ψ_j ⊆ \set{\abs{ξ} ∈ [2^{j-1}, 2^{j+1}]}$ with $\sum ψ_j(ξ) = 1$. Therefore we can write \[ \abs{x^k K_j(x)} ≤ \sum_{\abs{\vec{ψ}} = k} \norm{∂_ξ^\vec{γ} (ψ_j(ξ) m(ξ))}_{L^1} ≤ CB2^{(n-k)j} \] and $K(x) = \sum_{j ∈ ℤ} K_j(x)$.
+
+Then, for fixed $x$, if $\abs{x}^{-1} > 2^j$ we can set $k = 0$ (previous bounds hold for all $k ∈ ℤ$) and write $\abs{K_j(x)} ≤ CB2^{nj}$. For $\abs{x}^{-1} ≤ 2^j$, we set $k = n+1$ and write $\abs{K_j(x)} ≤ CB2^{-j}\abs{x}^{-n-1}$ and therfore \[ \abs{K(x)} ≤ \underbracket{\sum_{2^j < \abs{x}^{-1}} CB2^{nj}}_{I} + \underbracket{\sum_{2^j ≥ \abs{x}^{-1}} 2^{-j} \abs{x}^{-n-1}}_{II}\]
+
+For the first part, let $j_0$ be the largest integer such that $2^j < \abs{x}^{-1}$ (the last term of the sum) and therefore \[ \frac{I}{CB} =  2^{nj_0} + 2^{n(j_0 - 1)} + \dotsb + 2^{n(j_0 - k)} + \dotsb = \frac{2^{nj_0}}{1 - 2^{-n}} ≤ 2^{nj_0} ≤ \abs{x}^{-n}\]
+
+Now for the second term, similarly we let $j_0$ be the smallest integer such that $2^j ≥ \abs{x}^{-1}$ and we wa write \[ \frac{II}{\abs{x}^{-n-1}} = 2^{-j_0} + 2^{-j_0 - 1} + \dotsb = 2 · 2^{-j_0} ≤ BS\] and so we obtain our bound $\abs{K(x)} ≤ C B\abs{x}^{-n}$.
+
+And now IDK but \begin{align*}
+\abs{x^\vec{γ} ∂_j K(x)} &≤ \abs{\ifourier(∂_ξ^\vec{γ} ξ_j m)} \\
+\abs{∂^\vec{γ}} &≤ B \abs{ξ}^{-\abs{\vec{γ}}}
+\end{align*}
+and now we use Calderón-Zygmund weak $L^1$ bound.
+
+\end{proof}
+
+For the exam, he can ask Fourier multipliers, the two identities for the Fourier transfor, and Proof of lemma 2.1, and proof of last theorem (just above, theorem 3.1 on the notes).
+
+For BMO functions, the definition of the space, examples of functions in BMO but not in $L^∞$ (e.g, $\log \abs{x}$) proving that it is indeed in BMO. Prove that if $f ∈ \bmo$ then exists $c_1 > 0$ such that $\int_Q e^{c_1\abs{f(x)}} < ∞$. Prove that a CZ operator is $L^∞ \to \bmo$ bounded for any $f ∈ L^∞ ∩ L^2$. A part of the proof of John-Nirenberg theorem.
+
+For Calderon-Zygmund operator, the definition, prove pointwise well-definition for a Schwartz function, Hormander condition lemma, ideas of the $L^2$ boundedness, CAlderón-Zygmund decomposition, proof of $L^1$ boundedness and $C^α$ boundedness.
+
+For Hardy-Littlewood maximal function, we need definition and $L^∞$ boundedness (that is a proof? Really?), covering lemma and weak $L^1$ boundedness, and the trick in the proof of showing ``Let $K$ be a CZ kernel s.t. $K_ε = K$ proving $K*φ_ε = (K*φ)_ε$ (lemma 4.1)''.
+
+For Hilbert transform, the definition, state the relation to the Fourier transform, proof that Fourier transform is $L^2$ bounded, and prove $L^p$ boundedness of the Hilbert transform.
+
+For the Riesz-Thorin interpolation, we need to state and prove the Hadamard three lines lemma, and state Riesz-thorin and prove it for step functions, and the derivation, statement and proof of Young's inequaity.
+
+For the Fourier transform, the definition for schwartz space and ffourier transfor, state and prove fourier transform inverse formula, and state and prove Plancherel identity. Also, use Riesz-THorin to prove $L^p\to L^{p'}$ boundedness of Fourier transform.
+
+For the Fourier series, we will discuss it later.
 
 \appendix
 
