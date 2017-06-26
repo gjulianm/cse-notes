@@ -98,9 +98,17 @@ t &\longmapsto f(x + tv)
 
 A function will also be convex if its hessian matrix of partial second derivatives is positive semidefinite. If $f$ is only once differentiable, then $f$ is convex if and only if $f(x) > f(y) + f'(y) (x-y)$.
 
-Several combinations of convex functions are also convex. Not necessary to describe them, maybe that pointwise supremum is also convex, and that $f(x,y)$ convex for $(x,y) ∈ C$ convex set, then $g(x) = \inf_C f$ is also convex.
+Several combinations of convex functions are also convex. Not necessary to describe them, maybe that pointwise supremum is also convex, and that $f(x,y)$ convex for $(x,y) ∈ C$ convex set, then $g(x) = \inf_C f$ is also convex. Pointwise maximum of convex functions is convex.
 
 Important things: any locally optimal function of a convex problem is globally optimal.
+
+Some simple LPs:
+\begin{itemize}
+	\item Minimization of $\pesc{\vc, \vx}$ s.t. $\mA \vx = \vb$. If feasible and $\vc \perp \ker \mA$ then $\vc = \mA^T \vec{λ} + \hat{c}$ with $\mA \hat{c} = 0$. We then replace, if $c$ is not in the range of $\mA^T$ (that is, $\hat{\vc} ≠ 0$) then the problem is unbounded. If not, the optimal is $\vec{λ}^T\vb$.
+	\item Minimization of $\vc^T \vx$ s.t. $\va^T \vx ≤ b$. This is always feasible, we decompose $\vx$ as a component parallel $\va λ$ and another $\hat{\vc}$ orthognola to $\va$. We then replace. If $λ > 0$ or $\hat{\vc} ≠ 0$, the problem is unbounded below. If $\hat{\vc} = 0$, then optimal value is $\vc^T \va \vb = λ \vb$.
+	\item Minimization of linear function $\vc^T \vx$ over a rectangle $\vec{l} \preceq \vx \preceq \vu$. We can minimize over each component and as it's linear it's easy.
+	\item Minimization $\vc^T \vx$ over the probability simplex $\ind^T \vx = 1$ with $x \succeq 1$. If we sort components of $\vc$ in increasing order we have $\vc^T \vx ≥ c_{\text{min}}$ because all sums 0. Which is obvious: we invest all in the one with highest investents.
+\end{itemize}
 
 \subsection{Karush-Kuhn-Tucker conitions}
 
@@ -154,7 +162,7 @@ The choice of $μ$ involves a tradeoff between outer and Newton iterations, typi
 
 We will minimize here \[ \frac{1}{2} \vx^T \mP_0 \vx + \vq_0^T \vx + \vr_0 \] subject to $\frac{1}{2} \vx^T \mP_i \vx + \vq_i^T \vx + \vr_i ≤ 0$ and $\mA\vx = \vb$ with $\mP_i$ symmetric and positive definite. The feasible region is intersection of $m$ ellipsoids and an affine set.
 
-We can also minimize $f^T \vx$ subject to $\norm{\mA_i \vx + \vb_i}_2 ≤ \vc_i^T \vx + \vd_i$ and $\mtr{F} \vx = \vg$. have second-order SOC constraints, $(\mA_i \vx + \vb_i, \vc_i^T \vx + \vd_i)$ in a second-order cone in $ℝ^{n_i + 1}$. With $n_i = 0$ it's LP, with $c_i = 0$ it's quadratic constrained quadratic programming.
+We can also minimize $f^T \vx$ subject to $\norm{\mA_i \vx + \vb_i}_2 ≤ \vc_i^T \vx + d_i$ and $\mtr{F} \vx = \vg$. These are second-order SOC constraints, $(\mA_i \vx + \vb_i, \vc_i^T \vx + \vd_i)$ in a second-order cone in $ℝ^{n_i + 1}$. With $n_i = 0$ it's LP, with $c_i = 0$ it's quadratic constrained quadratic programming.
 
 The dual of the SOCP can be obtained by changing the variable so the problem becomes minimizing $\vf^T \vx$ subject to \begin{align*}
 \norm{\vy_i}_2 &≤ t_i & i = 1, \dotsc, m \\
@@ -167,6 +175,8 @@ L(\vx, \vy, t, \vec{λ}, \vec{ν}, \vec{μ}) &= \left(\vc - \sum_{i=1}^m \left(\
 - \sum_{i = 1}^n (b_i^T ν_i + d_i μ_i) & \text{all previous conditions for lower bounds hold} \\
 - ∞ & \text{otherwise}
 \end{cases}\]
+
+To try and transform a problem of minimizing $f(x)$ s.t. $\norm{x}_∞ < 1$ to SOCP we can write it as the minimization of $t$ subject to $f(x) ≤ t$ and then get things.
 
 
 \subsection{Semi-Definite programming}
@@ -228,10 +238,84 @@ cvx_end
 
 Dual variable relate to the lagrangian, the $:$ signal the constraint to which they are attached.,
 
+\section{Vector optimization}
+
+We can optimize vectorial functions $\appl{f}{ℝ^m}{ℝ^n}$ assuming we restrict the values we look at to a cone $K ⊆ ℝ^n$. It will be called a proper cone if it is convex, closed, nonempty interarior and pointed (that is, $x ∈ K \y -x ∈ K \implies x = 0$). There, we can define the inequalities
+\begin{align*}
+x \preceq_K y &\iff x - y ∈ K \\
+x \prec_K y &\iff x - y ∈ \mop{int}\, K
+\end{align*}
+
+For example, if we set $K = ℝ^n_+$ then $x \preceq y$ is $x_i ≤ y_i$ for all components. Properties of usual ``less than'' hold, for example summing inequations. Not a linear order however.
+
+Differentiate between minimum ($x \preceq y\, ∀ y ∈ S ⊆ K$) and minimal ($∀y ∈ S, y \preceq x \implies y = x$).
+
+We can define the dual cone $K^* = \set{ y ∈ ℝ^n \st \pesc{y,x} ≥ 0 \; ∀x ∈ K}$. $ℝ^n_+$, $S_+^n$ are self-dual. Dual cones are also proper, with inequalities $y \succeq_{K^*} 0 \iff \pesc{y,x} ≥ 0 \,∀x\succeq_K 0$. This gives rise to definitions of minimum element $x ∈ S$ w.r.t. $\preceq_K$ iff for all $λ \prec_{K^*} 0$ $x$ minimizes $\pesc{λ,z}$ over $S$. It is minimal it it is only for some $λ$.
+
+With a set of achievable objective vales $\mathcal{O}$ we have that $x$ is optimal if $f_0(x)$ is the minimum value and Pareto optimal if it is minimal. If we are optimizing a function $\appl{f_0}{ℝ^m}{ℝ^n}$, we have an optimal $x^*$ if for any other $y$ feasible we have $f_0(x^*) \preceq f_0(y)$. In this case, objectives are noncompeting.
+
+A feasible $x^p$ is Pareto optimal if we have other optimal values.
+
+To solve this, we choose a $λ \succ_{K^*} > 0$ and solve the scalar problem of minimization $\pesc{λ, f_0(x)}$. If the problem has an optimal, then it is Pareto optimal. For convex optimization problems we can find almost all Pareto optimal points by varying $λ$.
+
+\section{Perturbation and sensittivity analysis}
+
+\subsection{Perturbations}
+
+Given a problem of minimizing $f_0(x)$ subject to $f_i(x) ≤ 0$ for $i = 1, \dotsc, m$ and $h_i(x) = 0$ for $i = 1, \dotsc, p$ (and the corresponding dual of maximimization $g(λ,ν)$ subject to $λ ≥ 0$) we can consider the perturbed problem with the same subject subject to restrictions $f_i(x) ≤ u_i$, $h_i(x) = v_i$ and the dual $g(λ,ν) - \pesc{u,λ} - \pesc{v, ν}$ with $u,v$ parameters. We are interested in information about the optimal $p^*(u,v)$.
+
+Applying weak duality we have that $p^*(u,v) ≥ g(λ^*, v^*) - u^{T} λ^* - v^Tν^*$ with $g(λ^*, v^*) = p^*(0,0)$. From there we can get things.
+
+If $p^*$ is differentiable, then $λ_i^* = - ∂_{u_i} p^*$ and $ν_i^* = - ∂_{v_i} p^*$ at $(0,0)$.
+
+\subsection{Robustness}
+
+E.g., minimize $\norm{\mA x - b}$ with uncertain $\mA$. we can try to minimize the expectance or minimize the worst case (which is tractable only in certain cases).
+
+We might also want to perform linear discrimination, separating two sets of points $X = \set{x_1, \dotsc, x_n}$, $Y = \set{y_1, \dotsc, y_n}$ by an hyperplane so that
+\[ \begin{cases} \va^T \vx + b > 0 & \vx ∈ X \\
+\va^T \vy + b < 0 & \vy ∈ Y
+\end{cases}
+\]
+
+This is homogeneous in $\va, b$ so that it is equivalent with $≥ 1$ instead of $> 0$ and viceversa. The advantage is that then the distance between hyperplanes $\va^T \vz + b = \pm 1$ is $\frac{1}{\norm{a}_2}$. Then, to separate two sets of points by maximum margin we have to minimize $\frac{\norm{a}_2}{2}$  subject to $\va \vx + b ≥ 1$, $\va \vy + b ≤ -1$ which after squaring the objective is a quadratic problme in $\va, b$.
+
+The Lagrange dual is maximizing $\vec{1}^T \vec{λ} + \vec{1}^T \vec{μ}$ subject to $2\norm{\sum_{i=1}^n λ_i \vx_i - \sum_{i = 1}^n μ_i \vy_i}_2 ≤ 1$, with $\vec{1}^T \vec{λ} = \vec{1}^T \vec{μ}$ and $\vec{μ}, \vec{λ} \succeq 0$. Then the optimal value is the inverse of the distance between convex hulls. To compute this, we need to get the lagrangian and then find conditions to have minimum $> ∞$.
+
+This can be converted to the same problem but with linear constraints $\va^T \vx_i + b ≥ 1 - u_i$ and $\va^T \vy_i + b ≤ - 1 + v_i$. At optimum, $λ_i = \max \set{0, 1 - \va^T x_i - b}$ and $v_i = \max{0, 1 + \va^T\vy + b} $.
+
+The Support vector classifier has the same constraints but miminizes $\norm{a}_2 + γ(\vec{1}^T \vu + \vec{1}^T \vv)$ which produces a tradeoff curve between inverse of margin and classification error which is given by the total slack.
+
+\section{Hypothesis testing}
+
+Choose whether $X ∈ \set{1, \dotsc, n}$ was generated by distribution $p = (p_1, \dotsc, p_n)$ or $q = (q_1, \dotsc, q_n)$. Observing $X = k$ leads to choosing H1 with probability $t_{1,k}$ and H2 with probability $t_{2,k}$. We can then build the detection probability matrix \[ \mD = \begin{pmatrix} 1 - P_{fp} & P_{fn} \\ P_{fp} & 1 - P_{fn} \end{pmatrix} \qquad \begin{cases} P_{fp} ≝ 1 - \sum_{k = 1}^n t_{1,k} p_k \\ P_{fn} ≝ \sum_{k = 1}^n t_{1,k} q_k \end{cases} \] with $P_{fp}$ the probability of selecting H2 if $X$ generated by distr. 1 (false pos) and $P_{fn}$ the probability of selecting H1 if $X$ is generated by distr. 2 (false negavtive). To design this detector we will want to minimize $(P_{fp}, P_{fn})$ w.r.t. $ℝ^2_+$ subject to $t_{1,k} + t_{2,k} = 1$ and $t_{i,k} ≥ 0$.
+
+It is obvious that best option is to choose the value with higher probability. If both probs are equal we have several Pareto-optimal detectors.
+
 \section{Random factoids}
 
 The solution of the least squares minimization $\norm{\mA \vx - \vb}^2 $ is $\vx = (\mA^T \mA)^{-1} \mA^T \vb$. It can also be solved with the pseudo inverse $\vx = \mA^\dagger \vb$, with $\mA = \mU Σ \mV^T$ the singular value decomposition and the pseudoinverse $\mA^{\dagger} = \mV Σ^{-1} \mU^T$.
 
 In MATLAB, \texttt{linprog(f, A, b)} solves linear programming $\vf \vx$ subject to $\mA \vx ≤ \vb$. \texttt{quadprog(H, f, A, b)} solves quadratic programming $\frac{1}{2} \vx \mH \vx + \vf \vx$ subject to $\mA \vx ≤ \vb$.
+
+One can also solve minimization problems with the Lagrangian. For example, we can minize $\vx^T \mQ \vx$ such that $\mA \vx = \vb$. The lagrangian is \[ \mathcal{L}(\vx, \vec{ν}) = \vx^T \mQ \vx + \vec{ν}^T(\mA\vx - \vb) \] with gradient $∇\mathcal{L} = 2 \mQ \vx + \mA^T \vec{ν}$. Setting that gradient to $0$ gives $\vx = - \frac{1}{2} \inv{\mQ} \mA^T \vec{ν}$. Now we switch to the dual function $g ≝ \inf_{\vx ∈ D} \mathcal{L}$ with derivative $g' = \mA \vx - \vb = - \frac{1}{2} \mA \inv{\mQ} \mA^T \vec{ν} - \vb = 0$. There we get the value for $\vec{ν}$ and $\vx = - \inv{\mQ} \mA^T (\mA \mQ^{-1} \mQ^T)^{-1} \vb$.
+
+If we want to minimize $\norm{\mA\vx - \vb}_1$ over $\norm{x}_∞ ≤ 1$ the LP is minimization of $\sum y_i$ s.t. $- \vy \preceq \mA \vx - \vb \preceq \vy$ and $- \vec{1} \preceq \vx \preceq \vec{1}$.
+
+Portfolio problems are described by a position vector $\vx ℝ^n$, a vector of returns $\vr ∈ ℝ^n$ and the level of risk (variance) defined by $\vec{x}^T \mC \vx$ with $\mC$ the covariance matrix.
+
+To show that a value is optimal, it needs to be feasible and we need to find a value for the dual variable that satisfies KKT and is dual feasible.
+
+\subsection{Schur's complement}
+
+Given block matrices $\mA,\mB, \mC, \mD$ of dimensions $p×p$, $p×q$, $q×p$ and $q×q$ with $\mD$ invertible, we can define the block matrix \[ \mM = \begin{pmatrix} \mA & \mB \\ \mC & \mD \end{pmatrix} \] and the following Schur complements of $\mA$ and $\mD$:
+\begin{align*}
+\quot{\mM}{\mD} &≝ \mA - \mB \inv{\mD} \mC \\
+\quot{\mM}{\mA} &≝ \mD - \mC \inv{\mA} \mB
+\end{align*}
+
+This is useful to solve a system of linear equations \[ \begin{cases} \mA \vx + \mB \vy = \va \\ \mC \vx + \mD \vy = \vb \end{cases}\] then we can solve $\quot{\mM}{\mD} \vx = \va - \mB \inv{\mD} \vb$ and then we can replace in the second equation which reduces the number of matrices to invert.
+
+Also, if $\mX = \begin{pmatrix} \mA & \mB \\ \mB^T & \mC \end{pmatrix}$ then $\mX$ is positive definite iff both $\mA$ amd $\quot{\mX}{\mA}$ are both pd, and same with $\mC$.
 
 \end{document}
