@@ -774,7 +774,42 @@ For the Riesz-Thorin interpolation, we need to state and prove the Hadamard thre
 
 For the Fourier transform, the definition for schwartz space and ffourier transfor, state and prove fourier transform inverse formula, and state and prove Plancherel identity. Also, use Riesz-THorin to prove $L^p\to L^{p'}$ boundedness of Fourier transform.
 
-For the Fourier series, we will discuss it later.
+For the Fourier series, we will discuss it later. Definition, coefficeints of a continuous funciton. Write the partial sum of the Fourier series as a convolution.  Definition of the Fejer kernel and proof that it is an approximation of identity. Uniform convergence of $L^p$ and continuous functions convoluted with approxidendity. Prove that trigonometric polynomials are dense in $L^p$. State and prove the Riemann-Lebesgue theorem.
+
+Sobolev spaces. Definition of $H^n$ space including fractional $s$.
+
+Regarding exercises.
+
+\begin{itemize}
+	\item Ex 1 series 1 (Pointwise estimates on Dirichlet kernel)
+	\item Ex 1 series 5 (Weak $L^p$ space).
+	\item Ex 4 series 6 (Hilbert transform and holomorphic functions).
+	\item Ex 1 series 7 (Evaluation of Dirichlet integration. Suffices to show one way).
+\end{itemize}
+
+This is for the ex4/series6. But for $f ∈ C_0^∞(ℝ)$ show that the function \[ u(x,y) ≝ \frac{1}{π} \int_ℝ \frac{yf(t)}{(x-t)^2 + y^2} \dif t \] defines a harmonic function on the upper plane $\set{(x,y) ∈ ℝ^2 \st y > 0}$. Moreover, show that $\lim_{y \to 0} u = f(x)$.
+
+The function $u$ is obviously well-defined. To prove that it is harmonic we prove that the laplacian is zero. That is straightforward because $\frac{y}{(x-t)^2 + y^2}$ is harmonic. But it's easier beacuse it's the imaginary aprt of $\frac{1}{z}$ which is holomorphic. Also because $\frac{y}{x^2 + y^2} = ∂_y \log \sqrt{x^2 + y^2}$ which is harmonic again.
+
+For the other thing, we can solve \[ \frac{1}{π}\int_ℝ \frac{y}{(x-t)^2 + y^2} \dif t = \frac{1}{π} \int_ℝ \frac{1}{\frac{(x-t)^2}{y^2} + 1} \dif \left(\frac{t-x}{y}\right) = \frac{1}{π} \eval{\arctan\left(\frac{t-x}{y}\right)}_{t = -∞}^{∞} = 1 \]
+
+And now we want to show that \[ u(x,y) - f(x) = \frac{1}{π} \int_{ℝ} \frac{y(f(t) - f(x))}{(x-t)^2 + y^2)} \dif t \]
+
+We separate in two parts, when $x \approx t$ and when not. And everything goes to zero.
+
+Second part is how to construct the holmorphic functions.We introduce $z ≝ x + \imath y$ and $g(x) = u(z) + \imath v(z)$ with \[ v(z) ≝ \frac{1}{π} \int_ℝ \frac{(x-t) f(t)}{(x-t)^2 + y^2} \dif t \] and we want to show that $g$ is holomorphic on $\set{(x,y) ∈ ℝ^2 \st y > 0}$, that $\lim_{z \to ∞} g(z) = 0$ and $\lim_{y \to 0} v = \frac{1}{π} H f$. Also show that $g(z)$ is the unique holomorphic function such that $\lim_{z \to ∞} g(z) = 0$ and $\lim_{y \to 0} \Re g(z) = f(x)$.
+
+W ehave to use that $(Hf)^2 = π^2 f^2 + 2H(f · Hf)$. $f + \frac{\imath}{π} Hf$ is the boundary value of the holomorphic function on the the half plane. So is the square of that crap which is $f^2 - \frac{1}{π^2} (Hf)^2 + 2\imath fHf$. Then the relation between the real an dimaginary part must be $2f Hf = \frac{1}{π} H(f^2 - \frac{1}{π^2} (Hf)^2 )$. Now you apply $H$ again on both sides and we have \[ 2H(f Hf) = π f^2 - \frac{1}{π} (Hf)^2 \]
+
+For the proof that the function is holomorphic, it is slightly direct. For the limit, we see what $u$ and $v$ go both to zero.
+
+For the hilber transform it is a little bit more delicate so so so so so soooo sosososo sosososo sososo sososo sosososooooo.
+
+We write \[
+v(x,y) = \lim_{ε \to 0^+} \int_{x + ε}^∞ \frac{(x-t) f(x)}{(x-t)^2 + y^2} \dif t + \int_{-∞}^{x-ε} \dotsb \dif t
+\] which is well defined. Then  we take the limit when $y$ goes to zero, and because the first one is well defined we can interchange the limit because it's uniform in the outer variable (?) and when $y$ goes to zero we have the definition of the Hilbert transform.
+
+For the uniqueness, show that the harmonic function $u$ is unique and then show that $v$ is also uniquely determined. The constant must be zero (¿?¿?¿). For the first one, we have that $∃u = 0$ on $Ω$ with $\restr{u}{∂Ω} = 0$ then $u = 0$ by maximum principle. But we need Ω bounded and in this case it is not. But tric! There exists a holomorphic map$F$ that maps the upper half plane to the disk. So $\hat{u}(w) = u(\inv{F}(w))$. Now $\tilde{u}$ is harmonic and still zero on the boundary so we use the maximum principle and then it's done. PS: I don't think it's u but $u - u'$ for any other option $u'$. Yay for good notations.  We can also choose a ball and take less than ε.
 
 \appendix
 

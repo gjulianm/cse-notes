@@ -83,6 +83,7 @@
 \RequirePackage{tikztools}
 \RequirePackage{mathenvs}
 \RequirePackage{algorithm,algpseudocode}
+\RequirePackage{tocloft} % Tablas de contenidos
 
 %% Some configurations and adjustements
 

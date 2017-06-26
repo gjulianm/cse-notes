@@ -10,15 +10,15 @@ Once we know the theory, we are going to apply it to the study of the Stokes pro
 \end{cases} \label{eq:PDE:StokesProblem} \)
 
 The weak formulation of this is finding $u ∈ H_0^1(Ω)^2$, $p ∈ L_0^2(Ω)$ such that
-\( \int_Ω ∇\vu : ∇\vv - p \dv \vu - \dv \vu q  = \int_Ω \vf \vv \) for all functions $\vv ∈ H_0^1(Ω)^2$ and $q ∈ L_0^2(Ω)$ and we can prove the inf-sup condition \eqref{eq:PDE:InfSup}.
+\( \int_Ω ∇\vu : ∇\vv - \int_Ω p \dv \vu - \int_Ω \dv \vu q  = \int_Ω \vf \vv \) for all functions $\vv ∈ H_0^1(Ω)^2$ and $q ∈ L_0^2(Ω)$ and we can prove the inf-sup condition \eqref{eq:PDE:InfSup} using the trick of that for any $p ∈ L^2(Ω)$ there is a $\vw ∈ H_0^1(Ω)^2$ such that $\norm{p}^{2}_{L^2(Ω)} = \int_Ω p \dv \vw $ with $\norm{∇w} ≤ C \norm{p}$.
 
 \subsection{Finite element approximation}
 
-As discussed in \fref{sec:PDE:NumericalApproximationMixedProblems}, we need to tweak a little bit the numerical approximation by finite elements to get a stable method, adding the term \( - \sum_{K ∈ \mesh} α h_k^2 \int_K (- Δ\vu_h + ∇p_h -f )(-Δ\vv_h + ∇q_h) \) with $α > 0$.
+As discussed in \fref{sec:PDE:NumericalApproximationMixedProblems}, we need to tweak a little bit the numerical approximation by finite elements to get a stable method, adding the term \( - \sum_{K ∈ \mesh} α h_k^2 \int_K (- Δ\vu_h + ∇p_h -f )(-Δ\vv_h + ∇q_h) \) with $α > 0$. We use piecewise linear gradient element so the gradient is not continuous. We can prove that the scheme is stable by setting $v_h = u_h$, $q_h = - p_h$ so that \[ \norm{∇u_h}_{L^2(Ω)}^2 + \sum_{K ∈ \mesh} α h_K^2 \norm{∇p_h}^2_{L^2(K)} = 0 \] when $f = 0$ so that we need $∇u_h = ∇p_h = 0$. Then they are constant and because they are zero on the boundary they are zero everywhere, and therefore the kernel of the matrix is zero. If we hadn't added the last term, we wouldn't have restrictions on $p_h$ and the matrix would not be invertible.
 
 \subsection{A priori error estimates}
 
-\seprule[Missing lecture here]
+The a priori estimate is \[ \norm{u,p} ≤ C \sup \frac{a(u,p; v,q)}{\norm{v,q}} \]
 
 \subsection{A posteriori error estimates}
 

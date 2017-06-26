@@ -35,6 +35,7 @@
 \bigzero#m
 \tlps#m
 \oof{arg0}#m
+\interp#m
 \invers{arg0}#m
 \f#m
 \F#m
@@ -172,6 +173,7 @@
 \veta#m
 \vmu#m
 \mA#m
+\mS#m
 \mB#m
 \mD#m
 \mL#m
