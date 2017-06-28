@@ -167,6 +167,7 @@
 \vz#m
 \vt#m
 \vp#m
+\vs#m
 \vq#m
 \vj#m
 \vw#m
