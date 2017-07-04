@@ -317,7 +317,7 @@ One of the classical experiments is DNA closing on its own tail. So $B$ is a nei
 
 So what you say is that \[ P(B_1, B_2) \simeq j(\mR^*, \vr^*) \abs{B_1} \abs{B_2} \] (basically a 1 point quadrature rule as $j$ is a PDF). The idea is the stars are somewhere in the middle.
 
-In MOnteCarlo the idea is to shrink the sets. Is the estimate of $j$ insensitive to choice of $B_1$, $B_2$?
+In MOnteCarlo the idea is to shrink the sets. Is the estimate of $j$ insensitive to choice of $B_1$, $B_2$? $B_1$ is in $SO(3)$ and $B_2 ∈ ℝ^3$.
 
 By the way, measure on $SO(3)$ is something weird.
 
@@ -437,7 +437,7 @@ Another remark is that we if we restrict the model parameters to be banded, we h
 
 An alternative estimation principle is minimum entropy. If you have a pdf $ρ(\vw)$ with respect to the the measure $\dif \vw)$ we\footnote{We is mathematicians. Physicists put a minus sign.} define the entropy as \[ S(ρ)  ≝ \int_{ℝ^n} ρ(\vw) \log ρ(\vw) \dif ω \]
 
-Will also need relative entropy or Kullback-Leibler divergence between two PDFs $ρ_1, ρ_2$ defined as \[ \mop{KL}(ρ_1, ρ_2) ≝ \int_{ℝ^N} ρ_1(\vw) \log \frac{ρ_1(\vw)}{ρ_2(\vw)} \dif \vw \equiv \int_{ℝ^N} \frac{ρ_1(\vw)}{ρ_2(\vw)} \log \frac{ρ_1(\vw)}{ρ_2(\vw)} \underbracket{ ρ_2(\vw) \dif \vw}_{\dif σ(\vw)} = \int_{ℝ^N} c(\vw) \log c(\vw) \dif σ(\vw)\] where $\dif σ(\vw)$ is a non-flat measure.
+Will also need relative entropy or Kullback-Leibler divergence between two PDFs $ρ_1, ρ_2$ defined as \begin{multline*} \mop{KL}(ρ_1, ρ_2) ≝ \int_{ℝ^N} ρ_1(\vw) \log \frac{ρ_1(\vw)}{ρ_2(\vw)} \dif \vw \equiv \int_{ℝ^N} \frac{ρ_1(\vw)}{ρ_2(\vw)} \log \frac{ρ_1(\vw)}{ρ_2(\vw)} \underbracket{ ρ_2(\vw) \dif \vw}_{\dif σ(\vw)} = \\ = \int_{ℝ^N} c(\vw) \log c(\vw) \dif σ(\vw)\end{multline*} where $\dif σ(\vw)$ is a non-flat measure.
 
 Now we are talking about Jensen's inequality.
 
@@ -456,9 +456,12 @@ We need to prove that the ffirst-order necessary conditions are actually suffici
 
 \seprule[Lecture missed]
 
-So in the last time we went from a molecular dynamics time series for a given oligomer sequence ${S}$ to an estimate $\vmu (S) ∈ ℝ^{12n - 6}$ and $\mC(S) ∈ ℝ^{12n - 6 × 12n - 6}$ with $\mC$ spd. $\mK(S)$ is the banded stiffness and the PDF for the banded matrix is \[ ρ_b (\vw; S) = \frac{1}{Z} e^{- \frac{1}{2} (\vw - \vmu) \mK (\vw - \vmu)} \] with $[| K|]' = 0$ and $[|\inv{\mK}|] = \mC$ where $ρ_b$ is the max likelihood or max entropy banded Gaussian fit.
+\subsection{Estimation of the banded stiffness}
+So in the last time we went from a molecular dynamics time series for a given oligomer sequence ${S}$ to an estimate $\vmu (S) ∈ ℝ^{12n - 6}$ and $\mC(S) ∈ ℝ^{12n - 6 × 12n - 6}$ with $\mC$ spd. The problem is that we need a banded stiffness matrix, and $\mC$ is not necessarily so.
 
-Today and next week we are doing the following: for a training library of $ρ_b^i$ for $i = 1, \dotsc, M$ sequences, we want to estimate the cgDNA parameters set $\mathcal{P}$.
+Calling $\mK(S)$ the banded stiffness, we can define the PDF for the banded matrix as \[ ρ_\text{band} (\vw; S) = \frac{1}{Z} e^{- \frac{1}{2} (\vw - \vmu) \mK (\vw - \vmu)} \] with $[|\mK|]' = 0$ and $[|\inv{\mK}|] = \mC$ where $ρ_\text{band}$ is the max likelihood or max entropy banded Gaussian fit. One form to retrieve this matrix is to just take the matrix $\mK$ that minimizes the Kullback-Leiber divergence again.
+
+Today and next week we are doing the following: for a training library of $ρ_\text{band}^i$ for $i = 1, \dotsc, M$ sequences, we want to estimate the cgDNA parameters set $\mathcal{P}$.
 
 Remark, well known that outliers in a time series could strongly affect estimates of the centered covariance, so it is a good idea to filter them out. Not so clear how to identify them.  There is a large theory for that, but in our case we will utilize physical filtering: if the bonds hydrogen in a snapshot is broken, it is not used. Most of the broken bonds appear at the ends (fraying).
 
@@ -482,7 +485,7 @@ Good scaling for angles is to measure in fifths of a radian.
 
 So some things about siulation and equilibrum of $N$ particles in $ℝ^3$. In cgDNA we have the same but with our coordinates in $ℝ^3$ and $SO(3)$. But because each base $(\mR_i^{\pm}, \vr_i^\pm) ∈ SE(3)$, it turns aout that $\pd{U}{\vw}$ does not give forces and torques but we need a vonversion. That will be cgDNAeq. But that's for another class.
 
-Today: Last step in parameter estimation. We IDK \( \mathcal{P} = \argmin_{\mathcal{P}} \sum_{i = 1}^M w_i \mop{KL} (ρ_{\text{cgDNA}}(S^i); ρ_{\text{band}}^i) \label{eq:ParamsetArgmin} \) where $\mathcal{P}$ is the parameters set, $\mop{KL}$ is the Kullback-Leiber diveregnce, $w_i ≥ 0$ are confidence weights, and $ρ^i_\text{band}$ is the oligomer based Gaussian with banded $\mK^i$ and mean $\mu^i$ for each training sequence $\mathcal{S}^i$. We could take $w_i$ for exampleto be the relative number of snapshots in each simulation.
+Today: Last step in parameter estimation. We can compute the parameter set as the argument that minimizes the Kullback-Leiber divergence between our cgDNA model and the estimated $ρ_\text{band}$ from the MD simulations \( \mathcal{P} = \argmin_{\mathcal{P}} \sum_{i = 1}^M w_i · \mop{KL} (ρ_{\text{cgDNA}}(S^i; \mathcal{P}); ρ_{\text{band}}^i(S^i)) \label{eq:ParamsetArgmin} \) where $\mathcal{P}$ is the parameters set, $\mop{KL}$ is the Kullback-Leiber diveregnce, $w_i ≥ 0$ are confidence weights, and $ρ^i_\text{band}$ is the oligomer based Gaussian with banded $\mK^i$ and mean $\mu^i$ for each training sequence $\mathcal{S}^i$. We could take $w_i$ for exampleto be the relative number of snapshots in each simulation.
 
 Picking $w_i$ is more of an art than a science. Also, picking the entire objective functional is also an art. We take Kullback-Leibler divergence because some people like it, others don't, unclear.
 

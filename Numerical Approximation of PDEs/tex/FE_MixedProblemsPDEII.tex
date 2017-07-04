@@ -12,28 +12,51 @@ Once we know the theory, we are going to apply it to the study of the Stokes pro
 The weak formulation of this is finding $u ∈ H_0^1(Ω)^2$, $p ∈ L_0^2(Ω)$ such that
 \( \int_Ω ∇\vu : ∇\vv - \int_Ω p \dv \vu - \int_Ω \dv \vu q  = \int_Ω \vf \vv \) for all functions $\vv ∈ H_0^1(Ω)^2$ and $q ∈ L_0^2(Ω)$ and we can prove the inf-sup condition \eqref{eq:PDE:InfSup} using the trick of that for any $p ∈ L^2(Ω)$ there is a $\vw ∈ H_0^1(Ω)^2$ such that $\norm{p}^{2}_{L^2(Ω)} = \int_Ω p \dv \vw $ with $\norm{∇w} ≤ C \norm{p}$.
 
+\Fref{ex:PDE2:Stokes} shows how to get the weak form of the problem.
+
 \subsection{Finite element approximation}
 
 As discussed in \fref{sec:PDE:NumericalApproximationMixedProblems}, we need to tweak a little bit the numerical approximation by finite elements to get a stable method, adding the term \( - \sum_{K ∈ \mesh} α h_k^2 \int_K (- Δ\vu_h + ∇p_h -f )(-Δ\vv_h + ∇q_h) \) with $α > 0$. We use piecewise linear gradient element so the gradient is not continuous. We can prove that the scheme is stable by setting $v_h = u_h$, $q_h = - p_h$ so that \[ \norm{∇u_h}_{L^2(Ω)}^2 + \sum_{K ∈ \mesh} α h_K^2 \norm{∇p_h}^2_{L^2(K)} = 0 \] when $f = 0$ so that we need $∇u_h = ∇p_h = 0$. Then they are constant and because they are zero on the boundary they are zero everywhere, and therefore the kernel of the matrix is zero. If we hadn't added the last term, we wouldn't have restrictions on $p_h$ and the matrix would not be invertible.
 
 \subsection{A priori error estimates}
+\label{sec:PDE:APrioriStokes}
 
-The a priori estimate is \[ \norm{u,p} ≤ C \sup \frac{a(u,p; v,q)}{\norm{v,q}} \]
+First, we need to prove the inf-sup condition.
+
+\begin{prop} \label{prop:PDE:InfsupStokes} For the Stokes problems \eqref{eq:PDE:StokesProblem} there exists a constant $C$ such that
+\[ \norm{\vu,p} ≤ C \sup_{(v,q) ∈ V × Q} \frac{a(\vu,p; v,q)}{\norm{v,q}} \]
+\end{prop}
+
+\begin{proof} To show the bound it suffices to prove that there exist two constants $C_1, C_2 > 0$ such that for all $(\vu,p) ∈ V×Q$ there exist $(\vv,q) ∈ V × Q$ such that
+\begin{align*}
+\norm{\vu,p}^2 &≤ C_1 a(\vu,p; \vv, q) \\
+\norm{\vv,q} &≤ C_2 \norm{\vu, p}
+\end{align*} as indeed in that case we have
+\[ \frac{1}{C_2} \norm{\vv,q}{\norm{\vu,p}} ≤ \norm{\vu,p}^2 ≤ C_1 a(\vu, p; \vv, q)\]
+
+We start by selecting $(\vv,q) = (\vu,p)$ in the first bound. In that case
+\begin{align*}
+a(\vu, p; \vu, p) = \int_{Ω} \abs{∇\vu}^2 - 2 \int_Ω p \dv \vu ≥ \norm{∇\vu}^2
+\end{align*}
+
+Now as we said before, there exists a $\vw ∈ H_0^1(Ω)$ such that $p = \dv \vw$ with $\norm{∇\vw} ≤ C\norm{p}$ and done more or less.
+
+\end{proof}
 
 \subsection{A posteriori error estimates}
 
-\begin{prop} \label{eq:PDE:APosterioriErrorStokes} For the Stokes problem \eqref{eq:PDE:StokesProblem}, there exists a constant $C > 0$ independent of $f, \vu, p, h$ but dependendent on the mesh aspect ratio such that \( \norm{∇(u - u_h)}^2_{L^2(Ω)} + \norm{p - p_h}_{L^2(Ω)} ≤ C \sum_{K ∈ \mesh} η_K^2 \) for the solutions $u_h, p_h$ of the Galerkin problem, with \[ η_K^2 = \left(h_k \norm{f + Δu_h - ∇p_h}_{L^2(K)} + \frac{1}{2} h_K^{\sfrac{1}{2}} · \norm{[∇\vu_h · \vn]}_{L^2(∂K)}\right)^2 + \norm{\dv u_h}^2_{L^2(K)}\]
+\begin{prop} \label{prop:PDE:APosterioriErrorStokes} For the Stokes problem \eqref{eq:PDE:StokesProblem}, there exists a constant $C > 0$ independent of $f, \vu, p, h$ but dependendent on the mesh aspect ratio such that \( \norm{∇(u - u_h)}^2_{L^2(Ω)} + \norm{p - p_h}_{L^2(Ω)}^2 ≤ C \sum_{K ∈ \mesh} η_K^2 \) for the solutions $u_h, p_h$ of the Galerkin problem, with \[ η_K^2 = \left(h_k \norm{f + Δ\vu_h - ∇p_h}_{L^2(K)} + \frac{1}{2} h_K^{\sfrac{1}{2}} · \norm{[∇\vu_h · \vn]}_{L^2(∂K)}\right)^2 + \norm{\dv \vu_h}^2_{L^2(K)}\]
 \end{prop}
 
-\begin{proof} We know from a proposition that I did not copy from the previous lecture, that there exists a constant $C$ such that \[ \norm{\vu - \vu_h, p - p_h} ≤ C \sup_{(v,q) ∈ H} \frac{a(u - u_h, p - p_h, v, q)}{\norm{v, q}} \] with $H = V × Q$
+\begin{proof} We know from \fref{prop:PDE:InfsupStokes} that there exists a constant $C$ such that \[ \norm{\vu - \vu_h, p - p_h} ≤ C \sup_{(v,q) ∈ H} \frac{a(\vu - \vu_h, p - p_h, v, q)}{\norm{v, q}} \] with $H = V × Q$
 
 We want to prove that $∀(v,q) ∈ H$, $a(u - u_h, p - p_h, v, q) ≤ C_2 \norm{v,q} \left(\sum_{K ∈ \mesh} η_K^2\right)^{\sfrac{1}{2}}$. We will try to do it by relation to the residual.
 
-We have that \begin{align*}
-a(u - u_h, p - p_h, v, q)
-	&= F(v,q) - a(u_h, p_h, v, q) = \\
-	&= F(v,q) - a(u_h, p_h, v, q) + \\
-	&\quad + (F - F_h)(v_h, q_h) - (a - a_h)(u_h, p_h, v, q) = \\
+As the extra term for stabilization is zero, we can add it here to have \begin{align*}
+a(\vu - \vu_h, p - p_h, v, q)
+	&= F(v,q) - a(\vu_h, p_h, v, q) = \\
+	&= F(v,q) - a(\vu_h, p_h, v, q) + \\
+	&\quad + (F - F_h)(v_h, q_h) - (a - a_h)(\vu_h, p_h, v, q) = \\
 	&= \int_Ω \left[\vf (\vv - \vv_h) - ∇\vu : ∇(\vv - \vv_h) \right. \\
 	&\qquad \left. + p_h \dv (\vv - \vv_h) + \dv \vu_h (q - q_h)\right] + \\
 	&\quad + \sum_{K ∈ \mesh} α h_k^2 (f + Δ\vu_h - ∇p_h) (-∇\vv_h + ∇q_h)
@@ -54,7 +77,7 @@ a(u - u_h, p - p_h, v, q)
 	&\quad+ \left. \frac{1}{2} h_K^{\sfrac{1}{2}} \norm{[∇\vu_h · \vn]}_{L^2(∂K)} + \norm{\dv \vu_h}_{L^2(K)}\norm{q}_{L^2(K)} \right) \\
 	&≤ C_3 \left(\sum_{K ∈ \mesh} \left(h_K \norm{\vf + Δ\vu_h - ∇p_h} + \frac{1}{2}h_K^{\sfrac{1}{2}} \norm{[∇\vu_h · \vn]}\right)^2 \right)^{\sfrac{1}{2}} + \\
 	&\quad
-	+ \left(\sum_{K ∈ \mesh} \norm{∇\vv}_{L^2(ΔK)}^2\right)^{\sfrac{1}{2}}
+	· \left(\sum_{K ∈ \mesh} \norm{∇\vv}_{L^2(ΔK)}^2\right)^{\sfrac{1}{2}}
 	+ \left(\sum_{ K ∈ \mesh} \norm{\dv \vu_h}^2\right)^{\sfrac{1}{2}}
 	· \left(\sum_{K ∈ \mesh} \norm{q}_{L^2(K)}^2\right)^{\sfrac{1}{2}}
 \end{align*} where $ΔK$ is the neighbouring triangles of $K$ and $\dv \vu_h \to 0$ as $h \to 0$.
@@ -119,7 +142,7 @@ With this system we can eliminate $q$ so we get our final problem to solve. We w
 
 We can formulate this in weak form by calling \begin{align*}
 a(u,λ; μ, v) &= \int_Ω \left(∇u ∇μ - \frac{1}{α}λμ\right) + \int_Ω ∇λ ∇v + \int_{Ω_0} uv \\
-F(μ, v) &=
+F(μ, v) &= \int_Ω fμ + u_0 v
 \end{align*}
 
 Well-posedness of this problem is a consequence of the inf-sup condition with the space $H ≝ H_0^1(Ω) × H_0^1(Ω)$ and $\norm{u, λ}_H^2 = \norm{∇u}_{L^2} + \norm{∇λ}_{L^2}$.
@@ -132,7 +155,7 @@ a(u,λ;μ,v) &≥C_1\norm{u,λ}^2 \\
 \norm{μ, v} &≤ C_2\norm{u, λ}
 \end{align*}
 
-\proofpart{Lower bound}
+\proofpart{Bound 1: $a(u,λ;μ,v) ≥C_1\norm{u,λ}^2$}
 
 We will start selecting $(μ, v) = (u, λ)$ to have some ``good terms'' with the squares of the gradients. Thus, we would have
 \[
@@ -162,7 +185,7 @@ We will throw out the positive terms (we want to bound $a$ from below), and usin
 That quantity is greater than $\frac{1}{2} \norm{u,λ}^2$ if we have
 \[ 1 - \frac{C_p^2}{2αβ} ≥ \frac{1}{2} \quad \text{and} \quad 1 - \frac{C_p^2}{2β} ≥ \frac{1}{2} \] so that our $β$ is defined as \[ β = C_p^2 \max \set{1, \frac{1}{α}} \]
 
-\proofpart{Lower bound}
+\proofpart{Bound 2: $\norm{μ, v} ≤ C_2\norm{u, λ}$}
 
 With the election of $(μ, v)$ from the previous part of the proof we have directly the lower bound $\norm{μ, v} ≤ C_2\norm{u, λ}$.
 \end{proof}
@@ -177,13 +200,13 @@ Thus, our space of finite elements is $V_h = \spn \set{φ_1, \dotsc, φ_n} ⊂ H
 
 We could say that existence and uniqueness of the finite element approximation comes from the existence and uniqueness of the original problem, but we will see it using linear algebra and trying to invert the matrix of the system. Our system will be \[ \begin{pmatrix} \mM_0 & \mA \\ \mA & - \frac{1}{α} \mM \end{pmatrix} \begin{pmatrix} \vu \\ \vec{λ} \end{pmatrix} = \begin{pmatrix} \mM_0 \vu_0 \\ \vf \end{pmatrix} \]
 
-We can try to eliminate $\vec{λ}$ from that equation, so that $\vec{λ = α \inv{\mM} (\vf - \mA \vu} $ and then \[ (\mM_0 + α \mA \inv{\mM} \mA) \vu = \]
+We can try to eliminate $\vec{λ}$ from that equation, so that $\vec{λ} = α \inv{\mM} (\vf - \mA \vu) $ and then \[ (\mM_0 - α \mA \inv{\mM} \mA) \vu = \mM_0 \vu_0  - α\mA \mM^{-1} \vf \]
 
 That matrix is symmetric and positive definite and so invertible. Thus, we can start with the error estimates.
 
-\subsection{A priori error estimates}
+\subsection{A posteriori error estimates}
 
-\begin{prop} There exists a constant $C > 0$ indepedent of $f, u_0, h$ but dependent on the mesh aspect ratio such that \[ \norm{u - u_h, λ - λ_h}^2 ≤ C \sum_{K ∈ \mesh} η_K^2 \] with
+\begin{prop} \label{prop:PDE:APostOptimalControl} There exists a constant $C > 0$ indepedent of $f, u_0, h$ but dependent on the mesh aspect ratio such that \[ \norm{u - u_h, λ - λ_h}^2 ≤ C \sum_{K ∈ \mesh} η_K^2 \] with
 \begin{multline*}
 η_K^2 =
 	\left(

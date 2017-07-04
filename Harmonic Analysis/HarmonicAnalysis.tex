@@ -289,7 +289,7 @@ Now we can move to the Fourier transform on a general space $ℝ^n$. We will sta
 
 This class of very nice functions will be the Schwartz space:
 
-\begin{defn}[Schwartz space][Space!Schwartz] The Schwartz space is defined as \[ \schwartz = \set{ f ∈ C^∞(ℝ^n) \st \sup_{x ∈ ℝ^n} \abs{(1 + \abs{x}^N) ∂_x^α f(x)} < ∞ } \] for any $N ∈ ℕ$ and any multiindex $α ∈ ℕ^n$.
+\begin{defn}[Schwartz space][Space!Schwartz] \label{def:SchwartzSpace} The Schwartz space is defined as \[ \schwartz = \set{ f ∈ C^∞(ℝ^n) \st \sup_{x ∈ ℝ^n} \abs{x^N ∂_x^α f(x)} < ∞ } \] for any $N ∈ ℕ$ and any multiindex $α ∈ ℕ^n$.
 \end{defn}
 
 \begin{figure}[hbtp]
@@ -327,7 +327,7 @@ Now we recall that we can derivate by multiplying in Fourier space (that is, $\f
 
 In fact we have a bijection, so that the Fourier transform operator is invertible.
 
-\begin{theorem}[Fourier\IS inversion] Let $f ∈ \schwartz$ and $\hat{f}$ its Fourier transform. Then, the inversion formula holds: \( f(x) = \int_{ℝ^n} \hat{f}(ξ) e^{2π\imath x · ξ} \dif ξ \)
+\begin{theorem}[Fourier\IS inversion] \label{thm:FourierInversion} Let $f ∈ \schwartz$ and $\hat{f}$ its Fourier transform. Then, the inversion formula holds: \( f(x) = \int_{ℝ^n} \hat{f}(ξ) e^{2π\imath x · ξ} \dif ξ \)
 \end{theorem}
 
 \begin{proof} We can start by expanding the definition of the Fourier transform:
@@ -431,9 +431,9 @@ Apply  \nref{thm:RieszThorin} with $p_0 = 1, q_0 = ∞$ and $p_2 = q_2 = 2$.
 
 The proof of Riesz-Thorin is not trivial, and we will need some technical ingredients from, surprise, complex analysis.
 
-\begin{lemma}[Hadamard\IS three lines lemma] Let $F$ be a complex analytic function on the strip $S ≝ \set{x ∈ ℂ \tq 0 < \Re z < 1}$ extending continuously and boundedly to the closure $\adh{S}$. Asssume the bounds \begin{align*}
-\Re z = 0 &\implies \abs{F(x)} ≤ B_0 \\
-\Re z = 1 &\implies \abs{F(x)} ≤ B_1
+\begin{lemma}[Hadamard\IS three lines lemma] \label{lem:Hadamard3Lines} Let $F$ be a complex analytic function on the strip $S ≝ \set{x ∈ ℂ \tq 0 < \Re z < 1}$ extending continuously and boundedly to the closure $\adh{S}$. Asssume the bounds \begin{align*}
+\Re z = 0 &\implies \abs{F(z)} ≤ B_0 \\
+\Re z = 1 &\implies \abs{F(z)} ≤ B_1
 \end{align*} for two constants $B_0, B_1 > 0$. Then we have \[ \Re z = θ \implies \abs{F(z)} ≤ B_0^{1-θ} B_1^θ \] for any $θ ∈ [0,1]$.
 \end{lemma}
 
@@ -458,10 +458,21 @@ We will separate the proof in two cases: first, when $p_0, p_1, q_0, q_1$ are st
 
 \proofpart{$p_0, \dotsc, q_1 ≠ 1, ∞$}
 
-Let's consider a simple function of the form \[ f(x) = \sum_{k = 1}^M a_k e^{\imath α_k} \ind_{A_k} (x)\] with $A_k ∈ \mathcal{X}$ disjoint sets and $a_k ∈ ℝ^+$.
+Let's consider a simple function of the form \[ f(x) = \sum_{k = 1}^M a_k e^{\imath α_k} \ind_{A_k} (x)\] with $A_k ∈ \mathcal{X}$ disjoint sets and $a_k ∈ ℝ^+$. We can see that the norm of $Tf$ can be expressed as \[ \norm{Tf}_{L^q} = \sup_{\norm{g}_{L^{q'}} ≤ 1} \int_X Tf(x) g(x) \dif μ \] where we can restrict $g$ to simple functions by density. Note that we need $g ∈ L^{q'}$ where $q'$ is the Hölder complement of $q$ (basically, we just want to use the Hölder inequality later on).
 
-% TODO: Complete this. Try to see some proof that is more clear than the crap on the lecture.
+Now introduce two complex variants
+\begin{align*}
+f_z(x) &≝ \sum_{k=1}^M a_k^{P(z)} e^{\imath α_k} \ind_{A_k}(x) \\
+g_z(x) &≝ \sum_{k=1}^N b_k^{Q(z)} e^{\imath β_k} \ind_{B_k}(x)
+\end{align*}
+with
+\begin{align*}
+P(z) &≝ \frac{p}{p_0} (1-z) + \frac{p}{p_1}z \\
+Q(z) &≝ \frac{q}{q_0} (1 -z) + \frac{q}{q_1}z
+\end{align*} and restricting $z$ to the strip $S ≝ \set{z ∈ ℂ \st \Re z ∈ [0,1]}$. One can easily see that the function \[ F(z) ≝ \int_X Tf_z (x) g_z(x) \dif μ = \sum_{k = 1}^M \sum_{l^1}^N a_k^{P(z)} b_{l}^{Q(z)} e^{\imath(α_k + β_k)} \int_X \ind_{A_k} \ind_{B_l} \dif μ \] is analytic, continous and bounded on $\adh{S}$.
 
+In order to apply the \nref{lem:Hadamard3Lines} we need to bound $\abs{F(z)}$ when $\Re z = 0, 1$. In both cases, we can see by the Hölder inequality that
+\[ \abs{F(z)} ≤ \norm{Tf_z}_{L^r}  \norm{g_z}_{L^{r'}} \] where $r$ and its Hölder complement $r'$ will depend on the value of $\Re z = 0,1$ having $r = q_0, q_1$ respectively. In both cases we have directly that the norms correspond to the norms $\norm{f}_{L^p}^{\sfrac{p}{p_j}}$, $\norm{g}_{L^{q'}}^{\sfrac{q'}{q_j}}$. Then we can apply the three-lines lemma noting that when $z = θ ∈ [0,1]$ then $P(z) = Q(z) = 1$ and $F(z) = \int_X Tf · g \dif μ$ and we have the Riesz-Thorin bound directly.
 \end{proof}
 
 \subsection{Convergence of the Fourier transform}
@@ -475,7 +486,7 @@ For that we would need to have that the function \[ \inv{\fourier}_N(f) (x) = \i
 
 For answering this question, we will introduce the Hilbert transform.
 
-\begin{defn}[Hilbert\IS transform] Let $f ∈ C_0^∞(ℝ)$ and $ε > 0$. The, we can define \( \label{eq:HilbertTransEpsilon} H_ε f(x) ≝ \int_{-∞}^{-ε} \frac{f(x-y)}{y} \dif y + \int_ε^∞ \frac{f(x)-y}{y} \dif y = \int_ε^∞ \frac{f(x-y) - f(x + y)}{y} \dif y \) and \[ Hf(x) ≝ \lim_{ε \to 0} H_ε f(x) \]
+\begin{defn}[Hilbert\IS transform]  \label{def:HilbertTrans}  Let $f ∈ C_0^∞(ℝ)$ and $ε > 0$. The, we can define \( \label{eq:HilbertTransEpsilon} H_ε f(x) ≝ \int_{-∞}^{-ε} \frac{f(x-y)}{y} \dif y + \int_ε^∞ \frac{f(x-y)}{y} \dif y = \int_ε^∞ \frac{f(x-y) - f(x + y)}{y} \dif y \) and \[ Hf(x) ≝ \lim_{ε \to 0} H_ε f(x) \]
 \end{defn}
 
 The Hilbert transform is specially interesting for its relations to the Fourier transform, specifically the following one.
@@ -497,6 +508,13 @@ Why is this interesting? We can see that we can express the indicator function a
 \sign(ξ - N) \hat{f}(ξ) &= \fourier\left(\frac{\imath e^{\imath N x}}{π} H(e^{-\imath Nx} f)\right) (ξ) \\
 \sign(ξ + N) \hat{f}(ξ) &= \fourier\left(\frac{\imath e^{-\imath N x}}{π} H(e^{\imath Nx} f)\right) (ξ) \\
 \end{align*} so that the operator \[ \inv{\fourier}_Nf(x) ≝ \int_{\abs{ξ} ≤ N} \hat{f}(ξ) e^{2π\imath x · ξ} \dif x \] will be $L^p(ℝ)$ bounded uniformly in $N$ if the Hilbert transform is $L^p$ bounded too.
+
+\begin{theorem} Let $1 < p < ∞$. Then there is a constant $C_p$ such that for any $f ∈ C_0^∞(ℝ)$ we have $\norm{Hf}_{L^p} ≤ C_p \norm{f}_{L^p}$ and in particular we can extend the transform to any such space.
+\end{theorem}
+
+\begin{proof}
+\end{proof}
+
 
 \chapter{Hilbert transform}
 
@@ -760,6 +778,66 @@ and now we use Calderón-Zygmund weak $L^1$ bound.
 
 \end{proof}
 
+\appendix
+
+\chapter{Useful theorems}
+
+\section{Measure theory and real analysis}
+
+\begin{theorem}[Dominated convergence\IS theorem] \label{thm:DominatedConvergence} Let $\set{f_n}_{n ∈ ℕ}$ be a series of functions such that $f_n \convs f$ almost everywhere. If there exists an integrable, non-negative function $g$ such that $\abs{f_n} ≤ g$, then \[ \int \lim_{n \to ∞} f_n \dif μ = \lim_{n \to ∞} \int f_n \dif μ\]
+\end{theorem}
+
+\begin{theorem}[Markov inequality][Inequality\IS Markov] \label{thm:MarkovIneq} Let \meas be a measure space and $\appl{f}{X}{ℝ}$ a measurable function. Then, for any $ε > 0$ we have that \[ μ\left(\set{x ∈ X \st \abs{(x)} ≥ ε}\right) ≤ \frac{1}{ε} \int_X \abs{f} \dif μ \] or, in other words, the set of points where $f$ has high values gets smaller the higher that value is.
+\end{theorem}
+
+\begin{theorem}[Lebesgue\IS differentiation theorem] \label{thm:DiffLebesgue} \citep[Theorem II.22]{ApuntesVariableReal} Let $\appl{f}{ℝ^N}{ℝ}$ be a locally integrable function. Then, for almost every $x ∈ ℝ^N$, we have that \[ \lim_{r \to 0} \fint_{E_r(x)} f(y) \dif y = f(x) \] for every family of sets $\set{E_r}$ that shrinks nicely to $x$.
+\end{theorem}
+
+Note that we use the notation $\fint_A f ≝ \frac{1}{\abs{A}} \int_A f$. For the ``shrinks nicely'', we give the following technical definition:
+
+\begin{defn}[Nicely shrinking sets] A family of sets $\set{E_r}_{r > 0}$ is said to shrink nicely to $x$ if and only if $E_r ⊂ \bola_r(x)$ and there exists a constant $α > 0$ independent of $r$ such that $\abs{E_r} > α\abs{\bola_r}$.
+\end{defn}
+
+In other words, this allows to take into account not only balls of radius $r$ but other shrinking sets that behave more or less in the same way.
+
+\section{Functional analysis}
+
+\begin{theorem}[Banach-Steinhaus\IS uniform boundedness theorem] \citep[Theorem II.8]{ApuntesAnalisisFunc} \label{thm:BanachSteinhaus} Let $\set{T_α}_{α ∈ A}$ a subset of the space of continuous linear applications $\linapp$ between $X$ and $Y$, where $X$ is a Banach space and $Y$ is a normed space. Then, either the linear applications $T_α$ are uniformly bounded (that is, $∃ C < ∞$ such that $\norm{T_α}_{\linapp} ≤ C$ for all $α ∈ A$) or either there is a certain $G_δ$ set\footnote{Countable intersection of open set} dense in $X$, denoted by $B$, such that \[ \sup_{α ∈ A} \norm{T_α(x)}_Y = ∞ \quad ∀x ∈ B\]
+\end{theorem}
+
+\chapter{Summary}
+
+\section{Fourier series}
+
+The Fourier coefficients are given by \[ \hat{f}(n) = \int_0^1 e^{-2π\imath nx} f(x) \dif x \qquad n ∈ ℤ\], and that can be written as a convolution as \[ S_Nf(x) ≝ \sum_{\abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} = D_N * f \] with $D_N$ the Dirichlet Kernel as defined in \eqref{eq:DirichletKernel}: \[ D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \]
+
+We can also define the Féjer kernel \[ K_N(x) ≝ \frac{1}{N}\left(\frac{\sin πNx}{\sin πx}\right)^2 \] which is always positive and bounded in norm, therefore being an approximate identity.
+
+Regarding approximate identities, we can prove that they converge in the $L^p$ norm in \fref{prop:ApproximateIdentity}. The proof consists of transforming $\norm{φ_N * f - f}$ to $\int_Ω \abs{φ_N(x)} \norm{T_y f - f}\dif y$  and separating in two parts: where $y$ is large so we use the support of $φ_N$ is small, and another where $y$ is small and there we use the continuity of the translation operator $T_y$ by means of a third smooth function approximating $f$. The same argument can be used in \fref{prop:ApproximateIdentityUnif} but using the fact that convolution with smooth function is smooth.
+
+For the proof that trigonometric polynomials are dense in $L^p$, we just use the fact that the convolution of the Féjer kernel with a functon is a trigonometric polynomial (the Césaro mean) and then note that Féjer kernels are approximate identities.
+
+Finally, we can prove the Riemann-Lebesgue lemma (Fourier coefficients of an $L^1$ function vanish at infinity) just by seeing that it holds for simple functions and then using their density in $L^1$.
+
+\section{Fourier analysis}
+
+Here we just need to know the definition of the \nref{def:SchwartzSpace} (smooth functions rapidly decaying with all their derivatives), and there we can define the Fourier transform as \[ \fourier(f)(ξ) = \hat{f}(ξ) ≝ \int_{ℝ^n} f(x) e^{-2π\imath x · ξ} \dif x \qquad ξ ∈ ℝ^n\]
+
+The \nref{thm:FourierInversion} can be proved by defining $\hat{f}_ε(ξ) ≝ \hat{f}(ξ) e^{-ε\abs{ξ}^2}$ which has a bounded integral, so we can expand the Fourier inversion formula there and then using the \nref{thm:DominatedConvergence} to switch limit and integral.
+
+The \nref{thm:Plancherel}, which states that $\pesc{f, g} = \pesc{\hat{f}, \hat{g}}$ and can be proved simply by changing the order of integration: first we see that $\int f \hat{g} = \int \hat{f} g$, then say $g = \ifourier(\fourier(g))$ and operate.
+
+Finally, we can use the \nref{thm:RieszThorin} to prove the boundedness of the Fourier transform as an operator $\appl{\fourier}{L^p}{L^q}$, as we know its $L^1 \to L^∞$ bounded and $L^2 \to L^2$ isometric.
+
+\subsection{Riesz-Thorin}
+
+For the proof of the Riesz-Thorin theorem we first need the \nref{lem:Hadamard3Lines}: if you can bound a complex function $F(z)$ on the borders of the strip $S ≝ \set{x ∈ ℂ \st 0 < \Re z < 1}$ by $\abs{F(z \st \Re z = j)} ≤ B_j$ for $j = 0,1$, then you can bound them in the full strip by $\abs{F(z)} ≤ B_0^{1-θ} B_1^{θ}$ with $θ = \Re z ∈ [0,1]$. The trick for the proof of the lemma is to construct the function $f(z) = F(z) · \left(B_0^{1-z} B_1^{z}\right)^{-1}$, which is bounded by $1$ on the edges of the strip. Then, defining $f_ε (z) ≝ f(z) e^{ε(z^2 - 1)}$, we see that it goes to zero when $z ∈ S$ and $\abs{z} \to ∞$, so we pick $y_0$ large enough to have $\abs{f_ε(z)} ≤ 1$ when $\abs{\Im z} > y_0$: the maximum modulus principle tells us that $\abs{f_ε(z)} ≤ 1$ in that zone. Make $ε \to 0$ so that $y_0 \to ∞$ and we have it.
+
+
+\subsection{Hilbert transform}
+
+We can define the \nref{def:HilbertTrans} as the limit of the principal value of the integral $\frac{f(x-y)}{y} \dif y$ more or less, which preserves the $L^2$ norm up to $π$.
+
 For the exam, he can ask Fourier multipliers, the two identities for the Fourier transfor, and Proof of lemma 2.1, and proof of last theorem (just above, theorem 3.1 on the notes).
 
 For BMO functions, the definition of the space, examples of functions in BMO but not in $L^∞$ (e.g, $\log \abs{x}$) proving that it is indeed in BMO. Prove that if $f ∈ \bmo$ then exists $c_1 > 0$ such that $\int_Q e^{c_1\abs{f(x)}} < ∞$. Prove that a CZ operator is $L^∞ \to \bmo$ bounded for any $f ∈ L^∞ ∩ L^2$. A part of the proof of John-Nirenberg theorem.
@@ -772,9 +850,7 @@ For Hilbert transform, the definition, state the relation to the Fourier transfo
 
 For the Riesz-Thorin interpolation, we need to state and prove the Hadamard three lines lemma, and state Riesz-thorin and prove it for step functions, and the derivation, statement and proof of Young's inequaity.
 
-For the Fourier transform, the definition for schwartz space and ffourier transfor, state and prove fourier transform inverse formula, and state and prove Plancherel identity. Also, use Riesz-THorin to prove $L^p\to L^{p'}$ boundedness of Fourier transform.
-
-For the Fourier series, we will discuss it later. Definition, coefficeints of a continuous funciton. Write the partial sum of the Fourier series as a convolution.  Definition of the Fejer kernel and proof that it is an approximation of identity. Uniform convergence of $L^p$ and continuous functions convoluted with approxidendity. Prove that trigonometric polynomials are dense in $L^p$. State and prove the Riemann-Lebesgue theorem.
+For the
 
 Sobolev spaces. Definition of $H^n$ space including fractional $s$.
 
@@ -810,34 +886,6 @@ v(x,y) = \lim_{ε \to 0^+} \int_{x + ε}^∞ \frac{(x-t) f(x)}{(x-t)^2 + y^2} \d
 \] which is well defined. Then  we take the limit when $y$ goes to zero, and because the first one is well defined we can interchange the limit because it's uniform in the outer variable (?) and when $y$ goes to zero we have the definition of the Hilbert transform.
 
 For the uniqueness, show that the harmonic function $u$ is unique and then show that $v$ is also uniquely determined. The constant must be zero (¿?¿?¿). For the first one, we have that $∃u = 0$ on $Ω$ with $\restr{u}{∂Ω} = 0$ then $u = 0$ by maximum principle. But we need Ω bounded and in this case it is not. But tric! There exists a holomorphic map$F$ that maps the upper half plane to the disk. So $\hat{u}(w) = u(\inv{F}(w))$. Now $\tilde{u}$ is harmonic and still zero on the boundary so we use the maximum principle and then it's done. PS: I don't think it's u but $u - u'$ for any other option $u'$. Yay for good notations.  We can also choose a ball and take less than ε.
-
-\appendix
-
-\chapter{Useful theorems}
-
-\section{Measure theory and real analysis}
-
-\begin{theorem}[Dominated convergence\IS theorem] \label{thm:DominatedConvergence} Let $\set{f_n}_{n ∈ ℕ}$ be a series of functions such that $f_n \convs f$ almost everywhere. If there exists an integrable, non-negative function $g$ such that $\abs{f_n} ≤ g$, then \[ \int \lim_{n \to ∞} f_n \dif μ = \lim_{n \to ∞} \int f_n \dif μ\]
-\end{theorem}
-
-\begin{theorem}[Markov inequality][Inequality\IS Markov] \label{thm:MarkovIneq} Let \meas be a measure space and $\appl{f}{X}{ℝ}$ a measurable function. Then, for any $ε > 0$ we have that \[ μ\left(\set{x ∈ X \st \abs{(x)} ≥ ε}\right) ≤ \frac{1}{ε} \int_X \abs{f} \dif μ \] or, in other words, the set of points where $f$ has high values gets smaller the higher that value is.
-\end{theorem}
-
-\begin{theorem}[Lebesgue\IS differentiation theorem] \label{thm:DiffLebesgue} \citep[Theorem II.22]{ApuntesVariableReal} Let $\appl{f}{ℝ^N}{ℝ}$ be a locally integrable function. Then, for almost every $x ∈ ℝ^N$, we have that \[ \lim_{r \to 0} \fint_{E_r(x)} f(y) \dif y = f(x) \] for every family of sets $\set{E_r}$ that shrinks nicely to $x$.
-\end{theorem}
-
-Note that we use the notation $\fint_A f ≝ \frac{1}{\abs{A}} \int_A f$. For the ``shrinks nicely'', we give the following technical definition:
-
-\begin{defn}[Nicely shrinking sets] A family of sets $\set{E_r}_{r > 0}$ is said to shrink nicely to $x$ if and only if $E_r ⊂ \bola_r(x)$ and there exists a constant $α > 0$ independent of $r$ such that $\abs{E_r} > α\abs{\bola_r}$.
-\end{defn}
-
-In other words, this allows to take into account not only balls of radius $r$ but other shrinking sets that behave more or less in the same way.
-
-\section{Functional analysis}
-
-\begin{theorem}[Banach-Steinhaus\IS uniform boundedness theorem] \citep[Theorem II.8]{ApuntesAnalisisFunc} \label{thm:BanachSteinhaus} Let $\set{T_α}_{α ∈ A}$ a subset of the space of continuous linear applications $\linapp$ between $X$ and $Y$, where $X$ is a Banach space and $Y$ is a normed space. Then, either the linear applications $T_α$ are uniformly bounded (that is, $∃ C < ∞$ such that $\norm{T_α}_{\linapp} ≤ C$ for all $α ∈ A$) or either there is a certain $G_δ$ set\footnote{Countable intersection of open set} dense in $X$, denoted by $B$, such that \[ \sup_{α ∈ A} \norm{T_α(x)}_Y = ∞ \quad ∀x ∈ B\]
-\end{theorem}
-
 
 \chapter{Exercises}
 \input{tex/HarmonicAnalysis_Exerc.tex}

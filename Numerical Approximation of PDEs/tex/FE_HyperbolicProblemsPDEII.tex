@@ -13,14 +13,14 @@ Then, we will search for a finite element approximation $u_h ∈ V_h = \spn \set
 
 The weak formulation will be given by \( \int_Ω \left(\dpd{u_h}{t} + \vb ∇u_h - f\right)(v_h + δ_h \vb ∇v_h) = 0 \quad ∀v_h ∈ V_h\label{eq:PDE:TransportWeakStab} \) where we have added a stabilization term such that $v_h = u_h + δ_h \dpd{u_h}{t}$ to have stability, with $δ_h$ constant.
 
-\begin{prop}[A priori error\IS for the transport equation] With the transport equation \eqref{eq:PDE:Transport} with $\dv \vb = 0$, $\vb(x) ≠ 0$ and $δ_h = \frac{h}{2\norm{\vb}_{L^∞(Ω)}}$, we have that $u, \pd{u}{t} ∈ L^2(0, T; H^2(Ω))$ and there exists a constant $C > 0$ independent of $h$ such that \[ \norm{u(T) - u_h(T)}^2_{L^2(Ω)} ≤ Ch^3 \]
+\begin{prop}[A priori error\IS for the transport equation]  \label{prop:PDE:APrioriTransport}  With the transport equation \eqref{eq:PDE:Transport} with $\dv \vb = 0$, $\vb(x) ≠ 0$ and $δ_h = \frac{h}{2\norm{\vb}_{L^∞(Ω)}}$, we have that $u, \pd{u}{t} ∈ L^2(0, T; H^2(Ω))$ and there exists a constant $C > 0$ independent of $h$ such that \[ \norm{u(T) - u_h(T)}^2_{L^2(Ω)} ≤ Ch^3 \]
 \end{prop}
 
 \begin{proof}
 start from the \[ \int \dpd{}{t} (u - u_h)(u - u_h) + \int \vb ∇(u-u_h) (u - u_h) = \int_Ω (f - \dpd{u_h}{t} - \vb ∇u_h) (u - u_h) \] and then the extra stabilization terms come into play
 \end{proof}
 
-\begin{prop}[A posteriori error\IS for the transport equation] With the transport equation \eqref{eq:PDE:Transport} with $\vb ∈ C^1(Ω)$ and $\dv \vb = 0$, using \[ \restr{δ_h}{K} = \frac{h_K}{2 \norm{\vb}_{L^∞(K)}} \quad ∀ K ∈ \mesh \] if $\norm{\vb}_{L^∞(K)} ≠ 0$ (if it is zero, we have $\restr{δ_h}{K} = 0$ as the transport term is zero and we don't need a stabilization term).
+\begin{prop}[A posteriori error\IS for the transport equation] \label{prop:PDE:APosterioriTransport} With the transport equation \eqref{eq:PDE:Transport} with $\vb ∈ C^1(Ω)$ and $\dv \vb = 0$, using \[ \restr{δ_h}{K} = \frac{h_K}{2 \norm{\vb}_{L^∞(K)}} \quad ∀ K ∈ \mesh \] if $\norm{\vb}_{L^∞(K)} ≠ 0$ (if it is zero, we have $\restr{δ_h}{K} = 0$ as the transport term is zero and we don't need a stabilization term).
 
 Then, if\footnote{Note that if the initial data at $t = 0$ is not smooth, the solution will not be smooth either: it is a transport equation.} $u ∈ L^2(0,T; H^1(Ω))$ there exists a constant $C > 0$ dependent only on the mesh aspect ratio such that \( \norm{u(T) - u_h(T)}_{L^2(Ω)}^2 ≤ \norm{u(0) - u_h(0)}^2_{L^2(Ω)} + C \int_0^T \sum_{K ∈ \mesh} η_K^2 \label{eq:PDE:TransportAPosteriori} \) with \[ η_K^2 ≝ h_K \norm{f - \dpd{u_h}{t} - \vb ∇u_h}_{L^2(K)} \norm{∇(u - u_h)}_{L^2(ΔK)} \]
 

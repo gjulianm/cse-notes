@@ -35,7 +35,7 @@ This estimate gives us uniqueness: if there are two solutions $u_1, u_2$, we can
 \begin{prop}[Maximum\IS principle] If $f ≥ 0$ and $u_0 ≥ 0$, then the solution $u ≥ 0$.
 \end{prop}
 
-\begin{proof} We can decompose $u = u^+ - u_-$ with $u^+ = \sup (u, 0)$ and $u^- = \sup -u, 0$. Therefore, we can see that
+\begin{proof} We can decompose $u = u^+ - u_-$ with $u^+ = \sup (u, 0)$ and $u^- = \sup (-u, 0)$. Therefore, we can see that
 \begin{align*}
 \int_Ω \dpd{u}{t} u^- + ∇u ∇u^- &= \int_Ω f u^- \\
 \int_Ω \dpd{u^-}{t} u^- + \abs{∇u^-}^2 &= \int_Ω - f u^- \\
@@ -82,7 +82,7 @@ If we take $v_h = φ_i$ for $i = 1, \dotsc, N$, we must have
 
 We also need to include the initial condition of $u(x,0) = u_0(x)$. For that, we will enforce a weak equality: $\int_Ω u_h(0) v_h = \int_Ω u_0 v_h \dif x $ for any $v_h ∈ V_h$ or in other words $u_h(0) = Π_h u_0$ where \[ Π_h w(x) = \sum_{j = 1}^N w_j φ_j(x) \] which can be solved in matrix form as $\mM \vw = \vec{W}$ where $W_i = \int_Ω w(x) φ_i(x) \dif x$.
 
-\begin{prop}[A priori error\IS for the heat equation (space discretizacion)] \label{prop:PDE:APrioriHeatSpace} Let $Ω$ be a convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$. Then, there exists a constant $C > 0$ independendent of $h$ but dependent on the mesh aspect ratio such that \[ \int_0^T \int_Ω (∇(u - u_h))^2 ≤ Ch^2\]
+\begin{prop}[A priori error\IS for the heat equation (space discretization)] \label{prop:PDE:APrioriHeatSpace} Let $Ω$ be a convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$. Then, there exists a constant $C > 0$ independendent of $h$ but dependent on the mesh aspect ratio such that \[ \int_0^T \int_Ω (∇(u - u_h))^2 ≤ Ch^2\]
 \end{prop}
 
 \begin{proof} With the assumptions of $Ω$ convex polygon, $u_0 ∈ H_0^1(Ω)$ and $f ∈ L^2(T; L^2(Ω))$, \fref{prop:PDE:ExistUniqHeat} tells us that $u ∈ L^2(T; H^2(Ω))$. We will consider the following norm: $\norm{v}^2 = \int_0^T \int_Ω \abs{∇v}^2$. By using the triangle equality, we can see that \[\norm{u - u_h} ≤ \norm{u - Π_h u} + \norm{Π_h u - u_h} \] where $\appl{Π_h}{L^2(Ω)}{V_h}$ is an interpolation operator that we will define later.
@@ -116,8 +116,8 @@ One of the exam questions will be heat equation, a priori estimate, finite eleme
 
 \begin{proof} We start from the integral \[ I = \int_Ω \dpd{}{t} (u - u_h) (u - u_h) + \int_Ω ∇(u - u_h) ∇(u - u_h) \] and we want to relate it to the residual which in our case is defined as \[ \dualp{\mop{Residual}(v), u_h} = \int_Ω \dpd{u_h}{t} v + \int_Ω ∇u_h ∇v - \int_Ω f v \]
 
-Then we do an extremely weird replacement $u$ by $f - u_h$ so that we have \begin{align*} I &= \int_Ω (f - \pd{u_h}{t}) (u - u_h) - \int_Ω ∇u_h ∇(u - u_h)\\
-&= \int_Ω \left(f - \dpd{u_h}{t} \right)(u - u_h - v_h) - \int_Ω ∇u_h ∇(u - u_h - v_h) \quad ∀ v_ ∈ V_h \\
+Now we replace $v$ by $u - u_h$ and then add $v_h$ (Galerkin orthogonality) so we have\begin{align*} I &= \int_Ω (f - \pd{u_h}{t}) (u - u_h) - \int_Ω ∇u_h ∇(u - u_h)\\
+&= \int_Ω \left(f - \dpd{u_h}{t} \right)(u - u_h - v_h) - \int_Ω ∇u_h ∇(u - u_h - v_h) \quad ∀ v_h ∈ V_h \\
 &= \sum_{K ∈ \mesh} \int_K \left(f - \dpd{u_h}{t} + Δu_h\right) (u - u_h - v_h) + \frac{1}{2} \int_{∂K} [∇u_h · \vn] (u - u_h - v_h)
 \end{align*}
 
@@ -125,7 +125,7 @@ Choosing $v_h(x) = R_h \left((u - u_h)(x,t)\right)$ with $R_h$ the Clément inte
 I &≤ C\sum_{K ∈ \mesh}\left( h_K \norm{f - \dpd{u_h}{t} + Δu_h}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)}\right) \norm{∇(u - u_h)}_{L^2(ΔK)} \\
 &≤ C \left(\sum_{K ∈ \mesh} η_K^2\right)^{\sfrac{1}{2}} \left(\sum_{K ∈ \mesh} \norm{∇(u - u_h)}_{L^2(ΔK)}^2 \right)^{\sfrac{1}{2}} ≤ \tilde{C} \left(\sum_{K ∈ \mesh} η_K^2\right)^{\sfrac{1}{2}} \norm{∇(u - u_h)}_{L^2(Ω)} \end{align*}
 so that finally we have \[ I = \frac{1}{2} \od{}{t} \norm{u - u_h}_{L^2(Ω)}^2  + \frac{1}{2} \norm{∇(u - u_h)}^2_{L^2(Ω)} ≤ \frac{1}{2} \tilde{C}\sum_{K ∈ \mesh} η_K^2
-\] and now integrating in time \[ \underbracket{\norm{(u - u_h)(T)}^2_{L^2(Ω)}}_{\sim h^4} + \underbracket{\int_0^T \int_Ω \abs{∇(u - u_h)}^2}_{\sim h^2} ≤ \underbracket{\tilde{C} \int_0^T}_{\sim h^2} + \underbracket{\int_Ω (u -u_h)^2(0)}_{≤ \tilde{C}h^4} \] so we can discard the left term with $\sim h^4$.
+\] and now integrating in time \[ \underbracket{\norm{(u - u_h)(T)}^2_{L^2(Ω)}}_{\sim h^4} + \underbracket{\int_0^T \int_Ω \abs{∇(u - u_h)}^2}_{\sim h^2} ≤ \underbracket{\tilde{C} \int_0^T \sum_{K∈\mesh} η_K^2}_{\sim h^2} + \underbracket{\int_Ω (u -u_h)^2(0)}_{≤ \tilde{C}h^4} \] so we can discard the left term with $\sim h^4$.
 \end{proof}
 
 \subsection{Time and space discretization}

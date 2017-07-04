@@ -343,4 +343,6 @@
 \pspace[r]#m
 \linop#m
 \gradop#m
+\resid#m
+\resid[arg0]#m
 \rey#m

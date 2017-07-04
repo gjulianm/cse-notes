@@ -2,11 +2,65 @@
 
 \section{Numerical approximation of PDEs II}
 
-Witht the Laplace equation, we proved the regularity, a priori for the solution and gradient. A posteriori error estimates, goal oriented estimation and post processed ZZ gradient. THe proofs too. Know the error estimators too.
- Conditions on structured meshes and cancelation terms.
+\subsection{Laplace equation}
 
-Then we saw the stokes problem $-Δu + ∇p = f$ with $\dv u = 0$, using the inf-sup condition. Optimal control
+The Laplace equation is the problem of finding $u$ such that \[ \begin{cases}
+-Δu =f & \text{in } Ω \\
+u = 0 & \text{on } ∂Ω
+\end{cases}\]
 
-Then non-linear problems. The theorem and things but also important the a priori error estimator.s
+We can prove regularity (\fref{thm:PDE:Shift}), a priori error estimates \[ \norm{u - u_h}_{L^2} + h \norm{∇(u - u_h)}_{L^2} ≤ Ch^2 \norm{∇^2 u}_{L^2} \] from \fref{prop:PDE:APrioriLaplace} and a Posteriori error estimates (\fref{prop:PDE:APostLaplace}) \[ \norm{∇(u - u_h)}_{L^2(Ω)}^2 ≤ C_1 \sum_{K ∈ \mesh} \left(h_K \norm{Δu_h + f}_{L^2(K)} + h_K^{\sfrac{1}{2}} \norm{[∇u_h]}_{L^2(∂K)}\right)^2 \]
 
-Heat equation.
+For the first proof, the idea is to use Galerkin orthogonality to bound $\norm{u - u_h}$ by $\norm{u - v_h}$ for any $v_h$, and then choose the correct interpolant (Lagrange in this case). For the second, we translate the thing to bound to the residual, and then choose the correct interpolant for a $v_h$. In the case of the bound for $\norm{u - u_h}$ (not the gradient) note that we will need to find a function $φ$ such that $Δφ = u - u_h$ to perform the proof.
+
+We can also build a posteriori gradient (\fref{prop:PostProcGradientConvergence}) which converges with $h^2$ if $u ∈ H^3$ and we have a parallel mesh, or $h^β, β ≤ 2$ if we just have structured meshes. We can also perform goal-oriented estimations (\fref{sec:PDE:GoalOrientedEstimation}), which has a posteriori error of $\oof{h^2}$.
+
+% Witht the Laplace equation, we proved the regularity, a priori for the solution and gradient. A posteriori error estimates, goal oriented estimation and post processed ZZ gradient. THe proofs too. Know the error estimators too.
+% Conditions on structured meshes and cancelation terms.
+
+\subsection{Stokes problem}
+
+The Stokes problem is defined as in \eqref{eq:PDE:StokesProblem}, with a finite element approximation in which we need to add a stabilization term to make the bilinear form injective. We can check that the inf-sup condition holds (\fref{sec:PDE:APrioriStokes}). As usual, the a posteriori error estimate (\fref{prop:PDE:APosterioriErrorStokes}) is done by means of the residual, which gives the bound
+\[ \norm{∇(u - u_h)}^2_{L^2(Ω)} + \norm{p - p_h}_{L^2(Ω)}^2 ≤ C \sum_{K ∈ \mesh} η_K^2 \] for the solutions $u_h, p_h$ of the Galerkin problem, with \[ η_K^2 = \left(h_k \norm{f + Δu_h - ∇p_h}_{L^2(K)} + \frac{1}{2} h_K^{\sfrac{1}{2}} · \norm{[∇\vu_h · \vn]}_{L^2(∂K)}\right)^2 + \norm{\dv u_h}^2_{L^2(K)}\]
+
+\subsection{Optimal control problem}
+
+The optimal control problem is similar to the Stokes problem. The infsup condition (\fref{prop:PDE:OptimalControlInfsup}) is a bit tricky as it needs to check with $a(u,λ; u,λ) - βa(u,λ; -λ, u)$ the first bound. That bound gives directly the election for the second bound. The a posteriori error estimate (\fref{prop:PDE:APostOptimalControl}) \[ \norm{u - u_h, λ - λ_h}^2 ≤ C \sum_{K ∈ \mesh} η_K^2 \] with
+\begin{multline*}
+η_K^2 =
+	\left(
+		h_K \norm{f + Δu_h + \frac{1}{α} λ_h}_{L^2(K)}
+		+ \frac{1}{2} h_K^{\sfrac{1}{2}} \norm{[∇u_h · \vn]}_{L^2(∂K)}
+	\right)^2 + \\
+	+ \left(
+		h_K \norm{\ind_{Ω_0} (u_0 - u_h) + Δλ_h}_{L^2(K)}
+		+ \frac{1}{2} h_k^{\sfrac{1}{2}} \norm{[λ_h · \vn]}_{L^2(∂K)}
+	\right)^2
+\end{multline*} can be proven by using the inf-sup condition: that relates the residual to the error we want to bound, and then we operate and use Cauchy-Schwartz inequalities to finish with the Clément interpolant.
+
+\subsection{Nonlinear problems}
+
+Adding non-linear terms (\fref{sec:PDE:NonLinearProbs}) to the equations can increase the complexity. A priori error and uniqueness of the solution are easy (\fref{prop:NonLinearProblemExistenceUniqueness}), although for the existence proof a fixed point theorem is required. The Galerkin approximation is computed by the use of the Newton method.
+
+A posteriori error estimates (\fref{prop:PDE:APostNonlinearProblem}) can be obtained, as always, by using coercivity and then the residual. Specifically, the bound is
+\[ \norm{∇(u - u_h)}^2_{L^2(Ω)} ≤ C \sum_{K ∈ \mesh} η_K^2 \] with \[ η_K = h_K \norm{f + Δu_h - u_h^3}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)} \]
+
+\subsection{Heat equation}
+
+The usual heat equation is also studied. An \nref{prop:PDE:APrioriHeatEq} can be obtained just multiplying the equation by the solution and operating, which in turn gives uniqueness. An \nref{prop:PDE:APrioriHeatSpace} can also be obtained, which is
+ \[ \int_0^T \int_Ω \abs{∇(u - u_h)}^2 ≤  C \int_0^T \sum_{K ∈ \mesh} η_K^2 + \text{higher order terms}  \] with \[ η_K^2 = \left(h^2_K\norm{f+ Δu_h - \pd{u_h}{t}} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)} \right)^2 \]
+
+\subsection{Hyperbolic equations}
+
+In this case we need to add a stabilization term such that $v_h = u_h + δ_h \pd{u_h}{t}$ to have stability. That gives us an \nref{prop:PDE:APrioriTransport} of \[ \norm{u(T) - u_h(T)}_{L^2(Ω)}^2 ≤ Ch^3 \] and an \nref{prop:PDE:APosterioriTransport} of \[ \norm{u(T) - u_h(T)}_{L^2(Ω)}^2 ≤ \norm{u(0) - u_h(0)}^2_{L^2(Ω)} + C \int_0^T \sum_{K ∈ \mesh} η_K^2 \label{eq:PDE:TransportAPosteriori} \] with \[ η_K^2 ≝ h_K \norm{f - \dpd{u_h}{t} - \vb ∇u_h}_{L^2(K)} \norm{∇(u - u_h)}_{L^2(ΔK)} \]
+
+\subsection{Some tricks}
+
+\begin{lemma}[Clément\IS interpolant bounds]\label{lem:PDE:ClementBounds} Let $\mesh$ be a regular mesh of a domain $Ω$, $h_K$ the size of each mesh element $K ∈ \mesh$ and $R_h$ the Clément interpolation operator. Then, for any $v ∈ H_0^1(Ω)$ we have the following estimators:
+\begin{align*}
+\norm{v - R_h v}_{L^2(K)} &≤ C h_K \abs{v}_{H^1(ΔK)} \\
+\norm{∇v - ∇R_h v}_{L^2(K)} &≤ C\abs{v}_{H^1(ΔK)} \\
+\norm{v - R_h v}_{L^2(∂K)} &≤ Ch_K^{\sfrac{1}{2}} \abs{v}_{H^1(ΔK)}
+\end{align*} where $ΔK$ is the set of all neighbouring triangles of $K$.
+\end{lemma}
+

@@ -1,5 +1,6 @@
 % -*- root: ../NumericalApproximationofPDEs.tex -*-
 \section{Non linear problems}
+\label{sec:PDE:NonLinearProbs}
 
 Our model non-linear problem will the the following: find $\appl{u}{Ω ⊂ ℝ^2}{ℝ}$ such that \(
 \begin{cases}
@@ -107,7 +108,7 @@ In practice, this Newton method is quadratic and the error at each stage is boun
 
 \subsection{A posteriori error estimates}
 
-\begin{prop} Consider the non-linear problem \eqref{eq:PDE:NonlinearProblem} with the domain $Ω$ a convex polygon, $f ∈ L^2(Ω)$ and a regular mesh $\mesh$ (bounded aspect ratio, $\sfrac{h_K}{ρ_K} ≤ c$). Then, there exists a constant $C >0$ independent  of $h$, $f$ and $u$ but depending on the mesh aspect ratio such that \[ \norm{∇(u - u_h)}^2_{L^2(Ω)} ≤ C \sum_{K ∈ \mesh} η_K^2 \] with \[ η_K = h_K \norm{f + Δu_h - u_h^3}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)} \]
+\begin{prop} \label{prop:PDE:APostNonlinearProblem} Consider the non-linear problem \eqref{eq:PDE:NonlinearProblem} with the domain $Ω$ a convex polygon, $f ∈ L^2(Ω)$ and a regular mesh $\mesh$ (bounded aspect ratio, $\sfrac{h_K}{ρ_K} ≤ c$). Then, there exists a constant $C >0$ independent  of $h$, $f$ and $u$ but depending on the mesh aspect ratio such that \[ \norm{∇(u - u_h)}^2_{L^2(Ω)} ≤ C \sum_{K ∈ \mesh} η_K^2 \] with \[ η_K = h_K \norm{f + Δu_h - u_h^3}_{L^2(K)} + \frac{1}{2} \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)} \]
 \end{prop}
 
 \begin{proof} As always, we start from the norm of the error and then add any $v_h ∈ V_h$ by the Galerkin orthogonality \begin{align*}

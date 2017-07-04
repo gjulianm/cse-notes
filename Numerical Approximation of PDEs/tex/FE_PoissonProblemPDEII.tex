@@ -28,7 +28,7 @@ For the other bound, we use the \nref{prop:PDE:InverseInequality} summing over a
 
 As discussed in \fref{sec:Theory:ConditioningNumber}, the numerical method to solve these problems will be preconditioned conjugate gradient to avoid memory storage problems. This method has the following property:
 
-\begin{prop} Let $\vu^k$ be the approximation obtained by the preconditioned conjugate gradient method of the porblem $\mA \vu = \vf$ after $k$ steps, with $\mM$ as a preconditioner. Then, the following error estimate holds: \[ \norm{\vu - \vu^k}_{CG} ≤ 2 \norm{\vu - \vu^0}_{CG} \left(\frac{\sqrt{K(\inv{\mM}\mA)} - 1}{\sqrt{K(\inv{\mM}\mA)} + 1}\right)^k\] with $\norm{·}_{CG}$ defined as follows: \[ \norm{\vv}_{CG} = \]
+\begin{prop} Let $\vu^k$ be the approximation obtained by the preconditioned conjugate gradient method of the problem $\mA \vu = \vf$ after $k$ steps, with $\mM$ as a preconditioner. Then, the following error estimate holds: \[ \norm{\vu - \vu^k}_{CG} ≤ 2 \norm{\vu - \vu^0}_{CG} \left(\frac{\sqrt{K(\inv{\mM}\mA)} - 1}{\sqrt{K(\inv{\mM}\mA)} + 1}\right)^k\] with $\norm{·}_{CG}$ defined as follows: \[ \norm{\vv}_{CG} = \]
 \end{prop}
 
 With the bounds explained in \fref{prop:PDE:BoundsMatrix} we can bound the condition number: \[ C_1 ≤ \inf_{\vv ∈ ℝ^N \setminus\set{0}} \frac{\vv^T \mA \vv}{\vv \mM \vv} ≤ λ_j = \frac{\vx_j^T \mA \vx_j}{\vx_j^T \mM \vx_j} ≤ \sup_{\vv ∈ ℝ^N \setminus\set{0}} ≤ \frac{C_2}{h^2}\] so that $K(\inv{\mM} \mA) ≤ \frac{C_2}{C_1h^2}$.
@@ -39,25 +39,31 @@ Thus, in order to reduce the initial error by a factor of $ε$, we see that \[ �
 
 This section is nothing specially new, as it is just applying the results of \fref{sec:Theory:ApproxResults}.
 
-\begin{prop} Given a \nref{def:Theory:RegularFamilyMeshes} with aspect ratio bounded by $γ ∈ ℝ^+$ for a convex polygon, then there exists a constant $C >0$ independent of $h$ and $u$ such that \[ \norm{u - u_h}_{L^2} + h \norm{∇(u - u_h)}_{L^2} ≤ Ch^2 \norm{∇^2 u}_{L^2} \]
+\begin{prop} \label{prop:PDE:APrioriLaplace} Given a \nref{def:Theory:RegularFamilyMeshes} with aspect ratio bounded by $γ ∈ ℝ^+$ for a convex polygon, then there exists a constant $C >0$ independent of $h$ and $u$ such that \[ \norm{u - u_h}_{L^2} + h \norm{∇(u - u_h)}_{L^2} ≤ Ch^2 \norm{∇^2 u}_{L^2} \]
 \end{prop}
 
 \begin{proof} We will prove separately the two estimates.
 
 \proofpart{Bound for $\norm{∇u - ∇u_h}_{L^2}$}
 
-By definition, we know that $\norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h)$. By \nref{def:Theory:GalerkinOrthog}, we know that, for any $v_h ∈ V_h$,  $\int_{Ω} ∇(u - u_h) · ∇v_h = a(u - u_h, v_h) = 0$ so that \[ \norm{∇u - ∇u_h}_{L^2} = \int_Ω ∇(u - u_h) · ∇(u - u_h) ≤ \norm{∇(u - u_h)}_{L^2} \norm{∇(u - v_h)}_{L^2}\]
+By definition, we know that $\norm{∇u - ∇u_h}_{L^2}^2 = \int_Ω ∇(u - u_h) · ∇(u - u_h)$. By \nref{def:Theory:GalerkinOrthog}, we know that, for any $v_h ∈ V_h$,  $\int_{Ω} ∇(u - u_h) · ∇v_h = a(u - u_h, v_h) = 0$ so that we can add and substract $v_h$: \begin{multline*}
+\norm{∇u - ∇u_h}_{L^2}^2 = \int_Ω ∇(u - u_h) · ∇(u - u_h) = \\ = \int_Ω ∇(u - u_h) · \left(∇(u - v_h) + ∇({v_h - u_h})\right) =  \norm{∇(u - u_h)}_{L^2} \norm{∇(u - v_h)}_{L^2}
+\end{multline*}
 
 The trick is now choosing the correct $v_h$, and we will select the Lagrange interpolant given by \[ v_h = I_h u = \sum_{j=1}^N u(p_j) φ_j \]
 
 Since $Ω$ is a convex polygon, $u ∈ H^2(Ω)$  and therefore for $u ∈ C^0(\adh{Ω})$ we choose $v_h = I_h u$. Then we can use the \nref{thm:Theory:InterpErrorSmooth} and finally $\norm{∇(u - u_h)}_{L^2} ≤ \norm{∇(u - I_hu)}_{L^2} ≤ Ch \norm{∇^2 u}_{L^2}$.
+
+\proofpart{Bound for $\norm{u - u_h}_{L^2}$}
+
+By using coercivity, we know that $\norm{u - u_h}_{L^2}^2 ≤ a(u - u_h, u - u_h)$. By Galerkin orthogonality, for any $v_h ∈ V_h$ we have $a(u - u_h, u - u_h) = a(u - u_h, u - v_h + v_h - u_h) = a(u - u_h, u - v_h)$ and by choosing the Lagrange interpolant and applying continuity of the bilinear form we have the proof.
 \end{proof}
 
 \subsection{A posteriori error estimates}
 
 The a posteriori error estimates will give us error estimates after the approximate solution has been computed.
 
-\begin{prop}[A posteriori error\IS for the Poisson problem] Given a shape regular mesh then there exists a constant $C_1 > 0$ independent of $h,u,f$ but depending on the mesh aspect ratio such that \( \norm{∇(u - u_h)}_{L^2(Ω)}^2 ≤ C_1 \sum_{K ∈ \mesh} η_K^2 \label{eq:PDE:APostGradError} \) where $η_K = h_K \norm{Δu_h + f}_{L^2(K)} + h_K^{\sfrac{1}{2}} \norm{[∇u_h]}_{L^2(∂K)}$ and $[∇u_h]$ is the jump of $∇u_h$ in the boundary between two mesh elements $K$ and $K'$ given by $[∇u_h] = \restr{∇u_h}{K} - \restr{∇u_h}{K'}$
+\begin{prop}[A posteriori error\IS for the Poisson problem] \label{prop:PDE:APostLaplace} Given a shape regular mesh then there exists a constant $C_1 > 0$ independent of $h,u,f$ but depending on the mesh aspect ratio such that \( \norm{∇(u - u_h)}_{L^2(Ω)}^2 ≤ C_1 \sum_{K ∈ \mesh} η_K^2 \label{eq:PDE:APostGradError} \) where $η_K = h_K \norm{Δu_h + f}_{L^2(K)} + h_K^{\sfrac{1}{2}} \norm{[∇u_h]}_{L^2(∂K)}$ and $[∇u_h]$ is the jump of $∇u_h$ in the boundary between two mesh elements $K$ and $K'$ given by $[∇u_h] = \restr{∇u_h}{K} - \restr{∇u_h}{K'}$
 
 Moreover, if $Ω$ is a convex polygon then there exists another constant $C_2$ independent of $h,u,f$ but depending on the mesh aspect ratio such that \( \norm{u - u_h}_{L^2(Ω)^2} ≤ C_2 \sum_{K ∈ \mesh} h_K^2 η_K^2 \label{eq:PDE:APostError} \)
 \end{prop}
@@ -65,18 +71,21 @@ Moreover, if $Ω$ is a convex polygon then there exists another constant $C_2$ i
 \begin{proof}
 
 \proofpart{\eqref{eq:PDE:APostGradError}}
-% TODO: Fix this crappy proof.
 
-So something something \[ \norm{∇(u - u_h)}_{L^2}^2 = \int_Ω ∇(u - u_h) ∇(u - u_h) = \int_Ω f(u - u_h) - ∇u_h ∇(u - u_h)\] where the last part is $\dualp{\mop{Residual}\, u_h, u - u_h}$. We can substract any test function $v_h ∈ V_h$ so that everything is still the same in \[ \sum_{K ∈ \mesh} \int_K f(u - u_h - v_h) - ∇u_h ∇(u - u_h - v_h)\]
+Starting from the square of the norm, we have \[ \norm{∇(u - u_h)}_{L^2}^2 = \int_Ω ∇(u - u_h) ∇(u - u_h) = \int_Ω f(u - u_h) - ∇u_h ∇(u - u_h)\] where the last part is $\dualp{\mop{Residual}\, u_h, u - u_h}$. We can substract any test function $v_h ∈ V_h$ so that everything is still the same in \[ \sum_{K ∈ \mesh} \int_K f(u - u_h - v_h) - ∇u_h ∇(u - u_h - v_h)\]
 
-Integrating by parts, we are left with \[ \int_K f(u - u_h - v_h) - ∇u_h ∇(u - u_h - v_h) = \int_K (f + Δu_h)(u - u_h - v_h) - \int_{∂K} ∇u_h · \vn (u - u_h - v_h) \] and now the trick is noticing something and other thing and using Cauchy-Scharwz we have that \begin{multline*}
-\int_K (f + Δu_h)(u - u_h - v_h) - \int_{∂K} ∇u_h · \vn (u - u_h - v_h) ≤ \\ ≤ \norm{f + Δu_h}_{L^2(K)} \norm{u - u_h - v_h}_{L^2(K)} + \frac{1}{2} \norm{[∇u_h · \vn]}_{L^2(∂K)} \end{multline*}
+Integrating by parts, we are left with \[ \int_K f(u - u_h - v_h) - ∇u_h ∇(u - u_h - v_h) = \int_K (f + Δu_h)(u - u_h - v_h) - \int_{∂K} ∇u_h · \vn (u - u_h - v_h) \]
 
-We use the Clément interpolant so that $v_h = R_h(u - u_h)$, which will gives us $\norm{v - R_h v}_{L^2(Ω)} ≤ Ch \norm{∇v}_{L^2(Ω)}$ which does not hold for the Lagrange interpolant in dimensions greater than 1.
+Now we have to notice that we are summing over $∂K$, which are the borders of the mesh elements, with the normal in different directions. Therefore, we are actually interested on the jump on that gradient, that we will denote by $[∇u_h]$. For each mesh element we will be counting that jump twice, so we divide by two to have, after applying Caucy-Schwarz, \begin{multline*}
+\int_K (f + Δu_h)(u - u_h - v_h) - \int_{∂K} ∇u_h · \vn (u - u_h - v_h) ≤ \\ ≤ \norm{f + Δu_h}_{L^2(K)} \norm{u - u_h - v_h}_{L^2(K)} + \frac{1}{2} \norm{[∇u_h · \vn]}_{L^2(∂K)}\norm{u - u_h - v_h}_{L^2(∂K)} \end{multline*}
 
-The only issue here is that we have a function $v ∈ H_0^1$ so we don't have a point value for the interpolant $v(p_j)$. Luckily, we can average so that \[ R_h v(p_j) = \sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \fint_K v \]
-
-Then the interpolation result is \[ \frac{1}{h_k^2} \norm{v - R_hv}^2_{L^2(K)} + \norm{∇(v - R_hv)}_{L^2(K)} + \frac{1}{h_K} \norm{v - R_hv}_{L^2(∂K)} ≤ \norm{∇v}_{L^2(ΔK)} \]
+Now we have to select what is $v_h$, and we will use the Clément interpolant of $u - u_h$: $v_h = R_h(u - u_h)$. Recall that this gives us bounds of \fref{lem:PDE:ClementBounds}, so that
+\begin{multline*}
+\norm{f + Δu_h}_{L^2(K)} \norm{u - u_h - v_h}_{L^2(K)} + \frac{1}{2} \norm{[∇u_h · \vn]}_{L^2(∂K)}\norm{u - u_h - v_h}_{L^2(∂K)} ≤ \\ ≤ C_K \left(h_K \norm{f + Δu_h}_{L^2(K)} + \sqrt{h_K} \norm{[∇u_h · \vn]}_{L^2(∂K)} \right) \norm{∇u - ∇u_h}_{L^2(ΔK)}
+\end{multline*} which finally gives the bound
+\[
+\norm{∇(u-u_h)}_{L^2(K)} ≤ C_k η_K
+\] that we only have to square and sum over all $K$ to have the final bound.
 
 \proofpart{\eqref{eq:PDE:APostError}}
 
@@ -96,9 +105,6 @@ Now we have to choose $v_h$, and we will use $v_h = R_h φ$ as $φ ∈ C^0(Ω)$ 
 \end{align*} obtaining thus the result.
 
 \end{proof}
-
-% TODO
-Some explanation of $η_K$ and more things.
 
 \subsubsection{Gradient a posteriori error}
 \label{sec:PDE:GradientAPosterioriElliptic}
@@ -120,11 +126,12 @@ On the other hand, we have that \[ \frac{\norm{\gradop  u_h - ∇u_h}}{\norm{∇
 
 The interesting question is how to build the better gradient operator $\gradop $. The idea is to use the Clément interpolant of $∇u_h$, so that $\gradop  u_h(x) = \sum_{j = 1}^N \gradop u_h(p_j) φ_j(x)$ with \( \gradop u_h (p_j) = \frac{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K ∇u_h}{\displaystyle\sum_{\substack{K ∈ \mesh \\ p_j ∈ K}} \int_K 1} \label{eq:PDE:PostProcGrad} \) as the averages of the values in the point $p_j$ evaluated on all the mesh elements $K$ containing $p_j$.
 
-On parallel meshes\footnote{Drawing of a mesh with rectangular triangle mesh elements.} it can be proved that if $u ∈ H^3(Ω)$ then $\norm{∇u - G u_h}_{L^2} = \oof{h^2}$ (superconvergence). On structured meshes\footnote{I think he said paralel meshes with small modifications, such a bending or something like that.} we hate $\norm{∇u - Gu_h} = \oof{h^β}$ with $1 < β ≤ 2$.
+On parallel meshes\footnote{Drawing of a mesh with rectangular triangle mesh elements.} it can be proved that if $u ∈ H^3(Ω)$ then $\norm{∇u - \gradop u_h}_{L^2} = \oof{h^2}$ (superconvergence). On structured meshes\footnote{I think he said paralel meshes with small modifications, such a bending or something like that.} we hate $\norm{∇u - \gradop u_h} = \oof{h^β}$ with $1 < β ≤ 2$.
 
 Proofs of these facts are terribly tedious.
 
 \subsubsection{Goal-oriented estimations}
+\label{sec:PDE:GoalOrientedEstimation}
 
 In some cases we will be interested in computing not the approximation error but another quantity depending on the error, such as $\int ρ (u - u_h) $ for some function ρ. For example, this could be an indicator function so that we measure the error only in a region of interest.
 
