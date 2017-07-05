@@ -382,8 +382,8 @@ In the second case, as $\schwartz \densein L^2(ℝ^n)$, pick a Cauchy sequence $
 
 Extension of the Fourier transform operator to general $L^p$ spaces. From the definition we can see that having $f ∈ L^1(ℝ^n)$ gives convergence and in fact something more.
 
-\begin{prop} Given $f ∈ L^1(ℝ^n)$, the function \[ \hat{f}(ξ) = \int_{ℝ^n} f(x) e^{-2π\imath x · ξ} \dif x \] is in $C_0^0(ℝ^n)$ (that is, continuous and vanishing at infinity) and we have the pointwise bound \[ \norm{\hat{f}}_{L^∞} ≤ \norm{f}_{L^1} \]
-\end{prop}
+\begin{lemma} \label{lem:RiemLebesgueOrNot} Given $f ∈ L^1(ℝ^n)$, the function \[ \hat{f}(ξ) = \int_{ℝ^n} f(x) e^{-2π\imath x · ξ} \dif x \] is in $C_0^0(ℝ^n)$ (that is, continuous and vanishing at infinity) and we have the pointwise bound \[ \norm{\hat{f}}_{L^∞} ≤ \norm{f}_{L^1} \]
+\end{lemma}
 
 \begin{proof}
 
@@ -509,22 +509,57 @@ Why is this interesting? We can see that we can express the indicator function a
 \sign(ξ + N) \hat{f}(ξ) &= \fourier\left(\frac{\imath e^{-\imath N x}}{π} H(e^{\imath Nx} f)\right) (ξ) \\
 \end{align*} so that the operator \[ \inv{\fourier}_Nf(x) ≝ \int_{\abs{ξ} ≤ N} \hat{f}(ξ) e^{2π\imath x · ξ} \dif x \] will be $L^p(ℝ)$ bounded uniformly in $N$ if the Hilbert transform is $L^p$ bounded too.
 
-\begin{theorem} Let $1 < p < ∞$. Then there is a constant $C_p$ such that for any $f ∈ C_0^∞(ℝ)$ we have $\norm{Hf}_{L^p} ≤ C_p \norm{f}_{L^p}$ and in particular we can extend the transform to any such space.
+\begin{theorem} \label{thm:HilbertOperatorNorm} Let $1 < p < ∞$. Then there is a constant $C_p$ such that for any $f ∈ C_0^∞(ℝ)$ we have $\norm{Hf}_{L^p} ≤ C_p \norm{f}_{L^p}$ and in particular we can extend the transform to any such space.
 \end{theorem}
 
-\begin{proof}
+\begin{proof} We will start from boundedness for $ = 2$ and deduce it for $p = 2^k$, and then use interpolation and duality for the missing pieces.
+
+\proofpart{$p = 2$}
+
+By using brute force, we can prove that \[ [H(f)]^2 = π^2 f^2 + 2H(fH(f))\]. Denote $m(ξ) = - \imath π \sign ξ$, and then applying the Fourier transform
+\begin{align*}
+\fourier\left(π^2 f^2 2H(fH(f))\right) &= π^2 \hat{f} * \hat{f} + 2m(ξ) (\hat{f} * \widehat(H(f))) = \\
+	&= π^2 \int_ℝ \hat{f}(η) \hat{f}(ξ - η) \dif η + 2m(ξ) \int_ℝ \hat{f}(η) \hat{f}(ξ-η) m(η) \dif η = \\
+	&= \int_ℝ \hat{f}(η) \hat{f}(ξ - η) \left(π^2 + m(ξ)m(η) + m(ξ) m(ξ - η)\right) \dif η = \\
+	&= \int_ℝ m(η) m(ξ - η) \hat{f}(η) \hat{f(ξ - η)} \dif η = \\
+	&= \widehat{H(f)} * \widehat{H(f)}
+\end{align*} and the lemma follows.
+
+\proofpart{$p = 2^k$}
+
+This is done by induction. We assume that the bound works for $p = 2^{k-1}$ and prove it for $2^k$:
+\begin{align*}
+\norm{H(f)}^2_{L^{2p}} = \norm{[H(f)]^2}_{L^p} &≤ π^2 \norm{f}_{L^p}^2 + 2\norm{H(fH(f))}_{L^p} \\
+	&≤ π^2 \norm{f}_{L^p}^2 + 2 C_p \norm{f}_{L^{2p}} \norm{H(f)}_{L^{2p}} \\
+	&≤ π^2 \norm{f}_{L^p}^2 + 2C_p^2 \norm{f}_{L^{2p}} + \frac{1}{2} \norm{H(f)}^2_{L^{2p}}
+\end{align*} by using Hölder inequality.
+
+\proofpart{$p ≥ 2$}
+
+Just apply Riesz-Thorin with whichever $2^k$ we want for any $p$.
+
+\proofpart{$1 < p < 2$}
+
+Assume $f ∈ C_0^∞(ℝ)$. Then we can operate as an operator
+\begin{align*}
+\norm{H(f)}_{L^p} &= \sup_{\norm{g}_{L^{p'}} ≤ 1} \int_ℝ \conj{g} H(f) \dif x = \\
+	&= \sup_{\norm{g}_{L^{p'}} ≤ 1} \frac{1}{π^2} \abs{\int_ℝ \conj{H^2(g)} H(f) \dif x} = \\
+	&= \sup_{\norm{g}_{L^{p'}} ≤ 1} \abs{\int_ℝ \conj{H(g)} f \dif x }
+\end{align*}
+
+Since $p' > 2$, that norm is bounded and we can bound everything without problems.
 \end{proof}
 
 
 \chapter{Hilbert transform}
 
-\begin{theorem} If $1 < p < ∞$ and $f ∈ L^p(\crc)$, then \[ \norm{S_N f -f}_{L^p(\crc)} \convs[][N][∞] 0 \]
+\begin{theorem} \label{thm:ConvergenceFourierTransform} If $1 < p < ∞$ and $f ∈ L^p(\crc)$, then \[ \norm{S_N f -f}_{L^p(\crc)} \convs[][N][∞] 0 \]
 \end{theorem}
 
 \begin{proof} Applying \fref{prop:FourierSeriesConvLp}, we only need to prove that the $S_N$ operator is uniformly bounded. We can start by writing
 \[S_Nf = \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{\sin \left((2N + 1) π (x- y)\right)}{\sin \left(π(x - y)\right)} f(y)  \dif y \]
 
-We can consider an alternative operator \[ \tilde{H}_N f ≝ \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{\sin \left((2N + 1) π (x- y)\right)}{π(x - y)} f(y)  \dif y\] and we claim that $\norm[0]{S_N - \tilde{H}_N} ≤ C$, with $C$ independent of $N$.
+We can consider an alternative operator \[ \tilde{H}_N f ≝ \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{\sin \left((2N + 1) π (x- y)\right)}{π(x - y)} f(y)  \dif y\] and we claim that $\norm[0]{S_N - \tilde{H}_N}_∞ ≤ C$, with $C$ independent of $N$.
 
 In order to see that, we can operate
 \[
@@ -551,14 +586,14 @@ The Hilbert transform seemed like a useful thing to have. However, we have only 
 \begin{defn}[Calderón-Zygmund kernel][Kernel\IS Calderón-Zygmund] \label{def:CalderonZygmundKernel} A function $K ∈ C^∞(ℝ^n \setminus\set{0})$ is called a Calderón-Zygmund kernel if $K$ satisfies
 \begin{enumerate}
 \item \label{prp:CZAss1} $\abs{K(x)} ≤ B \abs{x}^{-n} \quad ∀x ∈ ℝ^n, \, B > 0 $
-\item \label{prp:CZAss2} The \concept{Hörmander\IS condition}: \[ \int_{\abs{x} > \abs{2y}} (K(x) - K(x-y) \dif x ≤ CB \quad ∀x ∈ ℝ^n, \, B > 0,\, y ≠ 0 \]
+\item \label{prp:CZAss2} The \concept{Hörmander\IS condition}: \[ \int_{\abs{x} > \abs{2y}} (K(x) - K(x-y)) \dif x ≤ CB \quad ∀x ∈ ℝ^n, \, B > 0,\, y ≠ 0 \]
 \item \label{prp:CZAss3} A cancellation property: \[ \int_{r ≤ \abs{x} ≤ s} K(x) \dif x = 0 \quad  ∀r,s > 0 \]
 \end{enumerate}
 \end{defn}
 
 One can see that the Hilbert transform is a case of a Calderón-Zygmund kernel with $K_H(x) = \frac{1}{x}$.
 
-The second condition, which is a little bit convoluted, can be ensured by a more elementary condition, namely that $K$ must be differentiable on $ℝ^n \minuszero$ and $\abs{∇K(x)} ≤ B\abs{x}^{-d-1}$ for all $x ≠ 0$. Kernels with this condition are called \concept[Calderón-Zygmund\IS strong kernel]{strong Calderón-Zygmund kernels}, and the following lemma ensures that we indeed have the implication.
+The second condition, which is a little bit convoluted, can be ensured by a more elementary condition, namely that $K$ must be differentiable on $ℝ^n \minuszero$ and $\abs{∇K(x)} ≤ B\abs{x}^{-n-1}$ for all $x ≠ 0$. Kernels with this condition are called \concept[Calderón-Zygmund\IS strong kernel]{strong Calderón-Zygmund kernels}, and the following lemma ensures that we indeed have the implication.
 
 \begin{lemma} \label{lem:HormanderCond} The strong Calderón-Zygmund condition for a \nref{def:CalderonZygmundKernel} implies the Hörmander condition \ref{prp:CZAss2} \[ \int_{\abs{x} > 2\abs{y}} (K(x) - K(x-y)) \dif x  ≤ CB \quad ∀ y ≠ 0\]
 \end{lemma}
@@ -577,7 +612,7 @@ Therefore we have \[
 
 First question is, of course, whether that limit is well-defined.
 
-\begin{lemma} $T$ is well defined, that is, the limit exists for any fixed $x ∈ ℝ^n$.
+\begin{lemma} \label{lem:CZDefinition} $T$ is well defined, that is, the limit exists for any fixed $x ∈ ℝ^n$.
 \end{lemma}
 
 \begin{proof} First we do a change of variable \[ \int_{\abs{x - y} ≥ ε} K(x -y) f(y)  = \int_{\abs{y} ≥ ε} K(y) f(x - y) \] and we will separate the domain of integration in two parts: one with $\abs{y} ≥ 1$ (which can cause problems with boundedness of the integral) and $1 ≥ \abs{y}  ≥ ε$ (which can cause problems due to singularities of $K(0)$).
@@ -588,7 +623,7 @@ For the second part, we can add a constant part (w.r.t $y$) because $\int_{1 ≥
 \begin{align*}
 \int\limits_{1 ≥ \abs{y} ≥ ε} K(y) f(x - y) \dif y
 	&= \int\limits_{1 ≥ \abs{y} ≥ ε} K(y) (f(x - y) - f(x)) \dif y = \\
-	&= \int\limits_{1 ≥ \abs{y} ≥ ε} B \abs{y}^{-n} \norm{∇f}_{L^∞} \abs{y} \dif y ≤ \\
+	&≤ \int\limits_{1 ≥ \abs{y} ≥ ε} B \abs{y}^{-n} \norm{∇f}_{L^∞} \abs{y} \dif y ≤ \\
 	&≤ C \norm{∇f}_{∞} \int_ε^1 \dif \abs{y} ≤ C
 \end{align*}
 \end{proof}
@@ -636,7 +671,7 @@ I'm not copying more of this bullcrap.
 
 In this section we will introduce a fundamental tool in harmonic analysis, which will allow us to decompose general functions $f ∈ L^1(ℝ^n)$ in ``good parts'' (bounded) and ``bad parts'' restricted to a controlled, small set.
 
-\begin{theorem}[Calderón-Zygmund\IS theorem] Let $f ∈ L^1(ℝ^n)$ and fix $λ > 0$. Then we can write \[ f = g + b \] wth $\abs{g} ≤ λ$ almost everywhere and $b = \sum_{Q ∈ \mathcal{Q}} \ind_Q f$ with $\mathcal{Q}$ a disjoint collection of cubes $Q ⊂ ℝ^n$ and such that \[ λ < \fint_Q \abs{f(x)} \dif x < 2^n λ \] where $μ$ is the measure on $ℝ^n$.
+\begin{theorem}[Calderón-Zygmund\IS theorem] \label{thm:CalderonZygmund} Let $f ∈ L^1(ℝ^n)$ and fix $λ > 0$. Then we can write \[ f = g + b \] wth $\abs{g} ≤ λ$ almost everywhere and $b = \sum_{Q ∈ \mathcal{Q}} \ind_Q f$ with $\mathcal{Q}$ a disjoint collection of cubes $Q ⊂ ℝ^n$ and such that \[ λ < \fint_Q \abs{f(x)} \dif μ < 2^n λ \] where $μ$ is the measure on $ℝ^n$.
 
 Moreover, we can bound the support of $b$ by \[ \left|\bigcup_{Q ∈ \mathcal{Q}} Q\right| ≤ \inv{λ} \norm{f}_{L^1(ℝ^n)} \]
 \end{theorem}
@@ -652,9 +687,9 @@ Moreover, we can bound the support of $b$ by \[ \left|\bigcup_{Q ∈ \mathcal{Q}
 
 The proof is a constructive-inductive process to build the collection of ``bad cubes''. Denote by $\mathcal{D}_l$ the set of cubes of length $2^l$ that partition $ℝ^n$, with edges parallel to the coordinate axes as seen in \fref{fig:CubePartition}.
 
-We start by choosing $l_* ∈ ℤ$ large enough such that \[ 2^{-nl_*} \int_ℝ^n \abs{f} \dif x ≤ λ\] and therefore $\fint_Q \abs{f} ≤ λ$ for any cube $Q ∈ \mathcal{D}_{l_*}$.
+We start by choosing $l_* ∈ ℤ$ large enough such that \[ 2^{-nl_*} \int_{ℝ^n} \abs{f} \dif x ≤ λ\] and therefore $\fint_Q \abs{f} ≤ λ$ for any cube $Q ∈ \mathcal{D}_{l_*}$.
 
-Now, for each of those cube we look at its children, that is, those cubes $Q' ∈ \mathcal{D}_{l_* - 1}$ with length $l_* - 1$ such that $Q' ⊂ Q$. For those children $Q'$ we have two options: either $\fint_{Q'} \abs{f} > λ$ or it's $≤ λ$. In the first case we have a ``bad cube'', so we add it to the collection $\mathcal{Q}$. In the second case, we continue with the children of $Q'$ with length $l_* - 2$.
+Now, for each of those cube we look at its children, that is, those cubes $Q' ∈ \mathcal{D}_{l_* - 1}$ with length $2^{l_* - 1}$ such that $Q' ⊂ Q$. For those children $Q'$ we have two options: either $\fint_{Q'} \abs{f} > λ$ or it's $≤ λ$. In the first case we have a ``bad cube'', so we add it to the collection $\mathcal{Q}$. In the second case, we continue with the children of $Q'$ with length $l_* - 2$.
 
 Now set the decomposition as $b$ taking the values of $f$ on the ``bad cubes'' where the process stopped, so that \[ b ≝ \sum_{Q ∈ \mathcal{Q}} \ind_Q f\] and $g$ as the remaining part: $g = f - b$.
 
@@ -669,7 +704,7 @@ For the bound on the measure of the cubes, we note that if $Q ∈ \mathcal{Q}$ i
 
 This theorem allows the proof of a proof on a weak $L^1$ bound for the Calderón-Zygmund operator.
 
-\begin{theorem} Let $T$ be a \nref{def:CalderonZygmundOperator} given by \[ Tf(x) = \int_{ℝ^n} K(x -y) f(y) \dif y \] for $f ∈ \schwartz$. Then we have the weak $L^1$ bound \[ \abs{\set{x ∈ ℝ^n \st \abs{Tf(x)} > λ}} ≤ CB \inv{λ} \norm{f}_{L^1(ℝ^n)} \quad ∀λ > 0 \] for a suitable universal constant $C$ and $B$ as in the definition of the Calderón-Zygmund kernel.
+\begin{theorem} \label{thm:WeakL1BoundCZ} Let $T$ be a \nref{def:CalderonZygmundOperator} given by \[ Tf(x) = \int_{ℝ^n} K(x -y) f(y) \dif y \] for $f ∈ \schwartz$. Then we have the weak $L^1$ bound \[ \abs{\set{x ∈ ℝ^n \st \abs{Tf(x)} > λ}} ≤ CB \inv{λ} \norm{f}_{L^1(ℝ^n)} \quad ∀λ > 0 \] for a suitable universal constant $C$ and $B$ as in the definition of the Calderón-Zygmund kernel.
 \end{theorem}
 
 \begin{proof} We can assume without loss of generality that $B = 1$ (if not, replace $T$ by $\inv{B}T$). Given a fixed $λ > 0$ and $f ∈ \schwartz$, we consider the Calderón-Zygmund decomposition of $f = g + b$ associated to λ and will modify it a bit. Define \[ φ ≝ \sum_{Q ∈ \mathcal{Q}} \ind_Q(x) \fint_Q f(y) \dif y \] so that $f = f_1 + f_2$ with $f_1 = g + φ$, $f_2 = b - φ$.
@@ -687,7 +722,17 @@ We only need to pass from the $L^2$ norm to the $L^1$. Observe that $f_1$ is bou
 
 \proofpart{Bound for $f_2$}
 
-This one gets a little bit more complicated.
+For each bad cube $Q ∈ \mathcal{Q}$, pick a sufficiently large dilation $Q_*$ such that
+\[ \abs{x-y} ≥ 2\abs{y - y_1}\qquad ∀y,y_1 ∈ Q,\; ∀x ∈ Q_*^c \]
+
+Now we can reduce to bounding only when $x ∈ ℝ^n \setminus ∪_{\mathcal{Q}} Q_*$ as the dilations are perfectly bounded. Then we can write
+\[ T f_2(x) = \sum_{Q ∈ \mathcal{Q}} \int_Q K(x-y) f_2(y) \dif y \]
+
+By using the vanishing property of $f_2$, we can add a constant term $K(x-y_Q)f_2(y)$ where $y_Q$ is the centre of $Q$. Then we can use Markov and then
+\[ \abs{\set{x ∈ ℝ^n \setminus ∪_{\mathcal{Q}} Q_* \st \abs{T f_2(x)} > λ}} ≤ \inv{λ} \int_{ℝ^n \setminus ∪_{\mathcal{Q}} Q_*} \sum_{Q ∈ \mathcal{Q}} \int_Q \abs{K(x-y) - K(x-y_Q)} \abs{f_2(y)} \dif y \dif x \]
+
+Switching the order of integration and using the kernel properties where are done.
+
 \end{proof}
 
 \subsection{Boundedness in Hölder spaces}
@@ -699,13 +744,21 @@ Then we can state the theorem, of course taking care of the fact that we are int
 \begin{theorem} Let $T$ be a strong Calderón-Zygmund operator, and assume $f ∈C^α(ℝ^n)$ with $\sop f ⊆ \bola_1(0)$. Then we have the Hölder bound \[ \norm{T(f)}_{C^α(ℝ^n)} ≤ C_{n,α} B \norm{f}_{C^α(ℝ^n)}\]
 \end{theorem}
 
+\begin{proof} We will first prove the $L^∞$ bound and then the Hölder continuity bound.
+
+\proofpart{$L^∞$}
+
+
+
+\end{proof}
+
 \section{Pointwise convergence}
 
 For the study of the pointwise convergence properties of CZ kernels we will introduce the Hardy-Littlewood maximal function.
 
 \subsection{Hardy-Littlewood maximal function}
 
-\begin{defn}[Hardy-Littlewood\IS maximal function] For $f ∈ \espLloc$ we define its Hardy-Littlewood maximal function as \[ Mf(x) ≝ \sup_{B \st x ∈ B} \fint_B \abs{f}\] with the supremum running over all balls containing $x$.
+\begin{defn}[Hardy-Littlewood\IS maximal function] \label{def:HardyLittlewood} For $f ∈ \espLloc$ we define its Hardy-Littlewood maximal function as \[ Mf(x) ≝ \sup_{B \st x ∈ B} \fint_B \abs{f}\] with the supremum running over all balls containing $x$.
 \end{defn}
 
 It is immediate that $Mf(x) ≤ f(x)$ for any $x$. Less so is the following theorem:
@@ -718,14 +771,18 @@ This implies directly via Marcinkiewicz interpolation the following bound:
 \begin{corol} For any $p ∈ (1, ∞]$, we have the bound \[ \norm{Mf}_{L^p(ℝ^n)} ≤ C_p \norm{f}_{L^p(ℝ^n)}\]
 \end{corol}
 
+
+\begin{lemma}[Vitali\IS covering lemma] Let $\mathcal{B} = B_1, \dotsc, B_n $ be a finite collection of balls contained in $ℝ^d$. Then, there exists a subcollection $\mathcal{B}'$ of finite disjoint balls contained in ``three times the other balls'', aka \[ \bigcup_{B' ∈ \mathcal{B'}} B' ⊆ \bigcup_{B ∈ \mathcal{B}} 3B\] where $3B$ is the ball $B$ with the same center and three times the radius and with $\cup \mathcal{B} ≤ 3^d \cup \mathcal{B}' $
+\end{lemma}
+
 % TODO Lecture9 proof of theorem and helper lemma.
 
 The good thing about this Hardy-Littlewood maximal function is that it allows us to perform proofs with other general maximal functions of the form \[ M_1 f ≝ \sup_{ε > 0} \abs{ρ_ε * f} \] with $ρ_ε$ a family of approximate identities, via the following lemma.
 
-\begin{lemma} Let $\set{ρ_ε}_{ε > 0}$ be a family of \nlref{def:ApproximateIdentity} functions. Then we have \[ M_1 f(x) ≤ C Mf(x) \] for a suitable constant $C$. Moreover, if $K ∈ C^1(ℝ^n)$ is radial $K(x) = h(\abs{x})$ and decays with $h' < 0$ and further we have $\abs{h'(r)} ≤ Cr^{-n-2}$ then we also have \[ \sup_{ε > 0} \abs{K_ε * f(x)} ≤ CMf(x) \]
+\begin{lemma} \label{lem:MaximalApproxId} Let $\set{ρ_ε}_{ε > 0}$ be a family of \nlref{def:ApproximateIdentity} functions. Then we have \[ M_1 f(x) ≤ C Mf(x) \] for a suitable constant $C$. Moreover, if $K ∈ C^1(ℝ^n)$ is radial $K(x) = h(\abs{x})$ and decays with $h' < 0$ and further we have $\abs{h'(r)} ≤ Cr^{-n-2}$ then we also have \[ \sup_{ε > 0} \abs{K_ε * f(x)} ≤ CMf(x) \]
 \end{lemma}
 
-\begin{proof}
+\begin{proof} The first part is easy, as we can bound $φ$ by $C \abs{B_ε}^{-1} \ind_{B_ε} (x)$ for $B_ε$ appropriate for $φ$, and then the convolution is perfectly bounded by the maximal function.
 % TODO
 \end{proof}
 
@@ -737,21 +794,52 @@ Now we go into the question of whether \[ \lim_{ε \to 0} \int_{\abs{x-y} > ε} 
 
 Up until know, we have established a satisfactory theory of $L^p$ boundedness for CZ operators for $1 < p < ∞$ and we have seen that for $L^1$ their image is $L^{1,∞}$. We still need to know, however, where do these operator send $L^∞$. We have seen that they do not preserve the space: in this chapter we will see that the image is actually a new space of functions of bounded mean oscillation (BMO).
 
-\begin{defn}[BMO\IS function] Let $f ∈ \espLloc$. Then we say that $f$ is a BMO function if we have \[ \norm{f^\sharp}_{L^∞(ℝ^n)} < ∞ \] where \[ f^\sharp(x) ≝ \sup_{x ∈ B} \fint_B \abs{f(y) - f_B} \dif y \] with $f_B = \fint_B f$ the average of $f$ over $B$. We then write the norm as \[ \norm{f}_\bmo ≝ \norm{f^\sharp}_{L^∞(ℝ^n)} \]
+\begin{defn}[BMO\IS function] \label{def:BMOFunction} Let $f ∈ \espLloc$. Then we say that $f$ is a BMO function if we have \[ \norm{f^\sharp}_{L^∞(ℝ^n)} < ∞ \] where \[ f^\sharp(x) ≝ \sup_{x ∈ B} \fint_B \abs{f(y) - f_B} \dif y \] with $f_B = \fint_B f$ the average of $f$ over $B$. We then write the norm as \[ \norm{f}_\bmo ≝ \norm{f^\sharp}_{L^∞(ℝ^n)} \]
 \end{defn}
 
-This gives also a closely related second definition of the space
+It's important to see that CZ operators send $L^∞ ∩ L^2$ functions to $\bmo$ space.
 
-% Missing rest of lecture 10
+\begin{theorem} \label{thm:BoundBMOOper} Let $T$ be a \nref{def:CalderonZygmundOperator} and $f ∈ L^∞ ∩ L^2$. Then we have \[ \norm{Tf}_\bmo ≤ CB \norm{f}_∞ \]
+\end{theorem}
+
+\begin{proof} Pick any ball $B = \bola_{ℝ}(x_0) ⊂ ℝ^n$ and define \[ c_B ≝ \int_{\abs{x_0 - y} > 2R} K(x_0 - y) f(y) \dif y\]
+
+Then we get \[ \int_B \abs{Tf(x) - c_B} \dif x ≤ \int_B \int_{\abs{x_0 - y} > 2R} \abs{K(x-y) - K(x_0 - y) f(y)} \abs{f(y)} \dif y \dif x + \int_B \abs{T(\ind_{2B}f)} \dif x \]
+
+In the first integral we have $\abs{x_0 - y} > 2R ≥ \abs{x_0 - x}$ and Hörmander condition gives a bound. The other is perfectly bounded.
+\end{proof}
+
+\begin{theorem}[John-Nirenberg\IS theorem] \label{thm:JohnNirenberg} Let $f ∈ \bmo(ℝ^n)$, and in particular $f ∈ \espLloc$. Then, for some absolute positive positive constants $c_n, C_n$ we have \[ \abs{\set{x ∈ Q \st \abs{f(x) - f_Q} > λ}} ≤ C\abs{Q} e^{-c\frac{λ}{\norm{f}_\bmo}}\] for any cube $Q ⊂ ℝ^n$.
+\end{theorem}
+
+\begin{proof} Define first \[ E_Q (λ) ≝ \sup_{\norm{φ}_\bmo ≤ 1} \abs{Q}^{-1} \abs{\set{x ∈ Q \st \abs{φ(x) - φ_Q} > λ }} \] and note that $E_Q (λ) ≤ λ^{-1}$ and it does not actually depend on $Q$ as we can dilate and things.
+
+Then we ahve the bound \[ E(λ) < 2 μ^{-1} E(λ - 2^{n+1} μ)\] if $1 < μ < \frac{λ}{2^{n+1}}$ and the theorem follows by setting $λ > 2^{n+1}$ and $μ = 3$ for example.
+
+\end{proof}
 
 \chapter{Fourier multipliers}
 
 % Lecture 11
 
-\begin{defn}[Fourier multiplier] GIven $f ∈ \schwartz$ \[  Tf ≝ \inv{\fourier}(m(ξ) \hat{f}(ξ))\]
+\begin{defn}[Fourier multiplier] Given $f ∈ \schwartz$ we can define a Fourier multipler oeprator associated to $m(ξ)$ as  \[  Tf ≝ \inv{\fourier}\left(m(ξ) \hat{f}(ξ)\right)\]
 \end{defn}
 
-\begin{theorem} If $\appl{m}{ℝ^n \minuszero}{ℂ}$ satisfies \[ \abs{∂^\vec{γ }m(ξ)} ≤ B \abs{ξ}^{-\abs{\vec{γ}}} \quad \abs{\vec{γ}} ∈ [0, n+2] \], then the Fourier multiplier introduced by $m$ is $L^p$ bounded with \[ \norm{ \inv{\fourier}(m(ξ) \hat{f}(ξ))}_{L^p} ≤ C_{n,p} B\norm{f}_{L^p} \] with $1 < p < ∞$.
+For example, the Hilbert transofmr is given by $m(ξ) = - \imath π \sign ξ$.
+
+\begin{lemma} \label{lem:FM1} There exists a radial function $ψ ∈ C_0^∞(ℝ^n)$ supported on $ℝ^n \minuszero$ and with the property that \[ \sum_{j ∈ ℤ} ψ \left(\frac{x}{2^j}\right) = 1 \qquad ∀ x ∈ ℝ^{n} \minuszero \]
+
+Also, we may ensure that for any $x ∈ ℝ^{n} \minuszero$ there are at most two non-zero terms in the sum.
+\end{lemma}
+
+\begin{proof} Pick a radial function $χ(x) ∈ C_0^∞(ℝ^n)$ with $χ(x) = 1$ for $\abs{x} ≤ 1$ and $χ(x) = 0$ for $\abs{x} ≥ 2$. Then let \[ ψ(x) ≝ χ(x) - χ(2x)\]
+
+Note that $ψ(x) = 0$ unless $\frac{1}{2} < \abs{x} < 2$. Thus, if $ψ(\sfrac{x}{2^j}) ≠ 0$, then depending on whether $2^{-j}x ∈ [1, 2)$ or in $(\sfrac{1}{2}, 1)$ we can have $ψ(\sfrac{x}{j+1}) ≠ 0$ or $ψ(\sfrac{x}{2^{j-1}})$ but 0 for every other value.
+
+We can also see it by \[ \sum_{j = -N}^N ψ(2^{-j}x) = χ(2^{-N}x) - χ(2^{N+1}x)\] so we choose $N$ large enough to have $2^{-N}\abs{x} ≤ 1$ and $2^{N+1} \abs{x} > 2$.
+\end{proof}
+
+\begin{theorem}[Mikhlin\IS theorem] \label{thm:Mikhlin} If $\appl{m}{ℝ^n \minuszero}{ℂ}$ satisfies \[ \abs{∂^\vec{γ }m(ξ)} ≤ B \abs{ξ}^{-\abs{\vec{γ}}} \quad \abs{\vec{γ}} ∈ [0, n+2] \qquad ξ ≠ 0 \], then the Fourier multiplier introduced by $m$ is $L^p$ bounded with \[ \norm{ \inv{\fourier}(m(ξ) \hat{f}(ξ))}_{L^p} ≤ C_{n,p} B\norm{f}_{L^p} \] with $1 < p < ∞$.
 \end{theorem}
 
 \begin{proof} We will first try to prove $L^2$ boundedness. In fact, $\norm{m}_{L^∞} < ∞$ by Plancherel theorem so $\norm{\inv{\fourier}(m(ξ) \hat{f}(ξ))}_{L^2} ≤ \norm{m}_{L^∞} \norm{f}_{L^2}$.
@@ -787,7 +875,7 @@ and now we use Calderón-Zygmund weak $L^1$ bound.
 \begin{theorem}[Dominated convergence\IS theorem] \label{thm:DominatedConvergence} Let $\set{f_n}_{n ∈ ℕ}$ be a series of functions such that $f_n \convs f$ almost everywhere. If there exists an integrable, non-negative function $g$ such that $\abs{f_n} ≤ g$, then \[ \int \lim_{n \to ∞} f_n \dif μ = \lim_{n \to ∞} \int f_n \dif μ\]
 \end{theorem}
 
-\begin{theorem}[Markov inequality][Inequality\IS Markov] \label{thm:MarkovIneq} Let \meas be a measure space and $\appl{f}{X}{ℝ}$ a measurable function. Then, for any $ε > 0$ we have that \[ μ\left(\set{x ∈ X \st \abs{(x)} ≥ ε}\right) ≤ \frac{1}{ε} \int_X \abs{f} \dif μ \] or, in other words, the set of points where $f$ has high values gets smaller the higher that value is.
+\begin{theorem}[Markov inequality][Inequality\IS Markov] \label{thm:MarkovIneq} Let \meas be a measure space and $\appl{f}{X}{ℝ}$ a measurable function. Then, for any $ε > 0$ we have that \[ μ\left(\set{x ∈ X \st \abs{f(x)} ≥ ε}\right) ≤ \frac{1}{ε} \int_X \abs{f} \dif μ \] or, in other words, the set of points where $f$ has high values gets smaller the higher that value is.
 \end{theorem}
 
 \begin{theorem}[Lebesgue\IS differentiation theorem] \label{thm:DiffLebesgue} \citep[Theorem II.22]{ApuntesVariableReal} Let $\appl{f}{ℝ^N}{ℝ}$ be a locally integrable function. Then, for almost every $x ∈ ℝ^N$, we have that \[ \lim_{r \to 0} \fint_{E_r(x)} f(y) \dif y = f(x) \] for every family of sets $\set{E_r}$ that shrinks nicely to $x$.
@@ -806,86 +894,7 @@ In other words, this allows to take into account not only balls of radius $r$ bu
 \end{theorem}
 
 \chapter{Summary}
-
-\section{Fourier series}
-
-The Fourier coefficients are given by \[ \hat{f}(n) = \int_0^1 e^{-2π\imath nx} f(x) \dif x \qquad n ∈ ℤ\], and that can be written as a convolution as \[ S_Nf(x) ≝ \sum_{\abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} = D_N * f \] with $D_N$ the Dirichlet Kernel as defined in \eqref{eq:DirichletKernel}: \[ D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \]
-
-We can also define the Féjer kernel \[ K_N(x) ≝ \frac{1}{N}\left(\frac{\sin πNx}{\sin πx}\right)^2 \] which is always positive and bounded in norm, therefore being an approximate identity.
-
-Regarding approximate identities, we can prove that they converge in the $L^p$ norm in \fref{prop:ApproximateIdentity}. The proof consists of transforming $\norm{φ_N * f - f}$ to $\int_Ω \abs{φ_N(x)} \norm{T_y f - f}\dif y$  and separating in two parts: where $y$ is large so we use the support of $φ_N$ is small, and another where $y$ is small and there we use the continuity of the translation operator $T_y$ by means of a third smooth function approximating $f$. The same argument can be used in \fref{prop:ApproximateIdentityUnif} but using the fact that convolution with smooth function is smooth.
-
-For the proof that trigonometric polynomials are dense in $L^p$, we just use the fact that the convolution of the Féjer kernel with a functon is a trigonometric polynomial (the Césaro mean) and then note that Féjer kernels are approximate identities.
-
-Finally, we can prove the Riemann-Lebesgue lemma (Fourier coefficients of an $L^1$ function vanish at infinity) just by seeing that it holds for simple functions and then using their density in $L^1$.
-
-\section{Fourier analysis}
-
-Here we just need to know the definition of the \nref{def:SchwartzSpace} (smooth functions rapidly decaying with all their derivatives), and there we can define the Fourier transform as \[ \fourier(f)(ξ) = \hat{f}(ξ) ≝ \int_{ℝ^n} f(x) e^{-2π\imath x · ξ} \dif x \qquad ξ ∈ ℝ^n\]
-
-The \nref{thm:FourierInversion} can be proved by defining $\hat{f}_ε(ξ) ≝ \hat{f}(ξ) e^{-ε\abs{ξ}^2}$ which has a bounded integral, so we can expand the Fourier inversion formula there and then using the \nref{thm:DominatedConvergence} to switch limit and integral.
-
-The \nref{thm:Plancherel}, which states that $\pesc{f, g} = \pesc{\hat{f}, \hat{g}}$ and can be proved simply by changing the order of integration: first we see that $\int f \hat{g} = \int \hat{f} g$, then say $g = \ifourier(\fourier(g))$ and operate.
-
-Finally, we can use the \nref{thm:RieszThorin} to prove the boundedness of the Fourier transform as an operator $\appl{\fourier}{L^p}{L^q}$, as we know its $L^1 \to L^∞$ bounded and $L^2 \to L^2$ isometric.
-
-\subsection{Riesz-Thorin}
-
-For the proof of the Riesz-Thorin theorem we first need the \nref{lem:Hadamard3Lines}: if you can bound a complex function $F(z)$ on the borders of the strip $S ≝ \set{x ∈ ℂ \st 0 < \Re z < 1}$ by $\abs{F(z \st \Re z = j)} ≤ B_j$ for $j = 0,1$, then you can bound them in the full strip by $\abs{F(z)} ≤ B_0^{1-θ} B_1^{θ}$ with $θ = \Re z ∈ [0,1]$. The trick for the proof of the lemma is to construct the function $f(z) = F(z) · \left(B_0^{1-z} B_1^{z}\right)^{-1}$, which is bounded by $1$ on the edges of the strip. Then, defining $f_ε (z) ≝ f(z) e^{ε(z^2 - 1)}$, we see that it goes to zero when $z ∈ S$ and $\abs{z} \to ∞$, so we pick $y_0$ large enough to have $\abs{f_ε(z)} ≤ 1$ when $\abs{\Im z} > y_0$: the maximum modulus principle tells us that $\abs{f_ε(z)} ≤ 1$ in that zone. Make $ε \to 0$ so that $y_0 \to ∞$ and we have it.
-
-
-\subsection{Hilbert transform}
-
-We can define the \nref{def:HilbertTrans} as the limit of the principal value of the integral $\frac{f(x-y)}{y} \dif y$ more or less, which preserves the $L^2$ norm up to $π$.
-
-For the exam, he can ask Fourier multipliers, the two identities for the Fourier transfor, and Proof of lemma 2.1, and proof of last theorem (just above, theorem 3.1 on the notes).
-
-For BMO functions, the definition of the space, examples of functions in BMO but not in $L^∞$ (e.g, $\log \abs{x}$) proving that it is indeed in BMO. Prove that if $f ∈ \bmo$ then exists $c_1 > 0$ such that $\int_Q e^{c_1\abs{f(x)}} < ∞$. Prove that a CZ operator is $L^∞ \to \bmo$ bounded for any $f ∈ L^∞ ∩ L^2$. A part of the proof of John-Nirenberg theorem.
-
-For Calderon-Zygmund operator, the definition, prove pointwise well-definition for a Schwartz function, Hormander condition lemma, ideas of the $L^2$ boundedness, CAlderón-Zygmund decomposition, proof of $L^1$ boundedness and $C^α$ boundedness.
-
-For Hardy-Littlewood maximal function, we need definition and $L^∞$ boundedness (that is a proof? Really?), covering lemma and weak $L^1$ boundedness, and the trick in the proof of showing ``Let $K$ be a CZ kernel s.t. $K_ε = K$ proving $K*φ_ε = (K*φ)_ε$ (lemma 4.1)''.
-
-For Hilbert transform, the definition, state the relation to the Fourier transform, proof that Fourier transform is $L^2$ bounded, and prove $L^p$ boundedness of the Hilbert transform.
-
-For the Riesz-Thorin interpolation, we need to state and prove the Hadamard three lines lemma, and state Riesz-thorin and prove it for step functions, and the derivation, statement and proof of Young's inequaity.
-
-For the
-
-Sobolev spaces. Definition of $H^n$ space including fractional $s$.
-
-Regarding exercises.
-
-\begin{itemize}
-	\item Ex 1 series 1 (Pointwise estimates on Dirichlet kernel)
-	\item Ex 1 series 5 (Weak $L^p$ space).
-	\item Ex 4 series 6 (Hilbert transform and holomorphic functions).
-	\item Ex 1 series 7 (Evaluation of Dirichlet integration. Suffices to show one way).
-\end{itemize}
-
-This is for the ex4/series6. But for $f ∈ C_0^∞(ℝ)$ show that the function \[ u(x,y) ≝ \frac{1}{π} \int_ℝ \frac{yf(t)}{(x-t)^2 + y^2} \dif t \] defines a harmonic function on the upper plane $\set{(x,y) ∈ ℝ^2 \st y > 0}$. Moreover, show that $\lim_{y \to 0} u = f(x)$.
-
-The function $u$ is obviously well-defined. To prove that it is harmonic we prove that the laplacian is zero. That is straightforward because $\frac{y}{(x-t)^2 + y^2}$ is harmonic. But it's easier beacuse it's the imaginary aprt of $\frac{1}{z}$ which is holomorphic. Also because $\frac{y}{x^2 + y^2} = ∂_y \log \sqrt{x^2 + y^2}$ which is harmonic again.
-
-For the other thing, we can solve \[ \frac{1}{π}\int_ℝ \frac{y}{(x-t)^2 + y^2} \dif t = \frac{1}{π} \int_ℝ \frac{1}{\frac{(x-t)^2}{y^2} + 1} \dif \left(\frac{t-x}{y}\right) = \frac{1}{π} \eval{\arctan\left(\frac{t-x}{y}\right)}_{t = -∞}^{∞} = 1 \]
-
-And now we want to show that \[ u(x,y) - f(x) = \frac{1}{π} \int_{ℝ} \frac{y(f(t) - f(x))}{(x-t)^2 + y^2)} \dif t \]
-
-We separate in two parts, when $x \approx t$ and when not. And everything goes to zero.
-
-Second part is how to construct the holmorphic functions.We introduce $z ≝ x + \imath y$ and $g(x) = u(z) + \imath v(z)$ with \[ v(z) ≝ \frac{1}{π} \int_ℝ \frac{(x-t) f(t)}{(x-t)^2 + y^2} \dif t \] and we want to show that $g$ is holomorphic on $\set{(x,y) ∈ ℝ^2 \st y > 0}$, that $\lim_{z \to ∞} g(z) = 0$ and $\lim_{y \to 0} v = \frac{1}{π} H f$. Also show that $g(z)$ is the unique holomorphic function such that $\lim_{z \to ∞} g(z) = 0$ and $\lim_{y \to 0} \Re g(z) = f(x)$.
-
-W ehave to use that $(Hf)^2 = π^2 f^2 + 2H(f · Hf)$. $f + \frac{\imath}{π} Hf$ is the boundary value of the holomorphic function on the the half plane. So is the square of that crap which is $f^2 - \frac{1}{π^2} (Hf)^2 + 2\imath fHf$. Then the relation between the real an dimaginary part must be $2f Hf = \frac{1}{π} H(f^2 - \frac{1}{π^2} (Hf)^2 )$. Now you apply $H$ again on both sides and we have \[ 2H(f Hf) = π f^2 - \frac{1}{π} (Hf)^2 \]
-
-For the proof that the function is holomorphic, it is slightly direct. For the limit, we see what $u$ and $v$ go both to zero.
-
-For the hilber transform it is a little bit more delicate so so so so so soooo sosososo sosososo sososo sososo sosososooooo.
-
-We write \[
-v(x,y) = \lim_{ε \to 0^+} \int_{x + ε}^∞ \frac{(x-t) f(x)}{(x-t)^2 + y^2} \dif t + \int_{-∞}^{x-ε} \dotsb \dif t
-\] which is well defined. Then  we take the limit when $y$ goes to zero, and because the first one is well defined we can interchange the limit because it's uniform in the outer variable (?) and when $y$ goes to zero we have the definition of the Hilbert transform.
-
-For the uniqueness, show that the harmonic function $u$ is unique and then show that $v$ is also uniquely determined. The constant must be zero (¿?¿?¿). For the first one, we have that $∃u = 0$ on $Ω$ with $\restr{u}{∂Ω} = 0$ then $u = 0$ by maximum principle. But we need Ω bounded and in this case it is not. But tric! There exists a holomorphic map$F$ that maps the upper half plane to the disk. So $\hat{u}(w) = u(\inv{F}(w))$. Now $\tilde{u}$ is harmonic and still zero on the boundary so we use the maximum principle and then it's done. PS: I don't think it's u but $u - u'$ for any other option $u'$. Yay for good notations.  We can also choose a ball and take less than ε.
+\input{tex/HA_Summary.tex}
 
 \chapter{Exercises}
 \input{tex/HarmonicAnalysis_Exerc.tex}

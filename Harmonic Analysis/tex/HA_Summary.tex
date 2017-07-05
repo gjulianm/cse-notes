@@ -1,0 +1,118 @@
+% -*- root: ../HarmonicAnalysis.tex -*-
+
+\section{Fourier series}
+
+The Fourier coefficients are given by \[ \hat{f}(n) = \int_0^1 e^{-2π\imath nx} f(x) \dif x \qquad n ∈ ℤ\], and that can be written as a convolution as \[ S_Nf(x) ≝ \sum_{\abs{n} ≤ N} \hat{f}(n) e^{2π\imath nx} = D_N * f \] with $D_N$ the Dirichlet Kernel as defined in \eqref{eq:DirichletKernel}: \[ D_N(x) ≝ \sum_{\abs{n} ≤ N} e^{2π\imath n x} = \frac{\sin \left(2πt (N + \sfrac{1}{2})\right)}{\sin πt} \]
+
+We can also define the Féjer kernel \[ K_N(x) ≝ \frac{1}{N}\left(\frac{\sin πNx}{\sin πx}\right)^2 \] which is always positive and bounded in norm, therefore being an approximate identity.
+
+Regarding approximate identities, we can prove that they converge in the $L^p$ norm in \fref{prop:ApproximateIdentity}. The proof consists of transforming $\norm{φ_N * f - f}$ to $\int_Ω \abs{φ_N(x)} \norm{T_y f - f}\dif y$  and separating in two parts: where $y$ is large so we use the support of $φ_N$ is small, and another where $y$ is small and there we use the continuity of the translation operator $T_y$ by means of a third smooth function approximating $f$. The same argument can be used in \fref{prop:ApproximateIdentityUnif} but using the fact that convolution with smooth function is smooth.
+
+For the proof that trigonometric polynomials are dense in $L^p$, we just use the fact that the convolution of the Féjer kernel with a functon is a trigonometric polynomial (the Césaro mean) and then note that Féjer kernels are approximate identities.
+
+Finally, we can prove the Riemann-Lebesgue lemma  (\fref{lem:RiemLebesgueOrNot}, Fourier coefficients of an $L^1$ function vanish at infinity) just by seeing that it holds for simple functions and then using their density in $L^1$.
+
+\section{Fourier analysis}
+
+Here we just need to know the definition of the \nref{def:SchwartzSpace} (smooth functions rapidly decaying with all their derivatives), and there we can define the Fourier transform as \[ \fourier(f)(ξ) = \hat{f}(ξ) ≝ \int_{ℝ^n} f(x) e^{-2π\imath x · ξ} \dif x \qquad ξ ∈ ℝ^n\]
+
+The \nref{thm:FourierInversion} can be proved by defining $\hat{f}_ε(ξ) ≝ \hat{f}(ξ) e^{-ε\abs{ξ}^2}$ which has a bounded integral, so we can expand the Fourier inversion formula there and then using the \nref{thm:DominatedConvergence} to switch limit and integral.
+
+The \nref{thm:Plancherel}, which states that $\pesc{f, g} = \pesc{\hat{f}, \hat{g}}$ and can be proved simply by changing the order of integration: first we see that $\int f \hat{g} = \int \hat{f} g$, then say $g = \ifourier(\fourier(g))$ and operate.
+
+Finally, we can use the \nref{thm:RieszThorin} to prove the boundedness of the Fourier transform as an operator $\appl{\fourier}{L^p}{L^q}$, as we know its $L^1 \to L^∞$ bounded and $L^2 \to L^2$ isometric.
+
+\subsection{Riesz-Thorin}
+
+For the proof of the Riesz-Thorin theorem we first need the \nref{lem:Hadamard3Lines}: if you can bound a complex function $F(z)$ on the borders of the strip $S ≝ \set{x ∈ ℂ \st 0 < \Re z < 1}$ by $\abs{F(z \st \Re z = j)} ≤ B_j$ for $j = 0,1$, then you can bound them in the full strip by $\abs{F(z)} ≤ B_0^{1-θ} B_1^{θ}$ with $θ = \Re z ∈ [0,1]$. The trick for the proof of the lemma is to construct the function $f(z) = F(z) · \left(B_0^{1-z} B_1^{z}\right)^{-1}$, which is bounded by $1$ on the edges of the strip. Then, defining $f_ε (z) ≝ f(z) e^{ε(z^2 - 1)}$, we see that it goes to zero when $z ∈ S$ and $\abs{z} \to ∞$, so we pick $y_0$ large enough to have $\abs{f_ε(z)} ≤ 1$ when $\abs{\Im z} > y_0$: the maximum modulus principle tells us that $\abs{f_ε(z)} ≤ 1$ in that zone. Make $ε \to 0$ so that $y_0 \to ∞$ and we have it.
+
+Once that lemma is done, Riesz-Thorin is proved by the use of simple functions $f ∈ L^p$ and $g ∈ L^{q'}$ (note the dual!) with coefficients to the power $P(z) = \frac{p}{p_0}(1-z) + \frac{p}{p_1} z$ (complex, and then the same with $Q$). Bounding on $z = 0,1$ we
+
+\subsection{Hilbert transform}
+
+We can define the \nref{def:HilbertTrans} as the limit of the principal value of the integral $\frac{f(x-y)}{y} \dif y$ more or less, which preserves the $L^2$ norm up to $π$. We can also prove that it is an $L^p$ bounded operator (\fref{thm:HilbertOperatorNorm}) by proving the case $p =2$,then applying induction for $p = 2^k$ using $H^2f = π^2 f^2 + 2H(fH(f))$, then using Riesz-Thorin and then duality for cases $p > 2$, $p < 2$ respectively.
+
+For the relation to the Fourier transform (\fref{thm:ConvergenceFourierTransform}), we just need to define the alternative operator to \[S_Nf = \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{\sin \left((2N + 1) π (x- y)\right)}{\sin \left(π(x - y)\right)} f(y)  \dif y \] which is \[ \tilde{H}_N f ≝ \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} \frac{\sin \left((2N + 1) π (x- y)\right)}{π(x - y)} f(y)  \dif y\] and we claim that $\norm[0]{S_N - \tilde{H}_N} ≤ C$, with $C$ independent of $N$. That is easy to do with just the infinity norm of the sinus thing and the Hölder inequality. The idea is that the alternative operator can be expressed as a Hilbert transform and then everything is good.
+
+\subsection{Calderón-Zygmund operator}
+
+CZ operators are defined by means of the \nref{def:CalderonZygmundKernel}. The operator is just as in the Hilbert transform: the convolution with the kernel excluding $\abs{x}$ by ε, and making $ε \to 0$. The Hörmander condition is the basic thing, which is implied by a stronger condition on the absolute value of the gradient (\fref{lem:HormanderCond}). The trick here is to bound the difference $K(x) - K(x-y)$ using FTC.
+
+The operator is well defined per \fref{lem:CZDefinition}, with the trick of separating the integration zone in $\abs{y} ≥ 1$ to have Schwartz function decay and then the other adding a constant part $f(x)$ (which is zero as the kernel must have the cancellation property).
+
+The $L^2$ boundedness of the operator is proved by operating on the operator restricted to the crown $\bola_{r,s} = \bola_s(0) \setminus \bola_r (0)$. We first compute the fourier transform (isometry, keeps norm) which has no issue because $K\ind_{\bola_{r,s}}$ is perfectly good.
+
+The Calderón-Zygmund decomposition is given by the \nref{thm:CalderonZygmund}, which for $λ > 0$ decomposes a function $f ∈ L^1(ℝ^n)$ in a good part $\abs{g} ≤ λ$ almost everywhere and $b = \sum_{Q ∈ \mathcal{Q}} \ind_Q f $ as the function on a disjoing set of cubes with $λ < \fint_q \abs{f} < 2^n λ$ and with bounded support $\abs{\cup \mathcal{Q}} ≤ λ^{-1} \norm{f}$.
+
+The weak $L^1$ bound of \fref{thm:WeakL1BoundCZ} is given by \[  \abs{\set{x ∈ ℝ^n \st \abs{Tf(x)} > λ}} ≤ CB \inv{λ} \norm{f}_{L^1(ℝ^n)} \quad ∀λ > 0 \]
+
+The proof goes by spicing up the CZ decomposition of $f ∈ L^1$ with $f = \underbracket{g + φ}_{f_1} + \underbracket{b - φ}_{f_2}$ with $φ = \sum \ind_Q \fint_Q f$ having the average value of $f$ in each bad cube. Good thing is that this makes $\int_Q f_2 = 0$. Therefore, we only need to bound for $f_1$ and $f_2$ separately. For $f_1$, we square the $\abs{Tf_1} > λ$ condition to have the bound with the $L^2$ norm of $f_1$, that we can bound because both $g$ and $\fint_Q \abs{f}$ are bounded.
+
+For the $C^α$ boundedness, we first bound the $L^∞$ norm by separating when $\abs{x} ≤ 2$, then if $x ≥ 2$ we have $\abs{x-y} ≥ 1$ on the support of the integrand and bounded again. For the bound on $[f]_α$, consider $\abs{x-x'} = δ < 1$, separate when $\abs{y} ≥ 3δ$ and when it's less.
+
+\subsection{Hardy-Littlewood maximal function}
+
+Recall the \nref{def:HardyLittlewood}, which is very obviously bounded and a weak type $L^1$ bound. There's the Vitali covering lemma that tells you that for any union of finite collection of closed balls, you can get a disjoint set of balls not that much bigger than the original set. And the \fref{lem:MaximalApproxId}.
+
+\subsection{BMO functions}
+
+\nref{def:BMOFunction} are those where the supremum of the mean difference in a closed ball is bounded, that is \[ f^\sharp(x) ≝ \sup_{x ∈ B} \fint_B \abs{f(y) - f_B} \dif y < ∞ \text{ almost everywhere} \] with the associated norm $\norm{f}_\bmo ≝ \norm{f^\sharp}_{L^∞(ℝ^n)}$.
+
+One can try and prove that, for example $\log \abs{x} ∈ \bmo$ but not in $L^∞$.
+
+The bound of the $L^∞ ∩ L^2$ bounded operator is in \nref{thm:BoundBMOOper} and is decently easy.
+
+Then we have the \nref{thm:JohnNirenberg} which is a somewhat Markov inequality
+
+\subsection{Fourier multipliers}
+
+For Fourier multipliers there is \label{lem:FM1}, which is super easy to prove, and then \fref{thm:Mikhlin}. We can introduce Littlewood-Paley localizers for any $f ∈ \schwartz$ with \[ \widehat{P_j f} (ξ) ≝ ψ\left(\frac{ξ}{2^j}\right) \hat{f}(ξ) \] where $\sum_{ℤ} P_j f = f$.
+
+\subsection{What he said}
+
+For the exam, he can ask Fourier multipliers, the two identities for the Fourier transfor, and Proof of lemma 2.1, and proof of last theorem (just above, theorem 3.1 on the notes).
+
+For BMO functions, the definition of the space, examples of functions in BMO but not in $L^∞$ (e.g, $\log \abs{x}$) proving that it is indeed in BMO. Prove that if $f ∈ \bmo$ then exists $c_1 > 0$ such that $\int_Q e^{c_1\abs{f(x)}} < ∞$. Prove that a CZ operator is $L^∞ \to \bmo$ bounded for any $f ∈ L^∞ ∩ L^2$. A part of the proof of John-Nirenberg theorem.
+
+For Calderon-Zygmund operator, the definition, prove pointwise well-definition for a Schwartz function, Hormander condition lemma, ideas of the $L^2$ boundedness, CAlderón-Zygmund decomposition, proof of $L^1$ boundedness and $C^α$ boundedness.
+
+For Hardy-Littlewood maximal function, we need definition and $L^∞$ boundedness (that is a proof? Really?), covering lemma and weak $L^1$ boundedness, and the trick in the proof of showing ``Let $K$ be a CZ kernel s.t. $K_ε = K$ proving $K*φ_ε = (K*φ)_ε$ (lemma 4.1)''.
+
+For Hilbert transform, the definition, state the relation to the Fourier transform, proof that Fourier transform is $L^2$ bounded, and prove $L^p$ boundedness of the Hilbert transform.
+
+Sobolev spaces. Definition of $H^n$ space including fractional $s$.
+
+Regarding exercises.
+
+\begin{itemize}
+	\item Ex 1 series 1 (Pointwise estimates on Dirichlet kernel)
+	\item Ex 1 series 5 (Weak $L^p$ space).
+	\item Ex 4 series 6 (Hilbert transform and holomorphic functions).
+	\item Ex 1 series 7 (Evaluation of Dirichlet integration. Suffices to show one way).
+\end{itemize}
+
+The Dirichlet integral is \[ \int_0^{∞} \frac{\sin ω}{ω} \dif ω = \frac{π}{2}\] which can be evaluated by setting \[ f(a) = \int_0^∞ e^{-aω} \frac{\sin ω}{ω} \dif ω \], differentiating with respect to $a$, using complex notation for the sinus, integrating again with respect to $a$ to get $A - \arctan a$. As $f(∞) = 0$ you need $A = \sfrac{π}{2}$.
+
+This is for the ex4/series6. But for $f ∈ C_0^∞(ℝ)$ show that the function \[ u(x,y) ≝ \frac{1}{π} \int_ℝ \frac{yf(t)}{(x-t)^2 + y^2} \dif t \] defines a harmonic function on the upper plane $\set{(x,y) ∈ ℝ^2 \st y > 0}$. Moreover, show that $\lim_{y \to 0} u = f(x)$.
+
+The function $u$ is obviously well-defined. To prove that it is harmonic we prove that the laplacian is zero. That is straightforward because $\frac{y}{(x-t)^2 + y^2}$ is harmonic. But it's easier beacuse it's the imaginary aprt of $\frac{1}{z}$ which is holomorphic. Also because $\frac{y}{x^2 + y^2} = ∂_y \log \sqrt{x^2 + y^2}$ which is harmonic again.
+
+For the other thing, we can solve \[ \frac{1}{π}\int_ℝ \frac{y}{(x-t)^2 + y^2} \dif t = \frac{1}{π} \int_ℝ \frac{1}{\frac{(x-t)^2}{y^2} + 1} \dif \left(\frac{t-x}{y}\right) = \frac{1}{π} \eval{\arctan\left(\frac{t-x}{y}\right)}_{t = -∞}^{∞} = 1 \]
+
+And now we want to show that \[ u(x,y) - f(x) = \frac{1}{π} \int_{ℝ} \frac{y(f(t) - f(x))}{(x-t)^2 + y^2)} \dif t \]
+
+We separate in two parts, when $x \approx t$ and when not. And everything goes to zero.
+
+Second part is how to construct the holmorphic functions.We introduce $z ≝ x + \imath y$ and $g(x) = u(z) + \imath v(z)$ with \[ v(z) ≝ \frac{1}{π} \int_ℝ \frac{(x-t) f(t)}{(x-t)^2 + y^2} \dif t \] and we want to show that $g$ is holomorphic on $\set{(x,y) ∈ ℝ^2 \st y > 0}$, that $\lim_{z \to ∞} g(z) = 0$ and $\lim_{y \to 0} v = \frac{1}{π} H f$. Also show that $g(z)$ is the unique holomorphic function such that $\lim_{z \to ∞} g(z) = 0$ and $\lim_{y \to 0} \Re g(z) = f(x)$.
+
+W ehave to use that $(Hf)^2 = π^2 f^2 + 2H(f · Hf)$. $f + \frac{\imath}{π} Hf$ is the boundary value of the holomorphic function on the the half plane. So is the square of that crap which is $f^2 - \frac{1}{π^2} (Hf)^2 + 2\imath fHf$. Then the relation between the real an dimaginary part must be $2f Hf = \frac{1}{π} H(f^2 - \frac{1}{π^2} (Hf)^2 )$. Now you apply $H$ again on both sides and we have \[ 2H(f Hf) = π f^2 - \frac{1}{π} (Hf)^2 \]
+
+For the proof that the function is holomorphic, it is slightly direct. For the limit, we see what $u$ and $v$ go both to zero.
+
+For the hilber transform it is a little bit more delicate so so so so so soooo sosososo sosososo sososo sososo sosososooooo.
+
+We write \[
+v(x,y) = \lim_{ε \to 0^+} \int_{x + ε}^∞ \frac{(x-t) f(x)}{(x-t)^2 + y^2} \dif t + \int_{-∞}^{x-ε} \dotsb \dif t
+\] which is well defined. Then  we take the limit when $y$ goes to zero, and because the first one is well defined we can interchange the limit because it's uniform in the outer variable (?) and when $y$ goes to zero we have the definition of the Hilbert transform.
+
+For the uniqueness, show that the harmonic function $u$ is unique and then show that $v$ is also uniquely determined. The constant must be zero (¿?¿?¿). For the first one, we have that $∃u = 0$ on $Ω$ with $\restr{u}{∂Ω} = 0$ then $u = 0$ by maximum principle. But we need Ω bounded and in this case it is not. But tric! There exists a holomorphic map$F$ that maps the upper half plane to the disk. So $\hat{u}(w) = u(\inv{F}(w))$. Now $\tilde{u}$ is harmonic and still zero on the boundary so we use the maximum principle and then it's done. PS: I don't think it's u but $u - u'$ for any other option $u'$. Yay for good notations.  We can also choose a ball and take less than ε.
